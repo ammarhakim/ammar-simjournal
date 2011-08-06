@@ -1,4 +1,4 @@
-.. Simulation Journal
+.. Simulation Journal: See daily-notes entry for August 5th 2011
 
 SimJournal: Ammar's Simulation Journal
 ======================================
@@ -13,37 +13,34 @@ SimJournal: Ammar's Simulation Journal
 
   -- J.B. Buckheit, and D. L. Donoho
 
-Performing *reproducible* research is an essential component of
-scientific discovery. Unfortunately, a lot computational physics
-research is *not* reproducible. Very often results and figures in
-published papers are hard or even impossible to recreate. This makes
-it difficult to compare algorithms, understand and recreate published
-results and slows down the process of scientific discovery.
+*Reproducible* research is an essential component of scientific
+discovery. Unfortunately, a lot computational physics research is
+*not* reproducible. Very often results and figures in published papers
+are hard or even impossible to recreate. This makes it difficult to
+compare algorithms, understand and recreate published results and
+slows down the process of scientific discovery.
 
 Maintaining a simulation journal, analogous to a laboratory notebook,
 may promote reproducibility. A simulation journal can contain more
-details than a published paper, provide annotated input files and, to
-the extent possible, code needed to produce tables, figures and
-results of the calculation. 
+details than a published paper, provide annotated input files and code
+needed to produce tables, figures and results of the calculation.
 
 What this means in practice is that for all computations we need to
 store the following information.
 
 - For *each* simulation, the complete input needed to run the
-  calculation
+  calculation.
 
 - For *each* simulation, the scripts/programs and data required to
-  create the results (tables, figures, etc)
+  create the results (tables, figures, etc).
 
 - A journal entry describing initial conditions, boundary conditions
-  and any special notes on running the simulations needs to be
-  written. There need not be one entry per simulation, but each
-  simulation must be described in *some* entry.
+  and any special notes on running the simulations. There need not be
+  one entry per simulation, but each simulation must be described in
+  *some* entry.
 
-- The results should presented and described in as much detail as
-  needed.
+- The results presented and described in as much detail as needed.
 
 The journal entry should written in a manner that it can be eventually
-incorporated into a publication.
-
-
+incorporated into a publication and should be explicitly written with
+reproducibility in mind.
