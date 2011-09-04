@@ -13,34 +13,20 @@ SimJournal: Ammar's Simulation Journal
 
   -- J.B. Buckheit, and D. L. Donoho
 
-*Reproducible* research is an essential component of scientific
-discovery. Unfortunately, a lot computational physics research is
-*not* reproducible. Very often results and figures in published papers
-are hard or even impossible to recreate. This makes it difficult to
-compare algorithms, understand and recreate published results and
-slows down the process of scientific discovery.
+Computational science is often hampered by the inability to
+independently reproduce or verify published research. In fact, the
+problem is worse: often one can not even reproduce ones own results
+after a short period of time. A small step towards reproducibility is
+to maintain a "simulation journal". The journal entries should
+document a set of related simulations, providing enough detail to
+allow a reader to understand the problem, algorithms used and
+results. See `JE0 <je/je0.html>`_ below for details.
 
-Maintaining a simulation journal, analogous to a laboratory notebook,
-may promote reproducibility. A simulation journal can contain more
-details than a published paper, provide annotated input files and code
-needed to produce tables, figures and results of the calculation.
+The following entries are my attempt to maintain a simulation journal,
+mainly for my own use. This allows me to keep notes in one place and
+refer to them while writing papers or making presentations.
 
-What this means in practice is that for all computations we need to
-store the following information.
+.. toctree::
+  :maxdepth: 2
 
-- For *each* simulation, the complete input needed to run the
-  calculation.
-
-- For *each* simulation, the scripts/programs and data required to
-  create the results (tables, figures, etc).
-
-- A journal entry describing initial conditions, boundary conditions
-  and any special notes on running the simulations. There need not be
-  one entry per simulation, but each simulation must be described in
-  *some* entry.
-
-- The results presented and described in as much detail as needed.
-
-The journal entry should written in a manner that it can be eventually
-incorporated into a publication and should be explicitly written with
-reproducibility in mind.
+  je/je0.rst
