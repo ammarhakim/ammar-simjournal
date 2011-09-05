@@ -37,8 +37,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'iAmmar'
-copyright = u'2010, Ammar Hakim'
+project = u'SimJournal'
+copyright = u'2011, Ammar Hakim'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -104,7 +104,7 @@ html_theme_options = {}
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-html_title = 'iAmmar'
+html_title = 'SimJournal'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #html_short_title = None
