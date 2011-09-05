@@ -22,19 +22,27 @@ def main():
     nx, ny = gridGrp._v_attrs.vsNumCells
     dx = (xup-xlo)/nx
     dy = (yup-ylo)/ny
+
     X = pylab.linspace(xlo+0.5*dx, xup-0.5*dx, nx)
     Y = pylab.linspace(ylo+0.5*dy, yup-0.5*dy, ny)
-    XX, YY = pylab.meshgrid(X, Y)
+    XX, YY = pylab.meshgrid(X, Y)    
+
+    # for plotting we need vertex coordinates
+    Xp = pylab.linspace(xlo, xup, nx+1)
+    Yp = pylab.linspace(ylo, yup, ny+1)
+    XXp, YYp = pylab.meshgrid(Xp, Yp)
 
     # read data
     src = srcFile.root.StructGridField
     sol = solFile.root.StructGridField    
     pylab.figure(1)
     pylab.subplot(1,2,1)
-    pylab.pcolormesh(XX, YY, src[:,:,0]); pylab.axis('image')
+    pylab.pcolormesh(XXp, YYp, src[:,:,0].transpose());
+    pylab.axis('image')
     pylab.subplot(1,2,2)
-    pylab.pcolormesh(XX, YY, sol[:,:,0]); pylab.axis('image')
-    pylab.contour(XX, YY, sol[:,:,0], 20, colors='k', linestyles='solid')
+    pylab.pcolormesh(XXp, YYp, sol[:,:,0].transpose());
+    pylab.axis('image')
+    pylab.contour(XX, YY, sol[:,:,0].transpose(), 20, colors='k', linestyles='solid')
     pylab.savefig(options.input + "_2d_src_sol.png")
 
     pylab.show()
