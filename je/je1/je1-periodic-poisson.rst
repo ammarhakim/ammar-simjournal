@@ -12,11 +12,11 @@ With periodic boundary conditions, the Poisson equation in 2D
   \frac{\partial^2 \psi}{\partial x^2} + 
   \frac{\partial^2 \psi}{\partial y^2} = s(x,y)
 
-can be solved using discrete Fourier transforms. We assume that the
-domain is :math:`\Omega = [-L_x/2 \times L_x/2] \times [-L_y/2 \times
-L_y/2]`, discretized using :math:`N_x \times N_y` cells. Integrating
-:eq:`eq:poisson-eqn` over :math:`\Omega` and using periodicity shows
-that the source :math:`s(x,y)` must satisfy
+can be solved using discrete Fourier transforms. Denote the
+rectangular domain by :math:`\Omega` and discretize using :math:`N_x
+\times N_y` cells. Integrating :eq:`eq:poisson-eqn` over
+:math:`\Omega` and using periodicity shows that the source
+:math:`s(x,y)` must satisfy
 
 .. math::
 
@@ -48,8 +48,9 @@ is tested on and verified a few test problems.
 Test Problem 1
 --------------
 
-The domain is selected to be a square with :math:`L_x=L_y=2`. The
-source is an isotropic Gaussian source of the form
+The domain is assumed to be :math:`\Omega = [-L_x/2, L_x/2] \times
+[-L_y/2, L_y/2]` with :math:`L_x=L_y=2`. The source is an isotropic
+Gaussian source of the form
 
 .. math::
 
@@ -61,9 +62,9 @@ The source and the numerical solution is shown below.
   :width: 100%
   :align: center
 
-  The source for this problem is an isotropic Gaussian
-  :math:`e^{-10(x^2+y^2)}` (left). Color and contour plot of the
-  solution is shown in the right plot.
+  The source (left) for this problem is an isotropic Gaussian
+  :math:`e^{-10(x^2+y^2)}`. Color and contour plot of the solution is
+  shown in the right plot.
   
 Test Problem 2
 --------------
@@ -81,8 +82,35 @@ The source and the numerical solution is shown below.
   :width: 100%
   :align: center
 
-  The source for this problem is an anisotropic Gaussian
-  :math:`e^{-10(2x^2+4xy+5y^2)}` (left). Color and contour plot of the
+  The source (left) for this problem is an anisotropic Gaussian
+  :math:`e^{-10(2x^2+4xy+5y^2)}`. Color and contour plot of the
   solution is shown in the right plot.
   
-  
+Test Problem 3
+--------------
+
+The domain is assumed to be :math:`\Omega = [0, L_x] \times [0, L_y]`
+with :math:`L_x=L_y=10`. The source is the sum of two Gaussians given
+by
+
+.. math::
+
+  s(x,y) = \omega_1(x,y) + \omega_2(x,y)
+
+where 
+
+.. math::
+
+  \omega_i(x,y) = e^{-r_i^2/0.8}
+
+where :math:`r_i^2 = (x-x_i)^2 + (y-y_i)^2` and :math:`(x_1,y_1) =
+(3.5,5.0)` and :math:`(x_2,y_2) = (6.5,5.0)`. The source and the
+numerical solution is shown below.
+
+.. figure:: s3-periodic-poisson_2d_src_sol.png
+  :width: 100%
+  :align: center
+
+  The source (left) for this problem is the sum of two
+  Gaussians. Color and contour plot of the solution is shown in the
+  right plot.
