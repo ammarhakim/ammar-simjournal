@@ -3,16 +3,6 @@
 SimJournal: Ammar's Simulation Journal
 ======================================
 
-.. epigraph::
-
-  An article about computational science in a scientific publication
-  is not the scholarship itself, it is merely advertising of the
-  scholarship. The actual scholarship is the complete software
-  development environment and the complete set of instructions which
-  generated the figures.
-
-  -- J.B. Buckheit, and D. L. Donoho
-
 Computational science is often hampered by the inability to
 independently reproduce or verify published research. In fact, the
 problem is worse: often one can not even reproduce ones own results
@@ -30,3 +20,4 @@ refer to them while writing papers or making presentations.
   :maxdepth: 2
 
   je/je0.rst
+  je/je1.rst
