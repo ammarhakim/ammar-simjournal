@@ -19,5 +19,5 @@ refer to them while writing papers or making presentations.
 .. toctree::
   :maxdepth: 2
 
-  je/je0.rst
-  je/je1.rst
+  je/je0/je0-repro-research.rst
+  je/je1/je1-periodic-poisson.rst

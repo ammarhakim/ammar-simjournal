@@ -34,6 +34,7 @@ def main():
     pylab.pcolormesh(XX, YY, src[:,:,0]); pylab.axis('image')
     pylab.subplot(1,2,2)
     pylab.pcolormesh(XX, YY, sol[:,:,0]); pylab.axis('image')
+    pylab.contour(XX, YY, sol[:,:,0], 20, colors='k', linestyles='solid')
     pylab.savefig(options.input + "_2d_src_sol.png")
 
     pylab.show()
