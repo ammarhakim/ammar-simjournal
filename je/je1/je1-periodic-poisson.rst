@@ -30,7 +30,6 @@ Once the source term is adjusted, its 2D Fourier transform is
 computed. The Fourier transform of the solution is then
 
 .. math::
-  :label: eq:poisson-eqn
 
   \overline{\psi}(k_x, k_y) = \frac{\overline{s}(k_x,k_y)}{k_x^2+k_y^2}
 
@@ -46,12 +45,12 @@ This updater is for use in testing finite-volume/finite-difference 2D
 incompressible flow algorithms. In this entry the stand-alone updater
 is tested on and verified a few test problems.
 
-Test problems
--------------
+Test Problem 1
+--------------
 
-The domain is selected to be a square with :math:`L_x=L_y=2`. For each
-problem second-order finite-differences are used to verify that the
-solution satisfies the Poisson equation.
+The domain is selected to be a square with
+:math:`L_x=L_y=2`. Second-order finite-differences are used to verify
+that the solution satisfies the Poisson equation.
 
 The first problem is for a Gaussian source term of the form
 
@@ -59,4 +58,34 @@ The first problem is for a Gaussian source term of the form
 
   s(x,y) = e^{-10(x^2+y^2)}
 
-The numerical solution is shown below.
+The source and the numerical solution is shown below.
+
+.. figure:: s1-periodic-poisson_2d_src_sol.png
+  :width: 100%
+  :align: center
+
+  The source for this problem is an isotropic Gaussian
+  :math:`e^{-10(x^2+y^2)}` (left). Color and contour plot of the
+  solution is shown in the right plot.
+  
+Test Problem 2
+--------------
+
+The domain and resolution are the same as problem 1. An anisotropic
+Gaussian source term of the form
+
+.. math::
+
+  s(x,y) = e^{-10(2x^2+4xy+5y^2)}
+
+is used. The source and the numerical solution is shown below.
+
+.. figure:: s2-periodic-poisson_2d_src_sol.png
+  :width: 100%
+  :align: center
+
+  The source for this problem is an anisotropic Gaussian
+  :math:`e^{-10(2x^2+4xy+5y^2)}` (left). Color and contour plot of the
+  solution is shown in the right plot.
+  
+  
