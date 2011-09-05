@@ -48,11 +48,8 @@ is tested on and verified a few test problems.
 Test Problem 1
 --------------
 
-The domain is selected to be a square with
-:math:`L_x=L_y=2`. Second-order finite-differences are used to verify
-that the solution satisfies the Poisson equation.
-
-The first problem is for a Gaussian source term of the form
+The domain is selected to be a square with :math:`L_x=L_y=2`. The
+source is an isotropic Gaussian source of the form
 
 .. math::
 
@@ -71,14 +68,14 @@ The source and the numerical solution is shown below.
 Test Problem 2
 --------------
 
-The domain and resolution are the same as problem 1. An anisotropic
-Gaussian source term of the form
+The domain and resolution are the same as problem 1. The source is an
+anisotropic Gaussian source of the form
 
 .. math::
 
   s(x,y) = e^{-10(2x^2+4xy+5y^2)}
 
-is used. The source and the numerical solution is shown below.
+The source and the numerical solution is shown below.
 
 .. figure:: s2-periodic-poisson_2d_src_sol.png
   :width: 100%
