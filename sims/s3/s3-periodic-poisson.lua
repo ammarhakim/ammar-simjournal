@@ -30,8 +30,8 @@ src = DataStruct.Field2D {
 function srcFunc(x,y,z)
    local x1, y1 = 3.5, 5.0
    local x2, y2 = 6.5, 5.0
-   local r1 = (x-x1)*(x-x1) + (y-y1)*(y-y1)
-   local r2 = (x-x2)*(x-x2) + (y-y2)*(y-y2)
+   local r1 = (x-x1)^2 + (y-y1)^2
+   local r2 = (x-x2)^2 + (y-y2)^2
    return math.exp(-r1/0.8) + math.exp(-r2/0.8)
 end
 
