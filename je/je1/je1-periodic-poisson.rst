@@ -1,6 +1,9 @@
 JE1: Solving Poisson Equation on 2D Periodic Domain
 ===================================================
 
+:Author: Ammar Hakim
+:Date: September 3rd 2011
+
 The problem and solution technique
 ----------------------------------
 

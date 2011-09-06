@@ -1,6 +1,9 @@
 JE0: On Reproducible Research
 =============================
 
+:Author: Ammar Hakim
+:Date: September 1st 2011
+
 .. epigraph::
 
   An article about computational science in a scientific publication
