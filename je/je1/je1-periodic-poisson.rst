@@ -14,9 +14,10 @@ With periodic boundary conditions, the Poisson equation in 2D
 
 can be solved using discrete Fourier transforms. Denote the
 rectangular domain by :math:`\Omega` and discretize using :math:`N_x
-\times N_y` cells. Integrating :eq:`eq:poisson-eqn` over
-:math:`\Omega` and using periodicity shows that the source
-:math:`s(x,y)` must satisfy
+\times N_y` cells. 
+
+Integrating :eq:`eq:poisson-eqn` over :math:`\Omega` and using
+periodicity shows that the source :math:`s(x,y)` must satisfy
 
 .. math::
 
@@ -24,14 +25,26 @@ rectangular domain by :math:`\Omega` and discretize using :math:`N_x
 
 In the solver implemented in Lucee the source is modified by
 subtracting the integrated source from the RHS of :eq:`eq:poisson-eqn`
-to ensure that this condition is met.
+to ensure that this condition is met. Hence, the solution computed by
+the updater *does not* satisify :eq:`eq:poisson-eqn` but the modified
+equation
+
+.. math::
+  :label: eq:poisson-eqn-mod
+
+  \frac{\partial^2 \psi}{\partial x^2} + 
+  \frac{\partial^2 \psi}{\partial y^2} = s(x,y) - s_T
+
+where :math:`s_T = \int_\Omega s(x,y) dx dy / |\Omega|`, where
+:math:`|\Omega|` is the domain volume. Note that for a properly posed
+problem the zero integrated source condition *must* be met.
 
 Once the source term is adjusted, its 2D Fourier transform is
 computed. The Fourier transform of the solution is then
 
 .. math::
 
-  \overline{\psi}(k_x, k_y) = \frac{\overline{s}(k_x,k_y)}{k_x^2+k_y^2}
+  \overline{\psi}(k_x, k_y) = -\frac{\overline{s}(k_x,k_y)}{k_x^2+k_y^2}
 
 where overbars indicate 2D Fourier transforms and :math:`k_x` and
 :math:`k_y` are the wave-numbers. The zero wave-numbers are replaced
@@ -43,7 +56,7 @@ The algorithm is implemented in the class
 
 This updater is for use in testing finite-volume/finite-difference 2D
 incompressible flow algorithms. In this entry the stand-alone updater
-is tested on and verified a few test problems.
+is verified.
 
 Test Problem 1
 --------------
@@ -65,6 +78,16 @@ The source and the numerical solution is shown below.
   The source (left) for this problem is an isotropic Gaussian
   :math:`e^{-10(x^2+y^2)}`. Color and contour plot of the solution is
   shown in the right plot.
+
+A central difference operator is applied to the computed solution and
+is compared to the adjusted source. The results are shown below.
+
+.. figure:: s1-periodic-poisson_1d_CD_cmp.png
+  :width: 100%
+  :align: center
+
+  Central difference of the soultion (black line) compared to the
+  source (red dots) along the X-axis (left) and Y-axis (right).
   
 Test Problem 2
 --------------
@@ -85,6 +108,16 @@ The source and the numerical solution is shown below.
   The source (left) for this problem is an anisotropic Gaussian
   :math:`e^{-10(2x^2+4xy+5y^2)}`. Color and contour plot of the
   solution is shown in the right plot.
+
+A central difference operator is applied to the computed solution and
+is compared to the adjusted source. The results are shown below.
+
+.. figure:: s2-periodic-poisson_1d_CD_cmp.png
+  :width: 100%
+  :align: center
+
+  Central difference of the soultion (black line) compared to the
+  source (red dots) along the X-axis (left) and Y-axis (right).
   
 Test Problem 3
 --------------
@@ -114,3 +147,13 @@ numerical solution is shown below.
   The source (left) for this problem is the sum of two
   Gaussians. Color and contour plot of the solution is shown in the
   right plot.
+
+A central difference operator is applied to the computed solution and
+is compared to the adjusted source. The results are shown below.
+
+.. figure:: s3-periodic-poisson_1d_CD_cmp.png
+  :width: 100%
+  :align: center
+
+  Central difference of the soultion (black line) compared to the
+  source (red dots) along the X-axis (left) and Y-axis (right).
