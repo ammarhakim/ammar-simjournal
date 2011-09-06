@@ -89,6 +89,11 @@ is compared to the adjusted source. The results are shown below.
 
   Central difference of the soultion (black line) compared to the
   source (red dots) along the X-axis (left) and Y-axis (right).
+
+.. note::
+
+  This problem uses input files and plotting scripts in sims/s1
+  directory.
   
 Test Problem 2
 --------------
@@ -118,7 +123,13 @@ is compared to the adjusted source. The results are shown below.
   :align: center
 
   Central difference of the soultion (black line) compared to the
-  source (red dots) along the X-axis (left) and Y-axis (right).
+  source (red dots) along the X-axis (left) and Y-axis
+  (right).
+
+.. note::
+
+  This problem uses input files and plotting scripts in sims/s2
+  directory.
   
 Test Problem 3
 --------------
@@ -159,6 +170,11 @@ is compared to the adjusted source. The results are shown below.
   Central difference of the soultion (black line) compared to the
   source (red dots) along the X-axis (left) and Y-axis (right).
 
+.. note::
+
+  This problem uses input files and plotting scripts in sims/s3
+  directory.
+
 Test Problem 4
 --------------
 
@@ -182,3 +198,8 @@ is compared to the adjusted source. The results are shown below.
 
   Central difference of the soultion (black line) compared to the
   source (red dots) along the X-axis (left) and Y-axis (right).
+
+.. note::
+
+  This problem uses input files and plotting scripts in sims/s4
+  directory.
