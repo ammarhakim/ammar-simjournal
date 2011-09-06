@@ -62,8 +62,9 @@ Test Problem 1
 --------------
 
 The domain is assumed to be :math:`\Omega = [-L_x/2, L_x/2] \times
-[-L_y/2, L_y/2]` with :math:`L_x=L_y=2`. The source is an isotropic
-Gaussian source of the form
+[-L_y/2, L_y/2]` with :math:`L_x=L_y=2` and is discretized using
+:math:`128\times 128` cells. The source is an isotropic Gaussian source
+of the form
 
 .. math::
 
@@ -123,8 +124,8 @@ Test Problem 3
 --------------
 
 The domain is assumed to be :math:`\Omega = [0, L_x] \times [0, L_y]`
-with :math:`L_x=L_y=10`. The source is the sum of two Gaussians given
-by
+with :math:`L_x=L_y=10` and is discretized using :math:`128\times 128`
+cells. The source is the sum of two Gaussians given by
 
 .. math::
 
@@ -152,6 +153,30 @@ A central difference operator is applied to the computed solution and
 is compared to the adjusted source. The results are shown below.
 
 .. figure:: s3-periodic-poisson_1d_CD_cmp.png
+  :width: 100%
+  :align: center
+
+  Central difference of the soultion (black line) compared to the
+  source (red dots) along the X-axis (left) and Y-axis (right).
+
+Test Problem 4
+--------------
+
+This problem is the same as Test Problem 3 except it is discretized
+using :math:`128\times 64` cells. The solutions are shown below.
+
+.. figure:: s4-periodic-poisson_2d_src_sol.png
+  :width: 100%
+  :align: center
+
+  The source (left) for this problem is the sum of two
+  Gaussians. Color and contour plot of the solution is shown in the
+  right plot.
+
+A central difference operator is applied to the computed solution and
+is compared to the adjusted source. The results are shown below.
+
+.. figure:: s4-periodic-poisson_1d_CD_cmp.png
   :width: 100%
   :align: center
 
