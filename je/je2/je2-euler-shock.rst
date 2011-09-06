@@ -78,10 +78,18 @@ and is run to :math:`t=0.2`.
   (red) for density (top left), velocity (top right), pressure (bottom
   left) and internal energy (bottom right).
 
+.. figure:: s7-euler-shock-muscl_exact_cmp.png
+  :width: 100%
+  :align: center
+
+  Comparison of MUSCL-Hancock solution (black) with exact solution
+  (red) for density (top left), velocity (top right), pressure (bottom
+  left) and internal energy (bottom right).
+
 .. note::
 
-  This problem uses input files and plotting scripts in sims/s5 and
-  sims/s6 directories.
+  This problem uses input files and plotting scripts in sims/s5,
+  sims/s6 and sims/s7 directories.
 
 Woodward-Collela blast wave problem
 -----------------------------------
