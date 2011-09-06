@@ -50,3 +50,23 @@ poissonSlvr:setOut( {sol} )
 -- solve equation and write out solution
 poissonSlvr:advance(0.0) -- time does not matter
 sol:write("sol.h5")
+
+-- now compute central-difference of solution
+-- for central-difference of solution
+solCD = DataStruct.Field2D {
+   onGrid = grid,
+   numComponents = 1,
+   ghost = {2, 2},
+}
+
+-- create CD updater
+cdCalc = Updater.RectSecondOrderCentralDiff2D { onGrid = grid, }
+-- initialize updater
+cdCalc:initialize()
+-- set in/out arrays
+cdCalc:setIn( {sol} )
+cdCalc:setOut( {solCD} )
+
+-- compute
+cdCalc:advance(0.0) -- time does not matter
+solCD:write("solCD.h5")

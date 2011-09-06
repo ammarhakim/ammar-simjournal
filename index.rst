@@ -5,7 +5,7 @@ SimJournal: Ammar's Simulation Journal
 
 Computational science is often hampered by the inability to
 independently reproduce or verify published research. In fact, the
-problem is worse: often one can not even reproduce ones own results
+problem is worse: often we can not even reproduce our own results
 after a short period of time. A small step towards reproducibility is
 to maintain a "simulation journal". The journal entries should
 document a set of related simulations, providing enough detail to
