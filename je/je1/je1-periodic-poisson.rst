@@ -51,8 +51,8 @@ where overbars indicate 2D Fourier transforms and :math:`k_x` and
 by :math:`10^{-8}` to prevent divide-by-zero. The `FFTW
 <http://fftw.org/>`_ library is used to compute the transforms.
 
-The algorithm is implemented in the class
-`Lucee::PeriodicPoisson2DUpdater` class in the `proto` directory. 
+The algorithm is implemented in the class ``PeriodicPoisson2DUpdater``
+class in the ``proto`` directory.
 
 This updater is for use in testing finite-volume/finite-difference 2D
 incompressible flow algorithms. In this entry the stand-alone updater
