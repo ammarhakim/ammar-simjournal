@@ -36,7 +36,7 @@ Following is a list of simulation numbers with one-line descriptions.
   * - s13
     - Same as s11, except using the MUSCL-Hancock scheme.
   * - s14
-    - 1D Euler shock with a stationary contact discontinuity.
+    - 1D Euler shock with a stationary contact discontinuity. Wave-propagation scheme.
   * - s15
     - Exact solution to s14
   * - s16
