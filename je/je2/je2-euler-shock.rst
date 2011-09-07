@@ -147,8 +147,9 @@ Problem 3
 +++++++++
 
 The 1D Noh problem. Domain is :math:`x \in [0,1]`, discretized with
-100 cells. Gas adiabatic constant of 1.4 was used. Simulation is
-initialized with a shock at :math:`x=0.5`, with left and right states
+100 cells. Gas adiabatic constant of :math:`5/3` was used. Simulation
+is initialized with a shock at :math:`x=0.5`, with left and right
+states
 
 .. math::
 
@@ -193,6 +194,9 @@ and is run to :math:`t=1.0`.
   Comparison of wave-propagation solution (black) with exact solution
   (red) for density (top left), velocity (top right), pressure (bottom
   left) and internal energy (bottom right).
+
+The MUSCL-Hancock scheme **fails** on this problem. A positivity fix
+needs to be implemented.
 
 Woodward-Collela blast wave problem
 -----------------------------------

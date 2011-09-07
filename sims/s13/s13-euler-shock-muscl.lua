@@ -1,7 +1,7 @@
 -- Program to solve Euler equations
 
 -- gas adiabatic index
-gasGamma = 1.4
+gasGamma = 5/3
 
 -- computational domain
 grid = Grid.RectCart1D {
