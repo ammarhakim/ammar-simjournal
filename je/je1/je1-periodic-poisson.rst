@@ -66,8 +66,8 @@ Test Problem 1
 
 The domain is assumed to be :math:`\Omega = [-L_x/2, L_x/2] \times
 [-L_y/2, L_y/2]` with :math:`L_x=L_y=2` and is discretized using
-:math:`128\times 128` cells. The source is an isotropic Gaussian source
-of the form
+:math:`128\times 128` cells. The source is an isotropic Gaussian
+source of the form
 
 .. math::
 
@@ -79,7 +79,7 @@ The source and the numerical solution is shown below.
   :width: 100%
   :align: center
 
-  The source (left) for this problem is an isotropic Gaussian
+  The source (left) for this problem [s1] is an isotropic Gaussian
   :math:`e^{-10(x^2+y^2)}`. Color and contour plot of the solution is
   shown in the right plot.
 
@@ -90,14 +90,10 @@ is compared to the adjusted source. The results are shown below.
   :width: 100%
   :align: center
 
-  Central difference of the soultion (black line) compared to the
-  source (red dots) along the X-axis (left) and Y-axis (right).
+  Central difference of the solution (black line) compared to the
+  source (red dots) along the X-axis (left) and Y-axis
+  (right).
 
-.. note::
-
-  This problem uses input files and plotting scripts in sims/s1
-  directory.
-  
 Test Problem 2
 --------------
 
@@ -114,7 +110,7 @@ The source and the numerical solution is shown below.
   :width: 100%
   :align: center
 
-  The source (left) for this problem is an anisotropic Gaussian
+  The source (left) for this problem [s2] is an anisotropic Gaussian
   :math:`e^{-10(2x^2+4xy+5y^2)}`. Color and contour plot of the
   solution is shown in the right plot.
 
@@ -125,14 +121,10 @@ is compared to the adjusted source. The results are shown below.
   :width: 100%
   :align: center
 
-  Central difference of the soultion (black line) compared to the
+  Central difference of the solution (black line) compared to the
   source (red dots) along the X-axis (left) and Y-axis
-  (right).
+  (right). 
 
-.. note::
-
-  This problem uses input files and plotting scripts in sims/s2
-  directory.
   
 Test Problem 3
 --------------
@@ -159,7 +151,7 @@ numerical solution is shown below.
   :width: 100%
   :align: center
 
-  The source (left) for this problem is the sum of two
+  The source (left) for this problem [s3] is the sum of two
   Gaussians. Color and contour plot of the solution is shown in the
   right plot.
 
@@ -170,7 +162,7 @@ is compared to the adjusted source. The results are shown below.
   :width: 100%
   :align: center
 
-  Central difference of the soultion (black line) compared to the
+  Central difference of the solution (black line) compared to the
   source (red dots) along the X-axis (left) and Y-axis (right).
 
 .. note::
@@ -188,7 +180,7 @@ using :math:`128\times 64` cells. The solutions are shown below.
   :width: 100%
   :align: center
 
-  The source (left) for this problem is the sum of two
+  The source (left) for this problem [s4] is the sum of two
   Gaussians. Color and contour plot of the solution is shown in the
   right plot.
 
@@ -199,7 +191,7 @@ is compared to the adjusted source. The results are shown below.
   :width: 100%
   :align: center
 
-  Central difference of the soultion (black line) compared to the
+  Central difference of the solution (black line) compared to the
   source (red dots) along the X-axis (left) and Y-axis (right).
 
 .. note::
