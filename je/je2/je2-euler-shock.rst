@@ -1,4 +1,4 @@
-JE2: Benchmarking two finite-volume schemes for 1D Euler equations
+JE2: Benchmarking Two Finite-Volume Schemes for 1D Euler Equations
 ==================================================================
 
 :Author: Ammar Hakim
@@ -77,22 +77,17 @@ and is run to :math:`t=0.2`.
   :width: 100%
   :align: center
 
-  Comparison of wave-propagation solution (black) with exact solution
-  (red) for density (top left), velocity (top right), pressure (bottom
-  left) and internal energy (bottom right).
+  Comparison of wave-propagation solution (black) [s5] with exact
+  solution (red) [s6] for density (top left), velocity (top right),
+  pressure (bottom left) and internal energy (bottom right).
 
 .. figure:: s7-euler-shock-muscl_exact_cmp.png
   :width: 100%
   :align: center
 
-  Comparison of MUSCL-Hancock solution (black) with exact solution
-  (red) for density (top left), velocity (top right), pressure (bottom
-  left) and internal energy (bottom right).
-
-.. note::
-
-  This problem uses input files and plotting scripts in sims/s5,
-  sims/s6 and sims/s7 directories.
+  Comparison of MUSCL-Hancock solution (black) [s7] with exact
+  solution (red) [s6] for density (top left), velocity (top right),
+  pressure (bottom left) and internal energy (bottom right).
 
 Problem 2
 +++++++++
@@ -148,9 +143,9 @@ below.
   :width: 100%
   :align: center
 
-  Comparison of 1st-order MUSCL-Hancock solution (black) with exact
-  solution (red) for density (top left), velocity (top right),
-  pressure (bottom left) and internal energy (bottom right).
+  Comparison of 1st-order MUSCL-Hancock solution (black) [s10] with
+  exact solution (red) [s9] for density (top left), velocity (top
+  right), pressure (bottom left) and internal energy (bottom right).
 
 Problem 3
 +++++++++
@@ -200,9 +195,9 @@ and is run to :math:`t=1.0`.
   :width: 100%
   :align: center
 
-  Comparison of wave-propagation solution (black) with exact solution
-  (red) for density (top left), velocity (top right), pressure (bottom
-  left) and internal energy (bottom right).
+  Comparison of wave-propagation solution (black) [s11] with exact
+  solution (red) [s12] for density (top left), velocity (top right),
+  pressure (bottom left) and internal energy (bottom right).
 
 The MUSCL-Hancock scheme **fails** on this problem. A positivity fix
 needs to be implemented. However, the 1st-order MUSCL-Hancock scheme
@@ -212,9 +207,9 @@ works and results are shown below.
   :width: 100%
   :align: center
 
-  Comparison of 1st-order MUSCL-Hancock solution (black) with exact
-  solution (red) for density (top left), velocity (top right),
-  pressure (bottom left) and internal energy (bottom right).
+  Comparison of 1st-order MUSCL-Hancock solution (black) [s13] with
+  exact solution (red) [s12] for density (top left), velocity (top
+  right), pressure (bottom left) and internal energy (bottom right).
 
 Problem 4
 +++++++++
@@ -264,9 +259,9 @@ and is run to :math:`t=0.012`.
   :width: 100%
   :align: center
 
-  Comparison of wave-propagation solution (black) with exact solution
-  (red) for density (top left), velocity (top right), pressure (bottom
-  left) and internal energy (bottom right).
+  Comparison of wave-propagation solution (black) [s14] with exact
+  solution (red) [s15] for density (top left), velocity (top right),
+  pressure (bottom left) and internal energy (bottom right).
 
 The MUSCL-Hancock scheme **fails** on this problem. Results with the
 1st-order MUSCL-Hancock method is shown below.
@@ -275,9 +270,9 @@ The MUSCL-Hancock scheme **fails** on this problem. Results with the
   :width: 100%
   :align: center
 
-  Comparison of 1st-order MUSCL-Hancock solution (black) with exact
-  solution (red) for density (top left), velocity (top right),
-  pressure (bottom left) and internal energy (bottom right).
+  Comparison of 1st-order MUSCL-Hancock solution (black) [s16] with
+  exact solution (red) [s15] for density (top left), velocity (top
+  right), pressure (bottom left) and internal energy (bottom right).
 
 
 Woodward-Collela blast wave problem
