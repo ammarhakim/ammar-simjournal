@@ -31,7 +31,7 @@ qNewDup = qNew:duplicate()
 
 -- initial condition to apply
 function init(x,y,z)
-   xs = 0.3
+   xs = 0.5
    rhol, ul, pl = 1, -2, 0.4
    rhor, ur, pr = 1, 2, 0.4
    if (x<xs) then
@@ -111,7 +111,7 @@ while true do
       -- check if a nan occured
       if (qNew:hasNan()) then
 	 print (string.format("** Nan occured at %g! Writing out data just before nan", tCurr))
-	 q:write("q_pre_nan.txt")
+	 q:write("q_pre_nan.h5")
 	 break
       end
 

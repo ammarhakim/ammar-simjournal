@@ -1,0 +1,13 @@
+length = 1.0
+location = 0.8
+ncell = 100
+tEnd = 0.012
+gamma = 1.4
+
+dl = 1.0
+ul = -19.59745
+pl = 1000.0
+
+dr = 1.0
+ur = -19.59745
+pr = 0.01

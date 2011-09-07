@@ -111,7 +111,7 @@ while true do
       -- check if a nan occured
       if (qNew:hasNan()) then
 	 print (string.format("** Nan occured at %g! Writing out data just before nan", tCurr))
-	 q:write("q_pre_nan.txt")
+	 q:write("q_pre_nan.h5")
 	 break
       end
 

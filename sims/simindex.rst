@@ -1,8 +1,7 @@
 Simulation Index
 ================
 
-Following is a list of simulation numbers with a one-line description
-of each.
+Following is a list of simulation numbers with one-line descriptions.
 
 .. list-table::
   :header-rows: 1
@@ -25,7 +24,7 @@ of each.
   * - s7
     - Same as s5, except using the MUSCL-Hancock scheme.
   * - s8
-    - 1D Euler with low density/pressure region. Wave-propagation scheme.
+    - 1D Euler shock with low density/pressure region. Wave-propagation scheme.
   * - s9
     - Exact solution to s8.
   * - s10
@@ -36,3 +35,9 @@ of each.
     - Exact solution to s11.
   * - s13
     - Same as s11, except using the MUSCL-Hancock scheme.
+  * - s14
+    - 1D Euler shock with a stationary contact discontinuity.
+  * - s15
+    - Exact solution to s14
+  * - s16
+    - Same as s14, except using the MUSCL-Hancock scheme.
