@@ -141,16 +141,16 @@ and is run to :math:`t=0.15`.
 Both wave-propagation and MUSCL-Hancock **fail** on this problem. The
 solution quickly develops negative pressure and density. A positivity
 fix is required for both schemes (not implemented as of September 6
-2011). First order MUSCL-Hancock, however, works and resutls are shown
+2011). First-order MUSCL-Hancock, however, works and results are shown
 below.
 
 .. figure:: s10-euler-shock-muscl_exact_cmp.png
   :width: 100%
   :align: center
 
-  Comparison of MUSCL-Hancock solution (black) with exact solution
-  (red) for density (top left), velocity (top right), pressure (bottom
-  left) and internal energy (bottom right).
+  Comparison of 1st-order MUSCL-Hancock solution (black) with exact
+  solution (red) for density (top left), velocity (top right),
+  pressure (bottom left) and internal energy (bottom right).
 
 Problem 3
 +++++++++
@@ -205,7 +205,16 @@ and is run to :math:`t=1.0`.
   left) and internal energy (bottom right).
 
 The MUSCL-Hancock scheme **fails** on this problem. A positivity fix
-needs to be implemented.
+needs to be implemented. However, the 1st-order MUSCL-Hancock scheme
+works and results are shown below.
+
+.. figure:: s13-euler-shock-muscl_exact_cmp.png
+  :width: 100%
+  :align: center
+
+  Comparison of 1st-order MUSCL-Hancock solution (black) with exact
+  solution (red) for density (top left), velocity (top right),
+  pressure (bottom left) and internal energy (bottom right).
 
 Problem 4
 +++++++++
@@ -259,16 +268,16 @@ and is run to :math:`t=0.012`.
   (red) for density (top left), velocity (top right), pressure (bottom
   left) and internal energy (bottom right).
 
-The 2nd order MUSCL-Hancock scheme **fails** on this problem. Results
-with the 1st order method is shown below.
+The MUSCL-Hancock scheme **fails** on this problem. Results with the
+1st-order MUSCL-Hancock method is shown below.
 
 .. figure:: s16-euler-shock-muscl_exact_cmp.png
   :width: 100%
   :align: center
 
-  Comparison of MUSCL-Hancock solution (black) with exact solution
-  (red) for density (top left), velocity (top right), pressure (bottom
-  left) and internal energy (bottom right).
+  Comparison of 1st-order MUSCL-Hancock solution (black) with exact
+  solution (red) for density (top left), velocity (top right),
+  pressure (bottom left) and internal energy (bottom right).
 
 
 Woodward-Collela blast wave problem
