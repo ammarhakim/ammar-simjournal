@@ -19,6 +19,7 @@ refer to them while writing papers or making presentations.
 .. toctree::
   :maxdepth: 2
 
+  sims/simindex.rst
   je/je0/je0-repro-research.rst
   je/je1/je1-periodic-poisson.rst
   je/je2/je2-euler-shock.rst
