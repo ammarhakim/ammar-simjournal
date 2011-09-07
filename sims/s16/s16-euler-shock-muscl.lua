@@ -31,9 +31,9 @@ qNewDup = qNew:duplicate()
 
 -- initial condition to apply
 function init(x,y,z)
-   xs = 0.5
-   rhol, ul, pl = 1, -2, 0.4
-   rhor, ur, pr = 1, 2, 0.4
+   xs = 0.8
+   rhol, ul, pl = 1.0, -19.59745, 1000
+   rhor, ur, pr = 1.0, -19.59745, 0.01
    if (x<xs) then
       rho, u, press = rhol, ul, pl
    else
@@ -50,7 +50,7 @@ qNew:copy(q)
 q:write("q_0.h5")
 
 -- CFL number
-mycfl = 0.5
+mycfl = 0.45
 -- updater for Euler equations
 eulerSlvr = Updater.MusclHancock1D {
    onGrid = grid,
@@ -69,7 +69,7 @@ eulerSlvr:setOut( {qNew} )
 myDt = 100.0 -- initial time-step to use (this will be discarded and adjusted to CFL value)
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 0.15
+tEnd = 0.012
 
 tCurr = tStart
 step = 1

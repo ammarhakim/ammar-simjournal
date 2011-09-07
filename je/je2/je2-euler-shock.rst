@@ -99,7 +99,7 @@ Problem 2
 
 This problem has a near-vaccum near the location of the
 discontinuity. Domain is :math:`x \in [0,1]`, discretized with 100
-cells. Gas adiabatic constant of 1.4 was used. Simulation is
+cells. Gas adiabatic constant of 1.4 is used. Simulation is
 initialized with a shock at :math:`x=0.5`, with left and right states
 
 .. math::
@@ -141,13 +141,22 @@ and is run to :math:`t=0.15`.
 Both wave-propagation and MUSCL-Hancock **fail** on this problem. The
 solution quickly develops negative pressure and density. A positivity
 fix is required for both schemes (not implemented as of September 6
-2011).
+2011). First order MUSCL-Hancock, however, works and resutls are shown
+below.
+
+.. figure:: s10-euler-shock-muscl_exact_cmp.png
+  :width: 100%
+  :align: center
+
+  Comparison of MUSCL-Hancock solution (black) with exact solution
+  (red) for density (top left), velocity (top right), pressure (bottom
+  left) and internal energy (bottom right).
 
 Problem 3
 +++++++++
 
 The 1D Noh problem. Domain is :math:`x \in [0,1]`, discretized with
-100 cells. Gas adiabatic constant of :math:`5/3` was used. Simulation
+100 cells. Gas adiabatic constant of :math:`5/3` is used. Simulation
 is initialized with a shock at :math:`x=0.5`, with left and right
 states
 
@@ -197,6 +206,70 @@ and is run to :math:`t=1.0`.
 
 The MUSCL-Hancock scheme **fails** on this problem. A positivity fix
 needs to be implemented.
+
+Problem 4
++++++++++
+
+1D Euler shock with a stationary contact discontinuity at
+:math:`x=0.8`. Domain is :math:`x \in [0,1]`, discretized with 100
+cells. Gas adiabatic constant of :math:`1.4` is used. Simulation is
+initialized with a shock at :math:`x=0.8`, with left and right states
+
+.. math::
+
+  \left[
+    \begin{matrix}
+      \rho_l \\
+      u_l \\
+      p_l
+    \end{matrix}
+  \right]
+  = 
+  \left[
+    \begin{matrix}
+      1.0 \\
+      -19.59745 \\
+      1000
+    \end{matrix}
+  \right],
+  \qquad
+  \left[
+    \begin{matrix}
+      \rho_r \\
+      u_r \\
+      p_r
+    \end{matrix}
+  \right]
+  = 
+  \left[
+    \begin{matrix}
+      1.0 \\
+      -19.59745 \\
+      0.01
+    \end{matrix}
+  \right].
+
+and is run to :math:`t=0.012`.
+
+.. figure:: s14-euler-shock-wave_exact_cmp.png
+  :width: 100%
+  :align: center
+
+  Comparison of wave-propagation solution (black) with exact solution
+  (red) for density (top left), velocity (top right), pressure (bottom
+  left) and internal energy (bottom right).
+
+The 2nd order MUSCL-Hancock scheme **fails** on this problem. Results
+with the 1st order method is shown below.
+
+.. figure:: s16-euler-shock-muscl_exact_cmp.png
+  :width: 100%
+  :align: center
+
+  Comparison of MUSCL-Hancock solution (black) with exact solution
+  (red) for density (top left), velocity (top right), pressure (bottom
+  left) and internal energy (bottom right).
+
 
 Woodward-Collela blast wave problem
 -----------------------------------
