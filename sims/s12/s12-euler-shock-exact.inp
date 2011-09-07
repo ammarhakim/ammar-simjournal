@@ -2,7 +2,7 @@ length = 1.0
 location = 0.5
 ncell = 100
 tEnd = 1.0
-gamma = 1.4
+gamma = 1.66666666666666667
 
 dl = 1.0
 ul = 1.0
