@@ -94,6 +94,106 @@ and is run to :math:`t=0.2`.
   This problem uses input files and plotting scripts in sims/s5,
   sims/s6 and sims/s7 directories.
 
+Problem 2
++++++++++
+
+This problem has a near-vaccum near the location of the
+discontinuity. Domain is :math:`x \in [0,1]`, discretized with 100
+cells. Gas adiabatic constant of 1.4 was used. Simulation is
+initialized with a shock at :math:`x=0.5`, with left and right states
+
+.. math::
+
+  \left[
+    \begin{matrix}
+      \rho_l \\
+      u_l \\
+      p_l
+    \end{matrix}
+  \right]
+  = 
+  \left[
+    \begin{matrix}
+      1.0 \\
+      -2.0 \\
+      0.4
+    \end{matrix}
+  \right],
+  \qquad
+  \left[
+    \begin{matrix}
+      \rho_r \\
+      u_r \\
+      p_r
+    \end{matrix}
+  \right]
+  = 
+  \left[
+    \begin{matrix}
+      1.0 \\
+      2.0 \\
+      0.4
+    \end{matrix}
+  \right].
+
+and is run to :math:`t=0.15`.
+
+Both wave-propagation and MUSCL-Hancock **fail** on this problem. The
+solution quickly develops negative pressure and density. A positivity
+fix is required for both schemes (not implemented as of September 6
+2011).
+
+Problem 3
++++++++++
+
+The 1D Noh problem. Domain is :math:`x \in [0,1]`, discretized with
+100 cells. Gas adiabatic constant of 1.4 was used. Simulation is
+initialized with a shock at :math:`x=0.5`, with left and right states
+
+.. math::
+
+  \left[
+    \begin{matrix}
+      \rho_l \\
+      u_l \\
+      p_l
+    \end{matrix}
+  \right]
+  = 
+  \left[
+    \begin{matrix}
+      1.0 \\
+      1.0 \\
+      10^{-6}
+    \end{matrix}
+  \right],
+  \qquad
+  \left[
+    \begin{matrix}
+      \rho_r \\
+      u_r \\
+      p_r
+    \end{matrix}
+  \right]
+  = 
+  \left[
+    \begin{matrix}
+      1.0 \\
+      -1.0 \\
+      10^{-6}
+    \end{matrix}
+  \right].
+
+and is run to :math:`t=1.0`.
+
+.. figure:: s11-euler-shock-wave_exact_cmp.png
+  :width: 100%
+  :align: center
+
+  Comparison of wave-propagation solution (black) with exact solution
+  (red) for density (top left), velocity (top right), pressure (bottom
+  left) and internal energy (bottom right).
+
 Woodward-Collela blast wave problem
 -----------------------------------
 
