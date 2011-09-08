@@ -447,26 +447,53 @@ shock at :math:`x=0.5`, with left and right states
 
 and is run to :math:`t=2.0`.
 
-.. figure:: s20-euler-shock-wave_exact_cmp.png
+.. figure:: s23-euler-shock-wave_exact_cmp.png
   :width: 100%
   :align: center
 
-  Comparison of wave-propagation solution (black) [s20] with exact
-  solution (red) [s21] for density (top left), velocity (top right),
+  Comparison of wave-propagation solution (black) [s23] with exact
+  solution (red) [s24] for density (top left), velocity (top right),
   pressure (bottom left) and internal energy (bottom right).
 
-.. figure:: s22-euler-shock-muscl_exact_cmp.png
+.. figure:: s25-euler-shock-muscl_exact_cmp.png
   :width: 100%
   :align: center
 
-  Comparison of MUSCL-Hancock solution (black) [s22] with exact
-  solution (red) [s21] for density (top left), velocity (top right),
-  pressure (bottom left) and internal energy (bottom right).
+  Comparison of MUSCL-Hancock solution (black) [s25] with exact
+  solution (red) [s24] for density (top left), velocity (top right),
+  pressure (bottom left) and internal energy (bottom right). The
+  oscillations in the velocity and pressure appear exaggerated by the
+  plot scale but are actually very small.
 
 Woodward-Collela blast wave problem
 -----------------------------------
 
 XXX
+
+Conclusions
+-----------
+
+One of the aims of this note was to determine what modifications are
+needed to the wave-propagation scheme and the MUSCL-Hancock scheme to
+make them more robust and accurate. Note that the MUSCL-Hancock scheme
+tested here is only a prototype version and the tests in conducted in
+this entry will allow a better production quality solver.
+
+The lessons learned are:
+
+- The wave-propagation scheme needs a positivity fix. For this, a
+  density and pressure floor should be added. More importantly, if the
+  Roe averages lead to a NaN or negative pressure, the Roe fluxes
+  should be replaced (automatically) with a diffusive, but positivity
+  preserving, Rusanov (Lax) flux.
+
+- The MUSCL-Hancock scheme needs a positivity fix also: essentially,
+  if the predicted edge values are negative the slope in the cell
+  should be simply set to zero.
+
+- More accurate (than Rusanov flux) numerical flux needs to be
+  implemented. An HLLC flux will help reduce the diffusion as compared
+  to the wave-propagation scheme.
 
 References
 ----------
