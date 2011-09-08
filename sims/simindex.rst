@@ -47,3 +47,15 @@ Following is a list of simulation numbers with one-line descriptions.
     - Exact solution to s17
   * - s19
     - Same as s17, except using the MUSCL-Hancock scheme.
+  * - s20
+    - 1D Euler with stationary contact discontinuity. Wave-propagation scheme.
+  * - s21
+    - Exact solution to s20
+  * - s22
+    - Same as s20, except using the MUSCL-Hancock scheme.
+  * - s23
+    - 1D Euler with slowly moving contact discontinuity. Wave-propagation scheme.
+  * - s24
+    - Exact solution to s23
+  * - s25
+    - Same as s23, except using the MUSCL-Hancock scheme.

@@ -4,6 +4,8 @@ JE2: Benchmarking Two Finite-Volume Schemes for 1D Euler Equations
 :Author: Ammar Hakim
 :Date: September 6th 2011
 
+.. contents::
+
 Overview of problems and schemes
 --------------------------------
 
@@ -20,6 +22,12 @@ in the `proto` directory. Note that as this point the MUSCL-Hancock
 scheme is *not* production quality but is hard-coded to solve just the
 1D Euler equations. The code to compute the exact solution is located
 in the ``sims/code/exactrp`` directory.
+
+The problems solved in this entry are quite difficult and really tax
+the ability of schemes to capture discontinuities accurately. In
+particular, schemes have a lot of trouble in problems in which vacuum
+states can form or exist in parts of the domain. Also, ensuring
+positivity of density and pressure is a difficult problem.
 
 Shock-tube problems
 -------------------
@@ -333,6 +341,126 @@ and is run to :math:`t=0.035`.
 
   Comparison of MUSCL-Hancock solution (black) [s19] with exact
   solution (red) [s18] for density (top left), velocity (top right),
+  pressure (bottom left) and internal energy (bottom right).
+
+Problem 6
++++++++++
+
+1D Euler with a stationary contact discontinuity. Domain is :math:`x
+\in [0,1]`, discretized with 100 cells. Gas adiabatic constant of
+:math:`1.4` is used. Simulation is initialized with a shock at
+:math:`x=0.5`, with left and right states
+
+.. math::
+
+  \left[
+    \begin{matrix}
+      \rho_l \\
+      u_l \\
+      p_l
+    \end{matrix}
+  \right]
+  = 
+  \left[
+    \begin{matrix}
+      1.4 \\
+      0.0 \\
+      1.0
+    \end{matrix}
+  \right],
+  \qquad
+  \left[
+    \begin{matrix}
+      \rho_r \\
+      u_r \\
+      p_r
+    \end{matrix}
+  \right]
+  = 
+  \left[
+    \begin{matrix}
+      1.0 \\
+      0.0 \\
+      1.0
+    \end{matrix}
+  \right].
+
+and is run to :math:`t=2.0`.
+
+.. figure:: s20-euler-shock-wave_exact_cmp.png
+  :width: 100%
+  :align: center
+
+  Comparison of wave-propagation solution (black) [s20] with exact
+  solution (red) [s21] for density (top left), velocity (top right),
+  pressure (bottom left) and internal energy (bottom right).
+
+.. figure:: s22-euler-shock-muscl_exact_cmp.png
+  :width: 100%
+  :align: center
+
+  Comparison of MUSCL-Hancock solution (black) [s22] with exact
+  solution (red) [s21] for density (top left), velocity (top right),
+  pressure (bottom left) and internal energy (bottom right).
+
+Problem 7
++++++++++
+
+1D Euler with a slowly moving contact discontinuity. Domain is
+:math:`x \in [0,1]`, discretized with 100 cells. Gas adiabatic
+constant of :math:`1.4` is used. Simulation is initialized with a
+shock at :math:`x=0.5`, with left and right states
+
+.. math::
+
+  \left[
+    \begin{matrix}
+      \rho_l \\
+      u_l \\
+      p_l
+    \end{matrix}
+  \right]
+  = 
+  \left[
+    \begin{matrix}
+      1.4 \\
+      0.1 \\
+      1.0
+    \end{matrix}
+  \right],
+  \qquad
+  \left[
+    \begin{matrix}
+      \rho_r \\
+      u_r \\
+      p_r
+    \end{matrix}
+  \right]
+  = 
+  \left[
+    \begin{matrix}
+      1.0 \\
+      0.1 \\
+      1.0
+    \end{matrix}
+  \right].
+
+and is run to :math:`t=2.0`.
+
+.. figure:: s20-euler-shock-wave_exact_cmp.png
+  :width: 100%
+  :align: center
+
+  Comparison of wave-propagation solution (black) [s20] with exact
+  solution (red) [s21] for density (top left), velocity (top right),
+  pressure (bottom left) and internal energy (bottom right).
+
+.. figure:: s22-euler-shock-muscl_exact_cmp.png
+  :width: 100%
+  :align: center
+
+  Comparison of MUSCL-Hancock solution (black) [s22] with exact
+  solution (red) [s21] for density (top left), velocity (top right),
   pressure (bottom left) and internal energy (bottom right).
 
 Woodward-Collela blast wave problem
