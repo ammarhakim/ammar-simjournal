@@ -41,3 +41,9 @@ Following is a list of simulation numbers with one-line descriptions.
     - Exact solution to s14
   * - s16
     - Same as s14, except using the MUSCL-Hancock scheme.
+  * - s17
+    - 1D Euler shock with two strong shocks. Wave-propagation scheme.
+  * - s18
+    - Exact solution to s17
+  * - s19
+    - Same as s17, except using the MUSCL-Hancock scheme.

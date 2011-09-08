@@ -145,7 +145,8 @@ below.
 
   Comparison of 1st-order MUSCL-Hancock solution (black) [s10] with
   exact solution (red) [s9] for density (top left), velocity (top
-  right), pressure (bottom left) and internal energy (bottom right).
+  right), pressure (bottom left) and internal energy (bottom
+  right).
 
 Problem 3
 +++++++++
@@ -274,6 +275,65 @@ The MUSCL-Hancock scheme **fails** on this problem. Results with the
   exact solution (red) [s15] for density (top left), velocity (top
   right), pressure (bottom left) and internal energy (bottom right).
 
+Problem 5
++++++++++
+
+1D Euler shock with two strong shocks. Domain is :math:`x \in [0,1]`,
+discretized with 100 cells. Gas adiabatic constant of :math:`1.4` is
+used. Simulation is initialized with a shock at :math:`x=0.4`, with
+left and right states
+
+.. math::
+
+  \left[
+    \begin{matrix}
+      \rho_l \\
+      u_l \\
+      p_l
+    \end{matrix}
+  \right]
+  = 
+  \left[
+    \begin{matrix}
+      5.99924 \\
+      19.5975 \\
+      460.894
+    \end{matrix}
+  \right],
+  \qquad
+  \left[
+    \begin{matrix}
+      \rho_r \\
+      u_r \\
+      p_r
+    \end{matrix}
+  \right]
+  = 
+  \left[
+    \begin{matrix}
+      5.99242 \\
+      -6.19633 \\
+      46.0895
+    \end{matrix}
+  \right].
+
+and is run to :math:`t=0.035`.
+
+.. figure:: s17-euler-shock-wave_exact_cmp.png
+  :width: 100%
+  :align: center
+
+  Comparison of wave-propagation solution (black) [s17] with exact
+  solution (red) [s18] for density (top left), velocity (top right),
+  pressure (bottom left) and internal energy (bottom right).
+
+.. figure:: s19-euler-shock-muscl_exact_cmp.png
+  :width: 100%
+  :align: center
+
+  Comparison of MUSCL-Hancock solution (black) [s19] with exact
+  solution (red) [s18] for density (top left), velocity (top right),
+  pressure (bottom left) and internal energy (bottom right).
 
 Woodward-Collela blast wave problem
 -----------------------------------
