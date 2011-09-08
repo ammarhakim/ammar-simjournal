@@ -165,10 +165,6 @@ is compared to the adjusted source. The results are shown below.
   Central difference of the solution (black line) compared to the
   source (red dots) along the X-axis (left) and Y-axis (right).
 
-.. note::
-
-  This problem uses input files and plotting scripts in sims/s3
-  directory.
 
 Test Problem 4
 --------------
@@ -193,8 +189,3 @@ is compared to the adjusted source. The results are shown below.
 
   Central difference of the solution (black line) compared to the
   source (red dots) along the X-axis (left) and Y-axis (right).
-
-.. note::
-
-  This problem uses input files and plotting scripts in sims/s4
-  directory.
