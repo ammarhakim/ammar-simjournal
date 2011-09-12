@@ -6,8 +6,8 @@ gasGamma = 1.4
 -- computational domain
 grid = Grid.RectCart1D {
    lower = {0.0},
-   upper = {1.0},
-   cells = {100},
+   upper = {0.5},
+   cells = {800},
 }
 
 -- solution
@@ -31,9 +31,9 @@ qNewDup = qNew:duplicate()
 
 -- initial condition to apply
 function init(x,y,z)
-   xs = 0.5
-   rhol, ul, pl = 1.4, 0.1, 1.0
-   rhor, ur, pr = 1.0, 0.1, 1.0
+   xs = 0.4
+   rhol, ul, pl = 0.1261192, 8.9047029, 782.92899
+   rhor, ur, pr = 6.591493, 2.2654207, 3.1544874
    if (x<xs) then
       rho, u, press = rhol, ul, pl
    else
@@ -57,7 +57,7 @@ eulerSlvr = Updater.MusclHancock1D {
    gas_gamma = gasGamma,
    cfl = mycfl,
    -- one of: average, minmod, superbee, zero, epsilon
-   limiter = "epsilon",
+   limiter = "zero",
 }
 
 -- initialize updater
@@ -69,7 +69,7 @@ eulerSlvr:setOut( {qNew} )
 myDt = 100.0 -- initial time-step to use (this will be discarded and adjusted to CFL value)
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 2.0
+tEnd = 0.0039
 
 tCurr = tStart
 step = 1
