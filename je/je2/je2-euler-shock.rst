@@ -465,6 +465,70 @@ and is run to :math:`t=2.0`.
   oscillations in the velocity and pressure appear exaggerated by the
   plot scale but are actually very small.
 
+Problem 8
++++++++++
+
+1D Euler with a sharp peak in density. Domain is :math:`x \in
+[0.0,0.5]`, discretized with 800 cells. Gas adiabatic constant of
+:math:`1.4` is used. Simulation is initialized with a shock at
+:math:`x=0.4`, with left and right states
+
+.. math::
+
+  \left[
+    \begin{matrix}
+      \rho_l \\
+      u_l \\
+      p_l
+    \end{matrix}
+  \right]
+  = 
+  \left[
+    \begin{matrix}
+      0.1261192 \\
+      8.9047029 \\
+      782.92899
+    \end{matrix}
+  \right],
+  \qquad
+  \left[
+    \begin{matrix}
+      \rho_r \\
+      u_r \\
+      p_r
+    \end{matrix}
+  \right]
+  = 
+  \left[
+    \begin{matrix}
+      6.591493 \\
+      2.2654207 \\
+      3.1544874
+    \end{matrix}
+  \right].
+
+and is run to :math:`t=0.0039`.
+
+.. figure:: s26-euler-shock-wave_exact_cmp.png
+  :width: 100%
+  :align: center
+
+  Comparison of wave-propagation solution (black) [s26] with exact
+  solution (red) [s27] for density (top left), velocity (top right),
+  pressure (bottom left) and internal energy (bottom right).
+
+The MUSCL-Hancock scheme **fails** on this problem. Results with the
+1st-order MUSCL-Hancock method is shown below.
+
+.. figure:: s28-euler-shock-muscl_exact_cmp.png
+  :width: 100%
+  :align: center
+
+  Comparison of 1st-order MUSCL-Hancock solution (black) [s28] with
+  exact solution (red) [s27] for density (top left), velocity (top
+  right), pressure (bottom left) and internal energy (bottom right).
+
+
 Woodward-Collela blast wave problem
 -----------------------------------
 
@@ -476,8 +540,9 @@ Conclusions
 One of the aims of this note was to determine what modifications are
 needed to the wave-propagation scheme and the MUSCL-Hancock scheme to
 make them more robust and accurate. Note that the MUSCL-Hancock scheme
-tested here is only a prototype version and the tests in conducted in
-this entry will allow a better production quality solver.
+tested here is only a prototype version and fails on a number of
+problems. The tests in conducted in this entry will allow a better
+production quality solver to be developed.
 
 The lessons learned are:
 
@@ -489,7 +554,9 @@ The lessons learned are:
 
 - The MUSCL-Hancock scheme needs a positivity fix also: essentially,
   if the predicted edge values are negative the slope in the cell
-  should be simply set to zero.
+  should be simply set to zero. This is the main reason why the 2nd
+  order MUSCL-Hancock scheme fails as the predicted edge values do not
+  preserve positivity.
 
 - More accurate (than Rusanov flux) numerical flux needs to be
   implemented. An HLLC flux will help reduce the diffusion as compared

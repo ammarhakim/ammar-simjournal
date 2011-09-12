@@ -6,23 +6,23 @@ gasGamma = 1.4
 -- computational domain
 grid = Grid.RectCart1D {
    lower = {0.0},
-   upper = {1.0},
-   cells = {100},
+   upper = {0.5},
+   cells = {800},
 }
 
 -- solution
 q = DataStruct.Field1D {
    onGrid = grid,
-   -- [rho, rho*u, Er]
-   numComponents = 3,
+   -- [rho, rho*u, rho*v, rho*w, Er]
+   numComponents = 5,
    ghost = {2, 2},
 }
 
 -- updated solution
 qNew = DataStruct.Field1D {
    onGrid = grid,
-   -- [rho, rho*u, Er]
-   numComponents = 3,
+   -- [rho, rho*u, rho*v, rho*w, Er]
+   numComponents = 5,
    ghost = {2, 2},
 }
 
@@ -31,15 +31,15 @@ qNewDup = qNew:duplicate()
 
 -- initial condition to apply
 function init(x,y,z)
-   xs = 0.5
-   rhol, ul, pl = 1.4, 0.1, 1.0
-   rhor, ur, pr = 1.0, 0.1, 1.0
+   xs = 0.4
+   rhol, ul, pl = 0.1261192, 8.9047029, 782.92899
+   rhor, ur, pr = 6.591493, 2.2654207, 3.1544874
    if (x<xs) then
       rho, u, press = rhol, ul, pl
    else
       rho, u, press = rhor, ur, pr
    end
-   return rho, rho*u, press/(gasGamma-1) + 0.5*rho*u*u
+   return rho, rho*u, 0.0, 0.0, press/(gasGamma-1) + 0.5*rho*u*u
 end
 
 -- apply initial conditions
@@ -49,15 +49,22 @@ qNew:copy(q)
 -- write initial conditions
 q:write("q_0.h5")
 
+-- define equation to solve
+eulerEqn = HyperEquation.Euler {
+   -- gas adiabatic constant
+   gasGamma = gasGamma,
+}
+
 -- CFL number
-mycfl = 0.45
+mycfl = 0.9
 -- updater for Euler equations
-eulerSlvr = Updater.MusclHancock1D {
+eulerSlvr = Updater.WavePropagation1D {
    onGrid = grid,
-   gas_gamma = gasGamma,
+   equation = eulerEqn,
+   -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
+   limiter = "monotonized-centered",
    cfl = mycfl,
-   -- one of: average, minmod, superbee, zero, epsilon
-   limiter = "epsilon",
+   cflm = 1.01*mycfl,
 }
 
 -- initialize updater
@@ -69,7 +76,7 @@ eulerSlvr:setOut( {qNew} )
 myDt = 100.0 -- initial time-step to use (this will be discarded and adjusted to CFL value)
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 2.0
+tEnd = 0.0039
 
 tCurr = tStart
 step = 1
@@ -122,3 +129,15 @@ end
 
 -- write final solution
 q:write("q_1.h5")
+
+-- compute primitive quantities from solution
+prim = DataStruct.Field1D {
+   onGrid = grid,
+   -- [rho, u, v, w, pr]
+   numComponents = 5,
+   ghost = {2, 2},
+}
+eulerEqn:primitive(q, prim)
+
+-- write out solutioni in primitive form
+prim:write("prim_1.h5")
