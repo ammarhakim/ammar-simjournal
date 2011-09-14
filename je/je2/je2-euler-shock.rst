@@ -1,8 +1,8 @@
-JE2: Benchmarking Two Finite-Volume Schemes for 1D Euler Equations
-==================================================================
-
 :Author: Ammar Hakim
 :Date: September 6th 2011
+
+JE2: Benchmarking Two Finite-Volume Schemes for 1D Euler Equations
+==================================================================
 
 .. contents::
 
@@ -532,7 +532,35 @@ The MUSCL-Hancock scheme **fails** on this problem. Results with the
 Woodward-Collela blast wave problem
 -----------------------------------
 
-XXX
+The Woodward-Collela blast wave problem consists of two shocks
+interacting due to reflections off solid walls. The domain is :math:`x
+\in [0,1]`, discretized with 400 cells with wall boundary conditions
+at both ends. Simulation is initialized with two discontinuities,
+first at :math:`x_1 = 0.1` and the other at :math:`x_2=0.9`. The
+density and velocity is set everywhere to :math:`1.0` and :math:`0.0`
+respectively. The pressure in the three regions, left :math:`p_l`,
+middle :math:`p_m`, and right :math:`p_r` are :math:`(p_l,p_m,p_r) =
+(1000,0.01,100)`. The simulation is run to :math:`t=0.038`.
+
+In the following, the "exact" solution is computed using
+wave-propagation method using 2000 cells.
+
+.. figure:: s29-euler-blastwave-wave_exact_cmp.png
+  :width: 100%
+  :align: center
+
+  Comparison of wave-propagation solution (black) [s29] with "exact"
+  solution (red) [s30] for density (top left), velocity (top right),
+  pressure (bottom left) and internal energy (bottom right).
+
+.. figure:: s31-euler-blastwave-muscl_exact_cmp.png
+  :width: 100%
+  :align: center
+
+  Comparison of MUSCL-Hancock solution (black) [s31] with "exact"
+  solution (red) [s30] for density (top left), velocity (top right),
+  pressure (bottom left) and internal energy (bottom right).
+
 
 Conclusions
 -----------

@@ -1,8 +1,8 @@
-JE0: On Reproducible Research
-=============================
-
 :Author: Ammar Hakim
 :Date: September 1st 2011
+
+JE0: On Reproducible Research
+=============================
 
 .. epigraph::
 
