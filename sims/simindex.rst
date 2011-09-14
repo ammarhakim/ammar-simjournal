@@ -59,3 +59,15 @@ Following is a list of simulation numbers with one-line descriptions.
     - Exact solution to s23
   * - s25
     - Same as s23, except using the MUSCL-Hancock scheme.
+  * - s26
+    - 1D Euler with sharp spike in density. Wave-propagation scheme.
+  * - s27
+    - Exact solution to s26
+  * - s28
+    - Same as s26, except using the MUSCL-Hancock scheme.
+  * - s29
+    - 1D Euler Woodward-Collela blast wave problem. Wave-propagation scheme.
+  * - s30
+    - Same as s29 run with higher-resolution to serve as an "exact" solution.
+  * - s31
+    - Same as s29, except using the MUSCL-Hancock scheme.
