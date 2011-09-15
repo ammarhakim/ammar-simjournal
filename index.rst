@@ -29,7 +29,7 @@ means of generating pretty, but irreproducible, pictures.
 .. toctree::
   :maxdepth: 2
 
-  simindex.rst
+  sims/simindex.rst
   je/je0/je0-repro-research.rst
   je/je1/je1-periodic-poisson.rst
   je/je2/je2-euler-shock.rst
