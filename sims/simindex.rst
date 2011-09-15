@@ -15,63 +15,63 @@ Following is a list of simulation numbers with one-line descriptions.
     - Description
   * - :doc:`s1 <s1/s1-periodic-poisson>` 
     - Poisson solve on a 2D periodic grid, with Gaussian source
-  * - s2
+  * - :doc:`s2 <s2/s2-periodic-poisson>` 
     - Poisson solve on a 2D periodic grid, with anisotropic Gaussian source
-  * - s3
+  * - :doc:`s3 <s3/s3-periodic-poisson>` 
     - Poisson solve on a 2D periodic grid, with source a sum of two Gaussians
-  * - s4
+  * - :doc:`s4 <s4/s4-periodic-poisson>` 
     - Same as s3, but with different grid spacing in X and Y.
-  * - s5
+  * - :doc:`s5 <s5/s5-euler-shock-wave>` 
     - 1D Euler Sod-shock with sonic point in rarefaction. Wave-propagation algorithm.
-  * - s6
+  * - :doc:`s6 <>` 
     - Exact solution to s5.
-  * - s7
+  * - :doc:`s7 <s7/s7-euler-shock-muscl>` 
     - Same as s5, except using the MUSCL-Hancock scheme.
-  * - s8
+  * - :doc:`s8 <s8/s8-euler-shock-wave>` 
     - 1D Euler shock with low density/pressure region. Wave-propagation scheme.
-  * - s9
+  * - :doc:`s9 <>` 
     - Exact solution to s8.
-  * - s10
+  * - :doc:`s10 <s10/s10-euler-shock-muscl>` 
     - Same as s8, except using the MUSCL-Hancock scheme.
-  * - s11
+  * - :doc:`s11 <s11/s11-euler-shock-wave>` 
     - 1D Noh problem. Wave-propagation algorithm.
-  * - s12
+  * - :doc:`s12 <>` 
     - Exact solution to s11.
-  * - s13
+  * - :doc:`s13 <s13/s13-euler-shock-muscl>` 
     - Same as s11, except using the MUSCL-Hancock scheme.
-  * - s14
+  * - :doc:`s14 <s14/s14-euler-shock-wave>` 
     - 1D Euler shock with a stationary contact discontinuity. Wave-propagation scheme.
-  * - s15
+  * - :doc:`s15 <>` 
     - Exact solution to s14
-  * - s16
+  * - :doc:`s16 <s16/s16-euler-shock-muscl>` 
     - Same as s14, except using the MUSCL-Hancock scheme.
-  * - s17
+  * - :doc:`s17 <s17/s17-euler-shock-wave>` 
     - 1D Euler shock with two strong shocks. Wave-propagation scheme.
-  * - s18
+  * - :doc:`s18 <>` 
     - Exact solution to s17
-  * - s19
+  * - :doc:`s19 <s19/s19-euler-shock-muscl>` 
     - Same as s17, except using the MUSCL-Hancock scheme.
-  * - s20
+  * - :doc:`s20 <s20/s20-euler-shock-wave>` 
     - 1D Euler with stationary contact discontinuity. Wave-propagation scheme.
-  * - s21
+  * - :doc:`s21 <>` 
     - Exact solution to s20
-  * - s22
+  * - :doc:`s22 <s22/s22-euler-shock-muscl>` 
     - Same as s20, except using the MUSCL-Hancock scheme.
-  * - s23
+  * - :doc:`s23 <s23/s23-euler-shock-wave>` 
     - 1D Euler with slowly moving contact discontinuity. Wave-propagation scheme.
-  * - s24
+  * - :doc:`s24 <>` 
     - Exact solution to s23
-  * - s25
+  * - :doc:`s25 <s25/s25-euler-shock-muscl>` 
     - Same as s23, except using the MUSCL-Hancock scheme.
-  * - s26
+  * - :doc:`s26 <s26/s26-euler-shock-wave>` 
     - 1D Euler with sharp spike in density. Wave-propagation scheme.
-  * - s27
+  * - :doc:`s27 <>` 
     - Exact solution to s26
-  * - s28
+  * - :doc:`s28 <s28/s28-euler-shock-muscl>` 
     - Same as s26, except using the MUSCL-Hancock scheme.
-  * - s29
+  * - :doc:`s29 <s29/s29-euler-blastwave-wave>` 
     - 1D Euler Woodward-Collela blast wave problem. Wave-propagation scheme.
-  * - s30
+  * - :doc:`s30 <s30/s30-euler-blastwave-wave>` 
     - Same as s29 run with higher-resolution to serve as an "exact" solution.
-  * - s31
+  * - :doc:`s31 <s31/s31-euler-blastwave-muscl>` 
     - Same as s29, except using the MUSCL-Hancock scheme.

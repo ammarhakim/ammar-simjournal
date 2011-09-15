@@ -16,9 +16,8 @@ def main():
     # contruct name
     outName = luaFile[:-3] + "rst"
     fh = open(outName, "w")
-    fh.writelines(".. literalinclude:: %s\n" % luaFile)
+    fh.writelines(".. literalinclude:: %s\n" % luaFile[luaFile.find("/")+1:])
     fh.writelines("  :language: lua\n")
-    fh.writelines("  :linenos:\n")
 
     fh.close()
 
