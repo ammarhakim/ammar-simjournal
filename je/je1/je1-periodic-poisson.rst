@@ -79,7 +79,8 @@ The source and the numerical solution is shown below.
   :width: 100%
   :align: center
 
-  The source (left) for this problem [s1] is an isotropic Gaussian
+  The source (left) for this problem [:doc:`s1
+  <../../sims/s1/s1-periodic-poisson>`] is an isotropic Gaussian
   :math:`e^{-10(x^2+y^2)}`. Color and contour plot of the solution is
   shown in the right plot.
 
@@ -110,7 +111,8 @@ The source and the numerical solution is shown below.
   :width: 100%
   :align: center
 
-  The source (left) for this problem [s2] is an anisotropic Gaussian
+  The source (left) for this problem [:doc:`s2
+  <../../sims/s2/s2-periodic-poisson>`] is an anisotropic Gaussian
   :math:`e^{-10(2x^2+4xy+5y^2)}`. Color and contour plot of the
   solution is shown in the right plot.
 
@@ -151,7 +153,8 @@ numerical solution is shown below.
   :width: 100%
   :align: center
 
-  The source (left) for this problem [s3] is the sum of two
+  The source (left) for this problem [:doc:`s3
+  <../../sims/s3/s3-periodic-poisson>`] is the sum of two
   Gaussians. Color and contour plot of the solution is shown in the
   right plot.
 
@@ -176,7 +179,8 @@ using :math:`128\times 64` cells. The solutions are shown below.
   :width: 100%
   :align: center
 
-  The source (left) for this problem [s4] is the sum of two
+  The source (left) for this problem [:doc:`s4
+  <../../sims/s4/s4-periodic-poisson>`] is the sum of two
   Gaussians. Color and contour plot of the solution is shown in the
   right plot.
 

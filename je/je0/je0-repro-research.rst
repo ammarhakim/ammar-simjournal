@@ -24,7 +24,10 @@ slows down the process of scientific discovery.
 Maintaining a simulation journal, analogous to a laboratory notebook,
 may promote reproducibility. A simulation journal can contain more
 details than a published paper, provide annotated input files and code
-needed to produce tables, figures and results of the calculation.
+needed to produce tables, figures and results of the calculation. The
+journal will be most useful to the researcher who did the original
+simulations or close colleagues and those wanting to use the
+algorithms and results in their own research.
 
 What this means in practice is that for all computations we need to
 store the following information.

@@ -85,17 +85,19 @@ and is run to :math:`t=0.2`.
   :width: 100%
   :align: center
 
-  Comparison of wave-propagation solution (black) [s5] with exact
-  solution (red) [s6] for density (top left), velocity (top right),
-  pressure (bottom left) and internal energy (bottom right).
+  Comparison of wave-propagation solution (black) [:doc:`s5
+  <../../sims/s5/s5-euler-shock-wave>`] with exact solution (red) [s6]
+  for density (top left), velocity (top right), pressure (bottom left)
+  and internal energy (bottom right).
 
 .. figure:: s7-euler-shock-muscl_exact_cmp.png
   :width: 100%
   :align: center
 
-  Comparison of MUSCL-Hancock solution (black) [s7] with exact
-  solution (red) [s6] for density (top left), velocity (top right),
-  pressure (bottom left) and internal energy (bottom right).
+  Comparison of MUSCL-Hancock solution (black) [:doc:`s7
+  <../../sims/s7/s7-euler-shock-muscl>`] with exact solution (red)
+  [s6] for density (top left), velocity (top right), pressure (bottom
+  left) and internal energy (bottom right).
 
 Problem 2
 +++++++++
@@ -151,10 +153,10 @@ below.
   :width: 100%
   :align: center
 
-  Comparison of 1st-order MUSCL-Hancock solution (black) [s10] with
-  exact solution (red) [s9] for density (top left), velocity (top
-  right), pressure (bottom left) and internal energy (bottom
-  right).
+  Comparison of 1st-order MUSCL-Hancock solution (black) [:doc:`s10
+  <../../sims/s10/s10-euler-shock-muscl>`] with exact solution (red)
+  [s9] for density (top left), velocity (top right), pressure (bottom
+  left) and internal energy (bottom right).
 
 Problem 3
 +++++++++
@@ -204,9 +206,10 @@ and is run to :math:`t=1.0`.
   :width: 100%
   :align: center
 
-  Comparison of wave-propagation solution (black) [s11] with exact
-  solution (red) [s12] for density (top left), velocity (top right),
-  pressure (bottom left) and internal energy (bottom right).
+  Comparison of wave-propagation solution (black) [:doc:`s11
+  <../../sims/s11/s11-euler-shock-wave>`] with exact solution (red)
+  [s12] for density (top left), velocity (top right), pressure (bottom
+  left) and internal energy (bottom right).
 
 The MUSCL-Hancock scheme **fails** on this problem. A positivity fix
 needs to be implemented. However, the 1st-order MUSCL-Hancock scheme
@@ -216,9 +219,10 @@ works and results are shown below.
   :width: 100%
   :align: center
 
-  Comparison of 1st-order MUSCL-Hancock solution (black) [s13] with
-  exact solution (red) [s12] for density (top left), velocity (top
-  right), pressure (bottom left) and internal energy (bottom right).
+  Comparison of 1st-order MUSCL-Hancock solution (black) [:doc:`s13
+  <../../sims/s13/s13-euler-shock-muscl>`] with exact solution (red)
+  [s12] for density (top left), velocity (top right), pressure (bottom
+  left) and internal energy (bottom right).
 
 Problem 4
 +++++++++
@@ -268,9 +272,10 @@ and is run to :math:`t=0.012`.
   :width: 100%
   :align: center
 
-  Comparison of wave-propagation solution (black) [s14] with exact
-  solution (red) [s15] for density (top left), velocity (top right),
-  pressure (bottom left) and internal energy (bottom right).
+  Comparison of wave-propagation solution (black) [:doc:`s14
+  <../../sims/s14/s14-euler-shock-wave>`] with exact solution (red)
+  [s15] for density (top left), velocity (top right), pressure (bottom
+  left) and internal energy (bottom right).
 
 The MUSCL-Hancock scheme **fails** on this problem. Results with the
 1st-order MUSCL-Hancock method is shown below.
@@ -279,9 +284,10 @@ The MUSCL-Hancock scheme **fails** on this problem. Results with the
   :width: 100%
   :align: center
 
-  Comparison of 1st-order MUSCL-Hancock solution (black) [s16] with
-  exact solution (red) [s15] for density (top left), velocity (top
-  right), pressure (bottom left) and internal energy (bottom right).
+  Comparison of 1st-order MUSCL-Hancock solution (black) [:doc:`s16
+  <../../sims/s16/s16-euler-shock-muscl>`] with exact solution (red)
+  [s15] for density (top left), velocity (top right), pressure (bottom
+  left) and internal energy (bottom right).
 
 Problem 5
 +++++++++
@@ -331,17 +337,19 @@ and is run to :math:`t=0.035`.
   :width: 100%
   :align: center
 
-  Comparison of wave-propagation solution (black) [s17] with exact
-  solution (red) [s18] for density (top left), velocity (top right),
-  pressure (bottom left) and internal energy (bottom right).
+  Comparison of wave-propagation solution (black) [:doc:`s17
+  <../../sims/s17/s17-euler-shock-wave>`] with exact solution (red)
+  [s18] for density (top left), velocity (top right), pressure (bottom
+  left) and internal energy (bottom right).
 
 .. figure:: s19-euler-shock-muscl_exact_cmp.png
   :width: 100%
   :align: center
 
-  Comparison of MUSCL-Hancock solution (black) [s19] with exact
-  solution (red) [s18] for density (top left), velocity (top right),
-  pressure (bottom left) and internal energy (bottom right).
+  Comparison of MUSCL-Hancock solution (black) [:doc:`s19
+  <../../sims/s19/s19-euler-shock-muscl>`] with exact solution (red)
+  [s18] for density (top left), velocity (top right), pressure (bottom
+  left) and internal energy (bottom right).
 
 Problem 6
 +++++++++
@@ -391,17 +399,19 @@ and is run to :math:`t=2.0`.
   :width: 100%
   :align: center
 
-  Comparison of wave-propagation solution (black) [s20] with exact
-  solution (red) [s21] for density (top left), velocity (top right),
-  pressure (bottom left) and internal energy (bottom right).
+  Comparison of wave-propagation solution (black) [:doc:`s20
+  <../../sims/s20/s20-euler-shock-wave>`] with exact solution (red)
+  [s21] for density (top left), velocity (top right), pressure (bottom
+  left) and internal energy (bottom right).
 
 .. figure:: s22-euler-shock-muscl_exact_cmp.png
   :width: 100%
   :align: center
 
-  Comparison of MUSCL-Hancock solution (black) [s22] with exact
-  solution (red) [s21] for density (top left), velocity (top right),
-  pressure (bottom left) and internal energy (bottom right).
+  Comparison of MUSCL-Hancock solution (black) [:doc:`s22
+  <../../sims/s22/s22-euler-shock-muscl>`] with exact solution (red)
+  [s21] for density (top left), velocity (top right), pressure (bottom
+  left) and internal energy (bottom right).
 
 Problem 7
 +++++++++
@@ -451,19 +461,21 @@ and is run to :math:`t=2.0`.
   :width: 100%
   :align: center
 
-  Comparison of wave-propagation solution (black) [s23] with exact
-  solution (red) [s24] for density (top left), velocity (top right),
-  pressure (bottom left) and internal energy (bottom right).
+  Comparison of wave-propagation solution (black) [:doc:`s23
+  <../../sims/s23/s23-euler-shock-wave>`] with exact solution (red)
+  [s24] for density (top left), velocity (top right), pressure (bottom
+  left) and internal energy (bottom right).
 
 .. figure:: s25-euler-shock-muscl_exact_cmp.png
   :width: 100%
   :align: center
 
-  Comparison of MUSCL-Hancock solution (black) [s25] with exact
-  solution (red) [s24] for density (top left), velocity (top right),
-  pressure (bottom left) and internal energy (bottom right). The
-  oscillations in the velocity and pressure appear exaggerated by the
-  plot scale but are actually very small.
+  Comparison of MUSCL-Hancock solution (black) [:doc:`s25
+  <../../sims/s25/s25-euler-shock-muscl>`] with exact solution (red)
+  [s24] for density (top left), velocity (top right), pressure (bottom
+  left) and internal energy (bottom right). The oscillations in the
+  velocity and pressure appear exaggerated by the plot scale but are
+  actually very small.
 
 Problem 8
 +++++++++
@@ -513,9 +525,10 @@ and is run to :math:`t=0.0039`.
   :width: 100%
   :align: center
 
-  Comparison of wave-propagation solution (black) [s26] with exact
-  solution (red) [s27] for density (top left), velocity (top right),
-  pressure (bottom left) and internal energy (bottom right).
+  Comparison of wave-propagation solution (black) [:doc:`s26
+  <../../sims/s26/s26-euler-shock-wave>`] with exact solution (red)
+  [s27] for density (top left), velocity (top right), pressure (bottom
+  left) and internal energy (bottom right).
 
 The MUSCL-Hancock scheme **fails** on this problem. Results with the
 1st-order MUSCL-Hancock method is shown below.
@@ -524,9 +537,10 @@ The MUSCL-Hancock scheme **fails** on this problem. Results with the
   :width: 100%
   :align: center
 
-  Comparison of 1st-order MUSCL-Hancock solution (black) [s28] with
-  exact solution (red) [s27] for density (top left), velocity (top
-  right), pressure (bottom left) and internal energy (bottom right).
+  Comparison of 1st-order MUSCL-Hancock solution (black) [:doc:`s28
+  <../../sims/s28/s28-euler-shock-muscl>`] with exact solution (red)
+  [s27] for density (top left), velocity (top right), pressure (bottom
+  left) and internal energy (bottom right).
 
 
 Woodward-Collela blast wave problem
@@ -549,18 +563,20 @@ wave-propagation method using 2000 cells.
   :width: 100%
   :align: center
 
-  Comparison of wave-propagation solution (black) [s29] with "exact"
-  solution (red) [s30] for density (top left), velocity (top right),
-  pressure (bottom left) and internal energy (bottom right).
+  Comparison of wave-propagation solution (black) [:doc:`s29
+  <../../sims/s29/s29-euler-blastwave-wave>`] with "exact" solution
+  (red) [:doc:`s30 <../../sims/s30/s30-euler-blastwave-wave>`] for
+  density (top left), velocity (top right), pressure (bottom left) and
+  internal energy (bottom right).
 
 .. figure:: s31-euler-blastwave-muscl_exact_cmp.png
   :width: 100%
   :align: center
 
-  Comparison of MUSCL-Hancock solution (black) [s31] with "exact"
-  solution (red) [s30] for density (top left), velocity (top right),
-  pressure (bottom left) and internal energy (bottom right).
-
+  Comparison of MUSCL-Hancock solution (black) [:doc:`s31
+  <../../sims/s31/s31-euler-blastwave-muscl>`] with "exact" solution
+  (red) [s30] for density (top left), velocity (top right), pressure
+  (bottom left) and internal energy (bottom right).
 
 Conclusions
 -----------
