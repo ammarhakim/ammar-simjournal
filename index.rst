@@ -5,7 +5,7 @@ SimJournal: Ammar's Simulation Journal
 
 .. epigraph::
 
-  It is useless to be impatient with the work that *must* be done.
+  It is useless to be impatient with the work that must be done.
 
 Computational science is often hampered by the inability to
 independently reproduce or verify published research. In fact, the
@@ -29,7 +29,7 @@ means of generating pretty, but irreproducible, pictures.
 .. toctree::
   :maxdepth: 2
 
-  sims/simindex.rst
+  simindex.rst
   je/je0/je0-repro-research.rst
   je/je1/je1-periodic-poisson.rst
   je/je2/je2-euler-shock.rst
