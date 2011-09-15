@@ -1,3 +1,13 @@
+<%!
+  import subprocess
+
+  def makeRst(lua):
+    subprocess.Popen(["python", "./code/mkluarst.py", "-l", lua+".lua"])
+    
+%>
+# Make document link
+<%def name="mdl(sim, luaNm)"><% makeRst(luaNm) %>:doc:`${sim} <${luaNm}>` </%def>
+
 Simulation Index
 ================
 
@@ -9,7 +19,7 @@ Following is a list of simulation numbers with one-line descriptions.
 
   * - Number
     - Description
-  * - s1
+  * - ${mdl("s1", "s1/s1-periodic-poisson")}
     - Poisson solve on a 2D periodic grid, with Gaussian source
   * - s2
     - Poisson solve on a 2D periodic grid, with anisotropic Gaussian source
