@@ -32,11 +32,13 @@ clean:
 	-rm -rf $(BUILDDIR)/*
 
 html:
+	python ./sims/makesimindex.py
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 
 deploy:
+	python ./sims/makesimindex.py
 	$(SPHINXBUILD) -b html -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) -D mathjax_path='http://mathjax.connectmv.com/MathJax.js' . $(BUILDDIR)/html 
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
