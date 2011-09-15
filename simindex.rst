@@ -1,16 +1,5 @@
-<%!
-  import subprocess
-  import glob
 
-  def makeRst(lua):
-    fls = glob.glob("%s/%s-*.lua" % (lua, lua))
-    if (len(fls)>0):
-      subprocess.Popen(["python", "./code/mkluarst.py", "-l", fls[0]])
-      return fls[0][:-4]
-    return ""
-    
-%>
-<%def name="mdl(sim)"><% luaFl = makeRst(sim) %>:doc:`${sim} <${luaFl}>` </%def>
+
 
 Simulation Index
 ================
@@ -23,65 +12,65 @@ Following is a list of simulation numbers with one-line descriptions.
 
   * - Number
     - Description
-  * - ${mdl("s1")}
+  * - :doc:`s1 <>` 
     - Poisson solve on a 2D periodic grid, with Gaussian source
-  * - ${mdl("s2")}
+  * - :doc:`s2 <>` 
     - Poisson solve on a 2D periodic grid, with anisotropic Gaussian source
-  * - ${mdl("s3")}
+  * - :doc:`s3 <>` 
     - Poisson solve on a 2D periodic grid, with source a sum of two Gaussians
-  * - ${mdl("s4")}
+  * - :doc:`s4 <>` 
     - Same as s3, but with different grid spacing in X and Y.
-  * - ${mdl("s5")}
+  * - :doc:`s5 <>` 
     - 1D Euler Sod-shock with sonic point in rarefaction. Wave-propagation algorithm.
-  * - ${mdl("s6")}
+  * - :doc:`s6 <>` 
     - Exact solution to s5.
-  * - ${mdl("s7")}
+  * - :doc:`s7 <>` 
     - Same as s5, except using the MUSCL-Hancock scheme.
-  * - ${mdl("s8")}
+  * - :doc:`s8 <>` 
     - 1D Euler shock with low density/pressure region. Wave-propagation scheme.
-  * - ${mdl("s9")}
+  * - :doc:`s9 <>` 
     - Exact solution to s8.
-  * - ${mdl("s10")}
+  * - :doc:`s10 <>` 
     - Same as s8, except using the MUSCL-Hancock scheme.
-  * - ${mdl("s11")}
+  * - :doc:`s11 <>` 
     - 1D Noh problem. Wave-propagation algorithm.
-  * - ${mdl("s12")}
+  * - :doc:`s12 <>` 
     - Exact solution to s11.
-  * - ${mdl("s13")}
+  * - :doc:`s13 <>` 
     - Same as s11, except using the MUSCL-Hancock scheme.
-  * - ${mdl("s14")}
+  * - :doc:`s14 <>` 
     - 1D Euler shock with a stationary contact discontinuity. Wave-propagation scheme.
-  * - ${mdl("s15")}
+  * - :doc:`s15 <>` 
     - Exact solution to s14
-  * - ${mdl("s16")}
+  * - :doc:`s16 <>` 
     - Same as s14, except using the MUSCL-Hancock scheme.
-  * - ${mdl("s17")}
+  * - :doc:`s17 <>` 
     - 1D Euler shock with two strong shocks. Wave-propagation scheme.
-  * - ${mdl("s18")}
+  * - :doc:`s18 <>` 
     - Exact solution to s17
-  * - ${mdl("s19")}
+  * - :doc:`s19 <>` 
     - Same as s17, except using the MUSCL-Hancock scheme.
-  * - ${mdl("s20")}
+  * - :doc:`s20 <>` 
     - 1D Euler with stationary contact discontinuity. Wave-propagation scheme.
-  * - ${mdl("s21")}
+  * - :doc:`s21 <>` 
     - Exact solution to s20
-  * - ${mdl("s22")}
+  * - :doc:`s22 <>` 
     - Same as s20, except using the MUSCL-Hancock scheme.
-  * - ${mdl("s23")}
+  * - :doc:`s23 <>` 
     - 1D Euler with slowly moving contact discontinuity. Wave-propagation scheme.
-  * - ${mdl("s24")}
+  * - :doc:`s24 <>` 
     - Exact solution to s23
-  * - ${mdl("s25")}
+  * - :doc:`s25 <>` 
     - Same as s23, except using the MUSCL-Hancock scheme.
-  * - ${mdl("s26")}
+  * - :doc:`s26 <>` 
     - 1D Euler with sharp spike in density. Wave-propagation scheme.
-  * - ${mdl("s27")}
+  * - :doc:`s27 <>` 
     - Exact solution to s26
-  * - ${mdl("s28")}
+  * - :doc:`s28 <>` 
     - Same as s26, except using the MUSCL-Hancock scheme.
-  * - ${mdl("s29")}
+  * - :doc:`s29 <>` 
     - 1D Euler Woodward-Collela blast wave problem. Wave-propagation scheme.
-  * - ${mdl("s30")}
+  * - :doc:`s30 <>` 
     - Same as s29 run with higher-resolution to serve as an "exact" solution.
-  * - ${mdl("s31")}
+  * - :doc:`s31 <>` 
     - Same as s29, except using the MUSCL-Hancock scheme.
