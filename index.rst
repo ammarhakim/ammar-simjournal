@@ -33,3 +33,4 @@ means of generating pretty, but irreproducible, pictures.
   je/je0/je0-repro-research.rst
   je/je1/je1-periodic-poisson.rst
   je/je2/je2-euler-shock.rst
+  je/je3/je3-homoslab-rte.rst
