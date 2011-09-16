@@ -1,7 +1,7 @@
 .. Simulation Journal: See daily-notes entry for August 5th 2011
 
-SimJournal: Ammar's Simulation Journal
-======================================
+SimJournal: Ammar Hakim's Simulation Journal
+============================================
 
 .. epigraph::
 
