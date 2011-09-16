@@ -4,14 +4,37 @@
 JE3: Testing the radiation transport equation solver in a homogeneous slab
 ==========================================================================
 
+.. contents::
+
 Problem formulation and Fourier decomposition
 ---------------------------------------------
 
 In this entry I test the radiation transport equation (RTE) solver
 implemented in Lucee, designed to solve the RTE in a homogeneous
-slab. This solver can be be used as a building block for solving the
-RTE in an inhomogeneous slab. The RTE is a linear integro-differential
-equation and is written as
+slab. Besides being used stand-alone, this solver can also be be used
+as a building block for solving the RTE in an inhomogeneous
+slab. 
+
+Although it might seem that the problem of the RTE in a slab is only
+of academic interest, it is used extensively in studing the radiation
+in the Earth's (and other planetary) atmosphere and oceans. To an
+excellent approximation the atmosphere and the ocean can be treated as
+horizontally uniform with optical properties varying only along one
+direction. See, for example, [Mobley1994]_ and [Thomas1999]_. The key
+difficulty in solving the RTE for these applications is that the
+scattering is highly anisotropic and has a strong forward
+component. This requires the use of special algorithms to handle the
+angular dependence of the radiation field.
+
+The systematic study of the RTE was initiated by Subrahmanyan
+Chandrasekhar. He wrote a now-classic monograph [ChandraRT]_ (based on
+a series of his papers) in which he developed very elegant analytical
+methods to solve the RTE (including the effects of polarization) in
+homogeneous slabs. Chandra's book is a tremendous tour de force in
+mathematical physics and has inspired several algorithms now in common
+use.
+
+The RTE is a linear integro-differential equation and is written as
 
 .. math::
 
@@ -27,7 +50,7 @@ where
   :math:`\mathrm{m}^{-2}` :math:`\mathrm{sr}^{-1}`
   :math:`\mathrm{nm}^{-1}`,
 
-- :math:`\tau` is the optical depth,
+- :math:`0 < \tau < \tau_0` is the optical depth,
 
 - :math:`\varpi` is the albedo of single scattering,
 
@@ -37,3 +60,101 @@ where
 - :math:`p(\cos\Theta) = \sum_{l=0}^L\beta_lP_l(\cos\Theta)` is the
   phase function, where :math:`\Theta` is the scattering angle and
   :math:`\beta_0=1`.
+
+The boundary conditions are a directed incident beam at :math:`\tau=0`
+and a "black" boundary at :math:`\tau=\tau_0`
+
+.. math::
+
+  &L(0, \mu) = \pi F \delta(\mu-\mu_0) \delta(\phi-\phi_0) \\
+  &L(\tau_0, -\mu) = 0
+
+for :math:`\mu\in [0,1]`, and where
+
+- :math:`\tau_0` is the optical depth of the slab,
+- :math:`\mu_0` and :math:`\phi_0` are the cosine of the polar angle and azimuthal
+  angle of incident beam,
+- :math:`\mu_0\pi F` is the total downward irradiance incident on the slab.
+
+The singular component of the radiance is removed using the decomposition
+
+.. math::
+
+  L(\tau,\mu,\phi) = L_*(\tau,\mu,\phi) 
+  + \pi F \delta(\mu-\mu_0) \delta(\phi-\phi_0) e^{-\tau/\mu_0}
+
+Where :math:`L_*(\tau,\mu,\phi)` is the diffuse (scattered at least
+once) component of the radiance. Further, the addition theorem of
+spherical harmonics is used to write
+
+.. math::
+
+  p(\cos\Theta) = \sum_{m=0}^L(2-\delta_{0,m})
+  \sum_{l=m}^L\beta_l P_l^m(\mu) P_l^m(\mu')
+  \cos[m(\phi'-\phi)]
+
+where
+
+.. math::
+
+  P_l^m(\mu) = \left[
+    \frac{(l-m)!}{(l+m)!}
+  \right]^{1/2}
+  (1-\mu^2)^{1/2}\frac{d^m}{d\mu^m}
+  P_l(\mu)
+
+are the normalized Legendre functions. The diffuse radiance is
+expanded in a Fourier cosine series as
+
+.. math::
+
+  L_*(\tau,\mu,\phi) = \frac{1}{2} \sum_{m=0}^L
+  (2-\delta_{0,m})L^m(\tau,\mu) \cos[m(\phi-\phi_0)]
+
+Using these definitions the RTE becomes a set of equations for each
+Fourier component :math:`L^m(\tau,\mu)`
+
+.. math::
+
+  \mu\frac{\partial L^m(\tau,\mu)}{\partial \tau} + L^m(\tau,\mu)
+  = 
+  \frac{\varpi}{2}
+  \sum_{l=m}^L \beta_l P_l^m(\mu)
+  \int_{-1}^1
+  P_l^m(\mu') L(\tau,\mu') d\mu'
+  + Q^m(\tau,\mu)
+
+and 
+
+.. math::
+
+  Q^m(\tau,\mu) = \frac{\varpi F}{2}e^{-\tau/\mu_0}
+  \sum_{l=m}^L \beta_l P^m_l(\mu_0) P_l^m(\mu)
+
+The boundary conditions on each Fourier component become
+
+.. math::
+
+  &L^m(0, \mu) = 0 \\
+  &L^m(\tau_0, -\mu) = 0.
+
+The algorithm implemented in Lucee is described in full detail in a
+paper by Siewert [Siewert2000]_.
+
+References
+----------
+
+.. [Mobley1994] C.D. Mobley, *Light and Water. Radiative Transfer in
+   Natural Waters*, Academic, New York, 2004.
+
+.. [Thomas1999] G.E. Thomas and K. Stamnes, *Radiative Transfer in the
+   Atmosphere and Ocean*, Cambridge University Press, Cambridge UK,
+   1999.
+
+.. [ChandraRT] S. Chandrasekhar, *Radiative Transfer*, Dover
+   Publications, 1960.
+
+.. [Siewert2000] C.E. Siewert, "A concise and accurate solution to
+   Chandrasekhar's basic problem in radiative transfer", *Journal of
+   Quantitative Spectroscopy & Radiative Transfer*, **64**,
+   Pg. 109-130, 2000.
