@@ -9,30 +9,28 @@ JE3: Testing the radiation transport equation solver in a homogeneous slab
 Problem formulation and Fourier decomposition
 ---------------------------------------------
 
-In this entry I test the radiation transport equation (RTE) solver
-implemented in Lucee, designed to solve the RTE in a homogeneous
-slab. Besides being used stand-alone, this solver can also be be used
-as a building block for solving the RTE in an inhomogeneous
-slab. 
+In this entry I test the solver for the radiation transport equation
+(RTE) in a homogeneous slab. In addition to stand-alone use this
+solver can be used as a building block for solving the RTE in an
+inhomogeneous slab.
 
 Although it might seem that the problem of the RTE in a slab is only
-of academic interest, it is used extensively in studing the radiation
-in the Earth's (and other planetary) atmosphere and oceans. To an
-excellent approximation the atmosphere and the ocean can be treated as
-horizontally uniform with optical properties varying only along one
-direction. See, for example, [Mobley1994]_ and [Thomas1999]_. The key
-difficulty in solving the RTE for these applications is that the
-scattering is highly anisotropic and has a strong forward
-component. This requires the use of special algorithms to handle the
-angular dependence of the radiation field.
+of academic interest, it finds applications in understanding the
+radiation in the Earth's (and other planetary) atmosphere and
+oceans. To an excellent approximation the atmosphere and the ocean can
+be treated as horizontally uniform with optical properties varying
+only with depth. See, for example, [Mobley1994]_ and
+[Thomas1999]_. The key difficulty in solving the RTE for such
+applications is higly anisotropic scattering with a strong forward
+component. This requires the use of special algorithms to accurately
+handle the angular dependence of the radiation field.
 
 The systematic study of the RTE was initiated by Subrahmanyan
 Chandrasekhar. He wrote a now-classic monograph [ChandraRT]_ (based on
 a series of his papers) in which he developed very elegant analytical
 methods to solve the RTE (including the effects of polarization) in
-homogeneous slabs. Chandra's book is a tremendous tour de force in
-mathematical physics and has inspired several algorithms now in common
-use.
+homogeneous slabs. Chandra's book is a tour de force in mathematical
+physics and has inspired several algorithms now in common use.
 
 The RTE is a linear integro-differential equation and is written as
 
@@ -61,7 +59,7 @@ where
   phase function, where :math:`\Theta` is the scattering angle and
   :math:`\beta_0=1`.
 
-The boundary conditions are a directed incident beam at :math:`\tau=0`
+The boundary conditions are a directed beam incident at :math:`\tau=0`
 and a "black" boundary at :math:`\tau=\tau_0`
 
 .. math::
@@ -141,6 +139,20 @@ The boundary conditions on each Fourier component become
 The algorithm implemented in Lucee is described in full detail in a
 paper by Siewert [Siewert2000]_.
 
+Test Problems and Results
+-------------------------
+
+The test problems solved in this note are taken from [Garcia1985]_
+that also lists very accurate benchmark results for these problem. For
+each problem the results computed with Lucee are plotted against the
+tabulated data in Garcia and Siewert.
+
+Problem 1
++++++++++
+
+Mie scattering with $L=8$ case for slab with $\tau_0=1$, $\mu_0 = 0.5$
+and $\varpi=0.95$.
+
 References
 ----------
 
@@ -157,4 +169,10 @@ References
 .. [Siewert2000] C.E. Siewert, "A concise and accurate solution to
    Chandrasekhar's basic problem in radiative transfer", *Journal of
    Quantitative Spectroscopy & Radiative Transfer*, **64**,
-   Pg. 109-130, 2000.
+   Pg. 109-130, 2000. `pdf
+   <http://www4.ncsu.edu/~ces/pdfversions/217.pdf>`_.
+
+.. [Garcia1985] R.D.M. Garcia and C.E. Siewert, "Benchmark Results in
+   Radiative Transfer", *Transport Theory and Statistical Physics*,
+   **14**, No. 4 Pg. 437-483, 1985. `pdf
+   <http://www4.ncsu.edu/~ces/pdfversions/169.pdf>`_
