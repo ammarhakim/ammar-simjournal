@@ -85,3 +85,5 @@ Following is a list of simulation numbers with one-line descriptions.
     - Same as s29 run with higher-resolution to serve as an "exact" solution.
   * - ${mdl("s31")}
     - Same as s29, except using the MUSCL-Hancock scheme.
+  * - ${mdl("s32")}
+    - Slab RTE with Mie scattering with :math:`L=8`.
