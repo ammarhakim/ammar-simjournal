@@ -150,8 +150,27 @@ tabulated data in Garcia and Siewert.
 Problem 1
 +++++++++
 
-Mie scattering with $L=8$ case for slab with $\tau_0=1$, $\mu_0 = 0.5$
-and $\varpi=0.95$.
+Mie scattering with :math:`L=8` case for slab with :math:`\tau_0=1`,
+:math:`\mu_0 = 0.5` and :math:`\varpi=0.95`.
+
+Lucee results are compared to Garcia and Siewert results for Fourier
+modes :math:`m=0` and :math:`m=1`.
+
+.. figure:: s32-rte-slab-m0.png
+  :width: 100%
+  :align: center
+
+  Comparison of :math:`m=0` Lucee solutions (black) [:doc:`s32
+  <../../sims/s32/s32-rte-slab>`] with GS results (red dots) for
+  various optical depths.
+
+.. figure:: s32-rte-slab-m1.png
+  :width: 100%
+  :align: center
+
+  Comparison of :math:`m=1` Lucee solutions (black) [:doc:`s32
+  <../../sims/s32/s32-rte-slab>`] with GS results (red dots) for
+  various optical depths.
 
 References
 ----------

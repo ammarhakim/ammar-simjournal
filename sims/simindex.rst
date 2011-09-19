@@ -74,3 +74,5 @@ Following is a list of simulation numbers with one-line descriptions.
     - Same as s29 run with higher-resolution to serve as an "exact" solution.
   * - :doc:`s31 <s31/s31-euler-blastwave-muscl>` 
     - Same as s29, except using the MUSCL-Hancock scheme.
+  * - :doc:`s32 <s32/s32-rte-slab>` 
+    - Slab RTE with Mie scattering with :math:`L=8`.
