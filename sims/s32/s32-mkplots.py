@@ -3,6 +3,8 @@ import pylab
 import tables
 
 pylab.rc('text', usetex=True)
+pylab.subplots_adjust(left=0.125, bottom=0.1, right=0.9, top=0.9,
+                      wspace=0.2, hspace=0.2)
 
 for m in range(2):
     # open data file from Garcia & Siewert paper
@@ -28,6 +30,8 @@ for m in range(2):
     if (m==0):
         factor = 2.0
 
+    #pylab.figure(m)
+
     titleList = [r'$\tau=0$', r'$\tau=\tau_0/20$', r'$\tau=\tau_0/10$', \
                  r'$\tau=\tau_0/5$', r'\tau=\tau_0/2$', r'$\tau=3\tau_0/4$', r'$\tau=\tau_0$']
     for d in range(7):
@@ -41,6 +45,7 @@ for m in range(2):
         radiances[mu.shape[0]:] = down[m,:]
 
         pylab.figure(7*m+d)
+        #pylab.subplot(7, 1, d)
         pylab.plot(gsMu, factor*gsDat[:,d+1], 'ro')
         pylab.plot(muExtended, radiances, '-k')
         pylab.xlabel(r"Cosine of polar angle ($\mu$)")
