@@ -191,8 +191,8 @@ expansion coefficients of the phase function are available
 Problem 3
 +++++++++
 
-Same as Problem 2 except :math:`\mu_0=0.5`. All 84 Fourier modes are
-used to compute the azimuthal dependence of the radiance.
+Same as Problem 2 except :math:`\mu_0=0.5`. 64 Fourier modes are used
+to compute the azimuthal dependence of the radiance.
 
 .. figure:: s34-rte-slab-gs-radiances-phi0.csv.png
   :width: 100%
