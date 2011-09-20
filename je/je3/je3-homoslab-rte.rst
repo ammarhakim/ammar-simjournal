@@ -172,6 +172,44 @@ modes :math:`m=0` and :math:`m=1`.
   <../../sims/s32/s32-rte-slab>`] with GS results (red dots) for
   various optical depths.
 
+Problem 2
++++++++++
+
+Haze-L phase-function case with :math:`L=82` for slab with
+:math:`\tau_0=1`, :math:`\mu_0 = 1.0` and :math:`\varpi=0.9`. The
+expansion coefficients of the phase function are available
+:download:`here <../../sims/s33/hazel>`.
+
+.. figure:: s33-rte-slab-m0.png
+  :width: 100%
+  :align: center
+
+  Comparison of Lucee solutions (black) [:doc:`s33
+  <../../sims/s33/s33-rte-slab>`] with GS results (red dots) for
+  various optical depths.
+
+Problem 3
++++++++++
+
+Same as Problem 2 except :math:`\mu_0=0.5`. All 84 Fourier modes are
+used to compute the azimuthal dependence of the radiance.
+
+.. figure:: s34-rte-slab-gs-radiances-phi0.csv.png
+  :width: 100%
+  :align: center
+
+  Comparison of Lucee solutions (black) [:doc:`s34
+  <../../sims/s34/s34-rte-slab>`] with GS results (red dots) for
+  various optical depths and for :math:`\phi-\phi_0 = 0`.
+
+.. figure:: s34-rte-slab-gs-radiances-phipi2.csv.png
+  :width: 100%
+  :align: center
+
+  Comparison of Lucee solutions (black) [:doc:`s34
+  <../../sims/s34/s34-rte-slab>`] with GS results (red dots) for
+  various optical depths and for :math:`\phi-\phi_0 = \pi/2`.
+
 References
 ----------
 

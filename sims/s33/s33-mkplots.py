@@ -6,14 +6,15 @@ import matplotlib.transforms as mtransforms
 pylab.rc('text', usetex=True)
 pylab.subplots_adjust(left=0.125, bottom=0.1, right=0.9, top=0.9,
                       wspace=0.2, hspace=0.2)
-for m in range(2):
+
+for m in range(1):
     # open data file from Garcia & Siewert paper
     gsDatNm = "gs-radiances-m%d.csv" % m
     gsDat = numpy.loadtxt(gsDatNm, delimiter=",")
     gsMu = gsDat[:,0]
 
     # now open HDF5 file
-    lcFh = tables.openFile("s32-rte-slab_sol.h5")
+    lcFh = tables.openFile("s33-rte-slab_sol.h5")
     mu = lcFh.root.mu.read()
 
     muM = mu*0.0
@@ -28,7 +29,7 @@ for m in range(2):
 
     factor = 1.0
     if (m==0):
-        factor = 2.0
+        factor = 0.5
 
     fig = pylab.figure(m)
     fig.subplots_adjust(hspace=1.0)
@@ -47,8 +48,8 @@ for m in range(2):
         radiances[mu.shape[0]:] = down[m,:]
 
         ax = pylab.subplot(7, 1, d+1)
-        pylab.plot(gsMu, factor*gsDat[:,d+1], 'ro')
-        pylab.plot(muExtended, radiances, '-k')
+        pylab.plot(gsMu, gsDat[:,d+1], 'ro')
+        pylab.plot(muExtended, factor*radiances, '-k')
         if d < 6:
             ax.set_xticklabels([""]) # zap labels from X axis
         ylims = ax.get_ylim()
@@ -58,6 +59,6 @@ for m in range(2):
         pylab.title(titleList[d])
 
     pylab.suptitle(r"Radiance for Fourier mode $m=%d$" % m)
-    pylab.savefig("s32-rte-slab-m%d.png" % m)
+    pylab.savefig("s33-rte-slab-m%d.png" % m)
 
     
