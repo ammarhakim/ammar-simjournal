@@ -76,3 +76,7 @@ Following is a list of simulation numbers with one-line descriptions.
     - Same as s29, except using the MUSCL-Hancock scheme.
   * - :doc:`s32 <s32/s32-rte-slab>` 
     - Slab RTE with Mie scattering with :math:`L=8`.
+  * - :doc:`s33 <s33/s33-rte-slab>` 
+    - Slab RTE with Haze-L phase function with :math:`L=82`.
+  * - :doc:`s34 <s34/s34-rte-slab>` 
+    - Same as s33 but with :math:`\mu_0=0.5`.
