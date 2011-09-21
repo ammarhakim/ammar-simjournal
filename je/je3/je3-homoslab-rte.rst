@@ -21,7 +21,7 @@ oceans. To an excellent approximation the atmosphere and the ocean can
 be treated as horizontally uniform with optical properties varying
 only with depth. See, for example, [Mobley1994]_ and
 [Thomas1999]_. The key difficulty in solving the RTE for such
-applications is higly anisotropic scattering with a strong forward
+applications is highly anisotropic scattering with a strong forward
 component. This requires the use of special algorithms to accurately
 handle the angular dependence of the radiation field.
 
@@ -209,6 +209,25 @@ to compute the azimuthal dependence of the radiance.
   Comparison of Lucee solutions (black) [:doc:`s34
   <../../sims/s34/s34-rte-slab>`] with GS results (red dots) for
   various optical depths and for :math:`\phi-\phi_0 = \pi/2`.
+
+Problem 4
++++++++++
+
+Same as Problem 2 except :math:`\varpi=1.0`. Note that Lucee can not
+actually handle this case of conservative scattering as the
+eigensystem is not complete when :math:`m=0` and
+:math:`\varpi=1.0`. Hence, a modification of the algorithm is required
+to handle this by adding an eigenvector to complete the
+system. However, this modification is not implemented in Lucee. To
+overcome this we simply set :math:`\varpi=1-1\times 10^{-6}`.
+
+.. figure:: s35-rte-slab-m0.png
+  :width: 100%
+  :align: center
+
+  Comparison of Lucee solutions (black) [:doc:`s35
+  <../../sims/s35/s35-rte-slab>`] with GS results (red dots) for
+  various optical depths.
 
 References
 ----------

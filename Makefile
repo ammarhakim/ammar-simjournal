@@ -39,7 +39,7 @@ html:
 
 deploy:
 	cd sims; python ./makesimindex.py; cd ..
-	$(SPHINXBUILD) -b html -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) -D mathjax_path='http://mathjax.connectmv.com/MathJax.js' . $(BUILDDIR)/html 
+	$(SPHINXBUILD) -b html -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) . $(BUILDDIR)/html 
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 
