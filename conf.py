@@ -211,6 +211,7 @@ latex_preamble = r'''
 
 # path to jsMath package
 #jsmath_path = 'jsMath/easy/load.js'
-mathjax_path='http://warpx.org/MathJax/MathJax-1.0.1a/MathJax.js'
+#mathjax_path='http://warpx.org/MathJax/MathJax-1.0.1a/MathJax.js'
 #mathjax_path='/Users/ammar/software/MathJax/MathJax.js'
 #mathjax_path='http://mathjax.connectmv.com/MathJax.js'
+mathjax_path="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"

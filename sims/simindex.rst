@@ -80,3 +80,5 @@ Following is a list of simulation numbers with one-line descriptions.
     - Slab RTE with Haze-L phase function with :math:`L=82`.
   * - :doc:`s34 <s34/s34-rte-slab>` 
     - Same as s33 but with :math:`\mu_0=0.5`.
+  * - :doc:`s35 <s35/s35-rte-slab>` 
+    - Same as s33 but with :math:`\varpi=1.0`.
