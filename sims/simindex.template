@@ -93,3 +93,11 @@ Following is a list of simulation numbers with one-line descriptions.
     - Same as s33 but with :math:`\mu_0=0.5`.
   * - ${mdl("s35")}
     - Same as s33 but with :math:`\varpi=1.0`.
+  * - ${mdl("s36")}
+    - Two-fluid shock problem with :math:`q_i/m_i = 1.0`.
+  * - ${mdl("s37")}
+    - Two-fluid shock problem with :math:`q_i/m_i = 10.0`.
+  * - ${mdl("s38")}
+    - Two-fluid shock problem with :math:`q_i/m_i = 100.0`
+  * - ${mdl("s39")}
+    - Two-fluid shock problem with :math:`q_i/m_i = 1000.0`

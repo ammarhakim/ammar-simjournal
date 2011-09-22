@@ -82,3 +82,9 @@ Following is a list of simulation numbers with one-line descriptions.
     - Same as s33 but with :math:`\mu_0=0.5`.
   * - :doc:`s35 <s35/s35-rte-slab>` 
     - Same as s33 but with :math:`\varpi=1.0`.
+  * - :doc:`s36 <s36/s36-twofluid-shock>` 
+    - Two-fluid shock problem with :math:`q_i/m_i = 1.0`.
+  * - :doc:`s37 <s37/s37-twofluid-shock>` 
+    - Two-fluid shock problem with :math:`q_i/m_i = 10.0`.
+  * - :doc:`s38 <s38/s38-twofluid-shock>` 
+    - Two-fluid shock problem with :math:`q_i/m_i = 100.0`
