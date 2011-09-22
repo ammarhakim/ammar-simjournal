@@ -119,7 +119,7 @@ Fourier component :math:`L^m(\tau,\mu)`
   \frac{\varpi}{2}
   \sum_{l=m}^L \beta_l P_l^m(\mu)
   \int_{-1}^1
-  P_l^m(\mu') L(\tau,\mu') d\mu'
+  P_l^m(\mu') L^m(\tau,\mu') d\mu'
   + Q^m(\tau,\mu)
 
 and 
