@@ -201,7 +201,10 @@ Case 4: :math:`q_i/m_i = 1000`
 ------------------------------
 
 In this simulation 5000 grid points were used to solve the
-equations. The results are shown below.
+equations. With this charge to mass ratio the limiting time-step for
+stability is due to the plasma frequency. The CFL number needs to be
+reduced to 0.1 due to which the simulation takes a long time to run
+(more than 4 hours on a new Mac laptop). The results are shown below.
 
 .. figure:: s39-twofluid-shock_neni.png
   :width: 100%

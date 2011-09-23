@@ -88,3 +88,5 @@ Following is a list of simulation numbers with one-line descriptions.
     - Two-fluid shock problem with :math:`q_i/m_i = 10.0`.
   * - :doc:`s38 <s38/s38-twofluid-shock>` 
     - Two-fluid shock problem with :math:`q_i/m_i = 100.0`
+  * - :doc:`s39 <s39/s39-twofluid-shock>` 
+    - Two-fluid shock problem with :math:`q_i/m_i = 1000.0`
