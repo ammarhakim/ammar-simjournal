@@ -35,3 +35,4 @@ means of generating pretty, but irreproducible, pictures.
   je/je2/je2-euler-shock.rst
   je/je3/je3-homoslab-rte.rst
   je/je4/je4-twofluid-shock.rst
+  je/je5/je5-dispersive-eqns.rst
