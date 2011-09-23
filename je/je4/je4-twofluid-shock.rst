@@ -9,11 +9,11 @@ JE4: Two-fluid electromagnetic Riemann problems
 In this entry I present solutions of Riemann problems for two-fluid
 plasma equations. These problems are not physical but illustrate the
 basic mathematical structure of two-fluid solution. There are no exact
-solutions to this problems and reference solutions are published in
-[Hakim2006]_ and [Loverich2011]_ using two different methods
-(wave-propagation and discontinuous Galerkin schemes). In this note I
-test the ability of the wave-propagation scheme to solve the two-fluid
-equations.
+solutions to these problems and reference numerical solutions are
+published in [Hakim2006]_ and [Loverich2011]_ using two different
+methods (wave-propagation and discontinuous Galerkin schemes). In this
+note I test the ability of the wave-propagation scheme to solve the
+two-fluid equations.
 
 Initial conditions
 ------------------
