@@ -17,8 +17,9 @@ grid = Grid.RectCart1D {
    cells = {100},
 }
 
--- solution (we store 11 components as this allows use of the
--- LorentzForce to compute source term)
+-- solution (We store 11 components as this allows use of the
+-- LorentzForce to compute source term. The field quanties are not
+-- evolved.)
 q = DataStruct.Field1D {
    onGrid = grid,
    numComponents = 11,
@@ -52,7 +53,7 @@ function initFluid(x,y,z)
 
    -- sum over modes to use exact solution to initialize problem
    local u, rho, v, p = 0.0, 0.0, 0.0, 0.0
-   for n = 0,nModes do
+   for n = 0, nModes do
       local kn = 2*Lucee.Pi*(2*n+1)
       local wn = math.sqrt(kn^2*cs0^2 + wc^2)
       local u1 = - U0/(2*n+1)*math.sin(kn*x)
@@ -169,12 +170,6 @@ while true do
    else
       -- apply periodic BCs
       qNew:applyPeriodicBc(0)
-
-      -- check if nan has occured
-      if (qNew:hasNan()) then
-	 print (string.format("** Nan occured at %g! Aborting simulation", tCurr))
-	 break
-      end
 
       -- copy updated solution back
       q:copy(qNew)
