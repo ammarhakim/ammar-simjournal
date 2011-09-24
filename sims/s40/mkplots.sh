@@ -1,0 +1,1 @@
+python ../code/dispeuler-linear.py -i s40-dispersive-euler -l 10
