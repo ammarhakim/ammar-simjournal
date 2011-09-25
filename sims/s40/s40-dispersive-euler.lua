@@ -1,4 +1,4 @@
--- Program to solve Two-Fluid equations
+-- Program to dispersive Euler equations
 
 -- simulation parameters
 cfl = 0.9

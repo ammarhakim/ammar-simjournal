@@ -1,6 +1,5 @@
 
 
-
 Simulation Index
 ================
 
@@ -90,3 +89,7 @@ Following is a list of simulation numbers with one-line descriptions.
     - Two-fluid shock problem with :math:`q_i/m_i = 100.0`
   * - :doc:`s39 <s39/s39-twofluid-shock>` 
     - Two-fluid shock problem with :math:`q_i/m_i = 1000.0`
+  * - :doc:`s40 <s40/s40-dispersive-euler>` 
+    - Dispersive Euler equations with :math:`\omega_c = 10` and 100 cells.
+  * - :doc:`s41 <s41/s41-sqpulse-exact>` 
+    - Exact solution of dispersive Euler equations.
