@@ -2,16 +2,21 @@
   import subprocess
   import glob
 
-  def makeRst(lua):
-    fls = glob.glob("%s/%s-*.lua" % (lua, lua))
-    if (len(fls)>0):
-      subprocess.Popen(["python", "./code/mkluarst.py", "-l", fls[0]])
-      return fls[0][:-4]
-    return ""
-    
-%>
-<%def name="mdl(sim)"><% luaFl = makeRst(sim) %>:doc:`${sim} <${luaFl}>` </%def>
+  def makeRst(lua, lang):
+    extension = "lua"
 
+    if lang == "lua":
+      extension = "lua"
+    elif lang == "python":
+      extension = "py"
+
+    fls = glob.glob("%s/%s-*.%s" % (lua, lua, extension))
+    if (len(fls)>0):
+      subprocess.Popen(["python", "./code/mkluarst.py", "-l", fls[0], "-x", lang])
+      return fls[0][:fls[0].find(".")]
+    return ""
+%>
+<%def name="mdl(sim, lang='lua')"><% luaFl = makeRst(sim, lang) %>:doc:`${sim} <${luaFl}>` </%def>
 Simulation Index
 ================
 
@@ -101,3 +106,7 @@ Following is a list of simulation numbers with one-line descriptions.
     - Two-fluid shock problem with :math:`q_i/m_i = 100.0`
   * - ${mdl("s39")}
     - Two-fluid shock problem with :math:`q_i/m_i = 1000.0`
+  * - ${mdl("s40")}
+    - Dispersive Euler equations with :math:`\omega_c = 10` and 100 cells.
+  * - ${mdl("s41", "python")}
+    - Exact solution of dispersive Euler equations.

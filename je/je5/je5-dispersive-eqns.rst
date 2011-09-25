@@ -4,8 +4,10 @@
 JE5: Hyperbolic balance laws with dispersive source terms
 ========================================================
 
+.. contents::
+
 While solving the :doc:`two-fluid Riemann problems
-<../je4/je4-twofluid-shock>` small oscillation are observed in the
+<../je4/je4-twofluid-shock>` small oscillations are observed in the
 solution. On first sight it might be thought that these oscillations
 are numerical and do not reflect a correct solution to the ideal
 two-fluid equation system. In this note I show that such solutions can
@@ -117,3 +119,97 @@ Consider solving the linearized system in one-dimension. Linearizing
 around stationary uniform initial state :math:`\rho = \rho_0`,
 :math:`p = p_0` and assuming :math:`\mathbf{b} = (0,0,b_z)`, where
 :math:`b_z` is constant leads to the linear system
+
+.. math::
+
+  \frac{\partial \rho_1}{\partial t} 
+  &= -\rho_0\frac{\partial  u_1}{\partial x} \\
+  \rho_0\frac{\partial u_1}{\partial t} &= 
+  -\frac{\partial p_1}{\partial x} + \rho_0 \lambda v_1 b_z \\
+  \rho_0\frac{\partial v_1}{\partial t} &= -\rho_0 \lambda u_1 b_z \\
+  \frac{\partial p_1}{\partial t} &= 
+  -\gamma p_0 \frac{\partial u_1}{\partial x}
+
+Assuming solutions of the form
+
+.. math::
+
+  f(x,t) = \sum_{n=0}^\infty f_n e^{i(k_n x + w_n t)}
+
+for :math:`f\in \{\rho_1,u_1,v_1,p_1\}` and :math:`k_n` is the wave
+number and :math:`\omega_n` is frequency we get the algebraic
+equations
+
+.. math::
+
+  i \omega_n \rho_1 &= - i k_n u_1 \rho_0  \\
+  i \omega_n u_1 \rho_0 &= -i k_n p_1 + \lambda v_1 b_z \\
+  i \omega_n v_1 \rho_0 &= - \rho_0 \lambda u_1 b_z \\
+  i \omega_n p_1 &= i \gamma p_0 k_n u_1. 
+
+From this the dispersion relation can be computed as
+
+.. math::
+
+  \omega_n = \pm ( k_n^2 c_{s0}^2 + \omega_c^2 )^{1/2}
+
+Here :math:`c_{s0} \equiv \sqrt{\gamma p_0/\rho_o}` is the speed of
+sound and :math:`\omega_c \equiv \lambda b_z` is the eigenvalue of the
+source Jacobian.
+
+Exact solution for initial step function perturbation
+-----------------------------------------------------
+
+Consider a initial perturbation of the form :math:`u(x,0)` where
+
+.. math::
+
+  u_1(x,t) = U_0 \sum_{n=0}^N 
+  \frac{i}{2n+1} e^{i k_nx} e^{i \omega_n t}
+
+with :math:`k_n = 2\pi(2n+1)`. For :math:`N\rightarrow \infty` this
+represents a the propagation of a step function perturbation. Letting
+:math:`u_i^{(n)} \equiv i U_0 /(2n+1) e^{i(k_nx+\omega_nt)}` the
+Fourier components of the other flow variable perturbations are given
+by
+
+.. math::
+
+  \rho_1^{(n)} &= -\frac{k_n\rho_0}{\omega_n} u_1^{(n)} \\
+  v_1^{(n)} &= -i\frac{\lambda b_z}{\omega_n} u_1^{(n)} \\
+  p_1^{(n)} &= -\frac{\gamma k_n p_0}{\omega_n} u_1^{(n)},
+
+summing which over :math:`n=0,\ldots,N` gives the exact solution to
+the linear problem. The following figure shows the exact solution for
+:math:`N=5000`, :math:`\omega_c = 10` and :math:`c_s = \sqrt{2}`
+at time 1000.
+
+.. figure:: s41-sqpulse-exact.png
+  :width: 100%
+  :align: center
+
+  Exact solution [:doc:`s41 <../../sims/s41/s41-sqpulse-exact>`] of
+  the linear dispersive Euler equation for :math:`N=5000`,
+  :math:`\omega_c = 10` and :math:`c_s = \sqrt{2}` at time 1000. Very
+  fine small-scale features are seen which, in a numerical solution,
+  might be mistaken for numerical noise.
+
+A note on solving dispersive Euler equations with Lucee
+-------------------------------------------------------
+
+The dispersive Euler equations can be solved by adding a source term
+to the Euler equations. The sources terms can be implemented using a
+Lorentz force object. This object needs an electric and magnetic field
+as input. Hence, we need to allocate memory for all the field
+components and set the electric field to zero. Due to the peculiarity
+in the way the point ODE integrator works, this memory needs to be
+part of the fluid fields. Hence, in the simulations shown below (see,
+for example, :doc:`s40 <../../sims/s40/s40-dispersive-euler>`) the
+fields have 11 components (5 for fluids and 3 for electric field and 3
+for magnetic field).
+
+Problem 1: Case :math:`\omega_c = 10`
+-------------------------------------
+
+XXX
+
