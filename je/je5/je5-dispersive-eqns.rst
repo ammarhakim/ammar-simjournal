@@ -198,18 +198,137 @@ A note on solving dispersive Euler equations with Lucee
 -------------------------------------------------------
 
 The dispersive Euler equations can be solved by adding a source term
-to the Euler equations. The sources terms can be implemented using a
+to the Euler equations. The source terms can be implemented using a
 Lorentz force object. This object needs an electric and magnetic field
 as input. Hence, we need to allocate memory for all the field
 components and set the electric field to zero. Due to the peculiarity
-in the way the point ODE integrator works, this memory needs to be
-part of the fluid fields. Hence, in the simulations shown below (see,
-for example, :doc:`s40 <../../sims/s40/s40-dispersive-euler>`) the
-fields have 11 components (5 for fluids and 3 for electric field and 3
-for magnetic field).
+of the point ODE integrator, this memory needs to be part of the fluid
+fields. Hence, in the simulations shown below (see, for example,
+:doc:`s40 <../../sims/s40/s40-dispersive-euler>`) the fields have 11
+components (5 for fluids and 3 for electric field and 3 for magnetic
+field).
 
 Problem 1: Case :math:`\omega_c = 10`
 -------------------------------------
 
-XXX
+A series of simulations was performed for the case of :math:`\omega_c
+= 10` and :math:`c_s = \sqrt{2}`. To avoid exciting all the Fourier
+modes in the step function, the expansion was carried out to only
+:math:`N=9` modes. The solution was computed on grids of 100, 200, 300
+and 400 cells. The results of velocity :math:`u(x,t)` are shown below
+at :math:`t=3`. The wave-propagation scheme has intrinsic diffusion
+due to which the small wavelength features are poorly resolved when
+the grid is relatively coarse.
 
+.. figure:: s40424344-dispeuler-cmp.png
+  :width: 100%
+  :align: center
+
+  Velocity at :math:`t=3` for :math:`\omega_c = 10` for different grid
+  resolutions. The red lines are the numerical results while the black
+  lines is the exact solution. The top-left figure shows 100 cell
+  results [:doc:`s40 <../../sims/s40/s40-dispersive-euler>`],
+  top-right 200 cell results [:doc:`s42
+  <../../sims/s42/s42-dispersive-euler>`], bottom-left 300 cell
+  results [:doc:`s43 <../../sims/s43/s43-dispersive-euler>`] and
+  bottom-right 400 cell results [:doc:`s44
+  <../../sims/s44/s44-dispersive-euler>`]. At low resolution the small
+  wavelength features are poorly resolved due to numerical diffusion
+  of the scheme.
+
+Problem 2: Case :math:`\omega_c = 100`
+--------------------------------------
+
+In these simulations, the influence from sources was increased by
+setting :math:`\omega_c = 100`. The simulation is run on a grid with
+200 cells. The time-step for this case is constrained by the need to
+resolve the oscillations from the source terms. Taking :math:`k
+\approx 1/\Delta x = 1/200` we get the largest frequency as
+approximately 283. To resolve this the time-step needs to much smaller
+than :math:`1/238 \approx 0.0035`. This forces a more restrictive CFL
+number (0.5) than allowed by stability of just the hyperbolic part. If
+the oscillations are not resolved significant phase errors are seen in
+the solution.
+
+.. figure:: s45-dispersive-euler_ux.png
+  :width: 100%
+  :align: center
+
+  Velocity at :math:`t=3` for :math:`\omega_c = 100` with 200 cells
+  [:doc:`s45 <../../sims/s45/s45-dispersive-euler>`].  The red line is
+  the numerical result while the black line is the exact
+  solution. Significant diffusion is seen in the results as well as
+  small phase errors. Taking an even smaller time step will reduce the
+  phase error but add even more diffusion.
+
+The simulation was next run with 400 cells. This significantly
+improves the numerical solution even though some small-scale features
+are still not resolved correctly.
+
+.. figure:: s46-dispersive-euler_ux.png
+  :width: 100%
+  :align: center
+
+  Velocity at :math:`t=3` for :math:`\omega_c = 100` with 400 cells
+  [:doc:`s46 <../../sims/s46/s46-dispersive-euler>`].  The red line is
+  the numerical result while the black line is the exact
+  solution. The solution is now much better resolved, although some
+  small scale features are not resolved well.
+
+Problem 3: Sod-shock problem
+----------------------------
+
+The previous simulations show the effect of dispersive source terms on
+linear problems. In this simulation I solve the sod-shock problem for
+the dispersive Euler equations. The problem is initialized with a
+discontinuity at :math:`x=0.5` and with left and right states
+
+.. math::
+
+  \left[
+    \begin{matrix}
+      \rho_l \\
+      p_l
+    \end{matrix}
+  \right]
+  = 
+  \left[
+    \begin{matrix}
+      3.0 \\
+      3.0
+    \end{matrix}
+  \right],
+  \qquad
+  \left[
+    \begin{matrix}
+      \rho_r \\
+      p_r
+    \end{matrix}
+  \right]
+  = 
+  \left[
+    \begin{matrix}
+      1.0 \\
+      1.0
+    \end{matrix}
+  \right].
+
+and is run to :math:`t=0.1` on a grid of 800 cells with
+:math:`\mathbf{b} = (0.75, 0.0, 1.0)`, :math:`\lambda=100` and
+:math:`\gamma = 5/3`.
+
+The results are shown below. These show significant differences
+between the zero-source case and the one with the dispersive
+sources. Note that the solution looks like the two-fluid solutions to
+the Riemann problem.
+
+.. figure:: s47-dispersive-euler_sol.png
+  :width: 100%
+  :align: center
+
+  Solution at :math:`t=0.1` for Sod-shock problem [:doc:`s47
+  <../../sims/s47/s47-dispersive-euler>`]. Density (top left),
+  velocity (top right), pressure (bottom left) and internal energy
+  (bottom right). Solutions are significantly different from the
+  homogeneous case and look similar to the two-fluid Riemann
+  solutions.

@@ -110,3 +110,15 @@ Following is a list of simulation numbers with one-line descriptions.
     - Dispersive Euler equations with :math:`\omega_c = 10` and 100 cells.
   * - ${mdl("s41", "python")}
     - Exact solution of dispersive Euler equations.
+  * - ${mdl("s42")}
+    - Dispersive Euler equations with :math:`\omega_c = 10` and 200 cells.
+  * - ${mdl("s43")}
+    - Dispersive Euler equations with :math:`\omega_c = 10` and 300 cells.
+  * - ${mdl("s44")}
+    - Dispersive Euler equations with :math:`\omega_c = 10` and 400 cells.
+  * - ${mdl("s45")}
+    - Dispersive Euler equations with :math:`\omega_c = 100` and 200 cells.
+  * - ${mdl("s46")}
+    - Dispersive Euler equations with :math:`\omega_c = 100` and 400 cells.
+  * - ${mdl("s47")}
+    - Sod-shock for dispersive Euler equations.

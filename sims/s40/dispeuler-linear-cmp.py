@@ -10,6 +10,7 @@ p0 = 1.0
 U0 = 1e-8
 nModes = 9
 cs0 = math.sqrt(gasGamma*p0/rho0)
+Lambda = 10.0
 
 def exactSol(X, t, Lambda):
     Bz = 1.0
@@ -24,18 +25,7 @@ def exactSol(X, t, Lambda):
 
     return u1
 
-def main():
-    parser = optparse.OptionParser()
-    parser.add_option("-i", "--input", dest="input", help="Base name of Lua program")
-    parser.add_option("-l", "--lambda", dest="Lambda", help="Lambda")    
-
-    options, args = parser.parse_args()
-    fileNm = options.input + "_q_1.h5"
-    Lambda = float(options.Lambda)
-
-    # open HDF5 file for reading
-    fh = tables.openFile(fileNm)
-
+def makePlot(fh, pnx, pny, pn):
     # create grid
     gridGrp = fh.root.StructGrid
     xlo = gridGrp._v_attrs.vsLowerBounds[0]
@@ -44,16 +34,32 @@ def main():
     dx = (xup-xlo)/nx
     X = pylab.linspace(xlo+0.5*dx, xup-0.5*dx, nx)
 
+    # make plot
+    q = fh.root.StructGridField
+    pylab.subplot(pnx, pny, pn)
+    pylab.plot(X, q[:,1]/q[:,0], 'r-')
+
     dxExact = (xup-xlo)/1000
     Xex = pylab.linspace(xlo+0.5*dxExact, xup-0.5*dxExact, 1000)
     uEx = exactSol(Xex, 3.0, Lambda)
+    # plot exact solution
+    pylab.plot(Xex, uEx, '-k')    
 
-    # make plots
-    q = fh.root.StructGridField
-    pylab.plot(X, q[:,1]/q[:,0], 'r-')
-    pylab.plot(Xex, uEx, '-k')
+def main():
 
-    pylab.savefig("%s_ux.png" % options.input)
+    # open HDF5 files for reading
+    fh100 = tables.openFile("s40-dispersive-euler_q_1.h5")
+    fh200 = tables.openFile("../s42/s42-dispersive-euler_q_1.h5")
+    fh300 = tables.openFile("../s43/s43-dispersive-euler_q_1.h5")
+    fh400 = tables.openFile("../s44/s44-dispersive-euler_q_1.h5")
+
+    fig = pylab.figure(1)
+    makePlot(fh100, 2, 2, 1)
+    makePlot(fh200, 2, 2, 2)
+    makePlot(fh300, 2, 2, 3)
+    makePlot(fh400, 2, 2, 4)
+
+    pylab.savefig("s40424344-dispeuler-cmp.png")
 
     pylab.show()
 
