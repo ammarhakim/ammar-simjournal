@@ -93,3 +93,15 @@ Following is a list of simulation numbers with one-line descriptions.
     - Dispersive Euler equations with :math:`\omega_c = 10` and 100 cells.
   * - :doc:`s41 <s41/s41-sqpulse-exact>` 
     - Exact solution of dispersive Euler equations.
+  * - :doc:`s42 <s42/s42-dispersive-euler>` 
+    - Dispersive Euler equations with :math:`\omega_c = 10` and 200 cells.
+  * - :doc:`s43 <s43/s43-dispersive-euler>` 
+    - Dispersive Euler equations with :math:`\omega_c = 10` and 300 cells.
+  * - :doc:`s44 <s44/s44-dispersive-euler>` 
+    - Dispersive Euler equations with :math:`\omega_c = 10` and 400 cells.
+  * - :doc:`s45 <s45/s45-dispersive-euler>` 
+    - Dispersive Euler equations with :math:`\omega_c = 100` and 200 cells.
+  * - :doc:`s46 <s46/s46-dispersive-euler>` 
+    - Dispersive Euler equations with :math:`\omega_c = 100` and 400 cells.
+  * - :doc:`s47 <s47/s47-dispersive-euler>` 
+    - Sod-shock for dispersive Euler equations.
