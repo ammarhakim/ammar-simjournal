@@ -250,16 +250,30 @@ number (0.5) than allowed by stability of just the hyperbolic part. If
 the oscillations are not resolved significant phase errors are seen in
 the solution.
 
+.. figure:: s48-dispersive-euler_ux.png
+  :width: 100%
+  :align: center
+
+  Velocity at :math:`t=3` for :math:`\omega_c = 100` with 200 cells
+  [:doc:`s48 <../../sims/s48/s48-dispersive-euler>`] and with a CFL
+  number of 0.9. The red line is the numerical result while the black
+  line is the exact solution. The numerical solution is not only
+  highly diffuse but the peaks are not in the correct location,
+  showing phase errors in resolving the oscillations from the
+  dispersive terms. The reason for these phase errors, even though the
+  time-step satisfies the fluid CFL condition, is that the oscillation
+  period of the smallest wavenumber waves is not adequately resolved.
+
 .. figure:: s45-dispersive-euler_ux.png
   :width: 100%
   :align: center
 
   Velocity at :math:`t=3` for :math:`\omega_c = 100` with 200 cells
-  [:doc:`s45 <../../sims/s45/s45-dispersive-euler>`].  The red line is
-  the numerical result while the black line is the exact
-  solution. Significant diffusion is seen in the results as well as
-  small phase errors. Taking an even smaller time step will reduce the
-  phase error but add even more diffusion.
+  [:doc:`s45 <../../sims/s45/s45-dispersive-euler>`] with a CFL nu,ber
+  of 0.5.  The red line is the numerical result while the black line
+  is the exact solution. Significant diffusion is seen in the results
+  as well as small phase errors. Taking an even smaller time step will
+  reduce the phase error but add even more diffusion.
 
 The simulation was next run with 400 cells. This significantly
 improves the numerical solution even though some small-scale features
@@ -333,3 +347,19 @@ the Riemann problem.
   (bottom right). Solutions are significantly different from the
   homogeneous case and look similar to the two-fluid Riemann
   solutions.
+
+Conclusions
+-----------
+
+One conclusion from these series of simulations is that dispersive
+source terms can cause small-scale features in the solution. To
+resolve these features sufficient spatial *and* temporal resolution is
+needed. Poor spatial resolution can diffuse the oscillations while
+poor temporal resolution can lead to phase errors. In physical
+problems (for example multi-fluid plasmas) there is usually some
+diffusion that is active at small scales and can be important when the
+gradients change rapidly over a few grid cells. This physical
+diffusion will wipe out the oscillations from the dispersive
+sources. Hence, in such cases the resolution of the oscillations might
+not be so important. However, from a mathematical view-point the
+numerical schemes need to be accurate enough to resolve such features.
