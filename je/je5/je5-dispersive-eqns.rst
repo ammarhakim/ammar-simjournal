@@ -280,7 +280,8 @@ Problem 3: Sod-shock problem
 
 The previous simulations show the effect of dispersive source terms on
 linear problems. In this simulation I solve the sod-shock problem for
-the dispersive Euler equations. The problem is initialized with a
+the dispersive Euler equations. This is a highly non-linear problem
+and shows complex shock structure. The problem is initialized with a
 discontinuity at :math:`x=0.5` and with left and right states
 
 .. math::
