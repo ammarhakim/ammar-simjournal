@@ -105,3 +105,5 @@ Following is a list of simulation numbers with one-line descriptions.
     - Dispersive Euler equations with :math:`\omega_c = 100` and 400 cells.
   * - :doc:`s47 <s47/s47-dispersive-euler>` 
     - Sod-shock for dispersive Euler equations.
+  * - :doc:`s48 <s48/s48-dispersive-euler>` 
+    - Same as s45 but larger time-step.
