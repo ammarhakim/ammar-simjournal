@@ -14,7 +14,7 @@ class Counter:
 
 counter = Counter()
 
-def getExact(XX, YY, tm):
+def getExact(X, Y, tm):
     m, n = 8, 5
     Xu, Yu = 80, 40
     a = m*math.pi/Xu
@@ -22,7 +22,12 @@ def getExact(XX, YY, tm):
     c0 = 2.99792458e8
     w = c0*math.sqrt(a*a + b*b)
 
-    return numpy.sin(a*XX)*numpy.sin(b*YY)*math.cos(w*tm)
+    Ez = numpy.zeros( (X.shape[0], Y.shape[0]), numpy.float )
+    for i in range(X.shape[0]):
+        for j in range(Y.shape[0]):
+            Ez[i,j] = math.sin(a*X[i])*math.sin(b*Y[j])*math.cos(w*tm)
+
+    return Ez
 
 def mkPlot(luaFl, frame, tm):
     fh = tables.openFile("%s_q_%d.h5" % (luaFl, frame))
@@ -53,10 +58,10 @@ def mkPlot(luaFl, frame, tm):
     pylab.colorbar()
     pylab.savefig("%s_2d_%d.png" % (luaFl, frame))
 
-    Ez = getExact(XX, YY, tm)
+    Ez = getExact(X, Y, tm)
     pylab.figure(counter.getCount())
     pylab.plot(X, q[:,ny/2,2], 'k-')
-    pylab.plot(X, Ez.transpose()[:,ny/2], 'r-')
+    pylab.plot(X, Ez[:,ny/2], 'r-')
     pylab.axis('tight')
     pylab.savefig("%s_1d_%d.png" % (luaFl, frame))
 
