@@ -124,3 +124,5 @@ Following is a list of simulation numbers with one-line descriptions.
     - Sod-shock for dispersive Euler equations.
   * - ${mdl("s48")}
     - Same as s45 but larger time-step.
+  * - ${mdl("s49")}
+    - Wave-propagation scheme for Maxwell equation TM (8,5) mode. :math:`80\times 40` grid.
