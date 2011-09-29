@@ -21,8 +21,8 @@ the divergence relations on electric and magnetic fields are not
 explicitly used in the update equations. However, the staggered field
 formulation is harder to extend to non-rectangular grids.
 
-The application of these Maxwell solvers is to the solution of
-two-fluid equations. It is straightforward to apply the
+One of the intended applications of these Maxwell solvers is to the
+solution of two-fluid equations. It is straightforward to apply the
 wave-propagation Maxwell scheme to solve the two-fluid
 equations. However, some work is required to make the FDTD scheme work
 with the cell-centered fluid solvers, in particular, the staggered
@@ -42,7 +42,15 @@ In this problem the domain is a rectangular metal box :math:`[0, X]
 where :math:`a = m\pi/X` and :math:`b = n\pi/Y`. All other field
 components are set to zero. Also, :math:`E_0 = 1`, :math:`m=8`,
 :math:`n=5`, :math:`X = 80` and :math:`Y=40`. All quantities are in SI
-units. The simulation is evolved to 150 ns.
+units. The simulation is evolved to 150 ns. The exact solution for
+:math:`E_z` is
+
+.. math::
+
+  E_z = E_0 \sin(ax) \sin(by) \cos(\omega t)
+
+where the frequency :math:`\omega = c \sqrt{a^2 + b^2}` and :math:`c`
+is the speed of light.
 
 The first set of simulations were performed on a grid of :math:`80
 \times 40` cells. Results for the computed :math:`E_z` are compared to
