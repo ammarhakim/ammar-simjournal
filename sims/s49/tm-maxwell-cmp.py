@@ -29,6 +29,18 @@ def getExact(X, Y, tm):
 
     return Ez
 
+def getExactX(X, Y, tm):
+    m, n = 8, 5
+    Xu, Yu = 80, 40
+    a = m*math.pi/Xu
+    b = n*math.pi/Yu
+    c0 = 2.99792458e8
+    w = c0*math.sqrt(a*a + b*b)
+
+    Ez = numpy.sin(a*X)*math.sin(b*Y)*math.cos(w*tm)
+
+    return Ez
+
 def mkPlot(luaFl, frame, tm):
     fh = tables.openFile("%s_q_%d.h5" % (luaFl, frame))
 
@@ -58,10 +70,13 @@ def mkPlot(luaFl, frame, tm):
     pylab.colorbar()
     pylab.savefig("%s_2d_%d.png" % (luaFl, frame))
 
-    Ez = getExact(X, Y, tm)
+    Ez = getExactX(X, 20, tm)
     pylab.figure(counter.getCount())
-    pylab.plot(X, q[:,ny/2,2], 'k-')
-    pylab.plot(X, Ez[:,ny/2], 'r-')
+
+    EzMid = 0.5*(q[:,ny/2-1,2] + q[:,ny/2,2])
+
+    pylab.plot(X, EzMid, 'k-')
+    pylab.plot(X, Ez, 'r-')
     pylab.axis('tight')
     pylab.savefig("%s_1d_%d.png" % (luaFl, frame))
 
@@ -75,5 +90,7 @@ def main():
 
     mkPlot(luaFl, 1, 75e-9)
     mkPlot(luaFl, 2, 150e-9)
+
+    pylab.show()
 
 if __name__ == '__main__': main()
