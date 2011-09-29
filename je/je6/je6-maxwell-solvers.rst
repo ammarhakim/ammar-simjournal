@@ -29,8 +29,8 @@ with the cell-centered fluid solvers, in particular, the staggered
 fields need to be interpolated back to cell centers before computing
 the Lorentz force.
 
-Problem 1: Transverse Magnetic modes in a box
----------------------------------------------
+Problem 1: 2D Transverse Magnetic modes in a box
+------------------------------------------------
 
 In this problem the domain is a rectangular metal box :math:`[0, X]
 \times [0, Y]`. The electric field is initialized with
@@ -52,6 +52,11 @@ units. The simulation is evolved to 150 ns. The exact solution for
 where the frequency :math:`\omega = c \sqrt{a^2 + b^2}` and :math:`c`
 is the speed of light.
 
-The first set of simulations were performed on a grid of :math:`80
-\times 40` cells. Results for the computed :math:`E_z` are compared to
-the exact solution at 75 ns and 150 ns.
+The first set of simulations were performed to test the convergence of
+the schemes. The simulations were run on grids :math:`80 \times 40`,
+:math:`160 \times 80`, :math:`240 \times 120` and :math:`320 \times
+160`. The time-step was selected to satisfy the CFL condition for that
+grid resolution. This *does not* check the convergence of just the
+spatial discretization (for which we would have to use the same
+time-step for all grids) but of both the temporal *and* spatial
+discretization.

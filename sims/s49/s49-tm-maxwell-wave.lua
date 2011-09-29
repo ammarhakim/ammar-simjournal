@@ -65,9 +65,10 @@ maxwellEqn = HyperEquation.PhMaxwell {
 maxSlvr = Updater.WavePropagation2D {
    onGrid = grid,
    equation = maxwellEqn,
-   limiter = "no-limiter", -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
+   -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
+   limiter = "no-limiter", 
    cfl = cfl,
-   cflm = 1.01*cfl,
+   cflm = cfl*1.01
 }
 
 -- initialize updater
@@ -79,7 +80,7 @@ maxSlvr:setOut( {qNew} )
 -- boundary condition to apply
 bcElc = BoundaryCondition.ZeroTangent { components = {0, 1, 2} }
 bcMgn = BoundaryCondition.ZeroNormal { components = {3, 4, 5} }
-potBc = BoundaryCondition.Copy { components = {6, 7} }
+potBc = BoundaryCondition.Copy { components = {6, 7}, fact = {-1, -1} }
 
 -- create boundary condition object
 function createBc(myDir, myEdge)
@@ -172,6 +173,6 @@ for frame = 1, nFrames do
    -- write out data
    q:write( string.format("q_%d.h5", frame) )
    tCurr = tCurr+tFrame
-   print ("")
+   Lucee.logInfo ("")
 end
 
