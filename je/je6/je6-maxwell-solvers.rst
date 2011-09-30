@@ -137,4 +137,10 @@ the accuracy of the solution.
 The following figure shows the wave-propagation solution at
 :math:`t=75` ns.
 
+.. figure:: s50-tm-maxwell-wave_2d_1.png
+  :width: 100%
+  :align: center
 
+  Solution computed with the wave-propagation scheme for :math:`E_z`
+  at :math:`t=75` ns for :math:`160 \times 80` cells [:doc:`s50
+  <../../sims/s50/s50-tm-maxwell-wave>`].
