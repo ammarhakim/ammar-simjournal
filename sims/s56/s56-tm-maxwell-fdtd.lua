@@ -180,8 +180,9 @@ function advanceFrame(tStart, tEnd, initDt)
       mgnStatus, mgnDtSuggested = mgnUpdate:advance(tCurr+myDt)
 
       if ( (elcStatus == false) or (mgnStatus == false) ) then
-	 dtSuggested = math.min(elcDtSuggested, mgnDtSuggested)
 	 -- time-step too large
+	 dtSuggested = math.min(elcDtSuggested, mgnDtSuggested)
+
 	 Lucee.logInfo (string.format("** Time step %g too large! Will retake with dt %g", myDt, dtSuggested))
 	 myDt = dtSuggested
 	 -- copy over data from duplicate
@@ -189,6 +190,8 @@ function advanceFrame(tStart, tEnd, initDt)
 	 Mgn:copy(MgnDup)
       else
 	 -- step succeeded, proceed to next step
+	 dtSuggested = math.min(elcDtSuggested, mgnDtSuggested)
+
 	 Elc:copy(ElcNew)
 	 Mgn:copy(MgnNew)
 
@@ -205,10 +208,21 @@ function advanceFrame(tStart, tEnd, initDt)
    return dtSuggested
 end
 
-dtSuggested = 100.0 -- initial suggested time-step
 -- parameters to control time-stepping
 tStart = 0.0
 tEnd = 150e-9
+
+-- compute time-step to move magnetic field to dt/2
+dtSuggested = math.min( 0.45*dx/light_speed, 0.45*dy/light_speed)
+-- apply Bcs to electric field
+bcRight:setCurrTime(0.0)
+bcRight:advance(0.5*dtSuggested)
+bcTop:setCurrTime(0.0)
+bcTop:advance(0.5*dtSuggested)
+-- advance magnetic field by half time-step
+mgnUpdate:setCurrTime(0.0)
+mgnStatus, mgnDtSuggested = mgnUpdate:advance(0.5*dtSuggested)
+Mgn:copy(MgnNew)
 
 nFrames = 2
 tFrame = (tEnd-tStart)/nFrames -- time between frames
