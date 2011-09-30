@@ -117,3 +117,11 @@ program for that simulation.
     - Same as s49 but with :math:`240\times 120` grid.
   * - :doc:`s52 <s52/s52-tm-maxwell-wave>` 
     - Same as s49 but with :math:`320\times 160` grid.
+  * - :doc:`s53 <s53/s53-tm-maxwell-fdtd>` 
+    - FDTD scheme for Maxwell equation TM (8,5) mode, :math:`80\times 40` grid.
+  * - :doc:`s54 <s54/s54-tm-maxwell-fdtd>` 
+    - Same as s53 but with :math:`160\times 80` grid.
+  * - :doc:`s55 <s55/s55-tm-maxwell-fdtd>` 
+    - Same as s53 but with :math:`240\times 120` grid.
+  * - :doc:`s56 <s56/s56-tm-maxwell-fdtd>` 
+    - Same as s53 but with :math:`320\times 160` grid.

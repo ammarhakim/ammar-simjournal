@@ -144,3 +144,13 @@ The following figure shows the wave-propagation solution at
   Solution computed with the wave-propagation scheme for :math:`E_z`
   at :math:`t=75` ns for :math:`160 \times 80` cells [:doc:`s50
   <../../sims/s50/s50-tm-maxwell-wave>`].
+
+Convergence of the FDTD scheme
+++++++++++++++++++++++++++++++
+
+One issue here is that the scheme will reduce to 1st order if we also
+do not initialize the magnetic field to its value at :math:`t=\Delta
+t/2`. The issue here, of course, is that the time-step is not known in
+advance and hence it is not clear what to use for :math:`\Delta
+t`. Due to this the FDTD solution seems only 1st order accurate.
+
