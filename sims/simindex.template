@@ -134,3 +134,11 @@ program for that simulation.
     - Same as s49 but with :math:`240\times 120` grid.
   * - ${mdl("s52")}
     - Same as s49 but with :math:`320\times 160` grid.
+  * - ${mdl("s53")}
+    - FDTD scheme for Maxwell equation TM (8,5) mode, :math:`80\times 40` grid.
+  * - ${mdl("s54")}
+    - Same as s53 but with :math:`160\times 80` grid.
+  * - ${mdl("s55")}
+    - Same as s53 but with :math:`240\times 120` grid.
+  * - ${mdl("s56")}
+    - Same as s53 but with :math:`320\times 160` grid.
