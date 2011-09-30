@@ -59,4 +59,82 @@ the schemes. The simulations were run on grids :math:`80 \times 40`,
 grid resolution. This *does not* check the convergence of just the
 spatial discretization (for which we would have to use the same
 time-step for all grids) but of both the temporal *and* spatial
-discretization.
+discretization. For each scheme the error was computed as the average
+error in :math:`E_z` at two time slices, 75 ns and 150 ns.
+
+.. math::
+
+  \epsilon = \frac{1}{N_x N_y} \sum_{i,j} | \hat{E}_z - E_z |
+
+where :math:`\hat{E}_z` is the numerical solution and :math:`N_x
+\times N_y` is the grid size. The summation is performed over all
+cells.
+
+Convergence of the wave-propagation scheme
+++++++++++++++++++++++++++++++++++++++++++
+
+The following table shows the errors and order of convergence of the
+wave-propagation scheme at :math:`t=75` ns.
+
+.. list-table:: Wave-propagation at :math:`t=75` ns
+  :header-rows: 1
+  :widths: 20,40,20,20
+
+  * - Grid size :math:`\Delta x`
+    - Average error
+    - Order
+    - Simulation
+  * - :math:`1.00`
+    - :math:`5.4325\times 10^{-2}`
+    - 
+    - :doc:`s49 <../../sims/s49/s49-tm-maxwell-wave>`
+  * - :math:`0.50`
+    - :math:`1.3455\times 10^{-2}`
+    - :math:`2.01`
+    - :doc:`s50 <../../sims/s50/s50-tm-maxwell-wave>`
+  * - :math:`0.3\overline{3}`
+    - :math:`5.9281\times 10^{-3}`
+    - :math:`2.02`
+    - :doc:`s51 <../../sims/s51/s51-tm-maxwell-wave>`
+  * - :math:`0.25`
+    - :math:`3.3175\times 10^{-3}`
+    - :math:`2.01`
+    - :doc:`s52 <../../sims/s52/s52-tm-maxwell-wave>`
+
+The following table shows the errors and order of convergence of the
+wave-propagation scheme at :math:`t=150` ns.
+
+.. list-table:: Wave-propagation at :math:`t=150` ns
+  :header-rows: 1
+  :widths: 20,40,20,20
+
+  * - Grid size :math:`\Delta x`
+    - Average error
+    - Order
+    - Simulation
+  * - :math:`1.00`
+    - :math:`3.2705\times 10^{-2}`
+    - 
+    - :doc:`s49 <../../sims/s49/s49-tm-maxwell-wave>`
+  * - :math:`0.50`
+    - :math:`1.3102\times 10^{-2}`
+    - :math:`1.32`
+    - :doc:`s50 <../../sims/s50/s50-tm-maxwell-wave>`
+  * - :math:`0.3\overline{3}`
+    - :math:`6.3531\times 10^{-3}`
+    - :math:`1.79`
+    - :doc:`s51 <../../sims/s51/s51-tm-maxwell-wave>`
+  * - :math:`0.25`
+    - :math:`3.7010\times 10^{-3}`
+    - :math:`1.88`
+    - :doc:`s52 <../../sims/s52/s52-tm-maxwell-wave>`
+
+It seems a bit odd that the late time solution converges slower than
+the second-order convergence seen in earlier in time. This is probably
+because there is phase error in the waves that accumulates, reducing
+the accuracy of the solution.
+
+The following figure shows the wave-propagation solution at
+:math:`t=75` ns.
+
+

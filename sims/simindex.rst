@@ -3,7 +3,9 @@
 Simulation Index
 ================
 
-Following is a list of simulation numbers with one-line descriptions.
+Following is a list of simulation numbers with one-line
+descriptions. Click on the simulation number to see the complete Lua
+program for that simulation.
 
 .. list-table::
   :header-rows: 1
@@ -108,4 +110,10 @@ Following is a list of simulation numbers with one-line descriptions.
   * - :doc:`s48 <s48/s48-dispersive-euler>` 
     - Same as s45 but larger time-step.
   * - :doc:`s49 <s49/s49-tm-maxwell-wave>` 
-    - Wave-propagation scheme for Maxwell equation TM (8,5) mode. :math:`80\times 40` grid.
+    - Wave-propagation scheme for Maxwell equation TM (8,5) mode, :math:`80\times 40` grid.
+  * - :doc:`s50 <s50/s50-tm-maxwell-wave>` 
+    - Same as s49 but with :math:`160\times 80` grid.
+  * - :doc:`s51 <s51/s51-tm-maxwell-wave>` 
+    - Same as s49 but with :math:`240\times 120` grid.
+  * - :doc:`s52 <s52/s52-tm-maxwell-wave>` 
+    - Same as s49 but with :math:`320\times 160` grid.
