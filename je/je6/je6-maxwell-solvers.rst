@@ -1,5 +1,5 @@
 :Author: Ammar Hakim
-:Date: September 28st 2011
+:Date: September 28th 2011
 
 JE6: Solving Maxwell equations with wave-propagation and FDTD schemes
 =====================================================================
@@ -130,9 +130,9 @@ wave-propagation scheme at :math:`t=150` ns.
     - :doc:`s52 <../../sims/s52/s52-tm-maxwell-wave>`
 
 It seems a bit odd that the late time solution converges slower than
-the second-order convergence seen in earlier in time. This is probably
-because there is phase error in the waves that accumulates, reducing
-the accuracy of the solution.
+the second-order convergence seen earlier in time. This is probably
+because phase error in the waves accumulates, reducing the accuracy of
+the solution.
 
 The following figure shows the wave-propagation solution at
 :math:`t=75` ns.
@@ -148,9 +148,125 @@ The following figure shows the wave-propagation solution at
 Convergence of the FDTD scheme
 ++++++++++++++++++++++++++++++
 
-One issue here is that the scheme will reduce to 1st order if we also
-do not initialize the magnetic field to its value at :math:`t=\Delta
-t/2`. The issue here, of course, is that the time-step is not known in
-advance and hence it is not clear what to use for :math:`\Delta
-t`. Due to this the FDTD solution seems only 1st order accurate.
 
+The FDTD scheme requires the electric field at :math:`t=0` as well as
+the magnetic field at :math:`t=\Delta t/2`. Although in general the
+exact magnetic field is not available at :math:`t=\Delta t/2`, it can
+be computed by using the curl updater and a forward difference in
+time. If this is not done (i.e. the magnetic field is just initialized
+at :math:`t=0`) the overall scheme becomes first-order. The
+simulations performed with Lucee use this technique to initialize the
+simulation.
+
+The following table shows the errors and order of convergence of the
+FDTD scheme at :math:`t=75` ns.
+
+.. list-table:: FDTD at :math:`t=75` ns
+  :header-rows: 1
+  :widths: 20,40,20,20
+
+  * - Grid size :math:`\Delta x`
+    - Average error
+    - Order
+    - Simulation
+  * - :math:`1.00`
+    - :math:`1.4680\times 10^{-2}`
+    - 
+    - :doc:`s53 <../../sims/s53/s53-tm-maxwell-fdtd>`
+  * - :math:`0.50`
+    - :math:`3.7292\times 10^{-3}`
+    - :math:`1.98`
+    - :doc:`s54 <../../sims/s54/s54-tm-maxwell-fdtd>`
+  * - :math:`0.3\overline{3}`
+    - :math:`1.6707\times 10^{-3}`
+    - :math:`1.98`
+    - :doc:`s55 <../../sims/s55/s55-tm-maxwell-fdtd>`
+  * - :math:`0.25`
+    - :math:`9.4569\times 10^{-4}`
+    - :math:`1.98`
+    - :doc:`s56 <../../sims/s56/s56-tm-maxwell-fdtd>`
+
+The following table shows the errors and order of convergence of the
+FDTD scheme at :math:`t=150` ns.
+
+.. list-table:: FDTD at :math:`t=150` ns
+  :header-rows: 1
+  :widths: 20,40,20,20
+
+  * - Grid size :math:`\Delta x`
+    - Average error
+    - Order
+    - Simulation
+  * - :math:`1.00`
+    - :math:`1.6899\times 10^{-2}`
+    - 
+    - :doc:`s53 <../../sims/s53/s53-tm-maxwell-fdtd>`
+  * - :math:`0.50`
+    - :math:`4.4830\times 10^{-3}`
+    - :math:`1.91`
+    - :doc:`s54 <../../sims/s54/s54-tm-maxwell-fdtd>`
+  * - :math:`0.3\overline{3}`
+    - :math:`2.0188\times 10^{-3}`
+    - :math:`1.97`
+    - :doc:`s55 <../../sims/s55/s55-tm-maxwell-fdtd>`
+  * - :math:`0.25`
+    - :math:`1.1428\times 10^{-3}`
+    - :math:`1.98`
+    - :doc:`s56 <../../sims/s56/s56-tm-maxwell-fdtd>`
+
+The following figure shows the FDTD solution at :math:`t=75` ns.
+
+.. figure:: s54-tm-maxwell-fdtd_2d_1.png
+  :width: 100%
+  :align: center
+
+  Solution computed with the FDTD scheme for :math:`E_z` at
+  :math:`t=75` ns for :math:`160 \times 80` cells [:doc:`s54
+  <../../sims/s54/s54-tm-maxwell-fdtd>`].
+
+Comparison of wave-propagation and FDTD solutions
++++++++++++++++++++++++++++++++++++++++++++++++++
+
+The following plots compare the solutions obtained by the
+wave-propagation scheme and the FDTD scheme along the slice
+:math:`y=20` for different grid resolutions.
+
+.. figure:: tm-maxwell-cmp-1.png
+  :width: 100%
+  :align: center
+
+  Comparison of wave-propagation solution (black) to FDTD solution
+  (magenta) with exact solution (red) for :math:`80\times 40`
+  (top-left), :math:`160\times 80` (top-right), :math:`240\times 120`
+  (bottom-left) and :math:`320\times 160` (bottom-right) at
+  :math:`t=75` ns. At lower resolution the FDTD scheme is more
+  accurate but both schemes give good results with higher resolution.
+
+.. figure:: tm-maxwell-cmp-2.png
+  :width: 100%
+  :align: center
+
+  Comparison of wave-propagation solution (black) to FDTD solution
+  (magenta) with exact solution (red) for :math:`80\times 40`
+  (top-left), :math:`160\times 80` (top-right), :math:`240\times 120`
+  (bottom-left) and :math:`320\times 160` (bottom-right) at
+  :math:`t=150` ns. Both schemes give good results late in time,
+  although the wave-propagation scheme converges slower than the FDTD
+  scheme.
+
+Conclusions
+-----------
+
+The FDTD scheme is more efficient and accurate than the
+wave-propagation scheme when the fields are smooth. This is not
+surprising as a Riemann problem needs to be solved at each interface
+making the scheme slower and upwinding adds diffusion. The FDTD scheme
+also preserves the divergence constraints due to the staggered fields
+and leap-frog time-stepping. On the other hand, the wave-propagation
+scheme needs some sort of divergence cleaning to maintain the
+divergence relations. The advantage of the wave-propagation (and other
+colocated field schemes) is that it handles discontinuities and is
+easier to extend to non-rectangular grids. It should be possible to
+develop a hybrid scheme that has best of both these schemes by
+utitlizing the duality property of fluxes in the Riemann solver based
+schemes and the fields in FDTD scheme.
