@@ -29,6 +29,17 @@ with the cell-centered fluid solvers, in particular, the staggered
 fields need to be interpolated back to cell centers before computing
 the Lorentz force.
 
+Divergence cleaning in the wave-propagation scheme
+--------------------------------------------------
+
+The wave-propagation scheme needs electric and magnetic field
+divergence cleaning. Without this cleaning the solution may be
+completely incorrect. The perfectly-hyperbolic formulation of the
+Maxwell equations are used in all the simulations shown here. See this
+`document <http://ammar-hakim.org/maxwell-eigensystem.html>`_ for the
+equations used. For all simulations :math:`\gamma = \chi = 1`,
+i.e. the errors are propagated at the speed of light.
+
 Problem 1: 2D Transverse Magnetic modes in a box
 ------------------------------------------------
 
@@ -253,6 +264,22 @@ wave-propagation scheme and the FDTD scheme along the slice
   :math:`t=150` ns. Both schemes give good results late in time,
   although the wave-propagation scheme converges slower than the FDTD
   scheme.
+
+Problem 2: Electromagnetic pulse in a box
+-----------------------------------------
+
+In this problem we initialize a Gaussian pulse in a metal box and
+evolve the resulting fields. The electric field is initialized with
+
+.. math::
+
+  E_x = e^{-\beta r^2}
+
+where :math:`r = \sqrt{x^2 + y^2}`, on a square domain :math:`[-1,1]
+\times [-1,1]`. Both wave-propagation and FDTD scheme were run on a
+:math:`100 \times 100` grid. There is no exact solution to this
+problem and so we use the wave-propagation solution on a :math:`500
+\times 500` grid as reference.
 
 Conclusions
 -----------
