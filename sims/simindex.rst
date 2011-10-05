@@ -133,3 +133,7 @@ program for that simulation.
     - Same as s58 but using a :math:`400 \times 400` grid.
   * - :doc:`s60 <s60/s60-pulsebox-fdtd>` 
     - Same as s58 but using a :math:`400 \times 400` grid.
+  * - :doc:`s61 <s61/s61-riem-wave>` 
+    - 1D Riemann problem with wave-propagation scheme.
+  * - :doc:`s62 <s62/s62-riem-fdtd>` 
+    - 1D Riemann problem with FDTD scheme.

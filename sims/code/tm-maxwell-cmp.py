@@ -86,12 +86,6 @@ def mkPlot(fPair, frame, tm):
     pylab.plot(X, EzMid, 'm-')
 
 def main():
-    parser = optparse.OptionParser()
-    parser.add_option("-i", "--input", dest="input", help="Base name of Lua program")
-
-    # open files for plotting
-    options, args = parser.parse_args()
-    luaFl = options.input
 
     fig = pylab.figure(1)
     fig.subplots_adjust(hspace=0.25)
