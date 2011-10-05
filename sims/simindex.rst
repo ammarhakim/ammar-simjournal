@@ -125,3 +125,11 @@ program for that simulation.
     - Same as s53 but with :math:`240\times 120` grid.
   * - :doc:`s56 <s56/s56-tm-maxwell-fdtd>` 
     - Same as s53 but with :math:`320\times 160` grid.
+  * - :doc:`s57 <s57/s57-pulsebox-wave>` 
+    - Pulse in metal box with wave-propagation scheme.
+  * - :doc:`s58 <s58/s58-pulsebox-fdtd>` 
+    - Pulse in metal box with FDTD scheme.
+  * - :doc:`s59 <s59/s59-pulsebox-wave>` 
+    - Same as s58 but using a :math:`400 \times 400` grid.
+  * - :doc:`s60 <s60/s60-pulsebox-fdtd>` 
+    - Same as s58 but using a :math:`400 \times 400` grid.

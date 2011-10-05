@@ -7,7 +7,7 @@ cfl = 0.49
 grid = Grid.RectCart2D {
    lower = {-1.0, -1.0},
    upper = {1.0, 1.0},
-   cells = {100, 100},
+   cells = {400, 400},
 }
 
 -- solution
