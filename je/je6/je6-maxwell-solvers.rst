@@ -304,19 +304,110 @@ wave-propagation scheme for this problem.
   The electric field at :math:`t=1.5` (left) and :math:`t=3.0` (right)
   computed from the wave-propagation scheme.
 
+Problem 3: 1D Riemann problem
+-----------------------------
+
+In this problem the domain is one dimensional, :math:`0<x<1`, and is
+initialized with a discontinuity at :math:`x=0.5`. Open boundary
+conditions are applied. The initial discontinuity breaks up into a
+series of discontinuities, which are either stationary or move with
+the speed of light. The left and right states are
+
+.. math::
+
+  \left[
+    \begin{matrix}
+      E_x \\
+      E_y \\
+      E_z \\
+      B_x \\
+      B_y \\
+      B_z
+    \end{matrix}
+  \right]_l
+  = 
+  \left[
+    \begin{matrix}
+      0.0 \\
+      1.0 \\
+      0.0 \\
+      1.0 \\
+      -0.75 \\
+      0.0
+    \end{matrix}
+  \right],
+  \qquad
+  \left[
+    \begin{matrix}
+      E_x \\
+      E_y \\
+      E_z \\
+      B_x \\
+      B_y \\
+      B_z
+    \end{matrix}
+  \right]_r
+  = 
+  \left[
+    \begin{matrix}
+      0.0 \\
+      -1.0 \\
+      0.0 \\
+      1.0 \\
+      0.75 \\
+      0.0
+    \end{matrix}
+  \right]
+
+and the simulations are run to :math:`t=0.25` on a grid of 100 cells.
+
+As seen in the figure below, the FDTD solution shows severe
+oscillations caused due to the initial discontinuity in the
+fields. These oscillations are from the central differencing operator
+applied across the discontinuity. The wave-propagation scheme, on the
+other hand, uses a limiting procedure that allows it to capture the
+solution well.
+
+.. figure:: riem-maxwell-cmp_2.png
+  :width: 100%
+  :align: center
+
+  Comparison of the wave-propagation solution (black) [:doc:`s61
+  <../../sims/s61/s61-riem-wave>`] with the FDTD solution (magenta)
+  [:doc:`s62 <../../sims/s62/s62-riem-fdtd>`] at :math:`t=0.25`. The
+  plots show :math:`E_y` (upper left), :math:`E_z` (upper right),
+  :math:`B_y` (lower left) and :math:`B_z` (lower right). The
+  wave-propagation solution is smooth and shows no numerical
+  artifacts, while the FDTD solution shows severe oscillations due to
+  the discontinuities.
+
 Conclusions
 -----------
 
-The FDTD scheme is more efficient and accurate than the
-wave-propagation scheme when the fields are smooth. This is not
-surprising as a Riemann problem needs to be solved at each interface
-making the scheme slower and upwinding adds diffusion. The FDTD scheme
-also preserves the divergence constraints due to the staggered fields
-and leap-frog time-stepping. On the other hand, the wave-propagation
-scheme needs some sort of divergence cleaning to maintain the
-divergence relations. The advantage of the wave-propagation (and other
-colocated field schemes) is that it handles discontinuities and is
-easier to extend to non-rectangular grids. It should be possible to
-develop a hybrid scheme that has best of both these schemes by
-utitlizing the duality property of fluxes in the Riemann solver based
-schemes and the fields in FDTD scheme.
+From these simulations we can conclude that
+
+- The FDTD scheme is more efficient and accurate than the
+  wave-propagation scheme when the fields are smooth. In fact, the
+  FDTD scheme runs 10-15 times faster in 2D. This is not surprising as
+  solving a Riemann problem at each interface makes the
+  wave-propagation scheme slower while upwinding adds diffusion.
+
+- The FDTD scheme, by construction, preserves the divergence relations
+  by using staggered fields. On the other hand, the wave-propagation
+  scheme needs some sort of cleaning to maintain the divergence
+  relations.
+
+- The wave-propagation scheme can resolve discontinuities and sharp
+  features in the field. The FDTD scheme, on the other hand, adds
+  oscillations around discontinuities. This is generally not an issue
+  as most applications of Maxwell equations have smooth
+  solutions. However, when doing multi-fluid simulations this can be a
+  problem as, in certain situations, the fluids can develop shocks
+  which in turn, due to field-line freezing, can lead to shocks in the
+  field.
+ 
+The advantage of the wave-propagation (and other co-located field
+schemes) is that it is easier to extend to non-rectangular grids. It
+should be possible to develop a hybrid scheme that has best of both
+these schemes by utilizing the duality property of fluxes in the
+Riemann solver based schemes and the fields in FDTD scheme.

@@ -150,3 +150,7 @@ program for that simulation.
     - Same as s58 but using a :math:`400 \times 400` grid.
   * - ${mdl("s60")}
     - Same as s58 but using a :math:`400 \times 400` grid.
+  * - ${mdl("s61")}
+    - 1D Riemann problem with wave-propagation scheme.
+  * - ${mdl("s62")}
+    - 1D Riemann problem with FDTD scheme.
