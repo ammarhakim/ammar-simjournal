@@ -273,13 +273,35 @@ evolve the resulting fields. The electric field is initialized with
 
 .. math::
 
-  E_x = e^{-\beta r^2}
+  E_z = e^{-\beta r^2}
 
 where :math:`r = \sqrt{x^2 + y^2}`, on a square domain :math:`[-1,1]
 \times [-1,1]`. Both wave-propagation and FDTD scheme were run on a
-:math:`100 \times 100` grid. There is no exact solution to this
-problem and so we use the wave-propagation solution on a :math:`500
-\times 500` grid as reference.
+:math:`100 \times 100` grid and :math:`\beta = 25`. There is no exact
+solution to this problem and so we use the wave-propagation solution
+on a :math:`400 \times 400` grid as reference. Note that at this
+higher resolution the wave-propagation and FDTD results are identical
+to 3 significant digits and so it does not matter which solution is
+considered "exact".
+
+.. figure:: pulse-box-cmp_1.png
+  :width: 100%
+  :align: center
+
+  Electric field along the slice :math:`y=0` for pulse evolution in a
+  metal box. The wave-propagation solution (black) [:doc:`s57
+  <../../sims/s57/s57-pulsebox-wave>`] is compared to the FDTD
+  solution (magenta) [:doc:`s58 <../../sims/s58/s58-pulsebox-fdtd>`]
+  to the converged solution (red) [:doc:`s59
+  <../../sims/s59/s59-pulsebox-wave>`]. The FDTD runs faster than the
+  wave-propagation scheme and is more accurate.
+
+.. figure:: pulse-box-cmp_2d.png
+  :width: 100%
+  :align: center
+
+  The electric field at :math:`t=1.5` (left) and :math:`t=3.0` (right)
+  computed from the wave-propagation scheme.
 
 Conclusions
 -----------

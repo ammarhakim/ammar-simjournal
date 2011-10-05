@@ -32,6 +32,7 @@ clean:
 	-rm -rf $(BUILDDIR)/*
 
 html:
+	cd sims; python ./makesimindex.py; cd ..
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."

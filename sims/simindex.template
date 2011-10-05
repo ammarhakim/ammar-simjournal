@@ -146,3 +146,7 @@ program for that simulation.
     - Pulse in metal box with wave-propagation scheme.
   * - ${mdl("s58")}
     - Pulse in metal box with FDTD scheme.
+  * - ${mdl("s59")}
+    - Same as s58 but using a :math:`400 \times 400` grid.
+  * - ${mdl("s60")}
+    - Same as s58 but using a :math:`400 \times 400` grid.
