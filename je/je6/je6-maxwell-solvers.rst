@@ -282,7 +282,8 @@ solution to this problem and so we use the wave-propagation solution
 on a :math:`400 \times 400` grid as reference. Note that at this
 higher resolution the wave-propagation and FDTD results are identical
 to 3 significant digits and so it does not matter which solution is
-considered "exact".
+considered "exact". The FDTD scheme runs 10-15 times faster than the
+wave-propagation scheme for this problem.
 
 .. figure:: pulse-box-cmp_1.png
   :width: 100%
