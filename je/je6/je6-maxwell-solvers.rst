@@ -41,6 +41,8 @@ Maxwell equations are used in all the simulations shown here. See this
 equations used. For all simulations :math:`\gamma = \chi = 1`,
 i.e. the errors are propagated at the speed of light.
 
+.. _je6_problem1-ref:
+
 Problem 1: 2D Transverse Magnetic modes in a box
 ------------------------------------------------
 
@@ -265,6 +267,8 @@ wave-propagation scheme and the FDTD scheme along the slice
   :math:`t=150` ns. Both schemes give good results late in time,
   although the wave-propagation scheme converges slower than the FDTD
   scheme.
+
+.. _je6_problem2-ref:
 
 Problem 2: Electromagnetic pulse in a box
 -----------------------------------------

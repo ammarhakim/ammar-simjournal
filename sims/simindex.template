@@ -154,3 +154,8 @@ program for that simulation.
     - 1D Riemann problem with wave-propagation scheme.
   * - ${mdl("s62")}
     - 1D Riemann problem with FDTD scheme.
+  * - ${mdl("s63")}
+    - FDTD scheme on dual Yee-cell for Maxwell equation TM (8,5) mode,
+      :math:`80\times 40` grid.
+  * - ${mdl("s64")}
+    - FDTD scheme on dual Yee-cell for Maxwell equation. Pulse problem.
