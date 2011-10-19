@@ -161,3 +161,5 @@ program for that simulation.
     - FDTD scheme on dual Yee-cell for Maxwell equation. Pulse problem.
   * - ${mdl("s65")}
     - Plasma wave beach problem, without the plasma.
+  * - ${mdl("s66")}
+    - Plasma wave beach problem.
