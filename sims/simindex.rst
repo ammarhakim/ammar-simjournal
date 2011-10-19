@@ -143,4 +143,6 @@ program for that simulation.
   * - :doc:`s64 <s64/s64-pulsebox-fdtd-dual>` 
     - FDTD scheme on dual Yee-cell for Maxwell equation. Pulse problem.
   * - :doc:`s65 <s65/s65-plasmabeach-maxwell>` 
-    - Plasma wave beach problem, without the plasma.
+    - Plasma wave beach problem, without the plasma. Using 100 cells.
+  * - :doc:`s66 <s66/s66-plasmabeach-maxwell>` 
+    - Plasma wave beach problem, without the plasma. Using 200 cells.
