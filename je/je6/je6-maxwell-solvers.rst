@@ -369,9 +369,9 @@ and the simulations are run to :math:`t=0.25` on a grid of 100 cells.
 As seen in the figure below, the FDTD solution shows severe
 oscillations caused due to the initial discontinuity in the
 fields. These oscillations are from the central differencing operator
-applied across the discontinuity. The wave-propagation scheme, on the
-other hand, uses a limiting procedure that allows it to capture the
-solution well.
+applied across the discontinuity and, due to the lack of diffusion, do
+not damp out. The wave-propagation scheme, on the other hand, uses a
+limiting procedure that allows it to capture the solution well.
 
 .. figure:: riem-maxwell-cmp_2.png
   :width: 100%
