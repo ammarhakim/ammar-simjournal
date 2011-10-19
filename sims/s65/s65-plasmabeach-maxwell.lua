@@ -3,11 +3,24 @@
 -- CFL number
 cfl = 0.9
 
+-- global settings
+xlower = 0.0
+xupper = 1.0
+nx = 100
+
+-- compute coordinate of interior last edge
+dx = (xupper-xlower)/nx
+xLastEdge = xupper-dx
+
+-- compute drive frequency
+deltaT = dx/Lucee.SpeedOfLight
+driveOmega = Lucee.Pi/10/deltaT
+
 -- computational domain
 grid = Grid.RectCart1D {
-   lower = {0.0},
-   upper = {1.0},
-   cells = {100},
+   lower = {xlower},
+   upper = {xupper},
+   cells = {nx},
 }
 
 -- solution
@@ -29,21 +42,8 @@ qNew = DataStruct.Field1D {
 -- create duplicate copy in case we need to take step again
 qNewDup = qNew:duplicate()
 
--- create an alias to in-plane electric field
-eFldAlias = qNew:alias(0, 2) -- [Ex, Ey]
-
--- initial condition to apply
-function init(x,y,z)
-   local sloc = 0.5
-   if (x<sloc) then
-      return 0.0, 1.0, 0.0, 1.0, -0.75, 0.0, 0.0, 0.0
-   else
-      return 0.0, -1.0, 0.0, 1.0, 0.75, 0.0, 0.0, 0.0
-   end
-end
-
--- apply initial conditions
-q:set(init)
+-- clear
+q:clear(0.0)
 qNew:copy(q)
 
 -- write initial conditions
@@ -52,19 +52,19 @@ q:write("q_0.h5")
 -- define equation to solve
 maxwellEqn = HyperEquation.PhMaxwell {
    -- speed of light
-   lightSpeed = 1.0,
+   lightSpeed = Lucee.SpeedOfLight,
    -- factor for electric field correction potential speed
    elcErrorSpeedFactor = 1.0,
    -- factor for magnetic field correction potential speed
    mgnErrorSpeedFactor = 1.0,
 }
 
--- updater for Euler equations
+-- updater for Maxwell equations
 maxSlvr = Updater.WavePropagation1D {
    onGrid = grid,
    equation = maxwellEqn,
    -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
-   limiter = "monotonized-centered", 
+   limiter = "no-limiter", 
    cfl = cfl,
    cflm = cfl*1.01
 }
@@ -74,6 +74,32 @@ maxSlvr:initialize()
 -- set input/output arrays (these do not change so set it once)
 maxSlvr:setIn( {q} )
 maxSlvr:setOut( {qNew} )
+
+-- Current source from an "antenna"
+currentSrc = PointSource.Function {
+   -- contributes to E_y component
+   outComponents = {1},
+   -- source term to apply
+   source = function (x,y,z,t)
+	       local J0 = Lucee.Epsilon0
+	       if (x>xLastEdge) then
+		  return -J0*math.sin(driveOmega*t)/Lucee.Epsilon0
+	       else
+		  return 0.0
+	       end
+	    end,
+}
+
+-- updater to solve ODEs for source-term splitting scheme
+sourceSlvr = Updater.GridOdePointIntegrator1D {
+   onGrid = grid,
+   -- terms to include in integration step
+   terms = {currentSrc},
+}
+-- initialize updater
+sourceSlvr:initialize()
+-- set input/output arrays (these do not change so set it once)
+sourceSlvr:setOut( {qNew} )
 
 -- function to advance solution from tStart to tEnd
 function advanceFrame(tStart, tEnd, initDt)
@@ -98,6 +124,10 @@ function advanceFrame(tStart, tEnd, initDt)
       maxSlvr:setCurrTime(tCurr)
       -- advance solution
       status, dtSuggested = maxSlvr:advance(tCurr+myDt)
+
+      -- apply source advance
+      sourceSlvr:setCurrTime(tCurr)
+      sourceSlvr:advance(tCurr+myDt)
 
       if (dtSuggested < myDt) then
 	 -- time-step too large
@@ -129,7 +159,7 @@ end
 dtSuggested = 100.0 -- initial suggested time-step
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 0.25
+tEnd = 5e-9
 
 nFrames = 2
 tFrame = (tEnd-tStart)/nFrames -- time between frames

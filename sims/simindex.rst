@@ -142,3 +142,5 @@ program for that simulation.
       :math:`80\times 40` grid.
   * - :doc:`s64 <s64/s64-pulsebox-fdtd-dual>` 
     - FDTD scheme on dual Yee-cell for Maxwell equation. Pulse problem.
+  * - :doc:`s65 <s65/s65-plasmabeach-maxwell>` 
+    - Plasma wave beach problem, without the plasma.
