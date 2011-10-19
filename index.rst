@@ -38,3 +38,4 @@ means of generating pretty, but irreproducible, pictures.
   je/je5/je5-dispersive-eqns.rst
   je/je6/je6-maxwell-solvers.rst
   je/je7/je7-dual-yee.rst
+  je/je8/je8-plasmabeach.rst

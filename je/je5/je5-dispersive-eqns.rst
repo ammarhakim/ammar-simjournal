@@ -168,7 +168,7 @@ Consider a initial perturbation of the form :math:`u(x,0)` where
   \frac{i}{2n+1} e^{i k_nx} e^{i \omega_n t}
 
 with :math:`k_n = 2\pi(2n+1)`. For :math:`N\rightarrow \infty` this
-represents a the propagation of a step function perturbation. Letting
+represents the propagation of a step function perturbation. Letting
 :math:`u_i^{(n)} \equiv i U_0 /(2n+1) e^{i(k_nx+\omega_nt)}` the
 Fourier components of the other flow variable perturbations are given
 by
