@@ -51,7 +51,12 @@ In the first test the problem is simulated without the plasma. This is
 essentially a test to ensure the EM wave propagation works correctly
 with the current source. Simulations are performed by setting
 :math:`J_0=1\times 10^{-12}` and run to :math:`t=5` ns. Grids with 100
-and 200 cells are used. Results are shown below.
+and 200 cells are used. Results are shown below. Note that although
+the solutions are smooth limiters need to be applied as the sudden
+appearance of :math:`E_y` due to the current source causes a shock
+that propagates into the ghost cell, which in turns spoils the
+interior solution. The limiters are what cause the maxima in the
+solutions shown below to get slightly flattened.
 
 .. figure:: plasmabeach-maxwell-cmp.png
   :width: 100%
