@@ -105,7 +105,7 @@ maxSlvr = Updater.WavePropagation1D {
    onGrid = grid,
    equation = maxwellEqn,
    -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
-   limiter = "no-limiter",
+   limiter = "monotonized-centered",
    cfl = cfl,
    cflm = 1.1*cfl,
 }
@@ -123,7 +123,7 @@ elcLorentzForce = PointSource.LorentzForce {
    outComponents = {1, 2, 3, 4},
 
    -- species charge and mass
-   charge = 0.0, -- -Lucee.ElementaryCharge,
+   charge = -Lucee.ElementaryCharge,
    mass = Lucee.ElectronMass,
 }
 
@@ -135,7 +135,7 @@ elcCurrent = PointSource.Current {
    outComponents = {10, 11, 12},
 
    -- species charge and mass
-   charge = 0.0, -- -Lucee.ElementaryCharge,
+   charge = -Lucee.ElementaryCharge,
    mass = Lucee.ElectronMass,
    -- premittivity of free space
    epsilon0 = Lucee.Epsilon0,
@@ -147,9 +147,9 @@ currentDrive = PointSource.Function {
    outComponents = {11},
    -- source term to apply
    source = function (x,y,z,t)
-	       local I0 = 1.0e-12 -- Amps/m^3
+	       local J0 = 1.0e-12 -- Amps/m^3
 	       if (x>xLastEdge) then
-		  return -I0*math.sin(driveOmega*t)/Lucee.Epsilon0
+		  return -J0*math.sin(driveOmega*t)/Lucee.Epsilon0
 	       else
 		  return 0.0
 	       end

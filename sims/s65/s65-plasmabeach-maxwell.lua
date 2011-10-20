@@ -12,8 +12,9 @@ nx = 100
 dx = (xupper-xlower)/nx
 xLastEdge = xupper-dx
 
+dx100 = (xupper-xlower)/100
 -- compute drive frequency
-deltaT = dx/Lucee.SpeedOfLight
+deltaT = dx100/Lucee.SpeedOfLight
 driveOmega = Lucee.Pi/10/deltaT
 
 -- computational domain
@@ -64,7 +65,7 @@ maxSlvr = Updater.WavePropagation1D {
    onGrid = grid,
    equation = maxwellEqn,
    -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
-   limiter = "no-limiter", 
+   limiter = "van-leer", 
    cfl = cfl,
    cflm = cfl*1.01
 }
@@ -81,7 +82,7 @@ currentSrc = PointSource.Function {
    outComponents = {1},
    -- source term to apply
    source = function (x,y,z,t)
-	       local J0 = Lucee.Epsilon0
+	       local J0 = 1.0e-12 -- Amps/m^3
 	       if (x>xLastEdge) then
 		  return -J0*math.sin(driveOmega*t)/Lucee.Epsilon0
 	       else
