@@ -65,7 +65,7 @@ maxSlvr = Updater.WavePropagation1D {
    onGrid = grid,
    equation = maxwellEqn,
    -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
-   limiter = "no-limiter", 
+   limiter = "van-leer",
    cfl = cfl,
    cflm = cfl*1.01
 }
@@ -82,9 +82,9 @@ currentSrc = PointSource.Function {
    outComponents = {1},
    -- source term to apply
    source = function (x,y,z,t)
-	       local I0 = 1.0e-12 -- Amps/m^3
+	       local J0 = 1.0e-12 -- Amps/m^3
 	       if (x>xLastEdge) then
-		  return -I0*math.sin(driveOmega*t)/Lucee.Epsilon0
+		  return -J0*math.sin(driveOmega*t)/Lucee.Epsilon0
 	       else
 		  return 0.0
 	       end
