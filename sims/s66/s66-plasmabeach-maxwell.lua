@@ -65,7 +65,7 @@ maxSlvr = Updater.WavePropagation1D {
    onGrid = grid,
    equation = maxwellEqn,
    -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
-   limiter = "van-leer",
+   limiter = "monotonized-centered",
    cfl = cfl,
    cflm = cfl*1.01
 }
