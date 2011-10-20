@@ -60,7 +60,9 @@ function init(x,y,z)
    local ne = wpdt^2/factor
    local te = 1.0 -- electron temperature [eV]
    local pre = ne*Lucee.BoltzmannConstant*te
-   return Lucee.ElectronMass*ne, 0, 0, 0, pre/(gasGamma-1), Lucee.ProtonMass*ne, 0, 0, 0, pre/(gasGamma-1), 0, 0, 0, 0, 0, 0, 0, 0
+   return Lucee.ElectronMass*ne, 0, 0, 0, pre/(gasGamma-1),
+     Lucee.ProtonMass*ne, 0, 0, 0, pre/(gasGamma-1), 
+     0, 0, 0, 0, 0, 0, 0, 0
 end
 -- set initial conditions
 q:set(init)
