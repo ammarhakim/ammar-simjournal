@@ -50,19 +50,16 @@ elcFluidNew = qNew:alias(0, 5)
 ionFluidNew = qNew:alias(5, 10)
 emFieldNew = qNew:alias(10, 18)
 
--- alias to in-plane magnetic field
-bFldAlias = qNew:alias(13, 15) -- [Bx, By]
-
 -- function to apply initial conditions
 function init(x,y,z)
    local wpdt = 25*(1-x)^5 -- plasma frequency
    local factor = deltaT^2*Lucee.ElementaryCharge^2/(Lucee.ElectronMass*Lucee.Epsilon0)
    local ne = wpdt^2/factor
-   local te = 1.0 -- electron temperature [eV]
+   local te = 1.0*Lucee.Ev2Kelvin -- electron temperature [K]
    local pre = ne*Lucee.BoltzmannConstant*te
    return Lucee.ElectronMass*ne, 0, 0, 0, pre/(gasGamma-1),
-     Lucee.ProtonMass*ne, 0, 0, 0, pre/(gasGamma-1), 
-     0, 0, 0, 0, 0, 0, 0, 0
+   Lucee.ProtonMass*ne, 0, 0, 0, pre/(gasGamma-1), 
+   0, 0, 0, 0, 0, 0, 0, 0
 end
 -- set initial conditions
 q:set(init)
@@ -77,6 +74,8 @@ q:write("q_0.h5")
 elcEulerEqn = HyperEquation.Euler {
    -- gas adiabatic constant
    gasGamma = gasGamma,
+   -- set flag for enabling pressure/density fix
+   correct = true,
 }
 maxwellEqn = HyperEquation.PhMaxwell {
    -- speed of light
@@ -144,7 +143,7 @@ elcCurrent = PointSource.Current {
 }
 
 -- Current source from an "antenna"
-currentDrive = PointSource.Function {
+antennaSrc = PointSource.Function {
    -- contributes to E_y component
    outComponents = {11},
    -- source term to apply
@@ -162,7 +161,7 @@ currentDrive = PointSource.Function {
 sourceSlvr = Updater.GridOdePointIntegrator1D {
    onGrid = grid,
    -- terms to include in integration step
-   terms = {elcLorentzForce, elcCurrent, currentDrive},
+   terms = {elcLorentzForce, elcCurrent, antennaSrc},
 }
 -- initialize updater
 sourceSlvr:initialize()
@@ -203,6 +202,7 @@ function advanceFrame(tStart, tEnd, initDt)
    local step = 1
    local tCurr = tStart
    local myDt = initDt
+   local nanOccured = false
    while true do
       -- copy qNew in case we need to take this step again
       qNewDup:copy(qNew)
@@ -222,13 +222,14 @@ function advanceFrame(tStart, tEnd, initDt)
 	 myDt = dtSuggested
 	 qNew:copy(qNewDup)
       else
-	 -- just outflow BCs
+	 -- apply outflow BCs
 	 qNew:applyCopyBc(0, "lower")
 	 qNew:applyCopyBc(0, "upper")
 
 	 -- check if a nan occured
 	 if (qNew:hasNan()) then
 	    print (string.format(" ** Nan occured at %g! Stopping simulation", tCurr))
+	    nanOccured = true
 	    break
 	 end
 
@@ -244,7 +245,7 @@ function advanceFrame(tStart, tEnd, initDt)
       end
    end
    
-   return dtSuggested
+   return dtSuggested, nanOccured
 end
 
 dtSuggested = 100.0 -- initial time-step to use (this will be discarded and adjusted to CFL value)
@@ -252,7 +253,7 @@ dtSuggested = 100.0 -- initial time-step to use (this will be discarded and adju
 tStart = 0.0
 tEnd = 5.0e-9
 
-nFrames = 2
+nFrames = 1
 tFrame = (tEnd-tStart)/nFrames -- time between frames
 
 tCurr = tStart
@@ -260,9 +261,13 @@ tCurr = tStart
 for frame = 1, nFrames do
    print (string.format("-- Advancing solution from %g to %g", tCurr, tCurr+tFrame))
    -- advance solution between frames
-   dtSuggested = advanceFrame(tCurr, tCurr+tFrame, dtSuggested)
+   dtSuggested, nanOccured = advanceFrame(tCurr, tCurr+tFrame, dtSuggested)
    -- write out data
    qNew:write( string.format("q_%d.h5", frame) )
+   if (nanOccured) then
+      -- no need to continue if nan has occured
+      break
+   end
    tCurr = tCurr+tFrame
    print ("")
 end
