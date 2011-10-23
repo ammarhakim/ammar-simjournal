@@ -269,7 +269,7 @@ the solution.
   :align: center
 
   Velocity at :math:`t=3` for :math:`\omega_c = 100` with 200 cells
-  [:doc:`s45 <../../sims/s45/s45-dispersive-euler>`] with a CFL nu,ber
+  [:doc:`s45 <../../sims/s45/s45-dispersive-euler>`] with a CFL number
   of 0.5.  The red line is the numerical result while the black line
   is the exact solution. Significant diffusion is seen in the results
   as well as small phase errors. Taking an even smaller time step will
