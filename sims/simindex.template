@@ -163,3 +163,7 @@ program for that simulation.
     - Plasma wave beach problem, without the plasma. Using 100 cells.
   * - ${mdl("s66")}
     - Plasma wave beach problem, without the plasma. Using 200 cells.
+  * - ${mdl("s67")}
+    - Plasma wave beach problem using 100 cells.
+  * - ${mdl("s68")}
+    - Plasma wave beach problem using 200 cells.
