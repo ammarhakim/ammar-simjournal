@@ -146,3 +146,11 @@ program for that simulation.
     - Plasma wave beach problem, without the plasma. Using 100 cells.
   * - :doc:`s66 <s66/s66-plasmabeach-maxwell>` 
     - Plasma wave beach problem, without the plasma. Using 200 cells.
+  * - :doc:`s67 <s67/s67-plasmabeach>` 
+    - Plasma wave beach problem using 100 cells.
+  * - :doc:`s68 <s68/s68-plasmabeach>` 
+    - Plasma wave beach problem using 200 cells.
+  * - :doc:`s69 <s69/s69-plasmabeach>` 
+    - Plasma wave beach problem using 400 cells.
+  * - :doc:`s70 <s70/s70-plasmabeach>` 
+    - Plasma wave beach problem using 800 cells.
