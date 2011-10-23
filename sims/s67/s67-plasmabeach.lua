@@ -74,9 +74,8 @@ q:write("q_0.h5")
 elcEulerEqn = HyperEquation.Euler {
    -- gas adiabatic constant
    gasGamma = gasGamma,
-   -- set flag for enabling pressure/density fix
-   correct = true,
 }
+
 maxwellEqn = HyperEquation.PhMaxwell {
    -- speed of light
    lightSpeed = Lucee.SpeedOfLight,
@@ -253,7 +252,7 @@ dtSuggested = 100.0 -- initial time-step to use (this will be discarded and adju
 tStart = 0.0
 tEnd = 5.0e-9
 
-nFrames = 1
+nFrames = 100
 tFrame = (tEnd-tStart)/nFrames -- time between frames
 
 tCurr = tStart
