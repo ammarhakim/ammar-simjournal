@@ -1,6 +1,6 @@
 :Author: Ammar Hakim
 :Date: October 18th 2011
-:Completed: 
+:Completed: October 22nd 2011
 
 JE8: Propagation into a plasma wave beach
 =========================================
@@ -71,6 +71,66 @@ solutions shown below to get slightly flattened.
   upper panel the electromagnetic wave has not yet propagated through
   the domain.
 
+Wave propagation into a plasma beach
+------------------------------------
+
+In this set of simulations wave propagation into the plasma beach is
+presented. The time-step for this simulation needs to be small enough
+to resolve the plasma frequency. Several simulations were performed:
+with 100, 200, 400 and 800 grid cells. The transverse electric field,
+:math:`E_y` is plotted as a function of space and time below.
+
+.. figure:: s69-plasmabeach_Ey.png
+  :width: 100%
+  :align: center
+
+  Electromagnetic wave propagation in a plasma beach driven by a
+  current source in the last cell. This simulation [:doc:`s69
+  <../../sims/s69/s69-plasmabeach>`] was run on a 400 cells. Shown
+  here is the electric field :math:`E_y` as a function of time
+  (increasing towards the right) and space (top of the figure is the
+  right edge). The dashed black line shows the plasma cutoff
+  (:math:`\omega_p(x) = \omega`). The EM wave propagates into the
+  plasma and reflects off the cutoff layer, interfering with the
+  incoming wave. Evanescent waves propagating into the cutoff region
+  are also visible.
+
+The convergence of the solution with increasing grid resolution is
+shown below. It is seen that the 100 cell resolution is very
+diffuse. The reason for this is that the small CFL number (0.1) causes
+significant diffusion in the wave-propagation scheme.
+
+.. figure:: plasmabeach_Ey_cmp.png
+  :width: 100%
+  :align: center
+
+  Comparison of :math:`E_y` for different grid sizes. Show are results
+  from 100 cells [:doc:`s67 <../../sims/s67/s67-plasmabeach>`], 200
+  cells [:doc:`s68 <../../sims/s68/s68-plasmabeach>`], 400 cells
+  [:doc:`s69 <../../sims/s69/s69-plasmabeach>`] and 800 cells
+  [:doc:`s70 <../../sims/s70/s70-plasmabeach>`]. The lower resolution
+  simulations show significant diffusion as the wave-propagation
+  scheme can not be run to the allowed CFL number as the
+  plasma-frequency needs to be resolved.
+
+Conclusions
+-----------
+
+This simulation shows that radio-frequency EM wave propagation into a
+plasma cutoff can be simulated with the wave-propagation scheme in a
+stable manner. Note that the plasma frequency needs to be
+resolved. This constraint can be quiet severe and a way around this
+would be advance the source terms (semi-) implicitly. Another option
+would be to treat the electrons as a cold linear dielectric medium (in
+the spirit of Smithe). Of course, this would exclude non-linear
+electron physics.
+
+The fact that the wave-propagation scheme is so diffusive for
+time-steps much smaller than allowed by the CFL number is a
+significant disadvantage. High-order schemes are not so sensitive to
+CFL numbers and should be of value here. Another option would be to
+evolve the fields and fluid with different time-steps and using
+implicit source advance to couple them.
 
 References
 ----------
@@ -78,7 +138,3 @@ References
 .. [Smithe2007] David N Smithe, "Finite-difference time-domain
    simulation of fusion plasmas at radiofrequency time scales",
    *Physics of Plasmas*, **14**, Pg. 056104 (2007).
-
-
-
-
