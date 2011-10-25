@@ -14,7 +14,8 @@ after a short period of time. A small step towards reproducibility is
 to maintain a "simulation journal". The journal entries should
 document a set of related simulations, providing enough detail to
 allow a reader to understand the problem, algorithms used and
-results. See `JE0 <je/je0.html>`_ below for details.
+results. See `JE0 <je/je0/je0-repro-research.html>`_ below for
+details.
 
 The following entries are my attempt to maintain a simulation journal,
 mainly for my own use. This allows me to keep notes in one place and
