@@ -40,3 +40,4 @@ means of generating pretty, but irreproducible, pictures.
   je/je6/je6-maxwell-solvers.rst
   je/je7/je7-dual-yee.rst
   je/je8/je8-plasmabeach.rst
+  je/je9/je9-cyclotron-tunneling.rst

@@ -154,3 +154,5 @@ program for that simulation.
     - Plasma wave beach problem using 400 cells.
   * - :doc:`s70 <s70/s70-plasmabeach>` 
     - Plasma wave beach problem using 800 cells.
+  * - :doc:`s71 <s71/s71-plasmabeach>` 
+    - Plasma wave beach problem using 1600 cells.

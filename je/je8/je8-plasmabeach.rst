@@ -107,8 +107,9 @@ significant diffusion in the wave-propagation scheme.
   Comparison of :math:`E_y` for different grid sizes. Show are results
   from 100 cells (blue) [:doc:`s67 <../../sims/s67/s67-plasmabeach>`],
   200 cells (black) [:doc:`s68 <../../sims/s68/s68-plasmabeach>`], 400
-  cells (red) [:doc:`s69 <../../sims/s69/s69-plasmabeach>`] and 800
-  cells (magenta) [:doc:`s70 <../../sims/s70/s70-plasmabeach>`]. The
+  cells (red) [:doc:`s69 <../../sims/s69/s69-plasmabeach>`], 800 cells
+  (magenta) [:doc:`s70 <../../sims/s70/s70-plasmabeach>`] and 1600
+  cells (green) [:doc:`s71 <../../sims/s71/s71-plasmabeach>`]. The
   lower resolution simulations show significant diffusion as the
   wave-propagation scheme can not be run to the allowed CFL number as
   the plasma-frequency needs to be resolved.
