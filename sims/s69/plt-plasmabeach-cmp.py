@@ -4,6 +4,12 @@ import math
 import numpy
 #pylab.rc('text', usetex=True)
 
+fh = tables.openFile("../s71/s71-plasmabeach_q_100.h5")
+q1600 = fh.root.StructGridField
+dx = 1/1600.
+X = pylab.linspace(0+0.5*dx, 1-0.5*dx, 1600)
+pylab.plot(X, q1600[:,11], 'g-', linewidth=2)
+
 fh = tables.openFile("../s70/s70-plasmabeach_q_100.h5")
 q800 = fh.root.StructGridField
 dx = 1/800.
