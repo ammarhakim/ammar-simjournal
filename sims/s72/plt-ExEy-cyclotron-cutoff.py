@@ -11,8 +11,8 @@ dx = (xup-xlo)/nx
 X = pylab.linspace(xlo+0.5*dx, xup-0.5*dx, nx)
 
 driveF = 15.0e9
-tEnd = 1.5e-9
-nDump = 20
+tEnd = 1.4e-9
+nDump = 4
 T = pylab.linspace(0, tEnd, nDump+1)
 
 fig = pylab.figure(1)
@@ -25,6 +25,7 @@ for i in [1, 2, 3, 4]:
     pylab.plot(X, q[:,10], 'm-')
     currAx = pylab.gca()
     currAx.set_ylim([-0.05, 0.05])
+    pylab.plot([0.04, 0.04], [-0.05, 0.05], 'k--')
     pylab.title("t=%g" % T[i])
     pylab.ylabel(r'$E_x$')
 
@@ -40,6 +41,7 @@ for i in [1, 2, 3, 4]:
     pylab.plot(X, q[:,11], 'm-')
     currAx = pylab.gca()
     currAx.set_ylim([-1.0, 1.0])
+    pylab.plot([0.04, 0.04], [-1.0, 1.0], 'k--')
     pylab.title("t=%g" % T[i])
     pylab.ylabel(r'$E_y$')    
 
