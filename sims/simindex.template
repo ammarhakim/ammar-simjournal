@@ -175,3 +175,5 @@ program for that simulation.
     - Plasma wave beach problem using 1600 cells.
   * - ${mdl("s72")}
     - Tunneling through an electron-cyclotron cutoff layer, 200 cells
+  * - ${mdl("s73")}
+    - Tunneling through an electron-cyclotron cutoff layer, 400 cells

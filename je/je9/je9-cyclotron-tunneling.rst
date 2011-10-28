@@ -1,6 +1,6 @@
 :Author: Ammar Hakim
 :Date: October 26th 2011
-:Completed: 
+:Completed: October 28th 2011
 
 JE9: Tunneling through an electron-cyclotron cutoff layer
 =========================================================
@@ -53,13 +53,46 @@ as the wave number becomes infinite there.
   The electric field (:math:`E_y`) of the EM wave at different
   times. The black dashed line shows the location of the cyclotron
   cutoff. The wave tunnels through the electron cyclotron resonance
-  layer, forming a distinct standing wave pattern late in time.
+  layer, forming a distinct standing wave pattern late in time. The
+  simulation input file is at :doc:`s72
+  <../../sims/s72/s72-cyclotron-cutoff>`.
 
 .. figure:: s72-Ex.png
   :width: 100%
   :align: center
 
-  The electrostatic field (:math:`E_x`) wave at different times. The
-  black dashed line shows the location of the cyclotron cutoff. A very
-  sharp spike develops at the cutoff location as the wave number
-  becomes infinite.
+  The electrostatic field (:math:`E_x`) at different times. The black
+  dashed line shows the location of the cyclotron cutoff. A very sharp
+  spike develops at the cutoff location as the wave number becomes
+  infinite.
+
+A simulation was performed with the same parameters but with 400 cells
+and was run to 50 ns. The electrostatic field component is shown
+below.
+
+.. figure:: s73-Ex-inset.png
+  :width: 100%
+  :align: center
+
+  The electrostatic field (:math:`E_x`) at :math:`t=50` ns. The black
+  dashed line shows the location of the cyclotron cutoff. The plot
+  shows the sharp spike formed due to the wave number becoming
+  infinite. The inset plot is a zoom to show the electrostatic field
+  around the resonance layer. The simulation input file is at
+  :doc:`s73 <../../sims/s73/s73-cyclotron-cutoff>`.
+
+Conclusions
+-----------
+
+In this simulation the propagation of a wave into an electron
+cyclotron resonance layer is shown. The EM wave suffers a cutoff at
+the resonance layer but tunnels through. The electrostatic field shows
+a sharp spike due to the wave number becoming infinite at the
+resonance layer. However, the finite size of the grid means that the
+spike can only be resolved to the smallest grid size. Even though the
+linear theory predicts unlimited growth of the wave number, when the
+field amplitude gets large enough the plasma will become non-linear
+and the linear theory is no longer valid. The simulations show a
+characteristic feature of cyclotron cutoff layers: sharp gradients in
+the electrostatic fields and a sudden change in the electromagnetic
+wave amplitude.
