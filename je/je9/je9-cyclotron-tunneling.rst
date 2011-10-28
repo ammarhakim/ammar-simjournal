@@ -51,13 +51,15 @@ as the wave number becomes infinite there.
   :align: center
 
   The electric field (:math:`E_y`) of the EM wave at different
-  times. The wave tunnels through the electron cyclotron resonance
+  times. The black dashed line shows the location of the cyclotron
+  cutoff. The wave tunnels through the electron cyclotron resonance
   layer, forming a distinct standing wave pattern late in time.
 
 .. figure:: s72-Ex.png
   :width: 100%
   :align: center
 
-  The electrostatic field (:math:`E_x`) wave at different times. A
-  very sharp spike develops at the cutoff location as the wave number
+  The electrostatic field (:math:`E_x`) wave at different times. The
+  black dashed line shows the location of the cyclotron cutoff. A very
+  sharp spike develops at the cutoff location as the wave number
   becomes infinite.
