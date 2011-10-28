@@ -169,7 +169,8 @@ antennaSrc = PointSource.Function {
    source = function (x,y,z,t)
 	       local J0 = 1.0 -- Amps/m^3
 	       if (x>xLastEdge) then
-		  return -J0*math.sin(driveOmega*t)/Lucee.Epsilon0
+		  local ramp = math.sin(0.5*Lucee.Pi*math.min(1, 0.1*driveF*t))
+		  return -J0*ramp^2*math.sin(driveOmega*t)/Lucee.Epsilon0
 	       else
 		  return 0.0
 	       end
@@ -214,6 +215,7 @@ function solveTwoFluidSystem(tCurr, t)
 
    return status, dtSuggested
 end
+
 
 -- advance solution from tStart to tEnd, using optimal time-steps.
 function advanceFrame(tStart, tEnd, initDt)
@@ -270,9 +272,9 @@ end
 dtSuggested = 100.0 -- initial time-step to use (this will be discarded and adjusted to CFL value)
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 100e-9
+tEnd = 1.4e-9 -- this is about 20 periods
 
-nFrames = 10
+nFrames = 4
 tFrame = (tEnd-tStart)/nFrames -- time between frames
 
 tCurr = tStart
