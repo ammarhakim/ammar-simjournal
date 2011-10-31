@@ -181,6 +181,7 @@ program for that simulation.
     - Ion-cyclotron wave propagation in a 1D tokamak-like configuration, 400 cells.
   * - ${mdl("s75")}
     - Ion-cyclotron wave propagation in a 1D tokamak-like configuration, 200 cells.
+      This simulation does not work very well as the resolution is too low.
   * - ${mdl("s76")}
     - Ion-cyclotron wave propagation in a 1D tokamak-like configuration, 
       low-field incidence.
