@@ -503,9 +503,9 @@ end
 dtSuggested = 100.0 -- initial time-step to use (this will be discarded and adjusted to CFL value)
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 100/driveF
+tEnd = 200/driveF
 
-nFrames = 100
+nFrames = 190
 tFrame = (tEnd-tStart)/nFrames -- time between frames
 
 tCurr = tStart
