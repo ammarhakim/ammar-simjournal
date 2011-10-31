@@ -177,3 +177,10 @@ program for that simulation.
     - Tunneling through an electron-cyclotron cutoff layer, 200 cells
   * - ${mdl("s73")}
     - Tunneling through an electron-cyclotron cutoff layer, 400 cells
+  * - ${mdl("s74")}
+    - Ion-cyclotron wave propagation in a 1D tokamak-like configuration, 400 cells.
+  * - ${mdl("s75")}
+    - Ion-cyclotron wave propagation in a 1D tokamak-like configuration, 200 cells.
+  * - ${mdl("s76")}
+    - Ion-cyclotron wave propagation in a 1D tokamak-like configuration, 
+      low-field incidence.
