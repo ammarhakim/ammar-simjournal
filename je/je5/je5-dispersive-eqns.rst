@@ -89,7 +89,7 @@ This simple analysis indicates that the linear solution will depend on
 the nature of the eigenvalues of the source Jacobian matrix
 :math:`\mathbf{M}_p`. In case the eigenvalues of this matrix are
 *purely imaginary*, the dispersion relation will be real but waves
-will sufferer dispersion as they propagate in the background uniform
+will suffer dispersion as they propagate in the background uniform
 equilibrium. In this case the system of equations is called
 *hyperbolic balance laws with dispersive source terms*. (This is my
 own terminology and I have not seen such equations discussed in the
