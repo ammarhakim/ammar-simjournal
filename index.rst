@@ -41,3 +41,4 @@ means of generating pretty, but irreproducible, pictures.
   je/je7/je7-dual-yee.rst
   je/je8/je8-plasmabeach.rst
   je/je9/je9-cyclotron-tunneling.rst
+  je/je10/je10-icw.rst

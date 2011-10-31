@@ -22,13 +22,14 @@ by a current applied at the center of the last cell, i.e.,
 
 .. math::
 
-  J_y(t) = J_0\sin(2\pi f_d t)
-  \sin\big(0.5\pi \min(1, 0.1 f_d t)\big)
+  J_y(t) = J_0\sin(2\pi f_d t)\thinspace
+  \sin^2\big(0.5\pi \min(1, t/t_0)\big)
 
-where :math:`f_d = 15\times 10^9` Hz is the drive frequency. The
-second factor in the above equation ramps up the source slowly so as
-to avoid exciting small scale oscillations and extraneous modes. The
-static magnetic field is set to
+where :math:`f_d = 15\times 10^9` Hz is the drive frequency and
+:math:`t_0=10/f_d` is the time at which the source turns on
+completely. The second factor in the above equation ramps up the
+source slowly so as to avoid exciting small scale oscillations and
+extraneous modes. The static magnetic field is set to
 
 .. math::
 
