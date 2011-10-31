@@ -1,0 +1,1 @@
+/Users/ammar/software/mplayer/bin/mencoder 'mf://*.png' -mf type=png:fps=10 -ovc lavc -lavcopts vcodec=wmv2 -oac copy -o animation.avi
