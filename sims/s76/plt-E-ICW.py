@@ -10,7 +10,7 @@ nx = 400
 dx = (xup-xlo)/nx
 X = pylab.linspace(xlo+0.5*dx, xup-0.5*dx, nx)
 
-for i in range(101):
+for i in range(191):
     fh = tables.openFile("s76-icw_EM_%d.h5" % i)
     q = fh.root.StructGridField
 
