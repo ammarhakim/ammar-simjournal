@@ -87,7 +87,8 @@ components. The :math:`E_y` component is domainated by the fast wave
 and shows a standing wave pattern. The :math:`E_z` component is
 dominated by the mode-converted ICW while the :math:`E_x` shows
 both. At the mode conversion layer the :math:`E_x` field shows a sharp
-gradient.
+gradient. See `movie <../../_static/s74-icw-E.mov>`_ of the
+simulation.
 
 .. figure:: s74-ICW-E_00050.png
   :width: 100%
@@ -123,7 +124,8 @@ last cell (right) in the domain. In this case the mode conversion is
 weaker than in the high-field incidence case. The differences are
 clearly visible from the high-field incidence case in the :math:`E_x`
 and :math:`E_z`. The gradients are much weaker while the amplitudes
-are smaller.
+are smaller. See `movie <../../_static/s76-icw-E.mov>`_ of the
+simulation.
 
 .. figure:: s76-ICW-E_00050.png
   :width: 100%
