@@ -164,6 +164,7 @@ program for that simulation.
     - Ion-cyclotron wave propagation in a 1D tokamak-like configuration, 400 cells.
   * - :doc:`s75 <s75/s75-icw>` 
     - Ion-cyclotron wave propagation in a 1D tokamak-like configuration, 200 cells.
+      This simulation does not work very well as the resolution is too low.
   * - :doc:`s76 <s76/s76-icw>` 
     - Ion-cyclotron wave propagation in a 1D tokamak-like configuration, 
       low-field incidence.

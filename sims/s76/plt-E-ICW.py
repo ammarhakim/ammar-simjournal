@@ -10,12 +10,18 @@ nx = 400
 dx = (xup-xlo)/nx
 X = pylab.linspace(xlo+0.5*dx, xup-0.5*dx, nx)
 
+driveF = 40.5e6
+tEnd = 200/driveF
+T = pylab.linspace(0, tEnd, 191)
+
 for i in range(191):
     fh = tables.openFile("s76-icw_EM_%d.h5" % i)
     q = fh.root.StructGridField
 
     fig = pylab.figure(1)
     fig.subplots_adjust(hspace=0.5)
+
+    fig.suptitle('Time t=%e' % T[i])
 
     pylab.subplot(3, 1, 1)
     pylab.plot(X, q[:,0], 'k-')
