@@ -2,9 +2,10 @@ import pylab
 import tables
 import math
 import numpy
+import findpeaks
 
 nx = 400
-nt = 190
+nt = 191
 Ex_TX = numpy.zeros((nt+1, nx), numpy.float)
 
 for i in range(191):
@@ -12,5 +13,3 @@ for i in range(191):
     q = fh.root.StructGridField
     Ex = q[:,0]
     Ex_TX[i,:] = Ex
-
-
