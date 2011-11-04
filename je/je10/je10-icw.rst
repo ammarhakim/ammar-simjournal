@@ -1,9 +1,9 @@
 :Author: Ammar Hakim
 :Date: October 30th 2011
-:Completed: 
+:Completed: November 1st 2011
 
-JE9: Ion-cyclotron wave (ICW) propagation and mode conversion
-=============================================================
+JE10: Ion-cyclotron wave (ICW) propagation and mode conversion
+==============================================================
 
 The ion-cyclotron wave (ICW) is a short-wavelength cold-plasma wave
 that occurs when an electromagnetic wave is pumped into a plasma
