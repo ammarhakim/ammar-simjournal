@@ -168,3 +168,11 @@ program for that simulation.
   * - :doc:`s76 <s76/s76-icw>` 
     - Ion-cyclotron wave propagation in a 1D tokamak-like configuration, 
       low-field incidence.
+  * - :doc:`s77 <s77/s77-poisson-1d>` 
+    - 1D Poisson convergence test with 8 elements.
+  * - :doc:`s78 <s78/s78-poisson-1d>` 
+    - 1D Poisson convergence test with 16 elements.
+  * - :doc:`s79 <s79/s79-poisson-1d>` 
+    - 1D Poisson convergence test with 32 elements.
+  * - :doc:`s80 <s80/s80-poisson-1d>` 
+    - 1D Poisson convergence test with 64 elements.

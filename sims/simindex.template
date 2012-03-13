@@ -185,3 +185,11 @@ program for that simulation.
   * - ${mdl("s76")}
     - Ion-cyclotron wave propagation in a 1D tokamak-like configuration, 
       low-field incidence.
+  * - ${mdl("s77")}
+    - 1D Poisson convergence test with 8 elements.
+  * - ${mdl("s78")}
+    - 1D Poisson convergence test with 16 elements.
+  * - ${mdl("s79")}
+    - 1D Poisson convergence test with 32 elements.
+  * - ${mdl("s80")}
+    - 1D Poisson convergence test with 64 elements.
