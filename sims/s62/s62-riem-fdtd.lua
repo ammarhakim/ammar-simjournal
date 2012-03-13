@@ -90,8 +90,6 @@ elcUpdate = Updater.EdgeFaceCurl1D {
    -- CFL numbers
    cfl = cfl,
 }
--- initialize updater
-elcUpdate:initialize()
 -- set input/out arrays (these do not change so set it once)
 elcUpdate:setIn( {Elc, Mgn} )
 elcUpdate:setOut( {ElcNew} )
@@ -106,8 +104,6 @@ mgnUpdate = Updater.FaceEdgeCurl1D {
    -- CFL numbers
    cfl = cfl,
 }
--- initialize updater
-mgnUpdate:initialize()
 -- set input/out arrays (these do not change so set it once)
 mgnUpdate:setIn( {Mgn, ElcNew} )
 mgnUpdate:setOut( {MgnNew} )

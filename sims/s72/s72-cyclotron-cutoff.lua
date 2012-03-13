@@ -102,8 +102,6 @@ elcEulerSlvr = Updater.WavePropagation1D {
    cfl = cfl,
    cflm = 1.1*cfl,
 }
--- initialize updater
-elcEulerSlvr:initialize()
 -- set input/output arrays (these do not change so set it once)
 elcEulerSlvr:setIn( {elcFluid} )
 elcEulerSlvr:setOut( {elcFluidNew} )
@@ -117,8 +115,6 @@ maxSlvr = Updater.WavePropagation1D {
    cfl = cfl,
    cflm = 1.1*cfl,
 }
--- initialize updater
-maxSlvr:initialize()
 -- set input/output arrays (these do not change so set it once)
 maxSlvr:setIn( {emField} )
 maxSlvr:setOut( {emFieldNew} )
@@ -183,8 +179,6 @@ sourceSlvr = Updater.GridOdePointIntegrator1D {
    -- terms to include in integration step
    terms = {elcLorentzForce, elcCurrent, elcLorentzForceStaticB, antennaSrc},
 }
--- initialize updater
-sourceSlvr:initialize()
 -- set input/output arrays (these do not change so set it once)
 sourceSlvr:setOut( {qNew} )
 

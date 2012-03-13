@@ -41,8 +41,6 @@ src:write("src.h5")
 
 -- create Poisson solver
 poissonSlvr = Updater.PeriodicPoisson2D { onGrid = grid, }
--- initialize updater
-poissonSlvr:initialize()
 -- set in/out arrays
 poissonSlvr:setIn( {src} )
 poissonSlvr:setOut( {sol} )
@@ -61,8 +59,6 @@ solCD = DataStruct.Field2D {
 
 -- create CD updater
 cdCalc = Updater.RectSecondOrderCentralDiff2D { onGrid = grid, }
--- initialize updater
-cdCalc:initialize()
 -- set in/out arrays
 cdCalc:setIn( {sol} )
 cdCalc:setOut( {solCD} )

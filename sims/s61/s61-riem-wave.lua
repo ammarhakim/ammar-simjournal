@@ -69,8 +69,6 @@ maxSlvr = Updater.WavePropagation1D {
    cflm = cfl*1.01
 }
 
--- initialize updater
-maxSlvr:initialize()
 -- set input/output arrays (these do not change so set it once)
 maxSlvr:setIn( {q} )
 maxSlvr:setOut( {qNew} )

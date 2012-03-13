@@ -88,8 +88,6 @@ elcUpdate = Updater.EdgeFaceCurl2D {
    -- CFL numbers
    cfl = 0.45,
 }
--- initialize updater
-elcUpdate:initialize()
 -- set input/out arrays (these do not change so set it once)
 elcUpdate:setIn( {Elc, Mgn} )
 elcUpdate:setOut( {ElcNew} )
@@ -104,8 +102,6 @@ mgnUpdate = Updater.FaceEdgeCurl2D {
    -- CFL numbers
    cfl = 0.45,
 }
--- initialize updater
-mgnUpdate:initialize()
 -- set input/out arrays (these do not change so set it once)
 mgnUpdate:setIn( {Mgn, ElcNew} )
 mgnUpdate:setOut( {MgnNew} )
@@ -123,8 +119,6 @@ bcRight = Updater.Bc2D {
    -- edge to apply on
    edge = "upper",
 }
--- initialize updater
-bcRight:initialize()
 -- set input/output arrays (these do not change so set it once)
 bcRight:setOut( {ElcNew} )
 
@@ -137,8 +131,6 @@ bcTop = Updater.Bc2D {
    -- edge to apply on
    edge = "upper",
 }
--- initialize updater
-bcTop:initialize()
 -- set input/output arrays (these do not change so set it once)
 bcTop:setOut( {ElcNew} )
 

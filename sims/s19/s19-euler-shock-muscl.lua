@@ -60,8 +60,6 @@ eulerSlvr = Updater.MusclHancock1D {
    limiter = "epsilon",
 }
 
--- initialize updater
-eulerSlvr:initialize()
 -- set input/output arrays (these do not change so set it once)
 eulerSlvr:setIn( {q} )
 eulerSlvr:setOut( {qNew} )
