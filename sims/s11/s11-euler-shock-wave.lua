@@ -67,8 +67,6 @@ eulerSlvr = Updater.WavePropagation1D {
    cflm = 1.01*mycfl,
 }
 
--- initialize updater
-eulerSlvr:initialize()
 -- set input/output arrays (these do not change so set it once)
 eulerSlvr:setIn( {q} )
 eulerSlvr:setOut( {qNew} )

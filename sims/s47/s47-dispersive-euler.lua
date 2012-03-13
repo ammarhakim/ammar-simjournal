@@ -83,8 +83,6 @@ eulerSlvr = Updater.WavePropagation1D {
    cfl = cfl,
    cflm = 1.1*cfl,
 }
--- initialize updater
-eulerSlvr:initialize()
 -- set input/output arrays (these do not change so set it once)
 eulerSlvr:setIn( {fluid} )
 eulerSlvr:setOut( {fluidNew} )
@@ -108,8 +106,6 @@ sourceSlvr = Updater.GridOdePointIntegrator1D {
    -- terms to include in integration step
    terms = {force},
 }
--- initialize updater
-sourceSlvr:initialize()
 -- set input/output arrays (these do not change so set it once)
 sourceSlvr:setOut( {qNew} )
 

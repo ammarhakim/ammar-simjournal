@@ -71,8 +71,6 @@ maxSlvr = Updater.WavePropagation2D {
    cflm = cfl*1.01
 }
 
--- initialize updater
-maxSlvr:initialize()
 -- set input/output arrays (these do not change so set it once)
 maxSlvr:setIn( {q} )
 maxSlvr:setOut( {qNew} )
@@ -93,7 +91,6 @@ function createBc(myDir, myEdge)
       -- edge to apply on
       edge = myEdge,
    }
-   bc:initialize()
    bc:setOut( {qNew} )
    return bc
 end

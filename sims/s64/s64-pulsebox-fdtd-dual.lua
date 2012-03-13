@@ -82,8 +82,6 @@ mgnUpdate = Updater.EdgeFaceCurl2D {
    -- extra cells to update (needed for the dual Yee cell)
    ghostUpdate = {0, 1},
 }
--- initialize updater
-mgnUpdate:initialize()
 -- set input/out arrays (these do not change so set it once)
 mgnUpdate:setIn( {Mgn, Elc} )
 mgnUpdate:setOut( {MgnNew} )
@@ -98,8 +96,6 @@ elcUpdate = Updater.FaceEdgeCurl2D {
    -- CFL numbers
    cfl = 0.45,
 }
--- initialize updater
-elcUpdate:initialize()
 -- set input/out arrays (these do not change so set it once)
 elcUpdate:setIn( {Elc, MgnNew} )
 elcUpdate:setOut( {ElcNew} )
@@ -121,7 +117,6 @@ function createBc(myDir, myEdge, outFld, appBc)
       -- edge to apply on
       edge = myEdge,
    }
-   bc:initialize()
    bc:setOut( {outFld} )
    return bc
 end

@@ -224,8 +224,6 @@ elcEulerSlvr = Updater.WavePropagation1D {
    cfl = cfl,
    cflm = 1.1*cfl,
 }
--- initialize updater
-elcEulerSlvr:initialize()
 -- set input/output arrays (these do not change so set it once)
 elcEulerSlvr:setIn( {elcFluid} )
 elcEulerSlvr:setOut( {elcFluidNew} )
@@ -239,8 +237,6 @@ ionDEulerSlvr = Updater.WavePropagation1D {
    cfl = cfl,
    cflm = 1.1*cfl,
 }
--- initialize updater
-ionDEulerSlvr:initialize()
 -- set input/output arrays (these do not change so set it once)
 ionDEulerSlvr:setIn( {ionDFluid} )
 ionDEulerSlvr:setOut( {ionDFluidNew} )
@@ -254,8 +250,6 @@ ionH3EulerSlvr = Updater.WavePropagation1D {
    cfl = cfl,
    cflm = 1.1*cfl,
 }
--- initialize updater
-ionH3EulerSlvr:initialize()
 -- set input/output arrays (these do not change so set it once)
 ionH3EulerSlvr:setIn( {ionH3Fluid} )
 ionH3EulerSlvr:setOut( {ionH3FluidNew} )
@@ -269,8 +263,6 @@ maxSlvr = Updater.WavePropagation1D {
    cfl = cfl,
    cflm = 1.1*cfl,
 }
--- initialize updater
-maxSlvr:initialize()
 -- set input/output arrays (these do not change so set it once)
 maxSlvr:setIn( {emField} )
 maxSlvr:setOut( {emFieldNew} )
@@ -409,8 +401,6 @@ sourceSlvr = Updater.GridOdePointIntegrator1D {
 	    ionH3LorentzForce, ionH3Current, ionH3LorentzForceStaticB,
 	    antennaSrc},
 }
--- initialize updater
-sourceSlvr:initialize()
 -- set input/output arrays (these do not change so set it once)
 sourceSlvr:setOut( {qNew} )
 

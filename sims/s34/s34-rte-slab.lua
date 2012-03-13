@@ -59,8 +59,6 @@ simulation = Solver.RteHomogeneousSlab {
    }
 }
 
--- initialize simulation
-simulation:initialize()
 -- run simulation (time is irrelevant in this case)
 res = simulation:advance(1.0)
 -- write data
