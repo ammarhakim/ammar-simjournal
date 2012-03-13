@@ -5,3 +5,4 @@ sims/*/*.h5
 sims/*/*.log
 sims/*/*.png
 sims/*/*.txt
+sims/*/*.rst

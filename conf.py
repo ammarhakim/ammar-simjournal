@@ -215,3 +215,4 @@ latex_preamble = r'''
 #mathjax_path='/Users/ammar/software/MathJax/MathJax.js'
 #mathjax_path='http://mathjax.connectmv.com/MathJax.js'
 mathjax_path="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+#mathjax_path="https://ice.txcorp.com/doc/MathJax/MathJax.js"
