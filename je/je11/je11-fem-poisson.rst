@@ -132,3 +132,25 @@ An example solution with 16 elements is shown below.
   compared to the exact solution (red) for 16 elements [:doc:`s82
   <../../sims/s82/s82-poisson-1d>`] and Neumann boundary conditions on
   left and Dirichlet boundary conditions on right.
+
+Convergence of 2D solver
+------------------------
+
+In this test the convergence of the 2D solver is tested with an exact
+solution. The exact solution is choosen to be
+
+.. math::
+
+ \psi(x,y) = f(x;a,c_0,c_1)f(y;b,d_0,d_1)
+
+where
+
+.. math::
+
+ f(x;a,c_0,c_1) = \frac{x^2}{2} - \frac{ax^4}{12} + c_0 x + c_1
+
+Here, I have choosen :math:`a=2`, :math:`b=5`, :math:`c_1=d_0=0` and
+:math:`c_0=a/12-1/2` and :math:`d_1=b/12-1/2`. This corresponds to
+Dirichlet boundary conditions on the left, right and top edge and a
+Neumann boundary condition on the bottom edge.
+
