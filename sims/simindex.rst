@@ -176,3 +176,11 @@ program for that simulation.
     - 1D Poisson convergence test with 32 elements.
   * - :doc:`s80 <s80/s80-poisson-1d>` 
     - 1D Poisson convergence test with 64 elements.
+  * - :doc:`s81 <s81/s81-poisson-1d>` 
+    - 1D Poisson convergence test with 8 elements and Dirichlet/Neumann Bcs.
+  * - :doc:`s82 <s82/s82-poisson-1d>` 
+    - 1D Poisson convergence test with 16 elements and Dirichlet/Neumann Bcs.
+  * - :doc:`s83 <s83/s83-poisson-1d>` 
+    - 1D Poisson convergence test with 32 elements and Dirichlet/Neumann Bcs.
+  * - :doc:`s84 <s84/s84-poisson-1d>` 
+    - 1D Poisson convergence test with 64 elements and Dirichlet/Neumann Bcs.
