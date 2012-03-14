@@ -16,7 +16,7 @@ end
 grid = Grid.RectCart2D {
    lower = {0.0, 0.0},
    upper = {1.0, 1.0},
-   cells = {8, 8},
+   cells = {16, 16},
 }
 
 -- source term

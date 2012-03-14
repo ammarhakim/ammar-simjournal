@@ -1,6 +1,6 @@
 :Author: Ammar Hakim
 :Date: March 13th 2012
-:Completed: 
+:Completed: March 13th 2012
 
 JE11: Benchmarking a finite-element Poisson solver
 ==================================================
@@ -23,7 +23,7 @@ Convergence of 1D solver
 ------------------------
 
 In this test the convergence of the 1D solver is tested with an exact
-solution. The source is choosen to be
+solution. The source is chosen to be
 
 .. math::
 
@@ -110,7 +110,7 @@ elements and with :math:`a=5`.
     - 
     - :doc:`s81 <../../sims/s81/s81-poisson-1d>`
   * - :math:`0.0625`
-    - :math:`106812 \times 10^{-3}`
+    - :math:`1.06812 \times 10^{-3}`
     - 1.98
     - :doc:`s82 <../../sims/s82/s82-poisson-1d>`
   * - :math:`0.03125`
@@ -137,7 +137,7 @@ Convergence of 2D solver
 ------------------------
 
 In this test the convergence of the 2D solver is tested with an exact
-solution. The exact solution is choosen to be
+solution. The exact solution is chosen to be
 
 .. math::
 
@@ -149,8 +149,48 @@ where
 
  f(x;a,c_0,c_1) = \frac{x^2}{2} - \frac{ax^4}{12} + c_0 x + c_1
 
-Here, I have choosen :math:`a=2`, :math:`b=5`, :math:`c_1=d_0=0` and
+Here, I have chosen :math:`a=2`, :math:`b=5`, :math:`c_1=d_0=0` and
 :math:`c_0=a/12-1/2` and :math:`d_1=b/12-1/2`. This corresponds to
 Dirichlet boundary conditions on the left, right and top edge and a
 Neumann boundary condition on the bottom edge.
 
+The following table shows the errors for the second-order Lobatto
+scheme with different cell sizes corresponding to :math:`8\times 8`,
+:math:`16\times 16`, :math:`32\times 32`, and :math:`64\times 64`
+element grids.
+
+.. list-table:: Poisson solver convergence for second-order FEM with
+		Dirichlet/Neumann boundary conditions
+  :header-rows: 1
+  :widths: 20,40,20,20
+
+  * - Grid size :math:`\Delta x`
+    - Average error
+    - Order
+    - Simulation
+  * - :math:`0.125`
+    - :math:`2.90322 \times 10^{-5}`
+    - 
+    - :doc:`s85 <../../sims/s85/s85-poisson-2d>`
+  * - :math:`0.0625`
+    - :math:`7.8699 \times 10^{-6}`
+    - 1.88
+    - :doc:`s86 <../../sims/s86/s86-poisson-2d>`
+  * - :math:`0.03125`
+    - :math:`2.04355\times 10^{-6}`
+    - 1.95
+    - :doc:`s87 <../../sims/s87/s87-poisson-2d>`
+  * - :math:`0.015625`
+    - :math:`5.5524\times 10^{-7}`
+    - 1.89
+    - :doc:`s88 <../../sims/s88/s88-poisson-2d>`
+
+.. figure:: s87-poisson-cmp.png
+  :width: 100%
+  :align: center
+
+  Solution computed with the 2D Poisson finite-element updater (left)
+  compared to the exact solution (right) for :math:`32\times 32`
+  element grid [:doc:`s87 <../../sims/s87/s87-poisson-2d>`]. This
+  corresponds to Dirichlet boundary conditions on the left, right and
+  top edge and a Neumann boundary condition on the bottom edge.

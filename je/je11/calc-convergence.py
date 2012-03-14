@@ -14,3 +14,7 @@ print "Neumann BCs"
 dat = pylab.loadtxt("convergence-1d-n.dat")
 convergence(dat[:,0], dat[:,1])
 
+print "Two dimensions"
+dat = pylab.loadtxt("convergence-2d.dat")
+convergence(dat[:,0], dat[:,1])
+
