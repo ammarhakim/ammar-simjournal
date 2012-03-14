@@ -16,7 +16,7 @@ end
 grid = Grid.RectCart2D {
    lower = {0.0, 0.0},
    upper = {1.0, 1.0},
-   cells = {8, 8},
+   cells = {64, 64},
 }
 
 -- source term
@@ -68,6 +68,7 @@ lobattoBasis = NodalFiniteElement2D.Serendipity {
    polyOrder = 1,
 }
 
+--ts = os.clock()
 -- create updater to solve Poisson equation
 poissonSlvr = Updater.FemPoisson2D {
    onGrid = grid,
@@ -79,17 +80,20 @@ poissonSlvr = Updater.FemPoisson2D {
    bcBottom = { T = "N", V = 0.0 },
    bcTop = { T = "D", V = 0.0 },
 }
+-- print (string.format("Poisson initialization took %g seconds", os.clock()-ts))
 
 -- set input output fields
 poissonSlvr:setIn( {src} )
 poissonSlvr:setOut( {phi} )
 
+-- ts = os.clock()
 -- solve for potential (time is irrelevant here)
 status, dtSuggested = poissonSlvr:advance(0.0)
 -- check if solver converged
 if (status == false) then
    Lucee.logError("Poisson solver failed to converge!")
 end
+-- print (string.format("Poisson solver took %g seconds", os.clock()-ts))
 
 -- output solution
 phi:write("phi.h5")

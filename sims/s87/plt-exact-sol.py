@@ -11,7 +11,7 @@ def exactSol(a, b, X, Y):
     XX, YY = pylab.meshgrid(X, Y)
     return (XX**2/2 - a*XX**4/12 + c0*XX + c1)*(YY**2/2 - b*YY**4/12 + d0*YY + d1)
 
-fh = tables.openFile("s85-poisson-2d_phi.h5")
+fh = tables.openFile("s87-poisson-2d_phi.h5")
 q = fh.root.StructGridField
 nx, ny, nc = q.shape
 Xf = pylab.linspace(0, 1, nx)
@@ -36,6 +36,8 @@ pylab.axis('image')
 pylab.subplot(1,2,2)
 cax = pylab.pcolormesh(Xhr, Yhr, fhr)
 pylab.axis('image')
+
+pylab.savefig('s87-poisson-cmp.png')
 
 # compute error
 fex = exactSol(2, 5, Xf, Yf)
