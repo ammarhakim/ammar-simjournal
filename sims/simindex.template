@@ -201,3 +201,5 @@ program for that simulation.
     - 1D Poisson convergence test with 32 elements and Dirichlet/Neumann Bcs.
   * - ${mdl("s84")}
     - 1D Poisson convergence test with 64 elements and Dirichlet/Neumann Bcs.
+  * - ${mdl("s85")}
+    - 2D Poisson convergence test with :math:`8\times 8` elements.
