@@ -209,3 +209,19 @@ program for that simulation.
     - Same as s86, except with :math:`32 \times 32` elements.
   * - ${mdl("s88")}
     - Same as s86, except with :math:`64 \times 64` elements.
+  * - ${mdl("s89")}
+    - 1D Poisson convergence test, 3rd order scheme, with 4 elements.
+  * - ${mdl("s90")}
+    - 1D Poisson convergence test, 3rd order scheme, with 8 elements.
+  * - ${mdl("s91")}
+    - 1D Poisson convergence test, 3rd order scheme, with 16 elements.
+  * - ${mdl("s92")}
+    - 1D Poisson convergence test, 3rd order scheme, with 32 elements.
+  * - ${mdl("s93")}
+    - 1D Poisson convergence test, 4th order scheme, with 2 elements.
+  * - ${mdl("s94")}
+    - 1D Poisson convergence test, 4th order scheme, with 4 elements.
+  * - ${mdl("s95")}
+    - 1D Poisson convergence test, 4th order scheme, with 8 elements.
+  * - ${mdl("s96")}
+    - 1D Poisson convergence test, 4th order scheme, with 16 elements.
