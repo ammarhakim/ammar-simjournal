@@ -192,3 +192,19 @@ program for that simulation.
     - Same as s86, except with :math:`32 \times 32` elements.
   * - :doc:`s88 <s88/s88-poisson-2d>` 
     - Same as s86, except with :math:`64 \times 64` elements.
+  * - :doc:`s89 <s89/s89-poisson-o3-1d>` 
+    - 1D Poisson convergence test, 3rd order scheme, with 4 elements.
+  * - :doc:`s90 <s90/s90-poisson-o3-1d>` 
+    - 1D Poisson convergence test, 3rd order scheme, with 8 elements.
+  * - :doc:`s91 <s91/s91-poisson-o3-1d>` 
+    - 1D Poisson convergence test, 3rd order scheme, with 16 elements.
+  * - :doc:`s92 <s92/s92-poisson-o3-1d>` 
+    - 1D Poisson convergence test, 3rd order scheme, with 32 elements.
+  * - :doc:`s93 <s93/s93-poisson-o4-1d>` 
+    - 1D Poisson convergence test, 4th order scheme, with 2 elements.
+  * - :doc:`s94 <s94/s94-poisson-o4-1d>` 
+    - 1D Poisson convergence test, 4th order scheme, with 4 elements.
+  * - :doc:`s95 <s95/s95-poisson-o4-1d>` 
+    - 1D Poisson convergence test, 4th order scheme, with 8 elements.
+  * - :doc:`s96 <s96/s96-poisson-o4-1d>` 
+    - 1D Poisson convergence test, 4th order scheme, with 16 elements.

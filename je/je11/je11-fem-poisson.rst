@@ -1,6 +1,7 @@
 :Author: Ammar Hakim
 :Date: March 13th 2012
 :Completed: March 13th 2012
+:Last Updated: 
 
 JE11: Benchmarking a finite-element Poisson solver
 ==================================================
@@ -132,6 +133,99 @@ An example solution with 16 elements is shown below.
   compared to the exact solution (red) for 16 elements [:doc:`s82
   <../../sims/s82/s82-poisson-1d>`] and Neumann boundary conditions on
   left and Dirichlet boundary conditions on right.
+
+Convergence of high order 1D Poisson solver
+-------------------------------------------
+
+In this test the convergence of the 3rd and 4th order 1D solvers is
+tested with an exact solution. The source is chosen to be
+
+.. math::
+
+ s(x) = 1+ax^2+bx^4
+
+where :math:`a=2` and :math:`b=-12`. With this the exact solution is
+
+.. math::
+
+ \psi(x) = \frac{x^2}{2} + \frac{ax^4}{12} + \frac{bx^6}{30} + c_0 x + c_1
+
+where :math:`c_0` and :math:`c_1` are constants of integration. For
+the first test we pick the domain :math:`x\in [0,1]` and Dirichlet
+boundary conditions :math:`\psi(0)=\psi(1)=0`. With these we get
+:math:`c_1=0` and :math:`c_0=-(1/2+a/12+b/30)`.
+
+Convergence of third-order method
++++++++++++++++++++++++++++++++++
+
+The following table shows the errors for the third-order Lobatto
+scheme with different cell sizes corresponding to 4, 8, 16, and 32
+elements and with :math:`a=2`.
+
+.. list-table:: Poisson solver convergence for third-order FEM with
+		Dirichlet boundary conditions
+  :header-rows: 1
+  :widths: 20,40,20,20
+
+  * - Grid size :math:`\Delta x`
+    - Average error
+    - Order
+    - Simulation
+  * - :math:`0.25`
+    - :math:`7.742 \times 10^{-5}`
+    - 
+    - :doc:`s89 <../../sims/s89/s89-poisson-o3-1d>`
+  * - :math:`0.125`
+    - :math:`5.397 \times 10^{-6}`
+    - 3.84
+    - :doc:`s90 <../../sims/s90/s90-poisson-o3-1d>`
+  * - :math:`0.0625`
+    - :math:`3.535 \times 10^{-7}`
+    - 3.93
+    - :doc:`s91 <../../sims/s91/s91-poisson-o3-1d>`
+  * - :math:`0.03125`
+    - :math:`2.249\times 10^{-8}`
+    - 3.97
+    - :doc:`s92 <../../sims/s92/s92-poisson-o3-1d>`
+
+Note that the 3rd order scheme is actually converging with 4th order
+accuracy. In fact, the 3rd order scheme gives the exact solution when
+the same source as was used in testing the 2nd order scheme is used.
+
+Convergence of fourth-order method
+++++++++++++++++++++++++++++++++++
+
+The following table shows the errors for the fourth-order Lobatto
+scheme with different cell sizes corresponding to 4, 8, 16, and 32
+elements and with :math:`a=2`.
+
+
+
+.. list-table:: Poisson solver convergence for fourth-order FEM with
+		Dirichlet boundary conditions
+  :header-rows: 1
+  :widths: 20,40,20,20
+
+  * - Grid size :math:`\Delta x`
+    - Average error
+    - Order
+    - Simulation
+  * - :math:`0.5`
+    - :math:`5.536 \times 10^{-5}`
+    - 
+    - :doc:`s93 <../../sims/s93/s93-poisson-o4-1d>`
+  * - :math:`0.25`
+    - :math:`1.847 \times 10^{-6}`
+    - 4.90
+    - :doc:`s94 <../../sims/s94/s94-poisson-o4-1d>`
+  * - :math:`0.125`
+    - :math:`5.994 \times 10^{-8}`
+    - 4.94
+    - :doc:`s95 <../../sims/s95/s95-poisson-o4-1d>`
+  * - :math:`0.0625`
+    - :math:`1.910\times 10^{-8}`
+    - 4.97
+    - :doc:`s96 <../../sims/s96/s96-poisson-o4-1d>`
 
 Convergence of 2D solver
 ------------------------
