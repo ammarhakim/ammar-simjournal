@@ -225,3 +225,5 @@ program for that simulation.
     - 1D Poisson convergence test, 4th order scheme, with 8 elements.
   * - ${mdl("s96")}
     - 1D Poisson convergence test, 4th order scheme, with 16 elements.
+  * - ${mdl("s97")}
+    - 2D Poisson convergence test, 3rd order scheme, with :math:`4\times 4` elements.
