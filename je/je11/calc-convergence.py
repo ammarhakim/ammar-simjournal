@@ -26,3 +26,6 @@ print "One D, Order 4"
 dat = pylab.loadtxt("convergence-1d-o4.dat")
 convergence(dat[:,0], dat[:,1])
 
+print "Two dimensions, Order 3"
+dat = pylab.loadtxt("convergence-2d-o3.dat")
+convergence(dat[:,0], dat[:,1])

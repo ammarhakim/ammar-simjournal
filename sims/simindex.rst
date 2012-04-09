@@ -208,3 +208,11 @@ program for that simulation.
     - 1D Poisson convergence test, 4th order scheme, with 8 elements.
   * - :doc:`s96 <s96/s96-poisson-o4-1d>` 
     - 1D Poisson convergence test, 4th order scheme, with 16 elements.
+  * - :doc:`s97 <s97/s97-poisson-o3-2d>` 
+    - 2D Poisson convergence test, 3rd order scheme, with :math:`4\times 4` elements.
+  * - :doc:`s98 <s98/s98-poisson-o3-2d>` 
+    - 2D Poisson convergence test, 3rd order scheme, with :math:`8\times 8` elements.
+  * - :doc:`s99 <s99/s99-poisson-o3-2d>` 
+    - 2D Poisson convergence test, 3rd order scheme, with :math:`16\times 16` elements.
+  * - :doc:`s100 <s100/s100-poisson-o3-2d>` 
+    - 2D Poisson convergence test, 3rd order scheme, with :math:`32\times 32` elements.

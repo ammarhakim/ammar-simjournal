@@ -288,3 +288,45 @@ element grids.
   element grid [:doc:`s87 <../../sims/s87/s87-poisson-2d>`]. This
   corresponds to Dirichlet boundary conditions on the left, right and
   top edge and a Neumann boundary condition on the bottom edge.
+
+Convergence of third-order 2D solver
+------------------------------------
+
+In this test the convergence of the third-order 2D solver is tested
+with an exact solution. The problem setup is the same as used in
+testing the second-order solver, except using the third-order
+Serendipity basis functions.
+
+The following table shows the errors for the third-order scheme with
+different cell sizes corresponding to :math:`8\times 8`,
+:math:`16\times 16`, :math:`32\times 32`, and :math:`64\times 64`
+element grids.
+
+.. list-table:: Poisson solver convergence for third-order FEM with
+		Dirichlet/Neumann boundary conditions
+  :header-rows: 1
+  :widths: 20,40,20,20
+
+  * - Grid size :math:`\Delta x`
+    - Average error
+    - Order
+    - Simulation
+  * - :math:`0.25`
+    - :math:`1.156 \times 10^{-5}`
+    - 
+    - :doc:`s97 <../../sims/s97/s97-poisson-o3-2d>`
+  * - :math:`0.125`
+    - :math:`8.767 \times 10^{-7}`
+    - 3.72
+    - :doc:`s98 <../../sims/s98/s98-poisson-o3-2d>`
+  * - :math:`0.0625`
+    - :math:`6.043 \times 10^{-8}`
+    - 3.85
+    - :doc:`s99 <../../sims/s99/s99-poisson-o3-2d>`
+  * - :math:`0.03125`
+    - :math:`5.200\times 10^{-9}`
+    - 3.53
+    - :doc:`s100 <../../sims/s100/s100-poisson-o3-2d>`
+
+The solution converges with greater than third order, as it did for
+the 1D solver.
