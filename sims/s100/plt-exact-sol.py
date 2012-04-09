@@ -11,7 +11,7 @@ def exactSol(a, b, X, Y):
     XX, YY = pylab.meshgrid(X, Y)
     return (XX**2/2 - a*XX**4/12 + c0*XX + c1)*(YY**2/2 - b*YY**4/12 + d0*YY + d1)
 
-fh = tables.openFile("s97-poisson-o3-2d_phi.h5")
+fh = tables.openFile("s100-poisson-o3-2d_phi.h5")
 q = fh.root.StructGridField
 nx, ny, nc = q.shape
 
