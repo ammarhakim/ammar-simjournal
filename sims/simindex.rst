@@ -216,3 +216,9 @@ program for that simulation.
     - 2D Poisson convergence test, 3rd order scheme, with :math:`16\times 16` elements.
   * - :doc:`s100 <s100/s100-poisson-o3-2d>` 
     - 2D Poisson convergence test, 3rd order scheme, with :math:`32\times 32` elements.
+  * - :doc:`s101 <s101/s101-periodic-poisson-2d>` 
+    - 2D Poisson convergence test with periodic BCs and :math:`32\times 32` elements
+  * - :doc:`s102 <s102/s102-periodic-poisson-2d>` 
+    - 2D Poisson convergence test with periodic BCs and :math:`64\times 64` elements
+  * - :doc:`s103 <s103/s103-periodic-poisson-2d>` 
+    - 2D Poisson convergence test with periodic BCs and :math:`128\times 128` elements

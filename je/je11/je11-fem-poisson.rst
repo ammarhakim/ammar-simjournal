@@ -1,7 +1,7 @@
 :Author: Ammar Hakim
 :Date: March 13th 2012
 :Completed: March 13th 2012
-:Last Updated: 
+:Last Updated:  April 9th 2012
 
 JE11: Benchmarking a finite-element Poisson solver
 ==================================================
@@ -330,3 +330,100 @@ element grids.
 
 The solution converges with greater than third order, as it did for
 the 1D solver.
+
+Convergence of second-order solver with periodic boundary conditions
+--------------------------------------------------------------------
+
+The finite-element solver needs significant modification when periodic
+boundary conditions need to be applied. First, we need to ensure that
+the source integrated over the domain vanishes, i.e
+
+.. math::
+
+  \int_\Omega s(x,y) dx dy = 0
+
+To ensure this condition the updater first computes the integrated
+source and removes that when computing the global source vector.
+
+Further, one needs to carefully build the stiffness matrix to take
+into account those nodes that the identified with each other due to
+the periodic boundary conditions. This needs careful book-keeping of
+local to global index mappings and also accounting for the same
+periodicity in computing the global source vector. Finally, the
+stiffness matrix will be singular as with periodic BCs the solution is
+only determined to an additive constant. To avoid problems with the
+linear solve one needs to set one location in the domain to an
+arbitrary value. I have chosen to set the bottom left corner as
+:math:`\phi(0,0) = 0`. All these modifications are not trivial and
+need 2X to 3X more code than needed to just support Dirichlet and/or
+Neumann boundary conditions.
+
+In this section I test the convergence of the solver using an exact
+solution given by
+
+.. math::
+
+  \phi(x,y) = \frac{1}{N}\sum_{m,n} \left[
+    a_{mn} \cos(mx) \cos(ny) + 
+    b_{mn} \sin(mx) \sin(ny)
+  \right]
+
+where :math:`N` is a normalizing factor and :math:`a_{mn}` and
+:math:`b_{mn}` are specified coefficients. The source corresponding to
+this solution is
+
+.. math::
+
+  s(x,y) = -\frac{1}{N}\sum_{m,n} (m^2+n^2) \left[
+    a_{mn} \cos(mx) \cos(ny) + 
+    b_{mn} \sin(mx) \sin(ny)
+  \right].
+
+The domain is :math:`x \in [0,2\pi]` and :math:`y \in [0,2\pi]`. For
+the other quantities used see the Lua scripts linked below.
+
+The following table shows the errors for the second-order scheme with
+different cell sizes corresponding to :math:`32\times 32`,
+:math:`64\times 64` and :math:`128\times 128` element grids.
+
+.. list-table:: Poisson solver convergence for second-order FEM with
+		periodic boundary conditions
+  :header-rows: 1
+  :widths: 20,40,20,20
+
+  * - Grid size :math:`\Delta x`
+    - Average error
+    - Order
+    - Simulation
+  * - :math:`2\pi/32`
+    - :math:`3.718 \times 10^{-3}`
+    - 
+    - :doc:`s101 <../../sims/s101/s101-periodic-poisson-2d>`
+  * - :math:`2\pi/64`
+    - :math:`9.595 \times 10^{-4}`
+    - 1.95
+    - :doc:`s102 <../../sims/s102/s102-periodic-poisson-2d>`
+  * - :math:`2\pi/128`
+    - :math:`2.903 \times 10^{-4}`
+    - 1.72
+    - :doc:`s103 <../../sims/s103/s103-periodic-poisson-2d>`
+
+.. figure:: s102-periodic-poisson-cmp.png
+  :width: 100%
+  :align: center
+
+  Solution computed with the 2D Poisson finite-element updater with
+  periodic boundary conditions (left) compared to the exact solution
+  (right) for :math:`64\times 64` element grid [:doc:`s102
+  <../../sims/s102/s102-periodic-poisson-2d>`].
+
+Conclusions
+-----------
+
+With these tests I am reasonably confident that the Poisson
+finite-element updater works correctly. I have shown the expected
+convergence behaviour of the 1D and 2D schemes. In 2D I also tested
+periodic boundary conditions and showed second-order convergence. I
+have not yet tested the periodic BCs in 1D or the third order 2D
+periodic BC solver. I will update this entry when I do so.
+
