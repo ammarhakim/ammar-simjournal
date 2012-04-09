@@ -29,3 +29,7 @@ convergence(dat[:,0], dat[:,1])
 print "Two dimensions, Order 3"
 dat = pylab.loadtxt("convergence-2d-o3.dat")
 convergence(dat[:,0], dat[:,1])
+
+print "Two dimensions, Periodic"
+dat = pylab.loadtxt("convergence-periodic.dat")
+convergence(dat[:,0], dat[:,1])

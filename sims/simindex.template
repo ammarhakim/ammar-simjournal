@@ -233,3 +233,9 @@ program for that simulation.
     - 2D Poisson convergence test, 3rd order scheme, with :math:`16\times 16` elements.
   * - ${mdl("s100")}
     - 2D Poisson convergence test, 3rd order scheme, with :math:`32\times 32` elements.
+  * - ${mdl("s101")}
+    - 2D Poisson convergence test with periodic BCs and :math:`32\times 32` elements
+  * - ${mdl("s102")}
+    - 2D Poisson convergence test with periodic BCs and :math:`64\times 64` elements
+  * - ${mdl("s103")}
+    - 2D Poisson convergence test with periodic BCs and :math:`128\times 128` elements

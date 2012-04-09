@@ -16,7 +16,7 @@ end
 grid = Grid.RectCart2D {
    lower = {0.0, 0.0},
    upper = {2*Lucee.Pi, 2*Lucee.Pi},
-   cells = {32, 32},
+   cells = {128, 128},
 }
 
 -- create FEM nodal basis
