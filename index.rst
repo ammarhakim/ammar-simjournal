@@ -43,3 +43,4 @@ means of generating pretty, but irreproducible, pictures.
   je/je9/je9-cyclotron-tunneling.rst
   je/je10/je10-icw.rst
   je/je11/je11-fem-poisson.rst
+  je/je12/je12-poisson-bracket.rst
