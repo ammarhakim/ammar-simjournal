@@ -239,3 +239,11 @@ program for that simulation.
     - 2D Poisson convergence test with periodic BCs and :math:`64\times 64` elements
   * - ${mdl("s103")}
     - 2D Poisson convergence test with periodic BCs and :math:`128\times 128` elements
+  * - ${mdl("s104")}
+    - Temporal convergence study of Poisson bracket with Gaussian pulse. CFL 0.2.
+  * - ${mdl("s105")}
+    - Temporal convergence study of Poisson bracket with Gaussian pulse. CFL 0.1.
+  * - ${mdl("s106")}
+    - Temporal convergence study of Poisson bracket with Gaussian pulse. CFL 0.05.
+  * - ${mdl("s107")}
+    - Temporal convergence study of Poisson bracket with Gaussian pulse. CFL 0.025.
