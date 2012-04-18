@@ -230,3 +230,17 @@ program for that simulation.
     - Temporal convergence study of Poisson bracket with Gaussian pulse. CFL 0.05.
   * - :doc:`s107 <s107/s107-pb-advection-1d>` 
     - Temporal convergence study of Poisson bracket with Gaussian pulse. CFL 0.025.
+  * - :doc:`s108 <s108/s108-pb-advection-1d>` 
+    - Same as s104, except with RK3 time-stepping.
+  * - :doc:`s109 <s109/s109-pb-advection-1d>` 
+    - Same as s108. CFL 0.1.
+  * - :doc:`s110 <s110/s110-pb-advection-1d>` 
+    - Same as s108. CFL 0.05.
+  * - :doc:`s111 <s111/s111-pb-advection-1d>` 
+    - Same as s108. CFL 0.025.
+  * - :doc:`s112 <s112/s112-pb-advection-2d>` 
+    - Convergence of Poisson bracket algorithm with 2nd order scheme, :math:`32\times 32` grid.
+  * - :doc:`s113 <s113/s113-pb-advection-2d>` 
+    - Convergence of Poisson bracket algorithm with 2nd order scheme, :math:`64\times 64` grid.
+  * - :doc:`s114 <s114/s114-pb-advection-2d>` 
+    - Convergence of Poisson bracket algorithm with 2nd order scheme, :math:`128\times 128` grid.
