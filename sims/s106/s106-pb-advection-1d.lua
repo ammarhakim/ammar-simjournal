@@ -4,7 +4,7 @@
 polyOrder = 1
 
 -- cfl number to use
-cfl = 0.2
+cfl = 0.05
 
 -- Determine number of global nodes per cell for use in creating CG
 -- fields. Note that this looks a bit odd as this not the number of

@@ -222,3 +222,11 @@ program for that simulation.
     - 2D Poisson convergence test with periodic BCs and :math:`64\times 64` elements
   * - :doc:`s103 <s103/s103-periodic-poisson-2d>` 
     - 2D Poisson convergence test with periodic BCs and :math:`128\times 128` elements
+  * - :doc:`s104 <s104/s104-pb-advection-1d>` 
+    - Temporal convergence study of Poisson bracket with Gaussian pulse. CFL 0.2.
+  * - :doc:`s105 <s105/s105-pb-advection-1d>` 
+    - Temporal convergence study of Poisson bracket with Gaussian pulse. CFL 0.1.
+  * - :doc:`s106 <s106/s106-pb-advection-1d>` 
+    - Temporal convergence study of Poisson bracket with Gaussian pulse. CFL 0.05.
+  * - :doc:`s107 <s107/s107-pb-advection-1d>` 
+    - Temporal convergence study of Poisson bracket with Gaussian pulse. CFL 0.025.
