@@ -244,3 +244,9 @@ program for that simulation.
     - Convergence of Poisson bracket algorithm with 2nd order scheme, :math:`64\times 64` grid.
   * - :doc:`s114 <s114/s114-pb-advection-2d>` 
     - Convergence of Poisson bracket algorithm with 2nd order scheme, :math:`128\times 128` grid.
+  * - :doc:`s115 <s115/s115-pb-advection-2d>` 
+    - Convergence of Poisson bracket algorithm with 3rd order scheme, :math:`8\times 8` grid.
+  * - :doc:`s116 <s116/s116-pb-advection-2d>` 
+    - Same as s115, except with :math:`16\times 16` grid.
+  * - :doc:`s117 <s117/s117-pb-advection-2d>` 
+    - Same as s115, except with :math:`32\times 32` grid.

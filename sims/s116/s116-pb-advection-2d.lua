@@ -243,7 +243,7 @@ function advanceFrame(tStart, tEnd, initDt)
       print (string.format("Taking step %d at time %g with dt %g", step, tCurr, myDt))
 
       -- take a time-step
-      status, dtSuggested = rk2(tCurr, myDt)
+      status, dtSuggested = rk3(tCurr, myDt)
 
       if (status == false) then
 	 -- time-step too large

@@ -125,14 +125,15 @@ as
   \psi(x,y) =y - x
 
 giving an advection speed of :math:`\sqrt{2}` top right corner of the
-domain. For all problems, an RK2 time-stepping scheme with fixed
-time-step (for all spatial resolutions) was used.
+domain. For all problems, the time-step was held fixed for all spatial
+resolutions.
 
 In the first set of tests, the convergence of the second-order scheme
-is tested. This scheme uses the second-order 4-node Lobatto
-elements. Grids of :math:`32\times 32`, :math:`64\times 64` and
-:math:`128\times 128` were used and convergence computed by comparing
-to the initial conditions. Results are shown in the following table.
+is tested. This scheme uses the second-order 4-node Lobatto elements
+with RK-2 time-stepping. Grids of :math:`32\times 32`, :math:`64\times
+64` and :math:`128\times 128` were used and convergence computed by
+comparing to the initial conditions. Results are shown in the
+following table.
 
 .. list-table:: Poisson bracket convergence for second-order spatial scheme
   :header-rows: 1
@@ -168,7 +169,28 @@ The solution computed on the :math:`32\times 32` grid is shown below.
 
 In the second set of tests, the convergence of the third-order scheme
 is tested. This scheme uses the third-order 8-node Serendipity
-elements. Grids of :math:`12\times 12`, :math:`16\times 16`, and
-:math:`32\times 32` were used and convergence computed by comparing to
-the initial conditions. Results are shown in the following table.
+elements with RK-3 time-stepping. Grids of :math:`8\times 8`,
+:math:`16\times 16`, and :math:`32\times 32` were used and convergence
+computed by comparing to the initial conditions. Results are shown in
+the following table.
 
+.. list-table:: Poisson bracket convergence for third-order spatial scheme
+  :header-rows: 1
+  :widths: 20,40,20,20
+
+  * - Cell size
+    - Average Error
+    - Order
+    - Simulation
+  * - :math:`1/8`
+    - :math:`4.4776 \times 10^{-3}`
+    - 
+    - :doc:`s115 <../../sims/s115/s115-pb-advection-2d>`
+  * - :math:`1/16`
+    - :math:`3.4893\times 10^{-4}`
+    - 3.68
+    - :doc:`s116 <../../sims/s116/s116-pb-advection-2d>`
+  * - :math:`1/32`
+    - :math:`2.8015\times 10^{-5}`
+    - 3.63
+    - :doc:`s117 <../../sims/s117/s117-pb-advection-2d>`

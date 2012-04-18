@@ -32,16 +32,16 @@ def projectOnFinerGrid_f(Xc, Yc, q):
     c7 = q[:,:,7]
 
     # node 0
-    qn[0:2*nx:2, 0:2*ny:2] = (9*c7)/16+(3*c6)/16+(3*c5)/16+(9*c4)/16-(3*c3)/16-c2/8-(3*c1)/16
+    qn[0:2*nx:2, 0:2*ny:2] = (9*c7)/16.0+(3*c6)/16.0+(3*c5)/16.0+(9*c4)/16.0-(3*c3)/16.0-c2/8.0-(3*c1)/16.0
 
     # node 1
-    qn[1:2*nx:2, 0:2*ny:2] = (3*c7)/16+(3*c6)/16+(9*c5)/16+(9*c4)/16-c3/8-(3*c2)/16-(3*c0)/16
+    qn[1:2*nx:2, 0:2*ny:2] = (3*c7)/16.0+(3*c6)/16.0+(9*c5)/16.0+(9*c4)/16.0-c3/8.0-(3*c2)/16.0-(3*c0)/16.0
 
     # node 2
-    qn[1:2*nx:2, 1:2*ny:2] = (3*c7)/16+(9*c6)/16+(9*c5)/16+(3*c4)/16-(3*c3)/16-(3*c1)/16-c0/8
+    qn[1:2*nx:2, 1:2*ny:2] = (3*c7)/16.0+(9*c6)/16.0+(9*c5)/16.0+(3*c4)/16.0-(3*c3)/16.0-(3*c1)/16.0-c0/8.0
 
     # node 3
-    qn[0:2*nx:2, 1:2*ny:2] = (9*c7)/16+(9*c6)/16+(3*c5)/16+(3*c4)/16-(3*c2)/16-c1/8-(3*c0)/16
+    qn[0:2*nx:2, 1:2*ny:2] = (9*c7)/16.0+(9*c6)/16.0+(3*c5)/16.0+(3*c4)/16.0-(3*c2)/16.0-c1/8.0-(3*c0)/16.0
 
     return Xn, Yn, qn
 
@@ -58,13 +58,13 @@ Xc = pylab.linspace(lower[0]+0.5*dx, upper[0]-0.5*dx, cells[0])
 Yc = pylab.linspace(lower[1]+0.5*dy, upper[1]-0.5*dy, cells[1])
 
 # get final solution
-q = fh.root.StructGridField
-Xn, Yn, qn_1 = projectOnFinerGrid_f(Xc, Yc, q)
+q_1 = fh.root.StructGridField
+Xn, Yn, qn_1 = projectOnFinerGrid_f(Xc, Yc, q_1)
 
 # get intial solution
 fh = tables.openFile("s115-pb-advection-2d_chi_0.h5")
-q = fh.root.StructGridField
-Xn, Yn, qn_0 = projectOnFinerGrid_f(Xc, Yc, q)
+q_0 = fh.root.StructGridField
+Xn, Yn, qn_0 = projectOnFinerGrid_f(Xc, Yc, q_0)
 
 nx, ny = Xn.shape[0], Yn.shape[0]
 
@@ -84,6 +84,7 @@ print nx, ny
 
 # compute error
 err = numpy.abs(qn_1-qn_0).sum()/(nx*ny)
+#err = numpy.abs(q_1.read()-q_0.read()).sum()/(cells[0]*cells[1]*8)
 print math.sqrt(dx*dy), err
 
 pylab.show()
