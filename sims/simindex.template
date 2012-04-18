@@ -247,3 +247,23 @@ program for that simulation.
     - Temporal convergence study of Poisson bracket with Gaussian pulse. CFL 0.05.
   * - ${mdl("s107")}
     - Temporal convergence study of Poisson bracket with Gaussian pulse. CFL 0.025.
+  * - ${mdl("s108")}
+    - Same as s104, except with RK3 time-stepping.
+  * - ${mdl("s109")}
+    - Same as s108. CFL 0.1.
+  * - ${mdl("s110")}
+    - Same as s108. CFL 0.05.
+  * - ${mdl("s111")}
+    - Same as s108. CFL 0.025.
+  * - ${mdl("s112")}
+    - Convergence of Poisson bracket algorithm with 2nd order scheme, :math:`32\times 32` grid.
+  * - ${mdl("s113")}
+    - Convergence of Poisson bracket algorithm with 2nd order scheme, :math:`64\times 64` grid.
+  * - ${mdl("s114")}
+    - Convergence of Poisson bracket algorithm with 2nd order scheme, :math:`128\times 128` grid.
+  * - ${mdl("s115")}
+    - Convergence of Poisson bracket algorithm with 3rd order scheme, :math:`8\times 8` grid.
+  * - ${mdl("s116")}
+    - Same as s115, except with :math:`16\times 16` grid.
+  * - ${mdl("s117")}
+    - Same as s115, except with :math:`32\times 32` grid.

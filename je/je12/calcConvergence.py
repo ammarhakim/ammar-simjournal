@@ -8,10 +8,22 @@ def convergence(dx, err):
 
 def convergenceDt(dx, err):
     for i in range(2, dx.shape[0]):
-        od = (err[i-1]/err[i])/(dx[i-1]/dx[i])
+        od = pylab.log(err[i-1]/err[i])/pylab.log(dx[i-1]/dx[i])
         print od 
 
 print "RK2, Fixed dx"
 dat = pylab.loadtxt("dt-convergence-rk2.dat")
 convergenceDt(dat[:,0], dat[:,1])
+
+print "RK3, Fixed dx"
+dat = pylab.loadtxt("dt-convergence-rk3.dat")
+convergenceDt(dat[:,0], dat[:,1])
+
+print "DG2 convergence"
+dat = pylab.loadtxt("dx-convergence-dg-2.dat")
+convergence(dat[:,0], dat[:,1])
+
+print "DG3 convergence"
+dat = pylab.loadtxt("dx-convergence-dg-3.dat")
+convergence(dat[:,0], dat[:,1])
 
