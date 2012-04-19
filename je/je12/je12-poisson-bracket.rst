@@ -103,7 +103,7 @@ Spatial Convergence
 +++++++++++++++++++
 
 To test the spatial convergence of the algorithms, a Gaussian pulse is
-initialized and propogated diagonally across a unit square with
+initialized and propagated diagonally across a unit square with
 periodic boundary conditions. The pulse returns to its starting
 position after unit time has elapsed. Note that diagonal propagation
 is a harder problem than propagation parallel to grid lines: it not
@@ -117,7 +117,7 @@ The Gaussian pulse is
   \chi(x,y,0) = \exp(-75 r^2)
 
 where :math:`r = \sqrt{(x-x_c)^2+(y-y_c)^2}` and :math:`(x_c,y_c)` are
-the corrdinates of the center of the pulse. The potential is selected
+the coordinates of the center of the pulse. The potential is selected
 as
 
 .. math::
@@ -230,14 +230,14 @@ where
 
 For this problem, :math:`r_0=0.2` and :math:`(x_0,y_0) = (1/4,
 1/2)`. To test convergence, the simulation was run to :math:`t=2\pi`
-and compared to the initial condition. Average erros of
+and compared to the initial condition. Average errors of
 :math:`1.583\times 10^{-3}` and :math:`3.459\times 10^{-4}` were
 computed, giving a spatial convergence order of about
-math:`2.29`. Next, a third order spatial scheme was used to compute
-the solution to :math:`t=2\pi` at which point the cosine hump has
-advected twice about the orgin. The figure below shows the solution at
+:math:`2.29`. Next, a third order spatial scheme was used to compute
+the solution to :math:`t=4\pi` at which point the cosine hump has
+advected twice about the origin. The figure below shows the solution at
 four different times, indicating that the algorithm essentially
-advects the initial hump wihout any significant distortion.
+advects the initial hump without any significant distortion.
 
 .. figure:: s120-snapshots.png
   :width: 100%
@@ -245,7 +245,8 @@ advects the initial hump wihout any significant distortion.
 
   Rigid-body rotation solution on a :math:`32\times 32` using a 3rd
   order discontinuous Galerkin scheme at different times [:doc:`s120
-  <../../sims/s120/s120-pb-advection-rb>`]. These figures show that
-  the scheme advects the initial cosine hump without significant
-  distortion even on a relativelt coarse grid. For a movie of the
-  simulation click `here <../../_static/s120-rigid-body.mov>`_.
+  <../../sims/s120/s120-pb-advection-rb>`]. The white lines are the
+  axes drawn through the point around which the flow rotates. These
+  figures show that the scheme advects the initial cosine hump without
+  significant distortion even on a relatively coarse grid. For a movie
+  of the simulation click `here <../../_static/s120-rigid-body.mov>`_.
