@@ -124,6 +124,8 @@ for i in [0,5,10,15]:
 
     pylab.subplot(2,2,j[count])
     pylab.pcolormesh(Xn, Yn, pylab.transpose(qn_1), vmin=0.0, vmax=0.5)
+    pylab.plot([0,1], [0.5,0.5], '-w', linewidth=0.5)
+    pylab.plot([0.5,0.5], [0,1], '-w', linewidth=0.5)
     pylab.title(r'T=%s' % Ts[count])
     pylab.axis('image')
     count = count + 1
