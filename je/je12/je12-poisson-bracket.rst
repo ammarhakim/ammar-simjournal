@@ -194,3 +194,58 @@ the following table.
     - :math:`2.8015\times 10^{-5}`
     - 3.63
     - :doc:`s117 <../../sims/s117/s117-pb-advection-2d>`
+
+Rigid-body rotating flow
+------------------------
+
+In this test a rigid body rotating flow is initialized by selecting
+the potential as
+
+.. math::
+
+  \psi(x,y) = -\frac{1}{2}(y^2-y+x^2-x)
+
+With this potential the flow velocity is :math:`(u_x,v_x) = (-y+1/2,
+x-1/2)` which represents a counter-clockwise rigid body rotation about
+:math:`(x_c,y_c)=(1/2,1/2)` with period :math:`2\pi`. Hence,
+structures in :math:`\chi` will perform a circular motion about
+:math:`(x_c,y_c)`, returning to their original position at
+:math:`t=2\pi`.
+
+The simulation was performed with :math:`32\times 32` and
+:math:`64\times 64` grid with an initial cosine hump of the form
+
+.. math::
+
+  \chi(x,y,0) = \frac{1}{4}
+  \left[
+    1 + \cos(\pi r)
+  \right]
+
+where
+
+.. math::
+
+  r(x,y) = \min(\sqrt{(x-x_0)^2 + (y-y_0)^2}, r_0)/r_0
+
+For this problem, :math:`r_0=0.2` and :math:`(x_0,y_0) = (1/4,
+1/2)`. To test convergence, the simulation was run to :math:`t=2\pi`
+and compared to the initial condition. Average erros of
+:math:`1.583\times 10^{-3}` and :math:`3.459\times 10^{-4}` were
+computed, giving a spatial convergence order of about
+math:`2.29`. Next, a third order spatial scheme was used to compute
+the solution to :math:`t=2\pi` at which point the cosine hump has
+advected twice about the orgin. The figure below shows the solution at
+four different times, indicating that the algorithm essentially
+advects the initial hump wihout any significant distortion.
+
+.. figure:: s120-snapshots.png
+  :width: 100%
+  :align: center
+
+  Rigid-body rotation solution on a :math:`32\times 32` using a 3rd
+  order discontinuous Galerkin scheme at different times [:doc:`s120
+  <../../sims/s120/s120-pb-advection-rb>`]. These figures show that
+  the scheme advects the initial cosine hump without significant
+  distortion even on a relativelt coarse grid. For a movie of the
+  simulation click `here <../../_static/s120-rigid-body.mov>`_.

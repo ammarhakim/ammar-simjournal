@@ -267,3 +267,9 @@ program for that simulation.
     - Same as s115, except with :math:`16\times 16` grid.
   * - ${mdl("s117")}
     - Same as s115, except with :math:`32\times 32` grid.
+  * - ${mdl("s118")}
+    - Rigid-body rotation problem for Poisson bracket, with :math:`32\times 32` grid.
+  * - ${mdl("s119")}
+    - Same as s118, except on :math:`64\times 64` grid.
+  * - ${mdl("s120")}
+    - Same as s118, except with 3-order spatial scheme.

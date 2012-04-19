@@ -250,3 +250,9 @@ program for that simulation.
     - Same as s115, except with :math:`16\times 16` grid.
   * - :doc:`s117 <s117/s117-pb-advection-2d>` 
     - Same as s115, except with :math:`32\times 32` grid.
+  * - :doc:`s118 <s118/s118-pb-advection-rb>` 
+    - Rigid-body rotation problem for Poisson bracket, with :math:`32\times 32` grid.
+  * - :doc:`s119 <s119/s119-pb-advection-rb>` 
+    - Same as s118, except on :math:`64\times 64` grid.
+  * - :doc:`s120 <s120/s120-pb-advection-rb>` 
+    - Same as s118, except with 3-order spatial scheme.
