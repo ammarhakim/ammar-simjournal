@@ -1,10 +1,13 @@
 -- Input file for Poisson bracket operator
 
 -- polynomial order
-polyOrder = 1
+polyOrder = 2
 
 -- cfl number to use
-cfl = 0.025
+cfl = 0.1
+
+-- period for distortion
+Tperiod = 1.5
 
 -- Determine number of global nodes per cell for use in creating CG
 -- fields. Note that this looks a bit odd as this not the number of
@@ -28,7 +31,7 @@ end
 grid = Grid.RectCart2D {
    lower = {0, 0},
    upper = {1.0, 1.0},
-   cells = {32, 4},
+   cells = {32, 32},
 }
 
 -- create FEM nodal basis
@@ -71,6 +74,16 @@ phi = DataStruct.Field2D {
    -- ghost cells to write
    writeGhost = {0, 1} -- write extra layer on right to get nodes
 }
+-- to store initial condition
+phiStatic = DataStruct.Field2D {
+   onGrid = grid,
+   location = "vertex",
+   -- numNodesPerCell is number of global nodes stored in each cell
+   numComponents = 1*numCgNodesPerCell,
+   ghost = {1, 1},
+   -- ghost cells to write
+   writeGhost = {0, 1} -- write extra layer on right to get nodes
+}
 
 -- create updater to initialize potential
 initPhi = Updater.EvalOnNodes2D {
@@ -81,13 +94,17 @@ initPhi = Updater.EvalOnNodes2D {
    shareCommonNodes = true,
    -- function to use for initialization
    evaluate = function (x,y,z,t)
-		 local ux, uy = 1.0, 0.0
-		 return ux*y - uy*x
+		 local mpi = Lucee.Pi
+		 local t1 = math.sin(mpi*x)*math.sin(mpi*y)
+		 return t1^2/mpi
 	      end
 }
-initPhi:setOut( {phi} )
+initPhi:setOut( {phiStatic} )
 -- initialize potential
 initPhi:advance(0.0) -- time is irrelevant
+
+-- copy over initial condition
+phi:copy(phiStatic)
 
 -- create updater to initialize vorticity
 initChi = Updater.EvalOnNodes2D {
@@ -98,18 +115,20 @@ initChi = Updater.EvalOnNodes2D {
    shareCommonNodes = false, -- In DG, common nodes are not shared
    -- function to use for initialization
    evaluate = function (x,y,z,t)
-		 local xc = 0.5
-		 local r2 = (x-xc)^2
-		 return math.exp(-75*r2)
+		 local x0, y0, r0 = 0.25, 0.5, 0.15
+		 local r = math.min(math.sqrt((x-x0)^2+(y-y0)^2), r0)/r0
+		 local chump = 0.25*(1+math.cos(Lucee.Pi*r))
+
+		 local xc, yc, rc = 0.75, 0.5, 0.15
+		 local r2 = math.min(math.sqrt((x-xc)^2+(y-yc)^2), rc)/rc
+		 local chump2 = 0.25*(1+math.cos(Lucee.Pi*r2))
+
+		 return chump + chump2
 	      end
 }
 initChi:setOut( {chi} )
 -- initialize potential
 initChi:advance(0.0) -- time is irrelevant
-
--- apply BC to get ghost correct
-chiNew:applyPeriodicBc(0)
-chiNew:applyPeriodicBc(1)
 
 -- create updater for Poisson bracket
 pbSlvr = Updater.PoissonBracket {
@@ -127,15 +146,27 @@ chi:write("chi_0.h5")
 
 -- function to apply boundary conditions
 function applyBc(fld)
-   fld:applyPeriodicBc(0)
-   fld:applyPeriodicBc(1)
+   fld:applyCopyBc(0, "lower")
+   fld:applyCopyBc(0, "upper")
+   fld:applyCopyBc(1, "lower")
+   fld:applyCopyBc(1, "upper")
 end
 
+-- apply BCs to initial conditions
+applyBc(chi)
+
+-- function to solve poisson bracket
 function poissonBracket(curr, dt, chiIn, phiIn, chiOut)
    pbSlvr:setCurrTime(curr)
    pbSlvr:setIn( {chiIn, phiIn} )
    pbSlvr:setOut( {chiOut} )
    return pbSlvr:advance(curr+dt)
+end
+
+-- function to solve for potential
+function poisson(curr, dt, chiIn, phiOut)
+   -- this is a time-dependent potential and not a true Poisson solve
+   phiOut:combine(math.cos(curr*Lucee.Pi/Tperiod), phiStatic)
 end
 
 -- function to take a time-step using RK2 time-stepping scheme
@@ -154,6 +185,9 @@ function rk2(tCurr, myDt)
    -- apply periodic BC
    applyBc(chi1)
 
+   -- solve for potential
+   poisson(tCurr+myDt, myDt, chi1, phi)
+
    -- RK stage 2 (chiNew <- chi1 + L(chi1))
    status, dtSuggested = poissonBracket(tCurr, myDt, chi1, phi, chiNew)   
 
@@ -169,6 +203,9 @@ function rk2(tCurr, myDt)
 
    -- copy over solution
    chi:copy(chi1)
+
+   -- solve for potential
+   poisson(tCurr+myDt, myDt, chi, phi)
 
    return status, dtSuggested
 end
@@ -188,6 +225,9 @@ function rk3(tCurr, myDt)
    -- apply BCs
    applyBc(chi1)
 
+   -- solve for potential
+   poisson(tCurr+myDt, myDt, chi1, phi)
+
    -- RK stage 2
    status, dtSuggested = poissonBracket(tCurr, myDt, chi1, phi, chiNew)
 
@@ -200,6 +240,9 @@ function rk3(tCurr, myDt)
 
    -- apply BCs
    applyBc(chi1)
+
+   -- solve for potential
+   poisson(tCurr+myDt, myDt, chi1, phi)
 
    -- RK stage 3
    status, dtSuggested = poissonBracket(tCurr, myDt, chi1, phi, chiNew)
@@ -216,6 +259,9 @@ function rk3(tCurr, myDt)
    -- copy over solution
    chi:copy(chi1)
 
+   -- solve for potential
+   poisson(tCurr+myDt, myDt, chi, phi)
+
    return status, dtSuggested
 end
 
@@ -229,6 +275,7 @@ function advanceFrame(tStart, tEnd, initDt)
    local tCurr = tStart
    local myDt = initDt
    local status, dtSuggested
+   local lastGood
 
    -- main loop
    while tCurr<=tEnd do
@@ -244,6 +291,7 @@ function advanceFrame(tStart, tEnd, initDt)
 
       -- take a time-step
       status, dtSuggested = rk3(tCurr, myDt)
+      lastGood = dtSuggested
 
       if (status == false) then
 	 -- time-step too large
@@ -263,14 +311,14 @@ function advanceFrame(tStart, tEnd, initDt)
 
    end
 
-   return dtSuggested
+   return lastGood
 end
 
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 1.0
+tEnd = 2*Tperiod
 dtSuggested = 0.1*tEnd -- initial time-step to use (will be adjusted)
-nFrames = 1
+nFrames = 40
 tFrame = (tEnd-tStart)/nFrames -- time between frames
 
 tCurr = tStart

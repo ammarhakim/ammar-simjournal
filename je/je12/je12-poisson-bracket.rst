@@ -28,9 +28,10 @@ the Poisson bracket :math:`\{\chi,\psi\}` is defined as
   -
   \frac{\partial \chi}{\partial y}\frac{\partial \psi}{\partial x}.
 
-This equation describes the advection of :math:`\chi` with the
-advection velocity :math:`\mathbf{u} = \nabla\psi\times \mathbf{e}_z`
-or :math:`u_x = \partial \psi/ \partial y` and :math:`u_y = -\partial
+This equation describes the advection of the vorticity field
+:math:`\chi` with the advection velocity determined from the potential
+field as :math:`\mathbf{u} = \nabla\psi\times \mathbf{e}_z` or
+:math:`u_x = \partial \psi/ \partial y` and :math:`u_y = -\partial
 \psi/ \partial x`. Hence, although :math:`\chi` can be discontinuous,
 :math:`\psi` must be be continuous.
 
@@ -195,6 +196,13 @@ the following table.
     - 3.63
     - :doc:`s117 <../../sims/s117/s117-pb-advection-2d>`
 
+.. note::
+
+  To get the correct convergence with the third-order spatial scheme
+  we need to use RK3 time-stepping. Even though the results look okay
+  with the RK2 scheme, the mild instability in RK2 reduces the overall
+  convergence of the spatial operator.
+
 Rigid-body rotating flow
 ------------------------
 
@@ -243,10 +251,68 @@ advects the initial hump without any significant distortion.
   :width: 100%
   :align: center
 
-  Rigid-body rotation solution on a :math:`32\times 32` using a 3rd
-  order discontinuous Galerkin scheme at different times [:doc:`s120
-  <../../sims/s120/s120-pb-advection-rb>`]. The white lines are the
-  axes drawn through the point around which the flow rotates. These
-  figures show that the scheme advects the initial cosine hump without
-  significant distortion even on a relatively coarse grid. For a movie
-  of the simulation click `here <../../_static/s120-rigid-body.mov>`_.
+  Rigid-body rotation solution on a :math:`32\times 32` grid using a
+  3rd order discontinuous Galerkin scheme at different times
+  [:doc:`s120 <../../sims/s120/s120-pb-advection-rb>`]. The white
+  lines are the axes drawn through the point around which the flow
+  rotates. These figures show that the scheme advects the initial
+  cosine hump without significant distortion even on a relatively
+  coarse grid. For a movie of the simulation click `here
+  <../../_static/s120-rigid-body.mov>`_.
+
+Swirling flow
+-------------
+
+In this problem we use a time-dependent potential given by
+
+.. math::
+
+  \psi(x,y,t) = \frac{1}{\pi}\sin^2(\pi x) \sin^2(\pi y) g(t)
+
+where
+
+.. math::
+
+  g(t) = \cos(\pi t/T)
+
+With this potential we get the velocity field
+
+.. math::
+
+  u_x(x,y,t) &= \sin^2(\pi x) \sin(2 \pi y) g(t) \\
+  u_y(x,y,t) &= -\sin^2(\pi y) \sin(2 \pi x) g(t)
+
+This represents a swirling flow that distorts the vorticity field,
+reaching a maximum distortion at :math:`t=T/2`. At that point the flow
+reverses and the vorticity profile returns to its initial value.
+
+We use a 3rd order scheme on a :math:`32\times 32` grid and run the
+simulation to :math:`t=2T`. The results are show in the following
+figure. For a movie of the simulation click `here
+<../../_static/s121-swirl-flow.mov>`_.
+
+.. figure:: s121-snapshots.png
+  :width: 100%
+  :align: center
+
+  Swirling flow solution on a :math:`32\times 32` using a 3rd order
+  discontinuous Galerkin scheme at different times [:doc:`s121
+  <../../sims/s121/s121-pb-advection-sf>`]. The figure shows the
+  initial condition, the maximum distortion in the first half period
+  after which the solution returns to its initial value, swinging back
+  for a second oscillation.
+
+
+In thw following figure compares the final solution to the intial
+conditions.
+
+.. figure:: s121-projected-solution.png
+  :width: 100%
+  :align: center
+
+  Swirling flow solution on a :math:`32\times 32` grid using a 3rd
+  order discontinuous Galerkin scheme at :math:`t=2T` (red dots)
+  compared to the initial conditions (black line). The algorithm is
+  able to handle this complicated flow pattern and show very little
+  distortion of the final solution. See [:doc:`s121
+  <../../sims/s121/s121-pb-advection-sf>`].
