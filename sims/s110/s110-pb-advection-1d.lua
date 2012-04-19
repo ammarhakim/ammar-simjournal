@@ -276,8 +276,6 @@ tFrame = (tEnd-tStart)/nFrames -- time between frames
 tCurr = tStart
 for frame = 1, nFrames do
 
-   local dtSuggested = dtSuggested
-
    Lucee.logInfo (string.format("-- Advancing solution from %g to %g", tCurr, tCurr+tFrame))
    -- advance solution between frames
    dtSuggested = advanceFrame(tCurr, tCurr+tFrame, dtSuggested)

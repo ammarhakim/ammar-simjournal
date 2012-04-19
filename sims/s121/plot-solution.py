@@ -3,8 +3,7 @@ import tables
 import math
 import numpy
 
-pylab.rc('text', usetex=True)
-
+#pylab.rc('text', usetex=True)
 def projectOnFinerGrid_f(Xc, Yc, q):
     dx = Xc[1]-Xc[0]
     dy = Yc[1]-Yc[0]
@@ -80,7 +79,7 @@ def projectOnFinerGrid_f3(Xc, Yc, q):
 
     return Xn, Yn, qn
 
-fh = tables.openFile("s120-pb-advection-rb_chi_1.h5")
+fh = tables.openFile("s121-pb-advection-sf_chi_1.h5")
 grid = fh.root.StructGrid
 lower = grid._v_attrs.vsLowerBounds
 upper = grid._v_attrs.vsUpperBounds
@@ -92,11 +91,12 @@ dy = (upper[1]-lower[1])/cells[1]
 Xc = pylab.linspace(lower[0]+0.5*dx, upper[0]-0.5*dx, cells[0])
 Yc = pylab.linspace(lower[1]+0.5*dy, upper[1]-0.5*dy, cells[1])
 
-T = pylab.linspace(0, 4*math.pi, 41)
+nframe = 40+1
+T = pylab.linspace(0, 2*1.5, nframe)
 
-for i in range(41):
+for i in range(nframe):
     print "Workin on %d" % i
-    fh = tables.openFile("s120-pb-advection-rb_chi_%d.h5" % i)
+    fh = tables.openFile("s121-pb-advection-sf_chi_%d.h5" % i)
     # get solution
     q = fh.root.StructGridField
     Xn, Yn, qn_1 = projectOnFinerGrid_f3(Xc, Yc, q)
@@ -106,31 +106,51 @@ for i in range(41):
     pylab.title('T=%f' % T[i])
     pylab.axis('image')
 
-    pylab.savefig('s120-projected-solution_%05d.png' % i)
+    pylab.savefig('s121-projected-solution_%05d.png' % i)
     pylab.close()
 
-# make subplots to put into journal
+# for comparison
+# get intial solution
+fh = tables.openFile("s121-pb-advection-sf_chi_0.h5")
+q = fh.root.StructGridField
+Xn, Yn, qn_0 = projectOnFinerGrid_f(Xc, Yc, q)
 
-Ts = [r'0', r'$\pi/2$', r'$\pi$', r'$3\pi/2$']
-count = 0
-j = [1,2,3,4]
+# get final solution
+fh = tables.openFile("s121-pb-advection-sf_chi_40.h5")
+q = fh.root.StructGridField
+Xn, Yn, qn_1 = projectOnFinerGrid_f(Xc, Yc, q)
+
+nx, ny = Xn.shape[0], Yn.shape[0]
+
+# make plot
 pylab.figure(1)
-for i in [0,5,10,15]:
+
+pylab.plot(Xn, qn_1[:,ny/2], '-ro', Xn, qn_0[:,ny/2], '-k')
+
+pylab.savefig('s121-projected-solution.png')
+
+# compute error
+err = numpy.abs(qn_1-qn_0).sum()/(nx*ny)
+print math.sqrt(dx*dy), err
+
+count = 0
+j = [1,2,3,4,5]
+pylab.figure(1)
+for i in [0,10,20,30]:
     print "Workin on %d" % i
-    fh = tables.openFile("s120-pb-advection-rb_chi_%d.h5" % i)
+    fh = tables.openFile("s121-pb-advection-sf_chi_%d.h5" % i)
     # get solution
     q = fh.root.StructGridField
     Xn, Yn, qn_1 = projectOnFinerGrid_f3(Xc, Yc, q)
 
-    pylab.subplot(2,2,j[count])
+    pylab.subplot(2, 2,j[count])
     pylab.pcolormesh(Xn, Yn, pylab.transpose(qn_1), vmin=0.0, vmax=0.5)
-    pylab.plot([0,1], [0.5,0.5], '-w', linewidth=0.5)
-    pylab.plot([0.5,0.5], [0,1], '-w', linewidth=0.5)
-    pylab.title(r'T=%s' % Ts[count])
+    pylab.title(r'T=%s' % T[i])
     pylab.axis('image')
     count = count + 1
 
-pylab.savefig('s120-snapshots.png')
+pylab.savefig('s121-snapshots.png')
+
 pylab.close()
 
 

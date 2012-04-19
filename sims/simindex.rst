@@ -256,3 +256,5 @@ program for that simulation.
     - Same as s118, except on :math:`64\times 64` grid.
   * - :doc:`s120 <s120/s120-pb-advection-rb>` 
     - Same as s118, except with 3-order spatial scheme.
+  * - :doc:`s121 <s121/s121-pb-advection-sf>` 
+    - Swirling flow problem with 3-order spatial scheme on :math:`32\times 32` grid.

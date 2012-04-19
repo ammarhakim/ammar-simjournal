@@ -273,3 +273,5 @@ program for that simulation.
     - Same as s118, except on :math:`64\times 64` grid.
   * - ${mdl("s120")}
     - Same as s118, except with 3-order spatial scheme.
+  * - ${mdl("s121")}
+    - Swirling flow problem with 3-order spatial scheme on :math:`32\times 32` grid.
