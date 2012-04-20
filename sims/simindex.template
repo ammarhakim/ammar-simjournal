@@ -279,3 +279,7 @@ program for that simulation.
     - Swirling flow problem with 2-order spatial scheme, :math:`32\times 32` grid, updwind fluxes.
   * - ${mdl("s123")}
     - Same as s122, except with central fluxes.
+  * - ${mdl("s124")}
+    - Same as s122, except with 3-order scheme.
+  * - ${mdl("s125")}
+    - Same as s124, except with central fluxes.

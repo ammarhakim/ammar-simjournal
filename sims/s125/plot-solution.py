@@ -79,7 +79,7 @@ def projectOnFinerGrid_f3(Xc, Yc, q):
 
     return Xn, Yn, qn
 
-fh = tables.openFile("s121-pb-advection-sf_chi_1.h5")
+fh = tables.openFile("s125-pb-advection-sf_chi_1.h5")
 grid = fh.root.StructGrid
 lower = grid._v_attrs.vsLowerBounds
 upper = grid._v_attrs.vsUpperBounds
@@ -91,34 +91,23 @@ dy = (upper[1]-lower[1])/cells[1]
 Xc = pylab.linspace(lower[0]+0.5*dx, upper[0]-0.5*dx, cells[0])
 Yc = pylab.linspace(lower[1]+0.5*dy, upper[1]-0.5*dy, cells[1])
 
-nframe = 40+1
-T = pylab.linspace(0, 2*1.5, nframe)
-
-for i in range(nframe):
-    print "Workin on %d" % i
-    fh = tables.openFile("s121-pb-advection-sf_chi_%d.h5" % i)
-    # get solution
-    q = fh.root.StructGridField
-    Xn, Yn, qn_1 = projectOnFinerGrid_f3(Xc, Yc, q)
-
-
-    pylab.pcolormesh(Xn, Yn, pylab.transpose(qn_1), vmin=0.0, vmax=0.5)
-    pylab.title('T=%f' % T[i])
-    pylab.axis('image')
-
-    pylab.savefig('s121-projected-solution_%05d.png' % i)
-    pylab.close()
-
 # for comparison
 # get intial solution
-fh = tables.openFile("s121-pb-advection-sf_chi_0.h5")
+fh = tables.openFile("s125-pb-advection-sf_chi_0.h5")
 q = fh.root.StructGridField
 Xn, Yn, qn_0 = projectOnFinerGrid_f3(Xc, Yc, q)
 
 # get final solution
-fh = tables.openFile("s121-pb-advection-sf_chi_40.h5")
+fh = tables.openFile("s125-pb-advection-sf_chi_1.h5")
 q = fh.root.StructGridField
 Xn, Yn, qn_1 = projectOnFinerGrid_f3(Xc, Yc, q)
+
+pylab.figure(0)
+pylab.pcolormesh(Xn, Yn, pylab.transpose(qn_1))
+pylab.colorbar()
+pylab.axis('image')
+pylab.title('T=3.0')
+pylab.savefig('s125-solution.png')
 
 nx, ny = Xn.shape[0], Yn.shape[0]
 
@@ -127,29 +116,19 @@ pylab.figure(1)
 
 pylab.plot(Xn, qn_1[:,ny/2], '-ro', Xn, qn_0[:,ny/2], '-k')
 
-pylab.savefig('s121-projected-solution.png')
+pylab.savefig('s125-projected-solution.png')
 
 # compute error
 err = numpy.abs(qn_1-qn_0).sum()/(nx*ny)
 print math.sqrt(dx*dy), err
 
-count = 0
-j = [1,2,3,4,5]
-pylab.figure(1)
-for i in [0,10,20,30]:
-    print "Workin on %d" % i
-    fh = tables.openFile("s121-pb-advection-sf_chi_%d.h5" % i)
-    # get solution
-    q = fh.root.StructGridField
-    Xn, Yn, qn_1 = projectOnFinerGrid_f3(Xc, Yc, q)
-
-    pylab.subplot(2, 2,j[count])
-    pylab.pcolormesh(Xn, Yn, pylab.transpose(qn_1), vmin=0.0, vmax=0.5)
-    pylab.title(r'T=%s' % T[i])
-    pylab.axis('image')
-    count = count + 1
-
-pylab.savefig('s121-snapshots.png')
+# plot enstrophy
+pylab.figure(2)
+ensData = pylab.loadtxt("totalEnstrophy")
+pylab.plot(ensData[:,0], ensData[:,1], 'r-')
+pylab.xlabel('Time [s]')
+pylab.ylabel('Total Enstrophy')
+pylab.savefig('s125-total-enstrophy.png')
 
 pylab.close()
 
