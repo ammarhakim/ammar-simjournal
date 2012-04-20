@@ -316,3 +316,8 @@ conditions.
   able to handle this complicated flow pattern and show very little
   distortion of the final solution. See [:doc:`s121
   <../../sims/s121/s121-pb-advection-sf>`].
+
+Enstrophy and energy conservation properties
+--------------------------------------------
+
+XXX
