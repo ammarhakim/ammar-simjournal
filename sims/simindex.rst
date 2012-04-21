@@ -258,3 +258,11 @@ program for that simulation.
     - Same as s118, except with 3-order spatial scheme.
   * - :doc:`s121 <s121/s121-pb-advection-sf>` 
     - Swirling flow problem with 3-order spatial scheme on :math:`32\times 32` grid.
+  * - :doc:`s122 <s122/s122-pb-advection-sf>` 
+    - Swirling flow problem with 2-order spatial scheme, :math:`32\times 32` grid, updwind fluxes.
+  * - :doc:`s123 <s123/s123-pb-advection-sf>` 
+    - Same as s122, except with central fluxes.
+  * - :doc:`s124 <s124/s124-pb-advection-sf>` 
+    - Same as s122, except with 3-order scheme.
+  * - :doc:`s125 <s125/s125-pb-advection-sf>` 
+    - Same as s124, except with central fluxes.

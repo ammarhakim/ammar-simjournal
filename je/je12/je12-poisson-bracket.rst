@@ -16,6 +16,7 @@ study the ability of the algorithm to solve complicated problems.
 The algorithm updates the equation
 
 .. math::
+  :label: eqn:pb
 
   \frac{\partial \chi}{\partial t} + \{\chi,\psi\} = 0
 
@@ -303,7 +304,7 @@ figure. For a movie of the simulation click `here
   for a second oscillation.
 
 
-In thw following figure compares the final solution to the intial
+In thw following figure compares the final solution to the initial
 conditions.
 
 .. figure:: s121-projected-solution.png
@@ -320,4 +321,34 @@ conditions.
 Enstrophy and energy conservation properties
 --------------------------------------------
 
-XXX
+For the equation :eq:`eqn:pb` there are an infinite set of
+invariants. Let :math:`C_a(\chi)` be an arbitrary function. Then the
+scalar quantity
+
+.. math::
+
+  C \equiv \int_\Omega C_a(\chi) dx dy
+
+is conserved. In particular, :math:`C_a = \chi^2/2` is called the
+fluid enstrophy. To prove conservation, multiply :eq:`eqn:pb` by
+:math:`C_a'(\chi)` after writing :math:`\{\chi,\psi \} =
+\mathbf{u}\cdot \nabla \chi` and integrate over the domain, using the
+boundary conditions to get
+
+.. math::
+
+  dC/dt = 0.
+
+However, we can show that the Poisson bracket algorithm does not
+conserve these Casimirs unless a central flux is used. In all the
+above simulations an upwind flux was used, in which case we can show
+that the Casimirs decay.
+
+Another invariant of the Poisson bracket equation is the quadratic
+quantity, energy, defined by :math:`\int_\Omega \phi\chi dx dy`. This
+is valid only when the potential field does not depend on time or is
+related to the vorticity field via a Poisson equation :math:`\nabla^2
+\psi = -\chi`. One can show that the Poisson bracket algorithm
+conserves energy *even when an upwind flux is used*. In this section I
+test the evolution of enstrophy and energy using the Poisson bracket
+algorithm defined above.

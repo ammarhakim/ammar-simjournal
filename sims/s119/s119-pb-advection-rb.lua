@@ -120,6 +120,22 @@ pbSlvr = Updater.PoissonBracket {
 -- write initial value
 chi:write("chi_0.h5")
 
+-- total energy diagnostic
+totalEnergy = DataStruct.DynVector {
+   -- number of components in diagnostic
+   numComponents = 1,
+}
+
+-- updater to compute total energy
+energyCalc = Updater.EnergyFromStreamAndVort {
+   onGrid = grid,
+   -- basis functions to use
+   basis = basis,
+}
+-- set input/output (this never changes, so it once)
+energyCalc:setIn( {phi, chi} )
+energyCalc:setOut( {totalEnergy} )
+
 -- function to apply boundary conditions
 function applyBc(fld)
    fld:applyCopyBc(0, "lower")
@@ -136,6 +152,11 @@ function poissonBracket(curr, dt, chiIn, phiIn, chiOut)
    pbSlvr:setIn( {chiIn, phiIn} )
    pbSlvr:setOut( {chiOut} )
    return pbSlvr:advance(curr+dt)
+end
+
+function calcDiagnostics(tCurr, dt)
+   energyCalc:setCurrTime(tCurr)
+   energyCalc:advance(tCurr+dt)
 end
 
 -- function to take a time-step using RK2 time-stepping scheme
@@ -252,6 +273,9 @@ function advanceFrame(tStart, tEnd, initDt)
 	 chi:copy(chiDup)
 	 myDt = dtSuggested
       else
+	 -- calculate diagnostics
+	 calcDiagnostics(tCurr, myDt)
+	 
 	 tCurr = tCurr + myDt
 	 myDt = dtSuggested
 	 step = step + 1
@@ -281,6 +305,7 @@ for frame = 1, nFrames do
    dtSuggested = advanceFrame(tCurr, tCurr+tFrame, dtSuggested)
    -- write out data
    chi:write( string.format("chi_%d.h5", frame) )
+   totalEnergy:write ( string.format("totalEnergy_%d.h5", frame) )
    tCurr = tCurr+tFrame
    Lucee.logInfo ("")
 end
