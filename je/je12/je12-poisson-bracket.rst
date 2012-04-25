@@ -344,11 +344,11 @@ conserve these Casimirs unless a central flux is used. In all the
 above simulations an upwind flux was used, in which case we can show
 that the Casimirs decay.
 
-Another invariant of the Poisson bracket equation is the quadratic
-quantity, energy, defined by :math:`\int_\Omega \phi\chi dx dy`. This
-is valid only when the potential field does not depend on time or is
-related to the vorticity field via a Poisson equation :math:`\nabla^2
-\psi = -\chi`. One can show that the Poisson bracket algorithm
-conserves energy *even when an upwind flux is used*. In this section I
-test the evolution of enstrophy and energy using the Poisson bracket
-algorithm defined above.
+Another invariant of the Poisson bracket equation is the energy
+defined by :math:`\int_\Omega \phi\chi dx dy`. This is valid only when
+the potential field does not depend on time or is related to the
+vorticity field via a Poisson equation :math:`\nabla^2 \psi =
+-\chi`. One can show that the Poisson bracket algorithm conserves
+energy *even when an upwind flux is used*. In this section I test the
+evolution of enstrophy and energy using the Poisson bracket algorithm
+defined above.
