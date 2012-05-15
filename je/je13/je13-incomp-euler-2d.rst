@@ -43,6 +43,18 @@ In this entry I use the FE Poisson solver tested in :doc:`JE11
 bracket algorithm tested in :doc:`JE12 <../je12/je12-poisson-bracket>`
 to solve this set of equations.
 
+.. note::
+
+  As of May 15th 2012 there is a bug in my Poisson solver which feeds
+  in a non-symmetric matrix to PetSc. This causes very small errors in
+  the potential, which, however, greatly magnify the errors in the
+  total energy. In fact, the total energy plots look bizzare although
+  the solution is just fine.
+
+  Till this problem is fixed Gkeyll needs to be run with the
+  ``-pc_type lu`` command line option to force PetSc to use a direct
+  Poisson solve instead of the iterative solver.
+
 Problem 1: A double shear flow
 ------------------------------
 
@@ -61,4 +73,65 @@ vortex-like features. The initial conditions for this problem are
   \right.
 
 For the results show below :math:`\rho = \pi/15` and :math:`delta =
-0.05`.
+0.05` and were run to a time of 8 seconds.
+
+In the first set of tests, an upwind flux was used with different grid
+sizes and spatial order schemes to compute the solution. The figure
+below shows the results at the final time from the different
+simulations.
+
+.. figure:: s125to128-double-shear-cmp.png
+  :width: 100%
+  :align: center
+
+  Double shear vorticity at :math:`t=8` with different grid
+  resolutions and schemes. Upper left, DG2 on :math:`64\times 64` grid
+  [:doc:`s125 <../../sims/s125/s125-double-shear>`], upper right DG2
+  on :math:`128\times 128` grid [:doc:`s126
+  <../../sims/s126/s126-double-shear>`], lower left, DG3 on
+  :math:`64\times 64` grid [:doc:`s127
+  <../../sims/s127/s127-double-shear>`] and lower right, DG3 on
+  :math:`128\times 128` grid [:doc:`s128
+  <../../sims/s128/s128-double-shear>`]. Note the increasing
+  resolution of features as the spatial order and grid resolution is
+  increased.
+
+In the following two figures the energy and enstropy history as a
+function of time is shown. Note that these are conserved quantites of
+the incompressible Euler equations but need not be conserved by the
+numerical scheme.
+
+.. figure:: s125to128-double-shear-totalEnergy_cmp.png
+  :width: 100%
+  :align: center
+
+  Double shear energy history with different grid resolutions and
+  schemes. Increasing grid resolution reduces the drop in energy,
+  however the spatial order seems to have an opposite effect than
+  expected. I have not figured out why this should be the case and
+  this plot has mystified me.
+
+.. figure:: s125to128-double-shear-totalEnstrophy_cmp.png
+  :width: 100%
+  :align: center
+
+  Double shear enstrophy history with different grid resolutions and
+  schemes. Increasing spatial order and grid resolution reduces the
+  drop in enstrophy as expected.
+
+Even with upwind fluxes (used in all the simulations shown above), the
+energy should be conserved to the order of the scheme.
+
+.. figure:: s125s129s130-double-shear-totalEnergy_cmp.png
+  :width: 100%
+  :align: center
+
+  Double shear energy history with DG2 on a :math:`64\times 64` grid
+  with different CFL numbers. Blue, CFL 0.2 [:doc:`s125
+  <../../sims/s125/s125-double-shear>`], green, CFL 0.1 [:doc:`s129
+  <../../sims/s129/s129-double-shear>`] and red, CFL 0.05 [:doc:`s130
+  <../../sims/s130/s130-double-shear>`]. The drop in energy is
+  :math:`6.3\times 10^{-6}`, :math:`7.8\times 10^{-7}` and
+  :math:`1.1\times 10^{-7}` respectively. This gives energy
+  convergence order of 3.0 and 2.8 respectively.
+ 

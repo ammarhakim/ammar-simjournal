@@ -264,3 +264,15 @@ program for that simulation.
     - Same as s122 for testing enstrophy convergence. CFL of 0.1, central flux.
   * - :doc:`s124 <s124/s124-pb-advection-2d>` 
     - Same as s122 for testing enstrophy convergence. CFL of 0.05, central flux.
+  * - :doc:`s125 <s125/s125-double-shear>` 
+    - Double shear problem, on :math:`64\times 64` grid, DG 2, upwind fluxes.
+  * - :doc:`s126 <s126/s126-double-shear>` 
+    - Same as s125, except with :math:`128\times 128` grid points.
+  * - :doc:`s127 <s127/s127-double-shear>` 
+    - Same as s125, except with DG3 scheme.
+  * - :doc:`s128 <s128/s128-double-shear>` 
+    - Same as s126, except with DG3 scheme.
+  * - :doc:`s129 <s129/s129-double-shear>` 
+    - Same as s125, except with CFL of 0.1.
+  * - :doc:`s130 <s130/s130-double-shear>` 
+    - Same as s130, except with CFL of 0.05.
