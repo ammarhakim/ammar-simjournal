@@ -288,4 +288,8 @@ program for that simulation.
   * - ${mdl("s127")}
     - Same as s125, except with DG3 scheme.
   * - ${mdl("s128")}
-    - Same as s126, exceot with DG3 scheme.
+    - Same as s126, except with DG3 scheme.
+  * - ${mdl("s129")}
+    - Same as s125, except with CFL of 0.1.
+  * - ${mdl("s130")}
+    - Same as s130, except with CFL of 0.05.
