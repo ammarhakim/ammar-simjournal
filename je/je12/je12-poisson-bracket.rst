@@ -318,12 +318,11 @@ conditions.
   distortion of the final solution. See [:doc:`s121
   <../../sims/s121/s121-pb-advection-sf>`].
 
-Enstrophy and energy conservation properties
---------------------------------------------
+Enstrophy conservation properties
+---------------------------------
 
-For the equation :eq:`eqn:pb` there are an infinite set of
-invariants. Let :math:`C_a(\chi)` be an arbitrary function. Then the
-scalar quantity
+For equation :eq:`eqn:pb` there are an infinite set of invariants. Let
+:math:`C_a(\chi)` be an arbitrary function. Then the scalar quantity
 
 .. math::
 
@@ -339,16 +338,24 @@ boundary conditions to get
 
   dC/dt = 0.
 
-However, we can show that the Poisson bracket algorithm does not
-conserve these Casimirs unless a central flux is used. In all the
-above simulations an upwind flux was used, in which case we can show
-that the Casimirs decay.
+We can show that the Poisson bracket algorithm does not conserve
+enstrophy unless a central flux is used. Even with the central flux
+the overall scheme is not conservative as the Runge-Kutta
+time-stepping adds a small amount of diffusion. 
 
-Another invariant of the Poisson bracket equation is the energy
-defined by :math:`\int_\Omega \phi\chi dx dy`. This is valid only when
-the potential field does not depend on time or is related to the
-vorticity field via a Poisson equation :math:`\nabla^2 \psi =
--\chi`. One can show that the Poisson bracket algorithm conserves
-energy *even when an upwind flux is used*. In this section I test the
-evolution of enstrophy and energy using the Poisson bracket algorithm
-defined above.
+The following figure shows the error in enstropy as the time-step is
+reduced. The error should reduce with the same order as the
+time-stepping order, in this case third. These simulations were run
+with central flux with the RK2 spatial scheme.
+
+.. figure:: s124-rk2-enstrophy-history.png
+  :width: 100%
+  :align: center
+
+  Enstrophy history with different CFL numbers. The relative errors in
+  enstrophy in are :math:`1.396\times 10^{-3}`, :math:`1.794\times
+  10^{-4}` and :math:`2.254\times 10^{-5}`, giving a convergence order
+  2.96 and 2.99 respectively. See :doc:`s122
+  <../../sims/s122/s122-pb-advection-2d>`, :doc:`s123
+  <../../sims/s123/s123-pb-advection-2d>` and :doc:`s124
+  <../../sims/s124/s124-pb-advection-2d>`, for input files.

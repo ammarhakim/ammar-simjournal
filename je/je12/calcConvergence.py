@@ -27,3 +27,6 @@ print "DG3 convergence"
 dat = pylab.loadtxt("dx-convergence-dg-3.dat")
 convergence(dat[:,0], dat[:,1])
 
+print "DG2 Enstrophy convergence"
+dat = pylab.loadtxt("enstrophy-convergence-dg-2.dat")
+convergence(dat[:,0], dat[:,1])
