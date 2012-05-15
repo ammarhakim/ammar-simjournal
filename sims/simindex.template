@@ -281,3 +281,11 @@ program for that simulation.
     - Same as s122 for testing enstrophy convergence. CFL of 0.1, central flux.
   * - ${mdl("s124")}
     - Same as s122 for testing enstrophy convergence. CFL of 0.05, central flux.
+  * - ${mdl("s125")}
+    - Double shear problem, on :math:`64\times 64` grid, DG 2, upwind fluxes.
+  * - ${mdl("s126")}
+    - Same as s125, except with :math:`128\times 128` grid points.
+  * - ${mdl("s127")}
+    - Same as s125, except with DG3 scheme.
+  * - ${mdl("s128")}
+    - Same as s126, exceot with DG3 scheme.

@@ -44,3 +44,4 @@ means of generating pretty, but irreproducible, pictures.
   je/je10/je10-icw.rst
   je/je11/je11-fem-poisson.rst
   je/je12/je12-poisson-bracket.rst
+  je/je13/je13-incomp-euler-2d.rst
