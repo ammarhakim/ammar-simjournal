@@ -275,3 +275,9 @@ program for that simulation.
     - Same as s118, except with 3-order spatial scheme.
   * - ${mdl("s121")}
     - Swirling flow problem with 3-order spatial scheme on :math:`32\times 32` grid.
+  * - ${mdl("s122")}
+    - Same as s115 for testing enstrophy convergence. CFL of 0.2, central flux.
+  * - ${mdl("s123")}
+    - Same as s122 for testing enstrophy convergence. CFL of 0.1, central flux.
+  * - ${mdl("s124")}
+    - Same as s122 for testing enstrophy convergence. CFL of 0.05, central flux.
