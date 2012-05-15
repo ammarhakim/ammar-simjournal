@@ -1,7 +1,7 @@
 :Author: Ammar Hakim
 :Date: April 13th 2012
-:Completed: 
-:Last Updated:  
+:Completed: April 30th 2012
+:Last Updated:  May 5th 2012
 
 JE12: Studies with a discontinuous Galerkin Poisson bracket solver
 ==================================================================
@@ -346,7 +346,7 @@ time-stepping adds a small amount of diffusion.
 The following figure shows the error in enstropy as the time-step is
 reduced. The error should reduce with the same order as the
 time-stepping order, in this case third. These simulations were run
-with central flux with the RK2 spatial scheme.
+with central flux with the DG2 spatial scheme.
 
 .. figure:: s124-rk2-enstrophy-history.png
   :width: 100%
