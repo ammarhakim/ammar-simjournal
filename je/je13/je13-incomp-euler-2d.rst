@@ -48,7 +48,7 @@ to solve this set of equations.
   As of May 15th 2012 there is a bug in my Poisson solver which feeds
   in a non-symmetric matrix to PetSc. This causes very small errors in
   the potential, which, however, greatly magnify the errors in the
-  total energy. In fact, the total energy plots look bizzare although
+  total energy. In fact, the total energy plots look bizarre although
   the solution is just fine.
 
   Till this problem is fixed Gkeyll needs to be run with the
@@ -96,8 +96,8 @@ simulations.
   resolution of features as the spatial order and grid resolution is
   increased.
 
-In the following two figures the energy and enstropy history as a
-function of time is shown. Note that these are conserved quantites of
+In the following two figures the energy and enstrophy history as a
+function of time is shown. Note that these are conserved quantities of
 the incompressible Euler equations but need not be conserved by the
 numerical scheme.
 
@@ -119,8 +119,13 @@ numerical scheme.
   schemes. Increasing spatial order and grid resolution reduces the
   drop in enstrophy as expected.
 
-Even with upwind fluxes (used in all the simulations shown above), the
-energy should be conserved to the order of the scheme.
+Even with upwind fluxes (used in all the simulations shown above), one
+can show that the energy is conserved by the spatial discretization
+exactly. However, in the actual simulations there is a small loss in
+energy due to the dissipation added from the Runge-Kutta time-stepping
+and energy conservation holds only as :math:`\Delta t \rightarrow 0`
+with the same order as the time integration scheme. This is clearly
+seen in the plot shown below.
 
 .. figure:: s125s129s130-double-shear-totalEnergy_cmp.png
   :width: 100%
@@ -134,4 +139,4 @@ energy should be conserved to the order of the scheme.
   :math:`6.3\times 10^{-6}`, :math:`7.8\times 10^{-7}` and
   :math:`1.1\times 10^{-7}` respectively. This gives energy
   convergence order of 3.0 and 2.8 respectively.
- 
+  
