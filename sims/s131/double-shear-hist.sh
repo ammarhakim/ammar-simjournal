@@ -1,0 +1,2 @@
+python2.7 /Users/ahakim/research/gkeyll-project/lucee/scripts/gethist.py s131-double-shear_totalEnergy DataStruct > s131-double-shear_totalEnergy
+python2.7 /Users/ahakim/research/gkeyll-project/lucee/scripts/gethist.py s131-double-shear_totalEnstrophy DataStruct > s131-double-shear_totalEnstrophy

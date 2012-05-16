@@ -276,3 +276,22 @@ program for that simulation.
     - Same as s125, except with CFL of 0.1.
   * - :doc:`s130 <s130/s130-double-shear>` 
     - Same as s130, except with CFL of 0.05.
+  * - :doc:`s131 <s131/s131-double-shear>` 
+    - Same as s125, except with a central flux.
+  * - :doc:`s132 <s132/s132-double-shear>` 
+    - Same as s125, except with CFL of 0.1
+  * - :doc:`s133 <s133/s133-double-shear>` 
+    - Same as s125, except with CFL of 0.05
+  * - :doc:`s134 <s134/s134-vortex-waltz>` 
+    - Vortex waltx problem, :math:`64 \times 64` grid.
+  * - :doc:`s135 <s135/s135-vortex-waltz>` 
+    - Vortex waltx problem, :math:`128 \times 128` grid.
+  * - :doc:`s136 <s136/s136-vortex-waltz>` 
+    - Vortex waltx problem, :math:`256 \times 256` grid.
+  * - :doc:`s137 <s137/s137-vortex-waltz>` 
+    - Vortex waltx problem, DG3, :math:`32 \times 32` grid.
+  * - :doc:`s138 <s138/s138-vortex-waltz>` 
+    - Vortex waltx problem, DG3, :math:`64 \times 64` grid.
+  * - :doc:`s139 <s139/s139-vortex-waltz>` 
+    - Vortex waltx problem, DG3, :math:`128 \times 128` grid.
+
