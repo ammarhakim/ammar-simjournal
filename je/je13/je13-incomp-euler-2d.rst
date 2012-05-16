@@ -1,6 +1,6 @@
 :Author: Ammar Hakim
 :Date: May 15th 2012
-:Completed: 
+:Completed:  May 15th 2012
 :Last Updated:  
 
 JE13: 2D Incompressible Euler Solver

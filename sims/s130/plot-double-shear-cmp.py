@@ -126,9 +126,9 @@ tr_129 = pylab.loadtxt('../s129/s129-double-shear_totalEnergy')
 tr_130 = pylab.loadtxt('../s130/s130-double-shear_totalEnergy')
 
 refTe = tr_125[0,1]
-pylab.plot(tr_125[:,0], (tr_125[:,1]-tr_125[0,1]+refTe)/refTe, label='CFL 0.2')
-pylab.plot(tr_129[:,0], (tr_129[:,1]-tr_129[0,1]+refTe)/refTe, label='CFL 0.1')
-pylab.plot(tr_130[:,0], (tr_130[:,1]-tr_130[0,1]+refTe)/refTe, label='CFL 0.05')
+pylab.plot(tr_125[:,0], tr_125[:,1], label='CFL 0.2')
+pylab.plot(tr_129[:,0], tr_129[:,1], label='CFL 0.1')
+pylab.plot(tr_130[:,0], tr_130[:,1], label='CFL 0.05')
 pylab.legend(loc='lower left')
 pylab.title('Total Energy History')
 pylab.xlabel('Time [s]')
