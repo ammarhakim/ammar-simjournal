@@ -293,3 +293,22 @@ program for that simulation.
     - Same as s125, except with CFL of 0.1.
   * - ${mdl("s130")}
     - Same as s130, except with CFL of 0.05.
+  * - ${mdl("s131")}
+    - Same as s125, except with a central flux.
+  * - ${mdl("s132")}
+    - Same as s125, except with CFL of 0.1
+  * - ${mdl("s133")}
+    - Same as s125, except with CFL of 0.05
+  * - ${mdl("s134")}
+    - Vortex waltx problem, :math:`64 \times 64` grid.
+  * - ${mdl("s135")}
+    - Vortex waltx problem, :math:`128 \times 128` grid.
+  * - ${mdl("s136")}
+    - Vortex waltx problem, :math:`256 \times 256` grid.
+  * - ${mdl("s137")}
+    - Vortex waltx problem, DG3, :math:`32 \times 32` grid.
+  * - ${mdl("s138")}
+    - Vortex waltx problem, DG3, :math:`64 \times 64` grid.
+  * - ${mdl("s139")}
+    - Vortex waltx problem, DG3, :math:`128 \times 128` grid.
+

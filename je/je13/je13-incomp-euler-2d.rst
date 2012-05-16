@@ -72,19 +72,19 @@ vortex-like features. The initial conditions for this problem are
     \end{array}
   \right.
 
-For the results show below :math:`\rho = \pi/15` and :math:`delta =
-0.05` and were run to a time of 8 seconds.
+For the results show below :math:`\rho = \pi/15` and :math:`\delta =
+0.05` run up to a time of 8 seconds.
 
-In the first set of tests, an upwind flux was used with different grid
-sizes and spatial order schemes to compute the solution. The figure
-below shows the results at the final time from the different
-simulations.
+In the first set of simulations, an upwind flux was used with
+different grid sizes and spatial order schemes to compute the
+solution. The figure below shows the results at the final time from
+these simulations.
 
 .. figure:: s125to128-double-shear-cmp.png
   :width: 100%
   :align: center
 
-  Double shear vorticity at :math:`t=8` with different grid
+  Double shear problem vorticity at :math:`t=8` with different grid
   resolutions and schemes. Upper left, DG2 on :math:`64\times 64` grid
   [:doc:`s125 <../../sims/s125/s125-double-shear>`], upper right DG2
   on :math:`128\times 128` grid [:doc:`s126
@@ -123,9 +123,9 @@ Even with upwind fluxes (used in all the simulations shown above), one
 can show that the energy is conserved by the spatial discretization
 exactly. However, in the actual simulations there is a small loss in
 energy due to the dissipation added from the Runge-Kutta time-stepping
-and energy conservation holds only as :math:`\Delta t \rightarrow 0`
-with the same order as the time integration scheme. This is clearly
-seen in the plot shown below.
+and energy conservation proof holds only as :math:`\Delta t
+\rightarrow 0` with the same order as the time integration
+scheme. This is clearly seen in the plot shown below.
 
 .. figure:: s125s129s130-double-shear-totalEnergy_cmp.png
   :width: 100%
@@ -140,3 +140,108 @@ seen in the plot shown below.
   :math:`1.1\times 10^{-7}` respectively. This gives energy
   convergence order of 3.0 and 2.8 respectively.
   
+With central fluxes both energy and enstrophy are conserved to the
+same order of the time integration scheme. To test this the simulation
+was run with the second order scheme on a :math:`64\times 64` grid
+with central fluxes and different CFL numbers. The vorticity at
+:math:`t=8` is shown below.
+
+.. figure:: s131-double-shear_00010.png
+  :width: 100%
+  :align: center
+
+  Vorticity at :math:`t=8` for double shear problem with central
+  fluxes. Notice the significant phase errors in the solution as
+  compared to the solution with the upwind flux. See [:doc:`s131
+  <../../sims/s131/s131-double-shear>`] for the input
+  file.
+
+The following figure shows the time history of the energy and
+enstrophy with central fluxes with different CFL numbers. With
+reducing time steps the errors in *both* energy and enstrophy go to
+zero.
+
+.. figure:: s131s132s133-double-shear-totalEnergyEnstrophy_cmp.png
+  :width: 100%
+  :align: center
+
+  Total energy (top) and total enstrophy (bottom) history with
+  different CFL numbers with central flux. Both energy and enstrophy
+  errors go to zero with the order of time-stepping scheme. See
+  [:doc:`s131 <../../sims/s131/s131-double-shear>`], [:doc:`s132
+  <../../sims/s132/s132-double-shear>`] and [:doc:`s133
+  <../../sims/s133/s133-double-shear>`] for the input files.
+
+Problem 2: The Vortex Waltz
+---------------------------
+
+This problem is initialized with two Guassian vortices which merge as
+they orbit around each other. The vorticity is initialized using the
+sum of two Gaussians given by
+
+.. math::
+
+  \chi(x,y,0) = \omega_1(x,y) + \omega_2(x,y)
+
+where 
+
+.. math::
+
+  \omega_i(x,y) = e^{-r_i^2/0.8}
+
+where :math:`r_i^2 = (x-x_i)^2 + (y-y_i)^2` and :math:`(x_1,y_1) =
+(3.5,5.0)` and :math:`(x_2,y_2) = (6.5,5.0)`.
+
+The figure below shows the solutions on :math:`64\times 64` and
+:math:`256\times 256` grids using the second order scheme with upwind
+fluxes.
+
+.. figure:: s134s136-vortex-waltz_cmp.png
+  :width: 100%
+  :align: center
+
+  Vorticity for the vortex waltz problem. The left panel shows the
+  solution with :math:`64 \times 64` [:doc:`s134
+  <../../sims/s134/s134-vortex-waltz>`] grid, while the right panel
+  shows the solution with :math:`256 \times 256` [:doc:`s136
+  <../../sims/s136/s136-vortex-waltz>`] grid.
+
+The figure below shows the solutions on :math:`32\times 32` and
+:math:`64\times 64` grids using the third order scheme with upwind
+fluxes.
+
+.. figure:: s137s138-vortex-waltz_cmp.png
+  :width: 100%
+  :align: center
+
+  Vorticity for the vortex waltz problem with the third-order
+  scheme. The left panel shows the solution with :math:`32 \times 32`
+  [:doc:`s137 <../../sims/s137/s137-vortex-waltz>`] grid, while the
+  right panel shows the solution with :math:`64 \times 64` [:doc:`s138
+  <../../sims/s138/s138-vortex-waltz>`] grid.
+
+The following figure shows the solution with the third order scheme on
+:math:`128\times 128` grid.
+
+.. figure:: s139-vortex-waltz_00010.png
+  :width: 100%
+  :align: center
+
+  Vorticity for the vortex waltz problem with the third-order scheme
+  on a :math:`128 \times 128` [:doc:`s139
+  <../../sims/s139/s139-vortex-waltz>`] grid. The solution looks
+  better resolved than the :math:`256 \times 256` second-order scheme
+  and runs significantly faster.
+
+
+Conclusions
+-----------
+
+The Poisson bracket updater combined with the Poisson solver is used
+to solve the incompressible Euler equations. The results show that
+energy and enstrophy is conserved (to the order of the time
+integration scheme) when using a central flux, while the energy is
+conserved even when using upwind fluxes. It is also shown that the
+third order spatial scheme is significantly more accurate and runs
+faster than the second order spatial scheme.
+
