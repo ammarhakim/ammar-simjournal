@@ -167,7 +167,12 @@ zero.
 
   Total energy (top) and total enstrophy (bottom) history with
   different CFL numbers with central flux. Both energy and enstrophy
-  errors go to zero with the order of time-stepping scheme. See
+  errors go to zero with the order of time-stepping scheme. The drop
+  in energy is :math:`1.36\times 10^{-5}`, :math:`1.73\times 10^{-6}`
+  and :math:`2.29\times 10^{-7}` respectively, giving an order of 2.97
+  and 2.91 respectively. The drop in enstrophy is :math:`2.66\times
+  10^{-2}`, :math:`3.59\times 10^{-3}` and :math:`4.578\times 10^{-4}`
+  respectively, giving an order of 2.88 and 2.97 respectively. See
   [:doc:`s131 <../../sims/s131/s131-double-shear>`], [:doc:`s132
   <../../sims/s132/s132-double-shear>`] and [:doc:`s133
   <../../sims/s133/s133-double-shear>`] for the input files.
@@ -205,6 +210,26 @@ fluxes.
   <../../sims/s134/s134-vortex-waltz>`] grid, while the right panel
   shows the solution with :math:`256 \times 256` [:doc:`s136
   <../../sims/s136/s136-vortex-waltz>`] grid.
+
+The errors in energy and enstrophy with different grid sizes is shown
+in the figure below. Note the relatively small drop in energy (on the
+order of :math:`10^{-4}` percent) even for the coarse grid
+simulation.
+
+.. figure:: s134s135s136-vortex-waltz-totalEnergyEnstrophy_cmp.png
+  :width: 100%
+  :align: center
+
+  Error in energy (top) and enstrophy (bottom) for the vortex waltz
+  problem. The simulations were run on :math:`64 \times 64`
+  [:doc:`s134 <../../sims/s134/s134-vortex-waltz>`], :math:`128 \times
+  128` [:doc:`s135 <../../sims/s135/s135-vortex-waltz>`] and
+  :math:`256 \times 256` [:doc:`s136
+  <../../sims/s136/s136-vortex-waltz>`] grids. The error in energy is
+  on the order of :math:`10^{-4}` percent even for the coarse grid
+  simulation. Notice that as the upwind flux is used, the enstrophy
+  drop is significant, on the order of 6-14 percent for all the
+  simulations.
 
 The figure below shows the solutions on :math:`32\times 32` and
 :math:`64\times 64` grids using the third order scheme with upwind

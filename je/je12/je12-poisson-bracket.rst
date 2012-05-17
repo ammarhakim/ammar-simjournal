@@ -45,13 +45,18 @@ Temporal Convergence
 In the first set of tests the temporal convergence is tested. For this
 a Gaussian pulse :math:`\chi(x,y,0) = \exp(-75(x-x_c)^2)` is
 initialized, where :math:`x_c = 0.5` and :math:`x \in [0,1]` with
-periodic boundary conditions. The potential is set to
-:math:`\psi(x,y)=y` which advects the pulse with constant speed in the
-X-direction. Simulations were run on a :math:`32\times 4` grid to
+periodic boundary conditions.
+
+The potential is set to :math:`\psi(x,y)=y` which advects the pulse
+with constant speed in the X-direction. Note that even though the
+problem is periodic we can not apply periodic BCs to the potential due
+to the linear variation in the Y direction.
+
+Simulations were run on a :math:`32\times 4` grid to
 :math:`t=1.0`. The time-steps were adjusted to CFL numbers of 0.2,
 0.1, 0.05 and 0.025. To isolate the errors from the temporal
 discretization alone the differences in the solution were computed
-between successive results and their convergence computed. 
+between successive results and their convergence computed.
 
 The results with Runge-Kutta second-order schemes is presented in the
 following table.
@@ -124,11 +129,12 @@ as
 
 .. math::
 
-  \psi(x,y) =y - x
+  \psi(x,y) = y - x
 
-giving an advection speed of :math:`\sqrt{2}` top right corner of the
-domain. For all problems, the time-step was held fixed for all spatial
-resolutions.
+giving an advection speed of :math:`\sqrt{2}` towards the top right
+corner of the domain. As in the previous problem, boundary conditions
+can not be applied to the potential. For all problems, the time-step
+was held fixed for all spatial resolutions.
 
 In the first set of tests, the convergence of the second-order scheme
 is tested. This scheme uses the second-order 4-node Lobatto elements
