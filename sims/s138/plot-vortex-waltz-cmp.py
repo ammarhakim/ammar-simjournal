@@ -119,7 +119,7 @@ def projectOnFinerGrid_f3(Xc, Yc, q):
 
     return Xn, Yn, qn
 
-tEnd = 8
+tEnd = 100.0
 nFrame = 11
 
 T = pylab.linspace(0, tEnd, nFrame)

@@ -77,7 +77,7 @@ def projectOnFinerGrid_f(Xc, Yc, q):
 
     return Xn, Yn, qn
 
-tEnd = 8
+tEnd = 100.0
 nFrame = 11
 
 T = pylab.linspace(0, tEnd, nFrame)
@@ -120,6 +120,46 @@ pylab.axis('image')
 pylab.title('T=%f' % T[10])
     
 pylab.savefig('s134s136-vortex-waltz_cmp.png')
+pylab.close()
+
+fig = pylab.figure(2)
+fig.subplots_adjust(hspace=0.4)
+fig.subplots_adjust(wspace=0.4)
+
+pylab.subplot(2,1,1)
+tr_134 = pylab.loadtxt('../s134/s134-vortex-waltz_totalEnergy')
+tr_135 = pylab.loadtxt('../s135/s135-vortex-waltz_totalEnergy')
+tr_136 = pylab.loadtxt('../s136/s136-vortex-waltz_totalEnergy')
+
+refTe = tr_134[0,1]
+
+pylab.plot(tr_134[:,0], abs(tr_134[:,1]-tr_134[0,1])/tr_134[0,1], label='64x64')
+pylab.plot(tr_135[:,0], abs(tr_135[:,1]-tr_135[0,1])/tr_135[0,1], label='128x128')
+pylab.plot(tr_136[:,0], abs(tr_136[:,1]-tr_136[0,1])/tr_136[0,1], label='256x256')
+pylab.legend(loc='upper left')
+pylab.title('Energy Error History')
+pylab.xlabel('Time [s]')
+pylab.ylabel('Total Energy')
+
+print "64x64", abs(tr_134[-1,1]-tr_134[0,1])/tr_134[0,1]*100
+print "128x128", abs(tr_135[-1,1]-tr_135[0,1])/tr_135[0,1]*100
+print "256x256", abs(tr_136[-1,1]-tr_136[0,1])/tr_136[0,1]*100
+
+pylab.subplot(2,1,2)
+tr_134 = pylab.loadtxt('../s134/s134-vortex-waltz_totalEnstrophy')
+tr_135 = pylab.loadtxt('../s135/s135-vortex-waltz_totalEnstrophy')
+tr_136 = pylab.loadtxt('../s136/s136-vortex-waltz_totalEnstrophy')
+
+pylab.plot(tr_134[:,0], abs(tr_134[:,1]-tr_134[0,1])/tr_134[0,1], label='64x64')
+pylab.plot(tr_135[:,0], abs(tr_135[:,1]-tr_135[0,1])/tr_135[0,1], label='128x128')
+pylab.plot(tr_136[:,0], abs(tr_136[:,1]-tr_136[0,1])/tr_136[0,1], label='256x256')
+
+refTe = tr_134[0,1]
+pylab.legend(loc='upper left')
+pylab.title('Enstrophy Error History')
+pylab.xlabel('Time [s]')
+pylab.ylabel('Enstrophy Error')
+pylab.savefig('s134s135s136-vortex-waltz-totalEnergyEnstrophy_cmp.png')
 pylab.close()
 
 fh.close()
