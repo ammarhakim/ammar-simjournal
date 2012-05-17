@@ -311,4 +311,11 @@ program for that simulation.
     - Vortex waltx problem, DG3, :math:`64 \times 64` grid.
   * - ${mdl("s139")}
     - Vortex waltx problem, DG3, :math:`128 \times 128` grid.
+  * - ${mdl("s140")}
+    - Vortex waltz problem, :math:`64 \times 64` grid with central flux, CFL 0.2
+  * - ${mdl("s141")}
+    - Vortex waltz problem, :math:`64 \times 64` grid with central flux, CFL 0.1
+  * - ${mdl("s142")}
+    - Vortex waltz problem, :math:`64 \times 64` grid with central flux, CFL 0.05
+
 

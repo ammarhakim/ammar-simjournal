@@ -1,0 +1,2 @@
+python2.7 /Users/ahakim/research/gkeyll-project/lucee/scripts/gethist.py s142-vortex-waltz_totalEnergy DataStruct > s142-vortex-waltz_totalEnergy
+python2.7 /Users/ahakim/research/gkeyll-project/lucee/scripts/gethist.py s142-vortex-waltz_totalEnstrophy DataStruct > s142-vortex-waltz_totalEnstrophy

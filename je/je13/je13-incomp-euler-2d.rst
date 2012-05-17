@@ -197,6 +197,9 @@ where
 where :math:`r_i^2 = (x-x_i)^2 + (y-y_i)^2` and :math:`(x_1,y_1) =
 (3.5,5.0)` and :math:`(x_2,y_2) = (6.5,5.0)`.
 
+Second order scheme
++++++++++++++++++++
+
 The figure below shows the solutions on :math:`64\times 64` and
 :math:`256\times 256` grids using the second order scheme with upwind
 fluxes.
@@ -221,15 +224,38 @@ simulation.
   :align: center
 
   Error in energy (top) and enstrophy (bottom) for the vortex waltz
-  problem. The simulations were run on :math:`64 \times 64`
-  [:doc:`s134 <../../sims/s134/s134-vortex-waltz>`], :math:`128 \times
-  128` [:doc:`s135 <../../sims/s135/s135-vortex-waltz>`] and
-  :math:`256 \times 256` [:doc:`s136
-  <../../sims/s136/s136-vortex-waltz>`] grids. The error in energy is
-  on the order of :math:`10^{-4}` percent even for the coarse grid
-  simulation. Notice that as the upwind flux is used, the enstrophy
-  drop is significant, on the order of 6-14 percent for all the
-  simulations.
+  problem with *upwind* fluxes. The simulations were run on :math:`64
+  \times 64` [:doc:`s134 <../../sims/s134/s134-vortex-waltz>`],
+  :math:`128 \times 128` [:doc:`s135
+  <../../sims/s135/s135-vortex-waltz>`] and :math:`256 \times 256`
+  [:doc:`s136 <../../sims/s136/s136-vortex-waltz>`] grids. The error
+  in energy is on the order of :math:`10^{-4}` percent even for the
+  coarse grid simulation. Notice that as the upwind flux is used, the
+  enstrophy drop is significant, on the order of 6-14 percent for all
+  the simulations.
+
+To check for conservation (to time-stepping order) of *both* energy
+and enstrophy the same simulations were run with a central flux. The
+results are shown in the following figure. Note that now both energy
+and enstrophy converge, however, the central flux adds significant
+numerical noise to the solution.
+
+.. figure:: s140s141s142-vortex-waltz-totalEnergyEnstrophy_cmp.png
+  :width: 100%
+  :align: center
+
+  Error in energy (top) and enstrophy (bottom) for the vortex waltz
+  problem with *central* fluxes. The simulations were run on :math:`64
+  \times 64` grid with CFL numbers of 0.2, 0.1 and 0.05. Energy errors
+  converge with order of 2.53 and 2.97 respectively, while enstrophy
+  errors converge with order of 1.9 and 2.56 respectively. Also, as
+  compared to the case with upwind scheme the error in enstrophy is
+  smaller by more than an order of magnitude. However, this improved
+  enstrophy conservation comes at the cost of adding significant
+  numerical noise to the solution.
+
+Third order scheme
+++++++++++++++++++
 
 The figure below shows the solutions on :math:`32\times 32` and
 :math:`64\times 64` grids using the third order scheme with upwind

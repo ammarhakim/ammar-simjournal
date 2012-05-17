@@ -23,3 +23,11 @@ convergence(dat[:,0], dat[:,1])
 print "DG2 Enstrophy convergence (CF)"
 dat = pylab.loadtxt("total-enstrophy-convergence-ds-cf.dat")
 convergence(dat[:,0], dat[:,1])
+
+print "VW DG2 Energy convergence (CF)"
+dat = pylab.loadtxt("total-energy-convergence-vw-cf.dat")
+convergence(dat[:,0], dat[:,1])
+
+print "VW DG2 Enstrophy convergence (CF)"
+dat = pylab.loadtxt("total-enstrophy-convergence-vw-cf.dat")
+convergence(dat[:,0], dat[:,1])
