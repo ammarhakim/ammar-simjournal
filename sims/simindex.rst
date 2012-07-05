@@ -310,4 +310,8 @@ program for that simulation.
     - Vlasov free-streaming operator test. DG3, upwind flux on :math:`32 \times 8` grid.
   * - :doc:`s147 <s147/s147-vlasov-free-stream>` 
     - Vlasov free-streaming operator test. DG3, upwind flux on :math:`32 \times 16` grid.
+  * - :doc:`s148 <s148/s148-vlasov-fp>` 
+    - Vlasov in potential well. DG2, upwind flux on :math:`32 \times 64` grid.
+  * - :doc:`s149 <s149/s149-vlasov-fp>` 
+    - Vlasov in potential well. DG2, upwind flux on :math:`64 \times 128` grid.
 

@@ -83,7 +83,7 @@ def plotLines(X, fld):
 
 xlo, xup = 0.0, 2*math.pi
 ylo, yup = -6, 6
-nx, ny = 32, 64
+nx, ny = 64, 128
 
 X = pylab.linspace(0, 2*math.pi, nx+1)
 Y = pylab.linspace(-6, 6, ny+1)
@@ -105,7 +105,7 @@ exv = 0.5*VV**2 + pylab.cos(XX)
 
 for i in range(nFrame+1):
     print "Working on ", i
-    fh = tables.openFile("s148-vlasov-fp_distf_%d.h5" % i)
+    fh = tables.openFile("s149-vlasov-fp_distf_%d.h5" % i)
     q = fh.root.StructGridField
 
     Xn, Yn, qn = projectOnFinerGrid_f(Xc, Yc, q)
@@ -116,7 +116,7 @@ for i in range(nFrame+1):
     pylab.contour(XX, VV, exv, levels=pylab.linspace(exv.min(), 5, 10), colors='k')
     pylab.axis('tight')
     pylab.title('T=%f' % T[i])
-    pylab.savefig('s148-vlasov-fp_distf_%05d.png' % i)
+    pylab.savefig('s149-vlasov-fp_distf_%05d.png' % i)
     
     fh.close()
 

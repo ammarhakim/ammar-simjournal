@@ -169,6 +169,47 @@ third spatial order scheme. The results are show below.
   refined. Exact recurrence in the third-order scheme is not seen on
   this time-scale.
 
+Problem 2: Particles in a potential well
+----------------------------------------
+
+In this problem the potential is held fixed after being initialized as
+
+.. math::
+
+  \phi(x) = \cos(x)
+
+The initial distribution is assumed to be a uniform Maxwellian
+
+.. math::
+
+  f(x,v,0) = \frac{1}{\sqrt{2\pi v_t}} \exp(-v^2/2v_t^2)
+
+with :math:`v_t=1.0`. A fraction of the particles will be trapped in
+this potential well and appear as rotating vortices in the
+distribution function plots. Simulations were run with a DG2 scheme on
+a :math:`64\times 128` grid for :math:`(x,v) \in [0,2\pi] \times
+[-6,6]`.
+
+See `movie <../../_static/s149-fxv.mov>`_ of the results. Snapshots
+are shown at a :math:`t=3` and :math:`t=20` below.
+
+.. figure:: s149-vlasov-fp_distf_00003.png
+  :width: 100%
+  :align: center
+
+  Distribution function at :math:`t=3` for flow in a potential
+  well. The black lines show contours of constant particle energy. A
+  separatrix forms along the trapped-passing boundary. Simulation run
+  with a DG2 scheme on a :math:`64\times 128` grid [:doc:`s149
+  <../../sims/s149/s149-vlasov-fp>`].
+
+.. figure:: s149-vlasov-fp_distf_00020.png
+  :width: 100%
+  :align: center
+
+  Distribution function at :math:`t=20` for flow in a potential
+  well. See previous figure captions for other details.
+
 --------
 
 .. [#hamil-note] The Hamilitonian should be written in
