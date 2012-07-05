@@ -327,4 +327,8 @@ program for that simulation.
     - Vlasov free-streaming operator test. DG3, upwind flux on :math:`32 \times 8` grid.
   * - ${mdl("s147")}
     - Vlasov free-streaming operator test. DG3, upwind flux on :math:`32 \times 16` grid.
+  * - ${mdl("s148")}
+    - Vlasov in potential well. DG2, upwind flux on :math:`32 \times 64` grid.
+  * - ${mdl("s149")}
+    - Vlasov in potential well. DG2, upwind flux on :math:`64 \times 128` grid.
 

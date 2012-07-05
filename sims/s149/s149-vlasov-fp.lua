@@ -10,7 +10,7 @@ cfl = 0.2
 XL, XU = 0, 2*Lucee.Pi
 VL, VU = -6.0, 6.0
 -- number of cells
-NX, NV = 32, 64
+NX, NV = 64, 128
 
 -- Determine number of global nodes per cell for use in creating CG
 -- fields. Note that this looks a bit odd as this not the number of
@@ -101,20 +101,20 @@ initHamil:advance(0.0) -- time is irrelevant
 hamil:applyPeriodicBc(0)
 
 function uniformMaxwellian(x,y,z,t)
-      local v, vt = y, 1.0
-      return 1/math.sqrt(2*Lucee.Pi*vt^2)*math.exp(-v^2/(2*vt^2))
+   local v, vt = y, 1.0
+   return 1/math.sqrt(2*Lucee.Pi*vt^2)*math.exp(-v^2/(2*vt^2))
 end
 
 function circle(x,y,z,t)
-      local v = y
-      local xc, vc = Lucee.Pi, 1.0
-      local rad = 0.25
-      local r = math.sqrt((x-xc)^2 + (v-vc)^2)
-      if r < rad then
-	 return 1.0
-      else
-	 return 0.0
-      end
+   local v = y
+   local xc, vc = Lucee.Pi, 1.0
+   local rad = 0.25
+   local r = math.sqrt((x-xc)^2 + (v-vc)^2)
+   if r < rad then
+      return 1.0
+   else
+      return 0.0
+   end
 end
 
 -- updater to initialize distribution function
