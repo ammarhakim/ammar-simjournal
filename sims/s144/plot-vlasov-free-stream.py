@@ -83,7 +83,7 @@ def plotLines(X, fld):
 
 xlo, xup = 0.0, 2*math.pi
 ylo, yup = -6, 6
-nx, ny = 64, 64
+nx, ny = 32, 8
 
 X = pylab.linspace(0, 2*math.pi, nx+1)
 Y = pylab.linspace(-6, 6, ny+1)
@@ -94,7 +94,7 @@ dy = (yup-ylo)/ny
 Xc = pylab.linspace(xlo+0.5*dx, xup-0.5*dx, nx)
 Yc = pylab.linspace(ylo+0.5*dy, yup-0.5*dy, ny)
 
-tEnd = 10.0
+tEnd = 20.0
 nFrame = 4
 
 T = pylab.linspace(0, tEnd, nFrame+1)
@@ -102,7 +102,7 @@ T = pylab.linspace(0, tEnd, nFrame+1)
 fig = pylab.figure(1)
 for i in [1,2,3,4]:
     print "Working on ", i
-    fh = tables.openFile("s143-vlasov-free-stream_distf_%d.h5" % i)
+    fh = tables.openFile("s144-vlasov-free-stream_distf_%d.h5" % i)
     q = fh.root.StructGridField
 
     Xn, Yn, qn = projectOnFinerGrid_f(Xc, Yc, q)
@@ -114,13 +114,13 @@ for i in [1,2,3,4]:
 
     fh.close()
 
-pylab.savefig('s143-vlasov-free-stream_distf.png') 
+pylab.savefig('s144-vlasov-free-stream_distf.png') 
 pylab.close()
 
 fig = pylab.figure(2)
 for i in [1,2,3,4]:
     print "Working on ", i
-    fh = tables.openFile("s143-vlasov-free-stream_distf_%d.h5" % i)
+    fh = tables.openFile("s144-vlasov-free-stream_distf_%d.h5" % i)
     q = fh.root.StructGridField
 
     #Xn, Yn, qn = projectOnFinerGrid_f(Xc, Yc, q)
@@ -132,17 +132,17 @@ for i in [1,2,3,4]:
 
     fh.close()
 
-pylab.savefig('s143-vlasov-free-stream_distf_v.png')
+pylab.savefig('s144-vlasov-free-stream_distf_v.png')
 pylab.close()
 
 fig = pylab.figure(3)
-numDenHist = pylab.loadtxt("s143-vlasov-free-stream_numDensInCell")
+numDenHist = pylab.loadtxt("s144-vlasov-free-stream_numDensInCell")
 pylab.plot(numDenHist[:,0], numDenHist[:,1], 'k-')
 # exact solution at selected points
-Tex = pylab.linspace(0, tEnd, 20)
+Tex = numDenHist[:,0]
 nEx = numDenHist[0,1]*pylab.exp(-0.5*Tex**2)
-pylab.plot(Tex, nEx, 'ro')
+pylab.plot(Tex, nEx, 'r-')
 pylab.xlabel('Time [s]')
 pylab.ylabel('Number Density')
-pylab.savefig('s143-vlasov-free-stream_numDensInCell.png')
+pylab.savefig('s144-vlasov-free-stream_numDensInCell.png')
 pylab.close()
