@@ -100,6 +100,9 @@ density is
 
 which is exponentially damped.
 
+Accuracy test
++++++++++++++
+
 To test the ability of the algorithm to model this damping, a
 simulation is initialized with a Maxwellian with :math:`v_t=1` and
 :math:`k=1` on a domain :math:`(x,v) \in [0,2\pi] \times [-6,6]`. The
@@ -129,6 +132,42 @@ with upwind fluxes are show below.
   free-streaming problem. The increasingly oscillatory nature of the
   distribution function is evident in this plot. See previous figure
   caption for other details.
+
+.. figure:: s143-vlasov-free-stream_numDensInCell.png
+  :width: 100%
+  :align: center
+
+  Number density (black) in cell 2 as a function of time. The red dots
+  show the exact solution. For this resolution the numerical solution
+  is indistinguishable from the exact solution. See previous figure
+  caption for other details.
+
+Recurrence phenomena
+++++++++++++++++++++
+
+The discrete velocity space grid combined with a lack of true physical
+(or numerical) damping will lead to recurrence, i.e, the initial
+conditions will recur almost exactly after a finite amount of
+time. To see this the above simulation was run on a coarser mesh with
+:math:`32 \times 8` and :math:`32\times 16` cells with a second and
+third spatial order scheme. The results are show below.
+
+.. figure:: s14_4567_-vlasov-free-stream_numDensInCell.png
+  :width: 100%
+  :align: center
+
+  Number density (black) as a function of time with DG2 on 8 velocity
+  cells [:doc:`s144 <../../sims/s144/s144-vlasov-free-stream>`] (top
+  left), DG2 on 16 velocity cells [:doc:`s145
+  <../../sims/s145/s145-vlasov-free-stream>`] (top right), DG3 on 8
+  velocity cells [:doc:`s146
+  <../../sims/s146/s146-vlasov-free-stream>`] (bottom left) and DG3 on
+  16 velocity cells [:doc:`s147
+  <../../sims/s147/s147-vlasov-free-stream>`] (bottom right). The red
+  line shows the exact solution. The recurrence is clearly visible in
+  the second order scheme, and occurs later as the velocity grid is
+  refined. Exact recurrence in the third-order scheme is not seen on
+  this time-scale.
 
 --------
 
