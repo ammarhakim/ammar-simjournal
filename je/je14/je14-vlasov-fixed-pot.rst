@@ -74,7 +74,7 @@ Note that the exact solution to this equation is simply
 i.e. for at each point in velocity space the initial distribution
 advects with a constant speed. However, even though the distribution
 function is manifestly undamped, its *moments* are damped. To see this
-pick an initial condition a Maxwellian
+pick an initial condition a Maxwellian [#positivity]_
 
 .. math::
 
@@ -101,10 +101,34 @@ density is
 which is exponentially damped.
 
 To test the ability of the algorithm to model this damping, a
-simulation is initialized with a Maxwellian with :math:`v_t=1` on a
-domain :math:`(x,v) \in [0,2\pi] \times [-6,6]`. The number density is
-computed and diagnositcs inserted to record the time-dependent density
-in a specified cell. The results are shown below.
+simulation is initialized with a Maxwellian with :math:`v_t=1` and
+:math:`k=1` on a domain :math:`(x,v) \in [0,2\pi] \times [-6,6]`. The
+number density is computed and diagnositcs inserted to record the
+time-dependent density in a specified cell. 
+
+The results on a :math:`64\times 64` grid with DG second order scheme
+with upwind fluxes are show below.
+
+.. figure:: s143-vlasov-free-stream_distf.png
+  :width: 100%
+  :align: center
+
+  Distribution function :math:`f(x,v,t)` at different times for
+  free-streaming problem. This simulaton [:doc:`s143
+  <../../sims/s143/s143-vlasov-free-stream>`] was performed on a
+  :math:`64\times 64` grid with DG second order scheme with upwind
+  fluxes. Seen is the increasing striations in the distribution
+  function due to the differential advection at different velocities
+  and the initial spatial perturbation.
+
+.. figure:: s143-vlasov-free-stream_distf_v.png
+  :width: 100%
+  :align: center
+
+  Distribution function :math:`f(x=\pi,v,t)` at different times for
+  free-streaming problem. The increasingly oscillatory nature of the
+  distribution function is evident in this plot. See previous figure
+  caption for other details.
 
 --------
 
@@ -119,4 +143,8 @@ in a specified cell. The results are shown below.
    simple case considered here the two definitions lead to the same
    dynamical equation for the distribution function.
 
+.. [#positivity] The form of the initial condition means that the
+   distribution function is allowed to go negative. This is okay in
+   this test problem, but for plasmas positivity of the distribution
+   function is a required condition of physical realizability.
 

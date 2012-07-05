@@ -109,10 +109,10 @@ initDistf = Updater.EvalOnNodes2D {
    shareCommonNodes = false, -- In DG, common nodes are not shared
    -- function to use for initialization
    evaluate = function (x,y,z,t)
-      local v, vt = y, 2.0
+      local v, vt = y, 1.0
       local vdrift = 0.0
       local beta = 0.1 -- perturbation
-      return 1/math.sqrt(2*Lucee.Pi*vt)*math.exp(-(v-vdrift)^2/(2*vt^2))*(1+beta*math.cos(x))
+      return 1/math.sqrt(2*Lucee.Pi*vt)*math.exp(-(v-vdrift)^2/(2*vt^2))*math.cos(x)
    end
 }
 initDistf:setOut( {distf} )
