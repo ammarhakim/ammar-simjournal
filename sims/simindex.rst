@@ -300,5 +300,6 @@ program for that simulation.
     - Vortex waltz problem, :math:`64 \times 64` grid with central flux, CFL 0.1
   * - :doc:`s142 <s142/s142-vortex-waltz>` 
     - Vortex waltz problem, :math:`64 \times 64` grid with central flux, CFL 0.05
-
+  * - :doc:`s143 <s143/s143-vlasov-free-stream>` 
+    - Vlasov free-streaming operator test. DG2, upwind flux on :math:`64 \times 64` grid.
 
