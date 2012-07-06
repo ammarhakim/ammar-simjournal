@@ -314,4 +314,6 @@ program for that simulation.
     - Vlasov in potential well. DG2, upwind flux on :math:`32 \times 64` grid.
   * - :doc:`s149 <s149/s149-vlasov-fp>` 
     - Vlasov in potential well. DG2, upwind flux on :math:`64 \times 128` grid.
+  * - :doc:`s150 <s150/s150-vlasov-fp>` 
+    - Vlasov in quadratic potential well. DG2, upwind flux on :math:`64 \times 128` grid.
 
