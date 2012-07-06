@@ -37,7 +37,7 @@ the potential is specified and time-independent. For the
 Vlasov-Poisson system, however, the potential is determined from
 either a Poisson solve or from the requirements of
 quasi-neutrality. With this Hamiltonian the Vlasov equation can be
-written in the familar form
+written in the familiar form
 
 .. math::
 
@@ -91,7 +91,7 @@ wave-number. Then, the exact solution is
 
 The increasingly oscillatory nature of the :math:`\cos\left( k(x-vt)
 \right)` term results in *phase mixing* due to which all moments of
-the distribution functions are severly damped. For example, the number
+the distribution functions are severely damped. For example, the number
 density is
 
 .. math::
@@ -106,7 +106,7 @@ Accuracy test
 To test the ability of the algorithm to model this damping, a
 simulation is initialized with a Maxwellian with :math:`v_t=1` and
 :math:`k=1` on a domain :math:`(x,v) \in [0,2\pi] \times [-6,6]`. The
-number density is computed and diagnositcs inserted to record the
+number density is computed and diagnostics inserted to record the
 time-dependent density in a specified cell. 
 
 The results on a :math:`64\times 64` grid with DG second order scheme
@@ -117,7 +117,7 @@ with upwind fluxes are show below.
   :align: center
 
   Distribution function :math:`f(x,v,t)` at different times for
-  free-streaming problem. This simulaton [:doc:`s143
+  free-streaming problem. This simulation [:doc:`s143
   <../../sims/s143/s143-vlasov-free-stream>`] was performed on a
   :math:`64\times 64` grid with DG second order scheme with upwind
   fluxes. Seen is the increasing striations in the distribution
@@ -195,7 +195,7 @@ where :math:`x_1` and :math:`x_2` are the roots of the equation
 :math:`\phi(x)=E`, i.e. the turning points at which the motion of the
 particle changes sign. For finite :math:`x_1` and :math:`x_2` the
 motion is periodic. Note that for a non-singular distribution (like
-the Maxwellian) the bounce period will not be the same for all the
+the Maxwellian) the bounce period need not be the same for all the
 particles. In this case an average period can be computed.
 
 A :math:`\cos(x)` potential well
@@ -247,10 +247,10 @@ In this problem the potential is specified as
 Simulations were run with a DG2 scheme on a :math:`64\times 128` grid
 for :math:`(x,v) \in [-1,1] \times [-6,6]`. In this potential well the
 bounce period is the same for all particles and can be computed as
-:math:`\pi\sqrt{2} \approx 4.443`. Also, as the bounce period is the
-same, the trapped particles will move "rigidly" in phase space,
-i.e. the motion along contours of constant energy will occur with the
-same angular frequency.
+:math:`\pi\sqrt{2} \approx 4.443`. Also, as the bounce period for all
+trapped particles is the same, these will move "rigidly" in phase
+space, i.e. the motion along contours of constant energy will occur
+with the same angular frequency.
 
 These features are clearly seen in the `movie
 <../../_static/s150-fxv.mov>`_ which shows the correct bounce
@@ -264,8 +264,9 @@ Snapshots are shown at a :math:`t=3` and :math:`t=20` below.
   :align: center
 
   Distribution function at :math:`t=3` for flow in a potential
-  well. The black lines show contours of constant particle energy. A
-  separatrix forms along the trapped-passing boundary. Simulation run
+  well. The black line shows the trapped-passing energy contour. Due
+  to the quadratic potential, all particles inside the trapped region
+  move with the same angular velocity in phase space.  Simulation run
   with a DG2 scheme on a :math:`64\times 128` grid [:doc:`s150
   <../../sims/s150/s150-vlasov-fp>`].
 
@@ -275,6 +276,19 @@ Snapshots are shown at a :math:`t=3` and :math:`t=20` below.
 
   Distribution function at :math:`t=20` for flow in a potential
   well. See previous figure captions for other details.
+
+Conclusions
+-----------
+
+The ability of the discontinuous Galerkin Vlasov solver to handle
+free-streaming and fixed-potential problems is
+demonstrated. Recurrence is seen to occur due to a lack of true
+physical or numerical dissipation. The appropriate amount of such
+dissipation can be provided from (hyper) collisions and this needs to
+be implemented. One aim of this note was to ensure that all the moment
+and diagnostic updaters are working correctly. This is slightly tricky
+as one needs to go between 2D and 1D grids with different basis
+functions. Everything seems to be working as expected.
 
 --------
 
