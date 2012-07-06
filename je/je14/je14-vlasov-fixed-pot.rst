@@ -172,28 +172,53 @@ third spatial order scheme. The results are show below.
 Problem 2: Particles in a potential well
 ----------------------------------------
 
-In this problem the potential is held fixed after being initialized as
-
-.. math::
-
-  \phi(x) = \cos(x)
-
-The initial distribution is assumed to be a uniform Maxwellian
+In this set of problems the potential was held fixed and the
+distribution evolved. These cases correspond to the motion of test
+particles in a specified potential. In each case the initial
+distribution is assumed to be a uniform Maxwellian
 
 .. math::
 
   f(x,v,0) = \frac{1}{\sqrt{2\pi v_t}} \exp(-v^2/2v_t^2)
 
-with :math:`v_t=1.0`. A fraction of the particles will be trapped in
-this potential well and appear as rotating vortices in the
-distribution function plots. Simulations were run with a DG2 scheme on
+with :math:`v_t=1.0`. If the potential has a well (a minima) then a
+fraction of the particles will be trapped and appear as rotating
+vortices in the distribution function plots. The bounce period for a
+particle with energy total :math:`E` (which is a constant of motion)
+in a well can be computed from
+
+.. math::
+
+  T(E) = \sqrt{2m} \int_{x_1(E)}^{x_2(E)} \frac{dx}{\sqrt{E-\phi(x)}}
+
+where :math:`x_1` and :math:`x_2` are the roots of the equation
+:math:`\phi(x)=E`, i.e. the turning points at which the motion of the
+particle changes sign. For finite :math:`x_1` and :math:`x_2` the
+motion is periodic. Note that for a non-singular distribution (like
+the Maxwellian) the bounce period will not be the same for all the
+particles. In this case an average period can be computed.
+
+A :math:`\cos(x)` potential well
+++++++++++++++++++++++++++++++++
+
+In this problem the potential is specified as
+
+.. math::
+
+  \phi(x) = \cos(x)
+
+Simulations were run with a DG2 scheme on
 a :math:`64\times 128` grid for :math:`(x,v) \in [0,2\pi] \times
 [-6,6]`.
 
-See `movie <../../_static/s149-fxv.mov>`_ of the results. Snapshots
-are shown at a :math:`t=3` and :math:`t=20` below.
+In this potential the bounce period of a single particle depends on
+its initial energy. This is seen in the `movie
+<../../_static/s149-fxv.mov>`_ in which the particles with smaller
+total energy bounce faster. 
 
-.. figure:: s149-vlasov-fp_distf_00003.png
+Snapshots are shown at a :math:`t=3` and :math:`t=20` below.
+
+.. figure:: s149-vlasov-fp_distf_00015.png
   :width: 100%
   :align: center
 
@@ -203,7 +228,48 @@ are shown at a :math:`t=3` and :math:`t=20` below.
   with a DG2 scheme on a :math:`64\times 128` grid [:doc:`s149
   <../../sims/s149/s149-vlasov-fp>`].
 
-.. figure:: s149-vlasov-fp_distf_00020.png
+.. figure:: s149-vlasov-fp_distf_00100.png
+  :width: 100%
+  :align: center
+
+  Distribution function at :math:`t=20` for flow in a potential
+  well. See previous figure captions for other details.
+
+A quadratic :math:`\phi(x)=x^2` potential well
++++++++++++++++++++++++++++++++++++++++++++++++
+
+In this problem the potential is specified as
+
+.. math::
+
+  \phi(x) = x^2
+
+Simulations were run with a DG2 scheme on a :math:`64\times 128` grid
+for :math:`(x,v) \in [-1,1] \times [-6,6]`. In this potential well the
+bounce period is the same for all particles and can be computed as
+:math:`\pi\sqrt{2} \approx 4.443`. Also, as the bounce period is the
+same, the trapped particles will move "rigidly" in phase space,
+i.e. the motion along contours of constant energy will occur with the
+same angular frequency.
+
+These features are clearly seen in the `movie
+<../../_static/s150-fxv.mov>`_ which shows the correct bounce
+period. Also, it is seen that most of the particles are trapped and
+the distribution function "rotates rigidly" inside the trapped region.
+
+Snapshots are shown at a :math:`t=3` and :math:`t=20` below.
+
+.. figure:: s150-vlasov-fp_distf_00015.png
+  :width: 100%
+  :align: center
+
+  Distribution function at :math:`t=3` for flow in a potential
+  well. The black lines show contours of constant particle energy. A
+  separatrix forms along the trapped-passing boundary. Simulation run
+  with a DG2 scheme on a :math:`64\times 128` grid [:doc:`s150
+  <../../sims/s150/s150-vlasov-fp>`].
+
+.. figure:: s150-vlasov-fp_distf_00100.png
   :width: 100%
   :align: center
 

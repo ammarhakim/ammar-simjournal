@@ -95,7 +95,7 @@ Xc = pylab.linspace(xlo+0.5*dx, xup-0.5*dx, nx)
 Yc = pylab.linspace(ylo+0.5*dy, yup-0.5*dy, ny)
 
 tEnd = 20.0
-nFrame = 20
+nFrame = 100
 
 T = pylab.linspace(0, tEnd, nFrame+1)
 

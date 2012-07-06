@@ -387,7 +387,7 @@ end
 tStart = 0.0
 tEnd = 20.0
 dtSuggested = 0.1*tEnd -- initial time-step to use (will be adjusted)
-nFrames = 20
+nFrames = 100
 tFrame = (tEnd-tStart)/nFrames
 
 tCurr = tStart
