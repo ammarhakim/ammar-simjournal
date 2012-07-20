@@ -333,4 +333,29 @@ program for that simulation.
     - Vlasov in potential well. DG2, upwind flux on :math:`64 \times 128` grid.
   * - ${mdl("s150")}
     - Vlasov in quadratic potential well. DG2, upwind flux on :math:`64 \times 128` grid.
+  * - ${mdl("s151")}
+    - Vlasov-Poisson, Landau damping :math:`k=0.5`, :math:`T_e = 1.0`.
+  * - ${mdl("s152")}
+    - Same as s151, except :math:`T_e = 0.5`.
+  * - ${mdl("s153")}
+    - Same as s151, except :math:`T_e = 0.6`.
+  * - ${mdl("s154")}
+    - Same as s151, except :math:`T_e = 0.75`.
+  * - ${mdl("s155")}
+    - Same as s151, except :math:`T_e = 1.25`.
+  * - ${mdl("s156")}
+    - Same as s151, except :math:`T_e = 1.5`.
+  * - ${mdl("s157")}
+    - Same as s151, except :math:`T_e = 1.75`.
+  * - ${mdl("s158")}
+    - Same as s151, except :math:`T_e = 1.8`.
+  * - ${mdl("s159")}
+    - Same as s151, except :math:`T_e = 1.9`.
+  * - ${mdl("s160")}
+    - Same as s151, except :math:`T_e = 2.0`.
+  * - ${mdl("s161")}
+    - Same as s151, except :math:`T_e = 2.2`.
+  * - ${mdl("s162")}
+    - Same as s151, except :math:`\alpha=0.5`. (Nonlinear Landau damping)
+
 

@@ -46,3 +46,4 @@ means of generating pretty, but irreproducible, pictures.
   je/je12/je12-poisson-bracket.rst
   je/je13/je13-incomp-euler-2d.rst
   je/je14/je14-vlasov-fixed-pot.rst
+  je/je15/je15-vlasov-poisson.rst
