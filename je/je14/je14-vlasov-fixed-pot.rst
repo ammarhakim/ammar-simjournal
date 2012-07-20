@@ -1,6 +1,6 @@
 :Author: Ammar Hakim
 :Date: July 3rd
-:Completed:  
+:Completed: July 5th
 :Last Updated:  
 
 JE14: A DG scheme for Vlasov equation with fixed potential

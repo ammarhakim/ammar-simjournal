@@ -39,9 +39,9 @@ where :math:`\{\chi,\psi\}` is the Poisson bracket operator defined by
   \frac{\partial \chi}{\partial y}\frac{\partial \psi}{\partial  x}.
 
 In this entry I use the FE Poisson solver tested in :doc:`JE11
-<../je11/je11-fem-poisson.rst>` and combine it with the Poisson
-bracket algorithm tested in :doc:`JE12 <../je12/je12-poisson-bracket>`
-to solve this set of equations.
+<../je11/je11-fem-poisson>` and combine it with the Poisson bracket
+algorithm tested in :doc:`JE12 <../je12/je12-poisson-bracket>` to
+solve this set of equations.
 
 .. note::
 

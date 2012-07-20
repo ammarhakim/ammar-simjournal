@@ -316,4 +316,29 @@ program for that simulation.
     - Vlasov in potential well. DG2, upwind flux on :math:`64 \times 128` grid.
   * - :doc:`s150 <s150/s150-vlasov-fp>` 
     - Vlasov in quadratic potential well. DG2, upwind flux on :math:`64 \times 128` grid.
+  * - :doc:`s151 <s151/s151-landau-damping-vp>` 
+    - Vlasov-Poisson, Landau damping :math:`k=0.5`, :math:`T_e = 1.0`.
+  * - :doc:`s152 <s152/s152-landau-damping-vp>` 
+    - Same as s151, except :math:`T_e = 0.5`.
+  * - :doc:`s153 <s153/s153-landau-damping-vp>` 
+    - Same as s151, except :math:`T_e = 0.6`.
+  * - :doc:`s154 <s154/s154-landau-damping-vp>` 
+    - Same as s151, except :math:`T_e = 0.75`.
+  * - :doc:`s155 <s155/s155-landau-damping-vp>` 
+    - Same as s151, except :math:`T_e = 1.25`.
+  * - :doc:`s156 <s156/s156-landau-damping-vp>` 
+    - Same as s151, except :math:`T_e = 1.5`.
+  * - :doc:`s157 <s157/s157-landau-damping-vp>` 
+    - Same as s151, except :math:`T_e = 1.75`.
+  * - :doc:`s158 <s158/s158-landau-damping-vp>` 
+    - Same as s151, except :math:`T_e = 1.8`.
+  * - :doc:`s159 <s159/s159-landau-damping-vp>` 
+    - Same as s151, except :math:`T_e = 1.9`.
+  * - :doc:`s160 <s160/s160-landau-damping-vp>` 
+    - Same as s151, except :math:`T_e = 2.0`.
+  * - :doc:`s161 <s161/s161-landau-damping-vp>` 
+    - Same as s151, except :math:`T_e = 2.2`.
+  * - :doc:`s162 <s162/s162-landau-damping-vp>` 
+    - Same as s151, except :math:`\alpha=0.5`. (Nonlinear Landau damping)
+
 
