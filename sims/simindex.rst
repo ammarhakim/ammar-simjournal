@@ -340,5 +340,14 @@ program for that simulation.
     - Same as s151, except :math:`T_e = 2.2`.
   * - :doc:`s162 <s162/s162-landau-damping-vp>` 
     - Same as s151, except :math:`\alpha=0.5`. (Nonlinear Landau damping)
+  * - :doc:`s163 <s163/s163-landau-damping-vp>` 
+    - Vlasov-Poisson, Landau damping :math:`k=\sqrt{0.08}`, :math:`T_e = 1.0` on a large domain.
+  * - :doc:`s164 <s164/s164-landau-damping-vp>` 
+    - Same as s163, except :math:`k=\sqrt{0.1}`.
+  * - :doc:`s165 <s165/s165-landau-damping-vp>` 
+    - Same as s163, except :math:`k=\sqrt{0.12}`.
+  * - :doc:`s166 <s166/s166-landau-damping-vp>` 
+    - Same as s163, except :math:`k=\sqrt{0.06}`.
+
 
 
