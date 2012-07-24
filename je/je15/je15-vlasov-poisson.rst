@@ -165,11 +165,14 @@ text-book formula
     \frac{1}{K^3}
     \exp\left(-\frac{1}{2K^2} -\frac{3}{2}\right)
 
-is only first-order accurate.
+is only first-order accurate. For the case in which :math:`k\lambda_D`
+is large a numerical root-finder is needed to get the correct damping
+rates.
 
-In the following figure the numerical results (black dots) are
-compared to the values obtained from the third order (red line) and
-the first-order (blue line) formulas. Note that it is difficult to
+In the following figure the numerical results are compared to the
+exact values obtained from a numerical root finder that solves the
+dispersion relation for Langmuir waves. Also shown are the values from
+third order and the first-order formulas. Note that it is difficult to
 obtain damping rates from simulations with even smaller
 :math:`k\lambda_D` as the numerical damping seems to affect the the
 delicate damping from the phase-mixing process.
@@ -179,16 +182,15 @@ delicate damping from the phase-mixing process.
   :align: center
 
   Damping rate from Landau damping for electron plasma oscillations as
-  a function of normalized Debye length squared. These simulations
-  were performed on a larger domain (compared to Debye length) to
-  allow comparison with analytical results. The black dots show the
-  numerical damping rates (see :doc:`s163
-  <../../sims/s163/s163-landau-damping-vp>`, :doc:`s164
-  <../../sims/s164/s164-landau-damping-vp>` and :doc:`s165
-  <../../sims/s165/s165-landau-damping-vp>`) compared to the
-  third-order formula (red line) and the first-order formula (blue
-  line). The damping rates compare well with the values obtained from
-  the third-order formulas.
+  a function of normalized Debye length. These simulations were
+  performed on a larger domain (compared to Debye length) to allow
+  comparison with analytical results. The black dots show the
+  numerical damping rates compared to the exact results (magenta),
+  third-order formula (red) and the first-order formula (blue). The
+  damping rates are within 3% of the exact values, and for large
+  values of :math:`k\lambda_D` within 1%. The first- and third-oder
+  formulas are only valid for :math:`k\lambda_D \ll 1` and do not
+  agree with the exact results.
 
 Nonlinear Landau damping
 ------------------------

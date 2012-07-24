@@ -365,6 +365,16 @@ program for that simulation.
     - Same as s163, except :math:`k=\sqrt{0.12}`.
   * - ${mdl("s166")}
     - Same as s163, except :math:`k=\sqrt{0.06}`.
+  * - ${mdl("s167")}
+    - Same as s163, except :math:`k=0.25`.
+  * - ${mdl("s168")}
+    - Same as s163, except :math:`k=0.5`.
+  * - ${mdl("s169")}
+    - Same as s163, except :math:`k=0.75`.
+  * - ${mdl("s170")}
+    - Same as s163, except :math:`k=1.0`.
+  * - ${mdl("s171")}
+    - Same as s163, except :math:`k=2.5`.
 
 
 
