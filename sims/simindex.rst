@@ -348,6 +348,16 @@ program for that simulation.
     - Same as s163, except :math:`k=\sqrt{0.12}`.
   * - :doc:`s166 <s166/s166-landau-damping-vp>` 
     - Same as s163, except :math:`k=\sqrt{0.06}`.
+  * - :doc:`s167 <s167/s167-landau-damping-vp>` 
+    - Same as s163, except :math:`k=0.25`.
+  * - :doc:`s168 <s168/s168-landau-damping-vp>` 
+    - Same as s163, except :math:`k=0.5`.
+  * - :doc:`s169 <s169/s169-landau-damping-vp>` 
+    - Same as s163, except :math:`k=0.75`.
+  * - :doc:`s170 <s170/s170-landau-damping-vp>` 
+    - Same as s163, except :math:`k=1.0`.
+  * - :doc:`s171 <s171/s171-landau-damping-vp>` 
+    - Same as s163, except :math:`k=2.5`.
 
 
 
