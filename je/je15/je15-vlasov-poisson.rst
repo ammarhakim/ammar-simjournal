@@ -132,6 +132,64 @@ following figure.
   rapidly with electron temperature (Debye length), eventually
   saturating.
 
+Linear Landau damping on larger periodic domain
++++++++++++++++++++++++++++++++++++++++++++++++
+
+In the results shown above the simulation domain was comparable to the
+Debye length. In this case the damping rate is strongly enhanced from
+the expected values from standard linear-analysis. In C. Villani's
+`course notes
+<http://math.univ-lyon1.fr/~villani/Cedrif/pre.Landau.pdf>`_, see
+section 3 in Chapter 3, it is stated that "... the Landau damping rate
+in a periodic box of length :math:`l` decays extremely fast with
+:math:`l`, like :math:`\exp(-c/l^2)`." Hence, to verify results with
+linear theory one needs to increase the size of the domain. With this,
+the damping rates can be compared to results obtained from linear
+analysis in the :math:`k\lambda_D \ll 1` regime
+
+.. math::
+
+  \Omega_i \approx \left(\frac{\pi}{8}\right)^{1/2}
+    \left(\frac{1}{K^3} - 6K\right)
+    \exp\left(-\frac{1}{2K^2} -\frac{3}{2} - 3K^2 - 12K^4 \right)
+
+In this `third-order accurate formula
+<http://www.lle.rochester.edu/media/publications/lle_review/documents/v74/4_74accurate.pdf>`_
+:math:`\Omega_i` is the normalized (to plasma frequency) growth
+(damping) rate and :math:`K = k\lambda_D`. Note that the standard
+text-book formula
+
+.. math::
+
+  \Omega_i \approx \left(\frac{\pi}{8}\right)^{1/2}
+    \frac{1}{K^3}
+    \exp\left(-\frac{1}{2K^2} -\frac{3}{2}\right)
+
+is only first-order accurate.
+
+In the following figure the numerical results (black dots) are
+compared to the values obtained from the third order (red line) and
+the first-order (blue line) formulas. Note that it is difficult to
+obtain damping rates from simulations with even smaller
+:math:`k\lambda_D` as the numerical damping seems to affect the the
+delicate damping from the phase-mixing process.
+
+.. figure:: ld-damping-rates-elc-osc.png
+  :width: 100%
+  :align: center
+
+  Damping rate from Landau damping for electron plasma oscillations as
+  a function of normalized Debye length squared. These simulations
+  were performed on a larger domain (compared to Debye length) to
+  allow comparison with analytical results. The black dots show the
+  numerical damping rates (see :doc:`s163
+  <../../sims/s163/s163-landau-damping-vp>`, :doc:`s164
+  <../../sims/s164/s164-landau-damping-vp>` and :doc:`s165
+  <../../sims/s165/s165-landau-damping-vp>`) compared to the
+  third-order formula (red line) and the first-order formula (blue
+  line). The damping rates compare well with the values obtained from
+  the third-order formulas.
+
 Nonlinear Landau damping
 ------------------------
 
