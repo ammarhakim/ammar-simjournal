@@ -230,3 +230,88 @@ Tests for the Vlasov-Quasineutral system
 ----------------------------------------
 
 Etc. etc.
+
+A note on dispersion relations for electrostatic oscillations
+-------------------------------------------------------------
+
+The plasma dielectric function can be written as
+
+.. math::
+
+  \epsilon(\omega, k) = 1 + \sum_s \chi_s(\omega,k)
+
+where :math:`\omega` is the (complex) frequency, :math:`k` the wave
+number and the sum is over all species in the plasma. The species
+suseptibilites are defined as
+
+.. math::
+
+ \chi_s(\omega, k) = -\frac{\omega_s^2}{2v_s^2 k^2} 
+    Z'\left( \frac{\omega}{\sqrt{2} v_s k} \right)
+
+where :math:`\omega_s = \sqrt{n_sq_s^2/\epsilon_0 m_s}` is the plasma
+frequency, :math:`v_s = \sqrt{2T_s/m_s}` the thermal speed and
+:math:`Z(\zeta)` is the plasma dispersion function. Further,
+:math:`q_s` and :math:`m_s` are the species mass and charge
+respectively and :math:`T_s` the temperature.
+
+The plasma dispersion function is defined as
+
+.. math::
+
+  Z(\zeta) = \frac{1}{\sqrt{\pi}}
+      \int_{-\infty}^\infty
+         \frac{e^{-x^2}}{x-\zeta}
+      dx
+
+for :math:`\mathrm{Im}(\zeta) > 0`. The derivative of the plasma
+dispersion function is given by
+
+.. math::
+
+  Z'(\zeta) = -2\left(1+\zeta Z(\zeta)\right).
+
+Also, :math:`Z(0) = i\sqrt{\pi}`. In terms of the dielectric function
+the plasma dispersion relation is simply obtained from
+:math:`\epsilon(\omega,k) = 0`, i.e, the frequency and wave-numbers
+are related by the relation
+
+.. math::
+
+  1 + \sum_s \chi_s(\omega,k) = 0.
+
+Plasma oscillations
++++++++++++++++++++
+
+For plasma oscillations we assume that the ions are immobile and hence
+ignore the ion contribution to the dielectric function, leading to the
+dispersion relation
+
+.. math::
+
+  1 - \frac{1}{2 k^2 \lambda_D^2} Z'(\zeta) = 0
+
+where :math:`\lambda_D = v_e/\omega_e` is the Debye length. Once
+:math:`\zeta` is determined from this equation for a specified
+:math:`K \equiv k \lambda_D`, the frequency is determined from
+:math:`\omega/\omega_e = \sqrt{2} K \zeta`.
+
+Ion acoustic waves
+++++++++++++++++++
+
+For ion acoustic waves we can no longer ignore the ion contribution to
+the dielectric function. In this case we can express the dispersion
+function as
+
+.. math::
+
+ k^2\lambda_D^2 + 1 - \frac{T_e}{2 T_i} Z'(\zeta) = 0
+
+where we have now defined :math:`\zeta \equiv \omega/\sqrt{2} v_i k`
+and have assumed massless electrons. We let :math:`T \equiv T_i/T_e`
+and determine :math:`\zeta` for a specified value of :math:`T` (in
+this case :math:`K` is just held fixed). Now, the electron
+contribution to the ion sound speed is :math:`c_e =
+\sqrt{T_e/m_i}`. Hence, once :math:`\zeta` is determined we can
+compute the normalized frequency from :math:`\omega/kc_i = 2 T\zeta`.
+
