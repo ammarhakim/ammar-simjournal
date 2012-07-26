@@ -250,7 +250,7 @@ suseptibilites are defined as
     Z'\left( \frac{\omega}{\sqrt{2} v_s k} \right)
 
 where :math:`\omega_s = \sqrt{n_sq_s^2/\epsilon_0 m_s}` is the plasma
-frequency, :math:`v_s = \sqrt{2T_s/m_s}` the thermal speed and
+frequency, :math:`v_s = \sqrt{T_s/m_s}` the thermal speed and
 :math:`Z(\zeta)` is the plasma dispersion function. Further,
 :math:`q_s` and :math:`m_s` are the species mass and charge
 respectively and :math:`T_s` the temperature.
@@ -272,9 +272,9 @@ dispersion function is given by
   Z'(\zeta) = -2\left(1+\zeta Z(\zeta)\right).
 
 Also, :math:`Z(0) = i\sqrt{\pi}`. In terms of the dielectric function
-the plasma dispersion relation is simply obtained from
-:math:`\epsilon(\omega,k) = 0`, i.e, the frequency and wave-numbers
-are related by the relation
+the plasma dispersion relation is obtained from the roots of the
+equation :math:`\epsilon(\omega,k) = 0`, i.e, the frequency and
+wave-number are related by
 
 .. math::
 
@@ -313,5 +313,6 @@ and determine :math:`\zeta` for a specified value of :math:`T` (in
 this case :math:`K` is just held fixed). Now, the electron
 contribution to the ion sound speed is :math:`c_e =
 \sqrt{T_e/m_i}`. Hence, once :math:`\zeta` is determined we can
-compute the normalized frequency from :math:`\omega/kc_i = 2 T\zeta`.
+compute the normalized frequency from :math:`\omega/kc_i = \sqrt{2
+T}\zeta`.
 
