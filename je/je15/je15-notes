@@ -1,0 +1,9 @@
+In the results shown above the simulation domain was comparable to the
+Debye length. In this case the damping rate is strongly enhanced from
+the expected values from standard linear-analysis. In C. Villani's
+`course notes
+<http://math.univ-lyon1.fr/~villani/Cedrif/pre.Landau.pdf>`_, see
+section 3 in Chapter 3, it is stated that "... the Landau damping rate
+in a periodic box of length :math:`l` decays extremely fast with
+:math:`l`, like :math:`\exp(-c/l^2)`." Hence, to verify results with
+linear theory one needs to increase the size of the domain.

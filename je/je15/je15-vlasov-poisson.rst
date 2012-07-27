@@ -1,6 +1,6 @@
 :Author: Ammar Hakim
 :Date: July 16th
-:Completed:  
+:Completed: July 27th
 :Last Updated:  
 
 JE14: Studies with a DG electrostatic Vlasov solver
@@ -61,6 +61,7 @@ determined from the condition of quasi-neutrality that, for small
 deviations, can be written as
 
 .. math::
+  :label: eq:quasi_neutral
 
   n_{i}(x) = n_{eo}\left(1 + \frac{|e|\phi}{T_e}\right)
 
@@ -91,21 +92,16 @@ perturbed Maxwellian given by
     (1+\alpha\cos(kx))
 
 where :math:`v_t` is the thermal velocity, :math:`k` is the
-wave-number and :math:`\alpha` controls the perturbation. The
-computational domain is :math:`(x,v) \in [-\pi/k,\pi/k] \times
-[-6,6]`. This means the domain contains a single wave. Periodic
-boundary conditions imposed in the spatial direction and open
-boundary conditions in the velocity direction. The ion density is
-simply set to :math:`n_i(x) = 1`. For all these tests we set
-:math:`m=1`, :math:`\epsilon_0=1`, :math:`Z=1`, :math:`k=1/2` and
-:math:`\alpha=0.01`. With these settings, the plasma frequency is
-:math:`\omega_{pe}=1` and Debye length is :math:`\lambda_D =
-\sqrt{T_e}`.
-
-To test the dependence of the damping rate on normalized wavenumber
-(:math:`k\lambda_D`) simulations were performed with different
-:math:`T_e`. The field energy was computed and recorded as a function
-of time. An example plot of field energy is shown in the following
+wave-number and :math:`\alpha` controls the perturbation. Periodic
+boundary conditions imposed in the spatial direction and open boundary
+conditions in the velocity direction. The ion density is set to
+:math:`n_i(x) = 1`. For all these tests we set :math:`m=1`,
+:math:`\epsilon_0=1`, :math:`Z=1` and :math:`\alpha=0.01`. With these
+settings, the plasma frequency is :math:`\omega_{pe}=1` and Debye
+length is :math:`\lambda_D = \sqrt{T_e}`. The wave-number is varied
+and the damping rates computed as the slope of the least-squared line
+passing through successive maxima of the field energy. See figure for
+details. An example plot of field energy is shown in the following
 figure for the case :math:`T_e=1.0`.
 
 .. figure:: s151-field-energy.png
@@ -119,32 +115,7 @@ figure for the case :math:`T_e=1.0`.
   damping rate. See [:doc:`s151
   <../../sims/s151/s151-landau-damping-vp>`] for the input file.
 
-To understand the dependence of the damping rate on Debye length, the
-electron temperature was varied. The results are shown in the
-following figure.
-
-.. figure:: damping-rates-elc-osc.png
-  :width: 100%
-  :align: center
-
-  Damping rate from Landau damping for electron plasma oscillations as
-  a function of normalized Debye length. The damping rate increases
-  rapidly with electron temperature (Debye length), eventually
-  saturating.
-
-Linear Landau damping on larger periodic domain
-+++++++++++++++++++++++++++++++++++++++++++++++
-
-In the results shown above the simulation domain was comparable to the
-Debye length. In this case the damping rate is strongly enhanced from
-the expected values from standard linear-analysis. In C. Villani's
-`course notes
-<http://math.univ-lyon1.fr/~villani/Cedrif/pre.Landau.pdf>`_, see
-section 3 in Chapter 3, it is stated that "... the Landau damping rate
-in a periodic box of length :math:`l` decays extremely fast with
-:math:`l`, like :math:`\exp(-c/l^2)`." Hence, to verify results with
-linear theory one needs to increase the size of the domain. With this,
-the damping rates can be compared to results obtained from linear
+The damping rates can be compared to results obtained from linear
 analysis in the :math:`k\lambda_D \ll 1` regime
 
 .. math::
@@ -193,7 +164,7 @@ delicate damping from the phase-mixing process.
   agree with the exact results.
 
 Nonlinear Landau damping
-------------------------
+++++++++++++++++++++++++
 
 For this problem the we set :math:`\alpha = 0.5`, rapidly driving the
 system nonlinear. Other parameters are the same as for the linear
@@ -229,7 +200,29 @@ distribution function can be seen in `this movie
 Tests for the Vlasov-Quasineutral system
 ----------------------------------------
 
-Etc. etc.
+In this series of tests the electrons are assumed to be a massless
+isothermal fluid. For small deviations the condition of
+quasineutrality leads to an algebraic expression to determine the
+electrostatic potential, see :eq:`eq:quasi_neutral`. In this regime
+ion sound waves can propagate. However, these waves are
+strongly Landau damped when the ion and electron temperatures are
+comparable.
+
+For these series of simulations we hold the ion temperature fixed to
+:math:`T_i=1` and vary the ratio :math:`T \equiv T_i/T_e`. The
+wave-number is also held fixed to :math:`k=0.5`. Results are shown in
+the following figure.
+
+.. figure:: damping-rates-ion-sound.png
+  :width: 100%
+  :align: center
+
+  Normalized damping rates :math:`\gamma/c_e k` where :math:`c_e =
+  \sqrt{T_e/m_i}` as a function of temperature ratio
+  :math:`T_i/T_e`. Ion sound waves are strongly damped as ion
+  temperature becomes comparable to the electron
+  temperature. Conversely, the damping is very small as the ions get
+  colder.
 
 A note on dispersion relations for electrostatic oscillations
 -------------------------------------------------------------
@@ -315,4 +308,3 @@ contribution to the ion sound speed is :math:`c_e =
 \sqrt{T_e/m_i}`. Hence, once :math:`\zeta` is determined we can
 compute the normalized frequency from :math:`\omega/kc_i = \sqrt{2
 T}\zeta`.
-

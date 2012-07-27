@@ -358,6 +358,20 @@ program for that simulation.
     - Same as s163, except :math:`k=1.0`.
   * - :doc:`s171 <s171/s171-landau-damping-vp>` 
     - Same as s163, except :math:`k=2.5`.
+  * - :doc:`s172 <s172/s172-ion-sound>` 
+    - Ion-acoustic waves with quasi-neutrality condition and :math:`T_i/T_e = 0.1`.
+  * - :doc:`s173 <s173/s173-ion-sound>` 
+    - Ion-acoustic waves with quasi-neutrality condition and :math:`T_i/T_e = 0.5`.
+  * - :doc:`s174 <s174/s174-ion-sound>` 
+    - Ion-acoustic waves with quasi-neutrality condition and :math:`T_i/T_e = 0.75`.
+  * - :doc:`s175 <s175/s175-ion-sound>` 
+    - Ion-acoustic waves with quasi-neutrality condition and :math:`T_i/T_e = 1.0`.
+  * - :doc:`s176 <s176/s176-ion-sound>` 
+    - Ion-acoustic waves with quasi-neutrality condition and :math:`T_i/T_e = 1.5`.
+  * - :doc:`s177 <s177/s177-ion-sound>` 
+    - Ion-acoustic waves with quasi-neutrality condition and :math:`T_i/T_e = 2.0`.
+  * - :doc:`s178 <s178/s178-ion-sound>` 
+    - Ion-acoustic waves with quasi-neutrality condition and :math:`T_i/T_e = 0.3`.
 
 
 

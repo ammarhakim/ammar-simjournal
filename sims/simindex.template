@@ -383,6 +383,12 @@ program for that simulation.
     - Ion-acoustic waves with quasi-neutrality condition and :math:`T_i/T_e = 0.75`.
   * - ${mdl("s175")}
     - Ion-acoustic waves with quasi-neutrality condition and :math:`T_i/T_e = 1.0`.
+  * - ${mdl("s176")}
+    - Ion-acoustic waves with quasi-neutrality condition and :math:`T_i/T_e = 1.5`.
+  * - ${mdl("s177")}
+    - Ion-acoustic waves with quasi-neutrality condition and :math:`T_i/T_e = 2.0`.
+  * - ${mdl("s178")}
+    - Ion-acoustic waves with quasi-neutrality condition and :math:`T_i/T_e = 0.3`.
 
 
 
