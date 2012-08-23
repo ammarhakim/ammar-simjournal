@@ -389,6 +389,14 @@ program for that simulation.
     - Ion-acoustic waves with quasi-neutrality condition and :math:`T_i/T_e = 2.0`.
   * - ${mdl("s178")}
     - Ion-acoustic waves with quasi-neutrality condition and :math:`T_i/T_e = 0.3`.
+  * - ${mdl("s179")}
+    - Vlasov-Poisson simulation to test momentum and energy conservation, :math:`8\times 16` cells.
+  * - ${mdl("s180")}
+    - Vlasov-Poisson simulation to test momentum and energy conservation, :math:`8\times 32` cells.
+  * - ${mdl("s181")}
+    - Vlasov-Poisson simulation to test momentum and energy conservation, :math:`16\times 32` cells.
+  * - ${mdl("s182")}
+    - Vlasov-Poisson simulation to test momentum and energy conservation, :math:`32\times 64` cells.
 
 
 
