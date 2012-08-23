@@ -197,6 +197,60 @@ distribution function can be seen in `this movie
   damping is halted due to particle trapping, finally leading to
   saturation. Phase-space holes are clearly visible.
 
+Conservation of Energy and Momentum
+-----------------------------------
+
+The Vlasov-Poisson system admits three conservation laws, the
+conservation of particles, momentum and energy. Taking moments of the
+Vlasov-Poisson equation leads to the moment equations
+
+.. math::
+
+ &\frac{\partial n}{\partial t} + \frac{\partial }{\partial x}(nu) = 0 \\
+ &\frac{\partial }{\partial t}(mnu) + \frac{\partial}{\partial x} (mnu^2+p) = 
+    -qn \frac{\partial \phi}{\partial x} \\
+ &\frac{\partial E}{\partial t} + \frac{\partial Q}{\partial x} = 
+    -qnu\frac{\partial \phi}{\partial x}
+
+where the moments are defined as
+
+.. math::
+
+  n &\equiv \int_{-\infty}^\infty f(x,v,t) dv \\
+  u &\equiv \frac{1}{n}\int_{-\infty}^\infty v f(x,v,t) dv \\
+  p &\equiv \int_{-\infty}^\infty m (v-u)^2 f(x,v,t) dv \\
+  E &\equiv \int_{-\infty}^\infty \frac{1}{2}mv^2 f(x,v,t) dv  \\
+  Q &\equiv \int_{-\infty}^\infty \frac{1}{2}mv^3 f(x,v,t) dv
+
+Note that :math:`E = mnu/2 + p/2`. Integrating the moment equations
+over space and assuming periodic boundary conditions we get the
+conservation laws
+
+.. math::
+
+ &\frac{\partial}{\partial t}\left<n\right> = 0 \\
+ &\frac{\partial}{\partial t}\left<nu\right> = 0 \\
+ &\frac{\partial}{\partial t}\left<E + \frac{1}{2}\left(\frac{\partial
+ \phi}{\partial x}\right)^2 \right> = 0
+
+where angle brackets indicate spatial averaging. We can show that the
+DG spatial discretization conserves energy.
+
+From the derivation of momentum conservation one can see that a key
+identity to preserve numerically is
+
+.. math::
+
+  \left<n\frac{\partial \phi}{\partial x}\right> = 0.
+
+In the continuous case this can be easily derived from the Poisson
+equation. However, for the discrete case we can show that the DG
+scheme used in this note *does not* preserve this identity. The
+essential reason for this is that although the discrete potential is
+continuous, its derivative is not. In fact, the error in momentum is
+proportional to the jump in the derivative of the potential across
+each interface summed over the domain.
+
 Tests for the Vlasov-Quasineutral system
 ----------------------------------------
 
@@ -289,22 +343,22 @@ where :math:`\lambda_D = v_e/\omega_e` is the Debye length. Once
 :math:`K \equiv k \lambda_D`, the frequency is determined from
 :math:`\omega/\omega_e = \sqrt{2} K \zeta`.
 
-Ion acoustic waves
-++++++++++++++++++
+.. Ion acoustic waves
+.. ++++++++++++++++++
 
-For ion acoustic waves we can no longer ignore the ion contribution to
-the dielectric function. In this case we can express the dispersion
-function as
+.. For ion acoustic waves we can no longer ignore the ion contribution to
+.. the dielectric function. In this case we can express the dispersion
+.. function as
 
-.. math::
+.. .. math::
 
- k^2\lambda_D^2 + 1 - \frac{T_e}{2 T_i} Z'(\zeta) = 0
+..  k^2\lambda_D^2 + 1 - \frac{T_e}{2 T_i} Z'(\zeta) = 0
 
-where we have now defined :math:`\zeta \equiv \omega/\sqrt{2} v_i k`
-and have assumed massless electrons. We let :math:`T \equiv T_i/T_e`
-and determine :math:`\zeta` for a specified value of :math:`T` (in
-this case :math:`K` is just held fixed). Now, the electron
-contribution to the ion sound speed is :math:`c_e =
-\sqrt{T_e/m_i}`. Hence, once :math:`\zeta` is determined we can
-compute the normalized frequency from :math:`\omega/kc_i = \sqrt{2
-T}\zeta`.
+.. where we have now defined :math:`\zeta \equiv \omega/\sqrt{2} v_i k`
+.. and have assumed massless electrons. We let :math:`T \equiv T_i/T_e`
+.. and determine :math:`\zeta` for a specified value of :math:`T` (in
+.. this case :math:`K` is just held fixed). Now, the electron
+.. contribution to the ion sound speed is :math:`c_e =
+.. \sqrt{T_e/m_i}`. Hence, once :math:`\zeta` is determined we can
+.. compute the normalized frequency from :math:`\omega/kc_i = \sqrt{2
+.. T}\zeta`.
