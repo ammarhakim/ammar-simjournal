@@ -413,3 +413,5 @@ program for that simulation.
     - Same as s179, except :math:`16\times 64` cells.
   * - ${mdl("s190")}
     - Same as s179, except :math:`16\times 128` cells.
+  * - ${mdl("s191")}
+    - Same as s179 except, :math:`128\times 128` cells.
