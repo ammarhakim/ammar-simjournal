@@ -3,7 +3,7 @@
 :Completed: July 27th
 :Last Updated:  
 
-JE14: Studies with a DG electrostatic Vlasov solver
+JE15: Studies with a DG electrostatic Vlasov solver
 ===================================================
 
 .. contents::
@@ -88,14 +88,14 @@ perturbed Maxwellian given by
 
 .. math::
 
-    f(x,v,0) = \frac{1}{\sqrt{2\pi v_t}} \exp(-v^2/2v_t^2)
+    f(x,v,0) = \frac{1}{\sqrt{2\pi v_t^2}} \exp(-v^2/2v_t^2)
     (1+\alpha\cos(kx))
 
 where :math:`v_t` is the thermal velocity, :math:`k` is the
 wave-number and :math:`\alpha` controls the perturbation. Periodic
 boundary conditions imposed in the spatial direction and open boundary
 conditions in the velocity direction. The ion density is set to
-:math:`n_i(x) = 1`. For all these tests we set :math:`m=1`,
+:math:`n_i(x) = 1`. For all these tests :math:`m=1`,
 :math:`\epsilon_0=1`, :math:`Z=1` and :math:`\alpha=0.01`. With these
 settings, the plasma frequency is :math:`\omega_{pe}=1` and Debye
 length is :math:`\lambda_D = \sqrt{T_e}`. The wave-number is varied
@@ -166,11 +166,11 @@ delicate damping from the phase-mixing process.
 Nonlinear Landau damping
 ++++++++++++++++++++++++
 
-For this problem the we set :math:`\alpha = 0.5`, rapidly driving the
-system nonlinear. Other parameters are the same as for the linear
-Landau damping problem with :math:`k=0.5` and :math:`T_e=1.0`. The
-field energy history and distribution function at various times are
-shown in the following figures. Full details of the evolution of the
+For this problem :math:`\alpha = 0.5`, rapidly driving the system
+nonlinear. Other parameters are the same as for the linear Landau
+damping problem with :math:`k=0.5` and :math:`T_e=1.0`. The field
+energy history and distribution function at various times are shown in
+the following figures. Full details of the evolution of the
 distribution function can be seen in `this movie
 <../../_static/s162-distf.mov>`_.
 
@@ -197,7 +197,7 @@ distribution function can be seen in `this movie
   damping is halted due to particle trapping, finally leading to
   saturation. Phase-space holes are clearly visible.
 
-Conservation of Energy and Momentum
+Conservation of Momentum and Energy
 -----------------------------------
 
 The Vlasov-Poisson system admits three conservation laws, the
@@ -209,7 +209,7 @@ Vlasov-Poisson equation leads to the moment equations
  &\frac{\partial n}{\partial t} + \frac{\partial }{\partial x}(nu) = 0 \\
  &\frac{\partial }{\partial t}(mnu) + \frac{\partial}{\partial x} (mnu^2+p) = 
     -qn \frac{\partial \phi}{\partial x} \\
- &\frac{\partial E}{\partial t} + \frac{\partial Q}{\partial x} = 
+ &\frac{\partial \mathcal{E}}{\partial t} + \frac{\partial Q}{\partial x} = 
     -qnu\frac{\partial \phi}{\partial x}
 
 where the moments are defined as
@@ -219,22 +219,24 @@ where the moments are defined as
   n &\equiv \int_{-\infty}^\infty f(x,v,t) dv \\
   u &\equiv \frac{1}{n}\int_{-\infty}^\infty v f(x,v,t) dv \\
   p &\equiv \int_{-\infty}^\infty m (v-u)^2 f(x,v,t) dv \\
-  E &\equiv \int_{-\infty}^\infty \frac{1}{2}mv^2 f(x,v,t) dv  \\
+  \mathcal{E} &\equiv \int_{-\infty}^\infty \frac{1}{2}mv^2 f(x,v,t) dv  \\
   Q &\equiv \int_{-\infty}^\infty \frac{1}{2}mv^3 f(x,v,t) dv
 
-Note that :math:`E = mnu/2 + p/2`. Integrating the moment equations
-over space and assuming periodic boundary conditions we get the
+Note that the particle energy can also be written as
+:math:`\mathcal{E} = mnu^2/2 + p/2`. Integrating the moment equations
+over space and assuming periodic boundary conditions leads to the
 conservation laws
 
 .. math::
 
  &\frac{\partial}{\partial t}\left<n\right> = 0 \\
  &\frac{\partial}{\partial t}\left<nu\right> = 0 \\
- &\frac{\partial}{\partial t}\left<E + \frac{1}{2}\left(\frac{\partial
- \phi}{\partial x}\right)^2 \right> = 0
+ &\frac{\partial}{\partial t}\left<\mathcal{E} +
+ \frac{\epsilon_0}{2}\left(\frac{\partial \phi}{\partial x}\right)^2 \right> =
+ 0
 
-where angle brackets indicate spatial averaging. We can show that the
-DG spatial discretization conserves energy.
+where angle brackets indicate spatial averaging. It can be shown that
+the DG spatial discretization conserves energy.
 
 From the derivation of momentum conservation one can see that a key
 identity to preserve numerically is
@@ -244,12 +246,122 @@ identity to preserve numerically is
   \left<n\frac{\partial \phi}{\partial x}\right> = 0.
 
 In the continuous case this can be easily derived from the Poisson
-equation. However, for the discrete case we can show that the DG
-scheme used in this note *does not* preserve this identity. The
-essential reason for this is that although the discrete potential is
-continuous, its derivative is not. In fact, the error in momentum is
-proportional to the jump in the derivative of the potential across
-each interface summed over the domain.
+equation. However, for the discrete case it can be shown that the DG
+scheme *does not* preserve this identity. The reason is that although
+the discrete potential is continuous, its derivative is not. In fact,
+the error in momentum is proportional to the jump in the derivative of
+the potential across each interface summed over the domain.
+
+Momentum conservation tests
++++++++++++++++++++++++++++
+
+In this series of tests the distribution function is initialized as
+
+.. math::
+
+  f(x,v,0) &= (1+\exp\left(-\beta_l(x-x_m)^2\right)\thinspace f_m(T_e, v_d)
+  \quad x<x_m \\
+  &= (1+\exp\left(-\beta_r(x-x_m)^2\right)\thinspace f_m(T_e, v_d) \quad x \ge x_m
+
+where :math:`\beta_l = 0.75`, :math:`\beta_r = 0.075`,
+:math:`v_d=1.0`, :math:`T_e=1.0` and :math:`x_m=-\pi`. Further,
+:math:`f_m(T,v_d)` is a drifting Maxwellian with a specified
+temperature and drift velocity. For all problems the domain is
+:math:`[-2\pi\times 2\pi]\times [-10,10]` and the velocity grid
+resolution is held fixed to 128 cells. Spatial resolutions of
+:math:`8,16,32` and 64 are used and relative error in momentum
+measured.
+
+The initial conditions drive strong asymmetric flows around
+:math:`x=x_m` from the asymmetric number density profile. Note that if
+a symmetric initial profile is used the net initial momentum in the
+system will be zero and will remain so (to machine precision) as the
+solution evolves. The initial number density is shown below.
+
+.. figure:: s183-initial-numDensity.png
+  :width: 100%
+  :align: center
+
+  Initial number density profile for momentum conservation test
+  problems. The profile is chosen to drive strong flows resulting in
+  a large initial momentum.  See [:doc:`s183
+  <../../sims/s183/s183-landau-damping-vp>`] for the input file.
+
+The errors in momentum conservation are very insensitive to the
+velocity space resolution, as is confirmed numerically. This is not
+surprising as the momentum is an integrated (over velocity space)
+quantity and hence the dependence of the *error* on velocity space
+resolution is weak.
+
+The following table shows the error in momentum conservation with
+number of cells. The effective convergence error is also shown. The
+errors seem to be reducing as :math:`\Delta x^2`, although at present
+I am not sure what to make of the fractional convergence rates.
+
+.. list-table:: Momentum conservation errors 
+  :header-rows: 1
+  :widths: 20,40,20,20
+
+  * - :math:`N_x`
+    - Error
+    - Order
+    - Simulation
+  * - 8
+    - :math:`1.3332\times 10^{-3}`
+    - 
+    - :doc:`s179 <../../sims/s179/s179-landau-damping-vp>`
+  * - 16
+    - :math:`3.9308\times 10^{-4}`
+    - 1.76
+    - :doc:`s181 <../../sims/s181/s181-landau-damping-vp>`
+  * - 32
+    - :math:`8.5969\times 10^{-5}`
+    - 2.19
+    - :doc:`s182 <../../sims/s182/s182-landau-damping-vp>`
+  * - 64
+    - :math:`1.5254\times 10^{-5}`
+    - 2.49
+    - :doc:`s183 <../../sims/s183/s183-landau-damping-vp>`
+
+Energy conservation tests
++++++++++++++++++++++++++
+
+In this series of test the conservation of total energy is tested. For
+this the same initial conditions and domain size are used as for the
+momentum tests. A fixed grid of :math:`16\times 32` is used and the
+CFL number is varied. The errors in energy conservation are shown in
+the following table. 
+
+Note that even though the spatial discretization conserves energy
+exactly, the non-reversible Runge-Kutta time-stepping adds a small
+amount of diffusion. Thus, the errors in energy should converge to
+zero with the same order as the time-stepping scheme, in this case
+third-order. This is clearly seen from the results shown below.
+
+.. list-table:: Energy conservation errors 
+  :header-rows: 1
+  :widths: 20,40,20,20
+
+  * - :math:`CFL`
+    - Error
+    - Order
+    - Simulation
+  * - 0.3
+    - :math:`1.4185\times 10^{-6}`
+    - 
+    - :doc:`s184 <../../sims/s184/s184-landau-damping-vp>`
+  * - 0.15
+    - :math:`1.7687\times 10^{-7}`
+    - 3.00
+    - :doc:`s185 <../../sims/s185/s185-landau-damping-vp>`
+  * - 0.075
+    - :math:`2.2078\times 10^{-8}`
+    - 3.00
+    - :doc:`s186 <../../sims/s186/s186-landau-damping-vp>`
+  * - 0.0375
+    - :math:`2.7587\times 10^{-9}`
+    - 3.00
+    - :doc:`s187 <../../sims/s187/s187-landau-damping-vp>`
 
 Tests for the Vlasov-Quasineutral system
 ----------------------------------------
@@ -262,7 +374,7 @@ ion sound waves can propagate. However, these waves are
 strongly Landau damped when the ion and electron temperatures are
 comparable.
 
-For these series of simulations we hold the ion temperature fixed to
+For these series of simulations the ion temperature is held fixed to
 :math:`T_i=1` and vary the ratio :math:`T \equiv T_i/T_e`. The
 wave-number is also held fixed to :math:`k=0.5`. Results are shown in
 the following figure.
@@ -330,9 +442,9 @@ wave-number are related by
 Plasma oscillations
 +++++++++++++++++++
 
-For plasma oscillations we assume that the ions are immobile and hence
-ignore the ion contribution to the dielectric function, leading to the
-dispersion relation
+For plasma oscillations it is assumed that the ions are immobile and
+hence ignore the ion contribution to the dielectric function, leading
+to the dispersion relation
 
 .. math::
 

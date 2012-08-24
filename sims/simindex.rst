@@ -372,6 +372,24 @@ program for that simulation.
     - Ion-acoustic waves with quasi-neutrality condition and :math:`T_i/T_e = 2.0`.
   * - :doc:`s178 <s178/s178-ion-sound>` 
     - Ion-acoustic waves with quasi-neutrality condition and :math:`T_i/T_e = 0.3`.
+  * - :doc:`s179 <s179/s179-landau-damping-vp>` 
+    - Vlasov-Poisson simulation to test momentum conservation, :math:`8\times 128` cells.
+  * - :doc:`s180 <s180/s180-landau-damping-vp>` 
+    - Same as s179, except :math:`8\times 32` cells.
+  * - :doc:`s181 <s181/s181-landau-damping-vp>` 
+    - Same as s179, except :math:`16\times 128` cells.
+  * - :doc:`s182 <s182/s182-landau-damping-vp>` 
+    - Same as s179, except :math:`32\times 128` cells.
+  * - :doc:`s183 <s183/s183-landau-damping-vp>` 
+    - Same as s179 except, :math:`64\times 128` cells.
+  * - :doc:`s184 <s184/s184-landau-damping-vp>` 
+    - Vlasov-Poisson simulation to test energy conservation, :math:`16\times 32` cells, CFL 0.3.
+  * - :doc:`s185 <s185/s185-landau-damping-vp>` 
+    - Same as s184, except CFL :math:`0.3/2`
+  * - :doc:`s186 <s186/s186-landau-damping-vp>` 
+    - Same as s184, except CFL :math:`0.3/4`
+  * - :doc:`s187 <s187/s187-landau-damping-vp>` 
+    - Same as s184, except CFL :math:`0.3/8`
 
 
 

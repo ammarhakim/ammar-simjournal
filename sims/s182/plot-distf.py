@@ -37,7 +37,7 @@ def projectOnFinerGrid_f(Xc, Yc, q):
 
 xlo, xup = -2*math.pi, 2*math.pi
 ylo, yup = -6.0, 6.0
-nx, ny = 32, 64
+nx, ny = 32, 128
 
 X = pylab.linspace(xlo, xup, nx+1)
 Y = pylab.linspace(-6, 6, ny+1)

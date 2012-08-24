@@ -8,9 +8,9 @@ cfl = 0.3
 
 -- domain extents
 XL, XU = -2*Lucee.Pi, 2*Lucee.Pi
-VL, VU = -6.0, 6.0
+VL, VU = -10.0, 10.0
 -- number of cells
-NX, NV = 32, 64
+NX, NV = 32, 128
 
 -- electron temperature
 elcTemp = 1.0
@@ -168,10 +168,10 @@ initDistf = Updater.EvalOnNodes2D {
 		 local vd = 1.0
 		 local xm = XL + 0.25*(XU-XL)
 		 if (x<xm) then
-		    return (1+alpha*(x-XL)/(xm-XL))*maxwellian(elcTemp, vd, x, y)
+		    return (1+math.exp(-0.75*(x-xm)^2))*maxwellian(elcTemp, vd, x, y)
 		 else
-		    return (1+alpha*(XU-x)/(XU-xm))*maxwellian(elcTemp, vd, x, y)
-		 end
+		    return (1+math.exp(-0.075*(x-xm)^2))*maxwellian(elcTemp, vd, x, y)
+		 end		 
 	      end
 }
 initDistf:setOut( {distf} )
