@@ -390,6 +390,11 @@ program for that simulation.
     - Same as s184, except CFL :math:`0.3/4`
   * - :doc:`s187 <s187/s187-landau-damping-vp>` 
     - Same as s184, except CFL :math:`0.3/8`
-
-
-
+  * - :doc:`s188 <s188/s188-landau-damping-vp>` 
+    - Same as s179, except :math:`16\times 32` cells.
+  * - :doc:`s189 <s189/s189-landau-damping-vp>` 
+    - Same as s179, except :math:`16\times 64` cells.
+  * - :doc:`s190 <s190/s190-landau-damping-vp>` 
+    - Same as s179, except :math:`16\times 128` cells.
+  * - :doc:`s191 <s191/s191-landau-damping-vp>` 
+    - Same as s179 except, :math:`128\times 128` cells.

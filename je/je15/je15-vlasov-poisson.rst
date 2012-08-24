@@ -269,7 +269,7 @@ where :math:`\beta_l = 0.75`, :math:`\beta_r = 0.075`,
 temperature and drift velocity. For all problems the domain is
 :math:`[-2\pi\times 2\pi]\times [-10,10]` and the velocity grid
 resolution is held fixed to 128 cells. Spatial resolutions of
-:math:`8,16,32` and 64 are used and relative error in momentum
+:math:`8,16,32,64,128` are used and relative error in momentum
 measured.
 
 The initial conditions drive strong asymmetric flows around
@@ -322,6 +322,10 @@ I am not sure what to make of the fractional convergence rates.
     - :math:`1.5254\times 10^{-5}`
     - 2.49
     - :doc:`s183 <../../sims/s183/s183-landau-damping-vp>`
+  * - 128
+    - :math:`2.3105\times 10^{-6}`
+    - 2.72
+    - :doc:`s191 <../../sims/s191/s191-landau-damping-vp>`
 
 Energy conservation tests
 +++++++++++++++++++++++++
