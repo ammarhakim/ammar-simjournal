@@ -4,13 +4,13 @@
 polyOrder = 1
 
 -- cfl number to use
-cfl = 0.3
+cfl = 0.3/8
 
 -- domain extents
 XL, XU = -2*Lucee.Pi, 2*Lucee.Pi
 VL, VU = -10.0, 10.0
 -- number of cells
-NX, NV = 64, 128
+NX, NV = 16, 32
 
 -- electron temperature
 elcTemp = 1.0
@@ -171,7 +171,7 @@ initDistf = Updater.EvalOnNodes2D {
 		    return (1+math.exp(-0.75*(x-xm)^2))*maxwellian(elcTemp, vd, x, y)
 		 else
 		    return (1+math.exp(-0.075*(x-xm)^2))*maxwellian(elcTemp, vd, x, y)
-		 end		 
+		 end
 	      end
 }
 initDistf:setOut( {distf} )

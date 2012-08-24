@@ -69,3 +69,16 @@ for i in range(nFrame+1):
     pylab.savefig('s183-landau-damping-vp_distf_%05d.png' % i)
     pylab.close()    
 
+def plotLines(X, fld):
+    for i in range(fld.shape[0]):
+        pylab.plot([X[i], X[i+1]], [fld[i,0], fld[i,1]], '-r')
+
+
+fh = tables.openFile("s183-landau-damping-vp_numDensity_0.h5")
+q = fh.root.StructGridField
+plotLines(X, q)
+pylab.axis('tight')
+pylab.xlabel('X')
+pylab.ylabel('Number Density')
+pylab.savefig("s183-initial-numDensity.png")
+pylab.close()
