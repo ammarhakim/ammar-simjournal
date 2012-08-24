@@ -1,7 +1,7 @@
 :Author: Ammar Hakim
 :Date: July 16th
 :Completed: July 27th
-:Last Updated:  
+:Last Updated: August 24th
 
 JE15: Studies with a DG electrostatic Vlasov solver
 ===================================================
