@@ -4,7 +4,7 @@
 polyOrder = 2
 
 -- cfl number to use
-cfl = 0.2
+cfl = 0.1
 
 -- domain extents
 XL, XU = -2*Lucee.Pi, 2*Lucee.Pi

@@ -298,7 +298,7 @@ number of cells. The effective convergence error is also shown. The
 errors seem to be reducing as :math:`\Delta x^2`, although at present
 I am not sure what to make of the fractional convergence rates.
 
-.. list-table:: Momentum conservation errors 
+.. list-table:: Momentum Conservation Errors, DG Order 2 Scheme
   :header-rows: 1
   :widths: 20,40,20,20
 
@@ -342,7 +342,7 @@ amount of diffusion. Thus, the errors in energy should converge to
 zero with the same order as the time-stepping scheme, in this case
 third-order. This is clearly seen from the results shown below.
 
-.. list-table:: Energy conservation errors 
+.. list-table:: Energy Conservation Errors, DG Order 2 Scheme
   :header-rows: 1
   :widths: 20,40,20,20
 
