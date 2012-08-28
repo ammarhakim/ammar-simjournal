@@ -12,8 +12,12 @@ def convergenceDt(dx, err):
         print od 
 
 
-print "Momentum convergence order wit dx"
+print "Momentum convergence DG2 order with dx"
 dat = pylab.loadtxt("momentum-error-dx.txt")
+convergence(dat[:,0], dat[:,1])
+
+print "Momentum convergence DG3 order with dx"
+dat = pylab.loadtxt("momentum-error-o3-dx.txt")
 convergence(dat[:,0], dat[:,1])
 
 print "Energy convergence DG2 order with dt"
