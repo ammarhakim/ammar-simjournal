@@ -423,4 +423,13 @@ program for that simulation.
     - Same as s192, except CFL :math:`0.05`.
   * - ${mdl("s195")}
     - Same as s192, except CFL :math:`0.025`.
-
+  * - ${mdl("s196")}
+    - Vlasov-Poisson simulation to test momentum conservation, :math:`8\times 128` cells, DG3
+  * - ${mdl("s197")}
+    - Same as s196, except :math:`16\times 128` cells.
+  * - ${mdl("s198")}
+    - Same as s196, except :math:`32\times 128` cells.
+  * - ${mdl("s199")}
+    - Same as s196, except :math:`64\times 128` cells.
+  * - ${mdl("s200")}
+    - Same as s196, except :math:`128\times 128` cells.
