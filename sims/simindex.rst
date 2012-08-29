@@ -398,3 +398,21 @@ program for that simulation.
     - Same as s179, except :math:`16\times 128` cells.
   * - :doc:`s191 <s191/s191-landau-damping-vp>` 
     - Same as s179 except, :math:`128\times 128` cells.
+  * - :doc:`s192 <s192/s192-landau-damping-vp>` 
+    - Vlasov-Poisson simulation to test energy conservation, :math:`16\times 32` cells, CFL 0.2, DG3.
+  * - :doc:`s193 <s193/s193-landau-damping-vp>` 
+    - Same as s192, except CFL :math:`0.1`.
+  * - :doc:`s194 <s194/s194-landau-damping-vp>` 
+    - Same as s192, except CFL :math:`0.05`.
+  * - :doc:`s195 <s195/s195-landau-damping-vp>` 
+    - Same as s192, except CFL :math:`0.025`.
+  * - :doc:`s196 <s196/s196-landau-damping-vp>` 
+    - Vlasov-Poisson simulation to test momentum conservation, :math:`8\times 128` cells, DG3
+  * - :doc:`s197 <s197/s197-landau-damping-vp>` 
+    - Same as s196, except :math:`16\times 128` cells.
+  * - :doc:`s198 <s198/s198-landau-damping-vp>` 
+    - Same as s196, except :math:`32\times 128` cells.
+  * - :doc:`s199 <s199/s199-landau-damping-vp>` 
+    - Same as s196, except :math:`64\times 128` cells.
+  * - :doc:`s200 <s200/s200-landau-damping-vp>` 
+    - Same as s196, except :math:`128\times 128` cells.
