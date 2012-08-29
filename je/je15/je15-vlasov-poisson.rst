@@ -327,6 +327,44 @@ I am not sure what to make of the fractional convergence rates.
     - 2.72
     - :doc:`s191 <../../sims/s191/s191-landau-damping-vp>`
 
+Momentum conservation was also tested using the 3rd order DG
+scheme. Results are shown in the table below. The 3rd order scheme
+shows much smaller errors, and even the 16 cell simulation has
+momentum errors smaller than those of the 128 cell 2nd order
+simulation. In a certain sense this is not surprising as with
+piece-wise parabolic basis functions the discontinuity in the gradient
+of the potential across an interface will be small, leading to smaller
+errors in momentum.
+
+.. list-table:: Momentum Conservation Errors, DG Order 3 Scheme
+  :header-rows: 1
+  :widths: 20,40,20,20
+
+  * - :math:`N_x`
+    - Error
+    - Order
+    - Simulation
+  * - 8
+    - :math:`1.9399\times 10^{-5}`
+    - 
+    - :doc:`s196 <../../sims/s196/s196-landau-damping-vp>`
+  * - 16
+    - :math:`4.0001\times 10^{-7}`
+    - 5.60
+    - :doc:`s197 <../../sims/s197/s197-landau-damping-vp>`
+  * - 32
+    - :math:`5.1175\times 10^{-8}`
+    - 2.97
+    - :doc:`s198 <../../sims/s198/s198-landau-damping-vp>`
+  * - 64
+    - :math:`2.2289\times 10^{-9}`
+    - 4.52
+    - :doc:`s199 <../../sims/s199/s199-landau-damping-vp>`
+  * - 128
+    - :math:`8.9154\times 10^{-11}`
+    - 4.64
+    - :doc:`s200 <../../sims/s200/s200-landau-damping-vp>`
+
 Energy conservation tests
 +++++++++++++++++++++++++
 
@@ -366,6 +404,35 @@ third-order. This is clearly seen from the results shown below.
     - :math:`2.7587\times 10^{-9}`
     - 3.00
     - :doc:`s187 <../../sims/s187/s187-landau-damping-vp>`
+
+Energy conservation was also tested using the 3rd order DG
+scheme. Results are shown in the table below. As expected, the same
+third order convergence is obtained as the time-step is reduced.
+
+.. list-table:: Energy Conservation Errors, DG Order 3 Scheme
+  :header-rows: 1
+  :widths: 20,40,20,20
+
+  * - :math:`CFL`
+    - Error
+    - Order
+    - Simulation
+  * - 0.2
+    - :math:`4.1646\times 10^{-7}`
+    - 
+    - :doc:`s192 <../../sims/s192/s192-landau-damping-vp>`
+  * - 0.1
+    - :math:`5.1978\times 10^{-8}`
+    - 3.00
+    - :doc:`s193 <../../sims/s193/s193-landau-damping-vp>`
+  * - 0.05
+    - :math:`6.4914\times 10^{-9}`
+    - 3.00
+    - :doc:`s194 <../../sims/s194/s194-landau-damping-vp>`
+  * - 0.025
+    - :math:`8.1295\times 10^{-10}`
+    - 3.00
+    - :doc:`s195 <../../sims/s195/s195-landau-damping-vp>`
 
 Tests for the Vlasov-Quasineutral system
 ----------------------------------------
