@@ -153,9 +153,7 @@ delicate damping from the phase-mixing process.
   :align: center
 
   Damping rate from Landau damping for electron plasma oscillations as
-  a function of normalized Debye length. These simulations were
-  performed on a larger domain (compared to Debye length) to allow
-  comparison with analytical results. The black dots show the
+  a function of normalized Debye length. The black dots show the
   numerical damping rates compared to the exact results (magenta),
   third-order formula (red) and the first-order formula (blue). The
   damping rates are within 3% of the exact values, and for large
@@ -454,12 +452,13 @@ the following figure.
   :width: 100%
   :align: center
 
-  Normalized damping rates :math:`\gamma/c_e k` where :math:`c_e =
-  \sqrt{T_e/m_i}` as a function of temperature ratio
-  :math:`T_i/T_e`. Ion sound waves are strongly damped as ion
-  temperature becomes comparable to the electron
-  temperature. Conversely, the damping is very small as the ions get
-  colder.
+  Normalized damping rates :math:`\gamma/\sqrt{2}v_t k` where
+  :math:`v_t = \sqrt{T_i/m_i}` as a function of temperature ratio
+  :math:`T_i/T_e`. The black dots show the numerical damping rates
+  compared to the exact results (magenta). Ion sound waves are
+  strongly damped as ion temperature becomes comparable to the
+  electron temperature. Conversely, the damping is very small as the
+  ions get colder.
 
 A note on dispersion relations for electrostatic oscillations
 -------------------------------------------------------------
@@ -526,22 +525,15 @@ where :math:`\lambda_D = v_e/\omega_e` is the Debye length. Once
 :math:`K \equiv k \lambda_D`, the frequency is determined from
 :math:`\omega/\omega_e = \sqrt{2} K \zeta`.
 
-.. Ion acoustic waves
-.. ++++++++++++++++++
+Ion acoustic waves
+++++++++++++++++++
 
-.. For ion acoustic waves we can no longer ignore the ion contribution to
-.. the dielectric function. In this case we can express the dispersion
-.. function as
+For ion acoustic waves we can express the dispersion
+function as
 
-.. .. math::
+.. math::
 
-..  k^2\lambda_D^2 + 1 - \frac{T_e}{2 T_i} Z'(\zeta) = 0
+ 1 + \frac{T_e}{2 T_i} Z'(\zeta) = 0
 
-.. where we have now defined :math:`\zeta \equiv \omega/\sqrt{2} v_i k`
-.. and have assumed massless electrons. We let :math:`T \equiv T_i/T_e`
-.. and determine :math:`\zeta` for a specified value of :math:`T` (in
-.. this case :math:`K` is just held fixed). Now, the electron
-.. contribution to the ion sound speed is :math:`c_e =
-.. \sqrt{T_e/m_i}`. Hence, once :math:`\zeta` is determined we can
-.. compute the normalized frequency from :math:`\omega/kc_i = \sqrt{2
-.. T}\zeta`.
+where we have now defined :math:`\zeta \equiv \omega/\sqrt{2} v_i k`
+and have assumed massless, isothermal electrons.
