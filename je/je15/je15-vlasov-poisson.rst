@@ -533,7 +533,7 @@ function as
 
 .. math::
 
- 1 + \frac{T_e}{2 T_i} Z'(\zeta) = 0
+ 1 - \frac{T_e}{2 T_i} Z'(\zeta) = 0
 
 where we have now defined :math:`\zeta \equiv \omega/\sqrt{2} v_i k`
 and have assumed massless, isothermal electrons.
