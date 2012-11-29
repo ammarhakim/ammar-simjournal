@@ -7,7 +7,7 @@ import math
 figure(1)
 rc('text', usetex=True)
 dat = loadtxt('damping-rates-ion-sound.txt')
-semilogy(dat[:,0], 2*dat[:,1], 'ko')
+semilogy(dat[:,0], dat[:,1]/(math.sqrt(2)*1.0*0.5), 'ko')
 xlabel(r'$T = T_i/T_e$')
 
 datEx = loadtxt('exact-ld-damping-rates-ion-acoustic.txt')
