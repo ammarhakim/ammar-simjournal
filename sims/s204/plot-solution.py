@@ -78,7 +78,7 @@ def projectOnFinerGrid_f3(Xc, Yc, q):
 
     return Xn, Yn, qn
 
-fh = tables.openFile("s201-aux-dg-advection-rb_chi_1.h5")
+fh = tables.openFile("s204-aux-dg-advection-rb_chi_1.h5")
 grid = fh.root.StructGrid
 lower = grid._v_attrs.vsLowerBounds
 upper = grid._v_attrs.vsUpperBounds
@@ -92,14 +92,14 @@ Yc = pylab.linspace(lower[1]+0.5*dy, upper[1]-0.5*dy, cells[1])
 
 # get final solution
 q = fh.root.StructGridField
-Xn, Yn, qn_1 = projectOnFinerGrid_f(Xc, Yc, q)
+Xn, Yn, qn_1 = projectOnFinerGrid_f3(Xc, Yc, q)
 q_1 = q
 
 # get intial solution
-fh = tables.openFile("s201-aux-dg-advection-rb_chi_0.h5")
+fh = tables.openFile("s204-aux-dg-advection-rb_chi_0.h5")
 q = fh.root.StructGridField
 q_0 = q
-Xn, Yn, qn_0 = projectOnFinerGrid_f(Xc, Yc, q)
+Xn, Yn, qn_0 = projectOnFinerGrid_f3(Xc, Yc, q)
 
 nx, ny = Xn.shape[0], Yn.shape[0]
 
@@ -113,10 +113,33 @@ pylab.axis('image')
 pylab.subplot(1,2,2)
 pylab.plot(Xn, qn_1[:,ny/2], '-ro', Xn, qn_0[:,ny/2], '-k')
 
-pylab.savefig('s201-projected-solution.png')
+pylab.savefig('s204-projected-solution.png')
 
 # compute error
 err = numpy.abs(q_1[:,:,0]-q_0[:,:,0]).sum()/(nx*ny)
 print math.sqrt(dx*dy), err
+
+# make subplots to put into journal
+
+Ts = [r'0', r'$\pi/2$', r'$\pi$', r'$3\pi/2$']
+count = 0
+j = [1,2,3,4]
+pylab.figure(1)
+for i in [0,2,4,6]:
+    print "Workin on %d" % i
+    fh = tables.openFile("s204-aux-dg-advection-rb_chi_%d.h5" % i)
+    # get solution
+    q = fh.root.StructGridField
+    Xn, Yn, qn_1 = projectOnFinerGrid_f3(Xc, Yc, q)
+
+    pylab.subplot(2,2,j[count])
+    pylab.pcolormesh(Xn, Yn, pylab.transpose(qn_1), vmin=0.0, vmax=0.5)
+    pylab.plot([0,1], [0.5,0.5], '-w', linewidth=0.5)
+    pylab.plot([0.5,0.5], [0,1], '-w', linewidth=0.5)
+    pylab.title(r'T=%s' % Ts[count])
+    pylab.axis('image')
+    count = count + 1
+
+pylab.savefig('s204-snapshots.png')
 
 pylab.show()

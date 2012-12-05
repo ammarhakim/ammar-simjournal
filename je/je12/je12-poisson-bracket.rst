@@ -310,7 +310,7 @@ figure. For a movie of the simulation click `here
   for a second oscillation.
 
 
-In thw following figure compares the final solution to the initial
+In the following figure compares the final solution to the initial
 conditions.
 
 .. figure:: s121-projected-solution.png

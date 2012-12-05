@@ -78,7 +78,7 @@ def projectOnFinerGrid_f3(Xc, Yc, q):
 
     return Xn, Yn, qn
 
-fh = tables.openFile("s201-aux-dg-advection-rb_chi_1.h5")
+fh = tables.openFile("s203-aux-dg-advection-rb_chi_1.h5")
 grid = fh.root.StructGrid
 lower = grid._v_attrs.vsLowerBounds
 upper = grid._v_attrs.vsUpperBounds
@@ -96,7 +96,7 @@ Xn, Yn, qn_1 = projectOnFinerGrid_f(Xc, Yc, q)
 q_1 = q
 
 # get intial solution
-fh = tables.openFile("s201-aux-dg-advection-rb_chi_0.h5")
+fh = tables.openFile("s203-aux-dg-advection-rb_chi_0.h5")
 q = fh.root.StructGridField
 q_0 = q
 Xn, Yn, qn_0 = projectOnFinerGrid_f(Xc, Yc, q)
@@ -113,7 +113,7 @@ pylab.axis('image')
 pylab.subplot(1,2,2)
 pylab.plot(Xn, qn_1[:,ny/2], '-ro', Xn, qn_0[:,ny/2], '-k')
 
-pylab.savefig('s201-projected-solution.png')
+pylab.savefig('s203-projected-solution.png')
 
 # compute error
 err = numpy.abs(q_1[:,:,0]-q_0[:,:,0]).sum()/(nx*ny)
