@@ -4,13 +4,13 @@
 polyOrder = 1
 
 -- cfl number to use
-cfl = 0.2/4
+cfl = 0.2
 
 -- grid on which equations are to be solved
 grid = Grid.RectCart2D {
    lower = {0, 0},
    upper = {1.0, 1.0},
-   cells = {16, 16},
+   cells = {64, 64},
 }
 
 -- create FEM nodal basis

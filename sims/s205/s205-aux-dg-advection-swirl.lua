@@ -1,16 +1,19 @@
 -- Input file for advection with auxiliary variables
 
 -- polynomial order
-polyOrder = 1
+polyOrder = 2
 
 -- cfl number to use
-cfl = 0.2/4
+cfl = 0.5/(2*polyOrder-1)
+
+-- period for distortion
+Tperiod = 1.5
 
 -- grid on which equations are to be solved
 grid = Grid.RectCart2D {
    lower = {0, 0},
    upper = {1.0, 1.0},
-   cells = {16, 16},
+   cells = {32, 32},
 }
 
 -- create FEM nodal basis
@@ -49,6 +52,11 @@ chi1 = DataStruct.Field2D {
 }
 
 -- velocity field
+flowFieldStatic = DataStruct.Field2D {
+   onGrid = grid,
+   numComponents = 2*numDgNodesPerCell, -- [ux, uy]
+   ghost = {2, 2},
+}
 flowField = DataStruct.Field2D {
    onGrid = grid,
    numComponents = 2*numDgNodesPerCell, -- [ux, uy]
@@ -64,15 +72,18 @@ initFlowField = Updater.EvalOnNodes2D {
    shareCommonNodes = false,
    -- function to use for initialization
    evaluate = function (x,y,z,t)
-		 return -y+0.5, x-0.5
+		 local mpi = Lucee.Pi
+		 local ux = math.sin(mpi*x)^2*math.sin(2*mpi*y)
+		 local uy = -math.sin(mpi*y)^2*math.sin(2*mpi*x)
+		 return ux, uy
 	      end
 }
-initFlowField:setOut( {flowField} )
+initFlowField:setOut( {flowFieldStatic} )
 -- initialize potential
 initFlowField:advance(0.0) -- time is irrelevant
 
 -- write it out
-flowField:write("flowField_0.h5")
+flowFieldStatic:write("flowField_0.h5")
 
 -- create updater to initialize vorticity
 initChi = Updater.EvalOnNodes2D {
@@ -85,7 +96,13 @@ initChi = Updater.EvalOnNodes2D {
    evaluate = function (x,y,z,t)
 		 local x0, y0, r0 = 0.25, 0.5, 0.15
 		 local r = math.min(math.sqrt((x-x0)^2+(y-y0)^2), r0)/r0
-		 return 0.25*(1+math.cos(Lucee.Pi*r))
+		 local chump = 0.25*(1+math.cos(Lucee.Pi*r))
+
+		 local xc, yc, rc = 0.75, 0.5, 0.15
+		 local r2 = math.min(math.sqrt((x-xc)^2+(y-yc)^2), rc)/rc
+		 local chump2 = 0.25*(1+math.cos(Lucee.Pi*r2))
+
+		 return chump + chump2		 
 	      end
 }
 initChi:setOut( {chi} )
@@ -129,6 +146,12 @@ function solveAdvection(curr, dt, chiIn, flowIn, chiOut)
    return advectSlvr:advance(curr+dt)
 end
 
+-- function to solve for potential
+function poisson(curr, dt, chiIn, flowFieldOut)
+   -- this is a time-dependent potential and not a true Poisson solve
+   flowFieldOut:combine(math.cos(curr*Lucee.Pi/Tperiod), flowFieldStatic)
+end
+
 -- function to take a time-step using SSP-RK3 time-stepping scheme
 function rk3(tCurr, myDt)
    local status, dtSuggested
@@ -144,6 +167,9 @@ function rk3(tCurr, myDt)
    -- apply BCs
    applyBc(chi1)
 
+   -- solve for potential
+   poisson(tCurr+myDt, myDt, chi1, flowField)
+
    -- RK stage 2
    status, dtSuggested = solveAdvection(tCurr, myDt, chi1, flowField, chiNew)
 
@@ -156,6 +182,9 @@ function rk3(tCurr, myDt)
 
    -- apply BCs
    applyBc(chi1)
+
+   -- solve for potential
+   poisson(tCurr+myDt, myDt, chi1, flowField)
 
    -- RK stage 3
    status, dtSuggested = solveAdvection(tCurr, myDt, chi1, flowField, chiNew)
@@ -171,6 +200,9 @@ function rk3(tCurr, myDt)
 
    -- copy over solution
    chi:copy(chi1)
+
+   -- solve for potential
+   poisson(tCurr+myDt, myDt, chi1, flowField)
 
    return status, dtSuggested
 end
@@ -224,9 +256,9 @@ end
 
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 2*Lucee.Pi
+tEnd = 2*Tperiod
 dtSuggested = 0.1*tEnd -- initial time-step to use (will be adjusted)
-nFrames = 1
+nFrames = 40
 tFrame = (tEnd-tStart)/nFrames -- time between frames
 
 tCurr = tStart

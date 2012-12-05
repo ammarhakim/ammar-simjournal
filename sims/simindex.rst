@@ -416,3 +416,14 @@ program for that simulation.
     - Same as s196, except :math:`64\times 128` cells.
   * - :doc:`s200 <s200/s200-landau-damping-vp>` 
     - Same as s196, except :math:`128\times 128` cells.
+  * - :doc:`s201 <s201/s201-aux-dg-advection-rb>` 
+    - Rigid-body flow with nodal DG updater, :math:`16\times 16` cells.
+  * - :doc:`s202 <s202/s202-aux-dg-advection-rb>` 
+    - Rigid-body flow with nodal DG updater, :math:`32\times 32` cells.
+  * - :doc:`s203 <s203/s203-aux-dg-advection-rb>` 
+    - Rigid-body flow with nodal DG updater, :math:`64\times 64` cells.
+  * - :doc:`s204 <s204/s204-aux-dg-advection-rb>` 
+    - Rigid-body flow with nodal DG updater polyOrder 2, :math:`32\times 32` cells.
+  * - :doc:`s205 <s205/s205-aux-dg-advection-swirl>` 
+    - Rigid-body flow with nodal DG updater polyOrder 2, :math:`32\times 32` cells.
+

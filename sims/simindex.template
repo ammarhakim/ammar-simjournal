@@ -433,3 +433,14 @@ program for that simulation.
     - Same as s196, except :math:`64\times 128` cells.
   * - ${mdl("s200")}
     - Same as s196, except :math:`128\times 128` cells.
+  * - ${mdl("s201")}
+    - Rigid-body flow with nodal DG updater, :math:`16\times 16` cells.
+  * - ${mdl("s202")}
+    - Rigid-body flow with nodal DG updater, :math:`32\times 32` cells.
+  * - ${mdl("s203")}
+    - Rigid-body flow with nodal DG updater, :math:`64\times 64` cells.
+  * - ${mdl("s204")}
+    - Rigid-body flow with nodal DG updater polyOrder 2, :math:`32\times 32` cells.
+  * - ${mdl("s205")}
+    - Rigid-body flow with nodal DG updater polyOrder 2, :math:`32\times 32` cells.
+
