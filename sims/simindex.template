@@ -442,5 +442,7 @@ program for that simulation.
   * - ${mdl("s204")}
     - Rigid-body flow with nodal DG updater polyOrder 2, :math:`32\times 32` cells.
   * - ${mdl("s205")}
-    - Rigid-body flow with nodal DG updater polyOrder 2, :math:`32\times 32` cells.
+    - Swirling flow with nodal DG updater polyOrder 2, :math:`32\times 32` cells.
+  * - ${mdl("s206")}
+    - Helical flow with nodal DG updater polyOrder 2, :math:`16\times 16\times 16` cells.
 
