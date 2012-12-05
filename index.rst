@@ -47,3 +47,4 @@ means of generating pretty, but irreproducible, pictures.
   je/je13/je13-incomp-euler-2d.rst
   je/je14/je14-vlasov-fixed-pot.rst
   je/je15/je15-vlasov-poisson.rst
+  je/je16/je16-ldg.rst
