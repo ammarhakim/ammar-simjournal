@@ -4,22 +4,23 @@
 polyOrder = 2
 
 -- cfl number to use
-cfl = 0.5/(2*polyOrder-1)
+cfl = 0.3/(2*polyOrder-1)
 
 -- grid on which equations are to be solved
-grid = Grid.RectCart2D {
-   lower = {0, 0},
-   upper = {1.0, 1.0},
-   cells = {32, 32},
+grid = Grid.RectCart3D {
+   lower = {0, 0, 0},
+   upper = {1.0, 1.0, 1.0},
+   cells = {16, 16, 16},
 }
 
 -- create FEM nodal basis
-basis = NodalFiniteElement2D.Serendipity {
+basis = NodalFiniteElement3D.LagrangeTensor {
    -- grid on which elements should be constructured
    onGrid = grid,
-   -- polynomial order in each cell. One of 1, or 2. Corresponding
-   -- number of nodes are 4 and 8.
+   -- polynomial order in each cell
    polyOrder = polyOrder,
+   -- location of nodes
+   nodeLocation = "lobatto",
 }
 
 -- number of nodes per cell for CG field
@@ -28,7 +29,7 @@ numCgNodesPerCell = basis:numExclusiveNodes()
 numDgNodesPerCell = basis:numNodes()
 
 -- vorticity
-chi = DataStruct.Field2D {
+chi = DataStruct.Field3D {
    onGrid = grid,
    numComponents = 1*numDgNodesPerCell,
    ghost = {1, 1},
@@ -37,26 +38,26 @@ chi = DataStruct.Field2D {
 chi:clear(0.0)
 
 -- extra fields for performing RK update
-chiNew = DataStruct.Field2D {
+chiNew = DataStruct.Field3D {
    onGrid = grid,
    numComponents = 1*numDgNodesPerCell,
    ghost = {1, 1},
 }
-chi1 = DataStruct.Field2D {
+chi1 = DataStruct.Field3D {
    onGrid = grid,
    numComponents = 1*numDgNodesPerCell,
    ghost = {1, 1},
 }
 
 -- velocity field
-flowField = DataStruct.Field2D {
+flowField = DataStruct.Field3D {
    onGrid = grid,
-   numComponents = 2*numDgNodesPerCell, -- [ux, uy]
+   numComponents = 3*numDgNodesPerCell, -- [ux, uy, uz]
    ghost = {2, 2},
 }
 
 -- create updater to initialize potential
-initFlowField = Updater.EvalOnNodes2D {
+initFlowField = Updater.EvalOnNodes3D {
    onGrid = grid,
    -- basis functions to use
    basis = basis,
@@ -64,7 +65,7 @@ initFlowField = Updater.EvalOnNodes2D {
    shareCommonNodes = false,
    -- function to use for initialization
    evaluate = function (x,y,z,t)
-		 return -y+0.5, x-0.5
+		 return -y+0.5, x-0.5, 1.0/(2*Lucee.Pi)
 	      end
 }
 initFlowField:setOut( {flowField} )
@@ -75,7 +76,7 @@ initFlowField:advance(0.0) -- time is irrelevant
 flowField:write("flowField_0.h5")
 
 -- create updater to initialize vorticity
-initChi = Updater.EvalOnNodes2D {
+initChi = Updater.EvalOnNodes3D {
    onGrid = grid,
    -- basis functions to use
    basis = basis,
@@ -83,8 +84,8 @@ initChi = Updater.EvalOnNodes2D {
    shareCommonNodes = false, -- In DG, common nodes are not shared
    -- function to use for initialization
    evaluate = function (x,y,z,t)
-		 local x0, y0, r0 = 0.25, 0.5, 0.15
-		 local r = math.min(math.sqrt((x-x0)^2+(y-y0)^2), r0)/r0
+		 local x0, y0, z0, r0 = 0.25, 0.5, 0.5, 0.15
+		 local r = math.min(math.sqrt((x-x0)^2+(y-y0)^2+(z-z0)^2), r0)/r0
 		 return 0.25*(1+math.cos(Lucee.Pi*r))
 	      end
 }
@@ -96,11 +97,11 @@ initChi:advance(0.0) -- time is irrelevant
 chi:write("chi_0.h5")
 
 -- define equation to solve
-advectionEqn = HyperEquation.AuxAdvection2D {
+advectionEqn = HyperEquation.AuxAdvection3D {
 }
 
 -- updater to solve hyperbolic equations
-advectSlvr = Updater.NodalDgHyper2D {
+advectSlvr = Updater.NodalDgHyper3D {
    onGrid = grid,
    -- basis functions to use
    basis = basis,
@@ -116,6 +117,7 @@ function applyBc(fld)
    fld:applyCopyBc(0, "upper")
    fld:applyCopyBc(1, "lower")
    fld:applyCopyBc(1, "upper")
+   fld:applyPeriodicBc(2)
 end
 
 -- apply BCs to initial conditions
@@ -135,40 +137,32 @@ function rk3(tCurr, myDt)
 
    -- RK stage 1 (chi1 <- chi + L(chi))
    status, dtSuggested = solveAdvection(tCurr, myDt, chi, flowField, chi1)
-
    -- check if step failed and return immediately if it did
    if (status == false) then
       return status, dtSuggested
    end
-
    -- apply BCs
    applyBc(chi1)
 
    -- RK stage 2
    status, dtSuggested = solveAdvection(tCurr, myDt, chi1, flowField, chiNew)
-
    -- check if step failed and return immediately if it did
    if (status == false) then
       return status, dtSuggested
    end
-
    chi1:combine(3.0/4.0, chi, 1.0/4.0, chiNew)
-
    -- apply BCs
    applyBc(chi1)
 
    -- RK stage 3
    status, dtSuggested = solveAdvection(tCurr, myDt, chi1, flowField, chiNew)
-
    -- check if step failed and return immediately if it did
    if (status == false) then
       return status, dtSuggested
    end
-
    chi1:combine(1.0/3.0, chi, 2.0/3.0, chiNew)
    -- apply BCs
    applyBc(chi1)
-
    -- copy over solution
    chi:copy(chi1)
 
@@ -224,9 +218,9 @@ end
 
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 4*Lucee.Pi
+tEnd = 2*Lucee.Pi
 dtSuggested = 0.1*tEnd -- initial time-step to use (will be adjusted)
-nFrames = 16
+nFrames = 4
 tFrame = (tEnd-tStart)/nFrames -- time between frames
 
 tCurr = tStart

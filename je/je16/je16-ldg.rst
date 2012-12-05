@@ -275,3 +275,15 @@ the hyperbolic as well as the parabolic terms. Hence, it is possible
 that for a sufficiently fine grid and/or large values of the diffusion
 coefficients the time-step will have to be significantly smaller than
 that allowed by the advection speed.
+
+To test the algorithms implemented in Gkeyll a series of tests were
+performed to check convergence. The initial condition :math:`f(x,0) =
+sin(x)` were selected. The simulations werr run on a domain
+:math:`[0,2\pi]`. The exact solution to this problem is given by
+
+.. math::
+
+  f(x,t) = e^{-Dt}\sin(x-at).
+
+The exact solution was compared with numerical results and convergence
+order computed. Results are shown in the table below.
