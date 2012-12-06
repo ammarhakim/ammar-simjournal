@@ -445,4 +445,21 @@ program for that simulation.
     - Swirling flow with nodal DG updater polyOrder 2, :math:`32\times 32` cells.
   * - ${mdl("s206")}
     - Helical flow with nodal DG updater polyOrder 2, :math:`16\times 16\times 16` cells.
+  * - ${mdl("s207")}
+    - Advection-diffusion test, 8 cells
+  * - ${mdl("s208")}
+    - Advection-diffusion test, 16 cells
+  * - ${mdl("s209")}
+    - Advection-diffusion test, 32 cells
+  * - ${mdl("s210")}
+    - Advection-diffusion test, 64 cells
+
+  * - ${mdl("s211")}
+    - Advection-diffusion test, 8 cells, 3-point flux
+  * - ${mdl("s212")}
+    - Advection-diffusion test, 16 cells, 3-point flux
+  * - ${mdl("s213")}
+    - Advection-diffusion test, 32 cells, 3-point flux
+  * - ${mdl("s214")}
+    - Advection-diffusion test, 64 cells, 3-point flux
 

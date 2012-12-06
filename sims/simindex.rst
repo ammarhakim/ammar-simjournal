@@ -425,5 +425,15 @@ program for that simulation.
   * - :doc:`s204 <s204/s204-aux-dg-advection-rb>` 
     - Rigid-body flow with nodal DG updater polyOrder 2, :math:`32\times 32` cells.
   * - :doc:`s205 <s205/s205-aux-dg-advection-swirl>` 
-    - Rigid-body flow with nodal DG updater polyOrder 2, :math:`32\times 32` cells.
+    - Swirling flow with nodal DG updater polyOrder 2, :math:`32\times 32` cells.
+  * - :doc:`s206 <s206/s206-aux-dg-advection-helix-3d>` 
+    - Helical flow with nodal DG updater polyOrder 2, :math:`16\times 16\times 16` cells.
+  * - :doc:`s207 <s207/s207-advect-diffuse>` 
+    - Advection-diffusion test, 8 cells
+  * - :doc:`s208 <s208/s208-advect-diffuse>` 
+    - Advection-diffusion test, 16 cells
+  * - :doc:`s209 <s209/s209-advect-diffuse>` 
+    - Advection-diffusion test, 32 cells
+  * - :doc:`s210 <s210/s210-advect-diffuse>` 
+    - Advection-diffusion test, 64 cells
 

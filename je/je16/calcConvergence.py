@@ -14,3 +14,11 @@ def convergenceDt(dx, err):
 print "RB DG2 convergence"
 dat = pylab.loadtxt("rb-dx-convergence-dg-2.dat")
 convergence(dat[:,0], dat[:,1])
+
+print "AD DG2 convergence"
+dat = pylab.loadtxt("ad-dx-convergence-dg-2.dat")
+convergence(dat[:,0], dat[:,1])
+
+print "AD DG2 3P convergence"
+dat = pylab.loadtxt("ad-dx-convergence-dg-2-3p.dat")
+convergence(dat[:,0], dat[:,1])
