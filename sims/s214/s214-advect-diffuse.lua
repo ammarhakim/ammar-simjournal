@@ -4,10 +4,10 @@
 polyOrder = 1
 
 -- cfl number to use
-cfl = 0.2/8
+cfl = 0.2
 
 -- number of cells
-NX, NY = 8, 1
+NX, NY = 64, 1
 -- extent of grid
 LX, LY = 2*Lucee.Pi, 1.0
 -- advection speeds
@@ -21,7 +21,7 @@ dy = LY/NY
 
 -- compute time-steps for hyperbolic and parabolic update
 dtH = cfl*dx/math.max(ux,uy)
-dtP = 0.00963829
+dtP = cfl*0.5*dx^2/alpha
 
 Lucee.logInfo(string.format("Hyperbolic time-step is %g", dtH))
 Lucee.logInfo(string.format("Parabolic  time-step is %g\n", dtP))
@@ -117,9 +117,13 @@ advectSlvr = Updater.NodalDgHyper2D {
 gradEqn = HyperEquation.GradAuxFlux2D {
    -- coefficient for gradient
    coefficient = alpha,
+   -- flux to use (one of 3-point or 5-point)
+   fluxType = "3-point",
 }
 -- divergence equation
 divEqn = HyperEquation.DivAuxFlux2D {
+   -- flux to use (one of 3-point or 5-point)
+   fluxType = "3-point",
 }
 
 -- updater to compute gradients

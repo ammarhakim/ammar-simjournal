@@ -4,10 +4,10 @@
 polyOrder = 1
 
 -- cfl number to use
-cfl = 0.2/8
+cfl = 0.2/2
 
 -- number of cells
-NX, NY = 8, 1
+NX, NY = 32, 1
 -- extent of grid
 LX, LY = 2*Lucee.Pi, 1.0
 -- advection speeds
@@ -117,9 +117,13 @@ advectSlvr = Updater.NodalDgHyper2D {
 gradEqn = HyperEquation.GradAuxFlux2D {
    -- coefficient for gradient
    coefficient = alpha,
+   -- flux to use (one of 3-point or 5-point)
+   fluxType = "3-point",
 }
 -- divergence equation
 divEqn = HyperEquation.DivAuxFlux2D {
+   -- flux to use (one of 3-point or 5-point)
+   fluxType = "3-point",
 }
 
 -- updater to compute gradients

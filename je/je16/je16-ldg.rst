@@ -86,7 +86,7 @@ with grid sizes :math:`16\times 16`, :math:`32\times 32` and
 compared to the initial condition and errors computed and are shown in
 the following table.
 
-.. list-table:: Poisson bracket convergence for piecewise linear spatial scheme
+.. list-table:: Convergence for piecewise linear spatial scheme
   :header-rows: 1
   :widths: 20,40,20,20
 
@@ -277,13 +277,50 @@ coefficients the time-step will have to be significantly smaller than
 that allowed by the advection speed.
 
 To test the algorithms implemented in Gkeyll a series of tests were
-performed to check convergence. The initial condition :math:`f(x,0) =
-sin(x)` were selected. The simulations werr run on a domain
-:math:`[0,2\pi]`. The exact solution to this problem is given by
+performed to check convergence. The simulations are initialized with
+:math:`f(x,0) = \sin(x)` are run on a domain :math:`[0,2\pi]`. The
+exact solution to this problem is given by
 
 .. math::
 
   f(x,t) = e^{-Dt}\sin(x-at).
 
-The exact solution was compared with numerical results and convergence
-order computed. Results are shown in the table below.
+and is compared with numerical results and convergence order
+computed. Results are shown in the table below.
+
+.. list-table:: Convergence for piecewise linear spatial scheme
+  :header-rows: 1
+  :widths: 20,40,20,20
+
+  * - Cell size
+    - Average Error
+    - Order
+    - Simulation
+  * - :math:`2\pi/8`
+    - :math:`1.2987\times 10^{-2}`
+    - 
+    - :doc:`s207 <../../sims/s207/s207-advect-diffuse>`
+  * - :math:`2\pi/16`
+    - :math:`1.6123\times 10^{-3}`
+    - 3.01
+    - :doc:`s208 <../../sims/s208/s208-advect-diffuse>`
+  * - :math:`2\pi/32`
+    - :math:`3.3429\times 10^{-4}`
+    - 2.26
+    - :doc:`s209 <../../sims/s209/s209-advect-diffuse>`
+  * - :math:`2\pi/64`
+    - :math:`9.4169\times 10^{-5}`
+    - 1.82
+    - :doc:`s210 <../../sims/s210/s210-advect-diffuse>`
+
+The following figure shows the exact solution compared to numerical
+results for the 32 cell case.
+
+.. figure:: s209-advect-diffuse-cmp.png
+  :width: 100%
+  :align: center
+
+  Advection-diffusion with nodal local DG scheme. Magenta line shows
+  initial conditions, black line numerical results at :math:`t=2\pi`
+  and red dots the exact solution. See [:doc:`s209
+  <../../sims/s209/s209-advect-diffuse>`] for input file.

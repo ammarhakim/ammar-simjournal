@@ -117,9 +117,13 @@ advectSlvr = Updater.NodalDgHyper2D {
 gradEqn = HyperEquation.GradAuxFlux2D {
    -- coefficient for gradient
    coefficient = alpha,
+   -- flux to use (one of 3-point or 5-point)
+   fluxType = "3-point",
 }
 -- divergence equation
 divEqn = HyperEquation.DivAuxFlux2D {
+   -- flux to use (one of 3-point or 5-point)
+   fluxType = "3-point",
 }
 
 -- updater to compute gradients
