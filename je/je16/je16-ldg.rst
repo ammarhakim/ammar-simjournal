@@ -193,7 +193,10 @@ system of first order equations
   w + \frac{\partial g}{\partial x} &= 0
 
 where :math:`g \equiv Df`. This system of two first-order equations
-can now be solved using the standard DG algorithm. 
+can now be solved using the standard DG algorithm. The first paper to
+systematically study this *local* DG scheme, even though earlier uses
+had appeared for solving Navier-Stokes equations, was done by Cockburn
+and Shu [Cockburn1998]_.
 
 Just as in the scalar case we need to compute a numerical flux at each
 cell interface. Let :math:`\mathbf{Q} \equiv [f, w]^T` and
@@ -265,7 +268,10 @@ derivatives
 
 Even though both choices lead to second-order accurate (for piecewise
 constant basis functions) approximations the latter is preferred as it
-avoids the odd-even decoupling of the solution.
+avoids the odd-even decoupling of the solution. A more through
+analysis of the different numerical fluxes and their stability and
+accuracy properties is carried out in [Arnold2002]_ for the Poisson
+equation.
 
 In the algorithm coded up in the Lua scripts, the second equation is
 first updated to compute :math:`w` given the :math:`f^n`. These are
@@ -275,6 +281,11 @@ the hyperbolic as well as the parabolic terms. Hence, it is possible
 that for a sufficiently fine grid and/or large values of the diffusion
 coefficients the time-step will have to be significantly smaller than
 that allowed by the advection speed.
+
+We are initially focussing on cases where the collision frequency is
+very small so an explicit treatment should be sufficient. Extensions
+to an implicit method for higher collisionality may be considered
+later
 
 To test the algorithms implemented in Gkeyll a series of tests were
 performed to check convergence. The simulations are initialized with
@@ -324,3 +335,17 @@ results for the 32 cell case.
   initial conditions, black line numerical results at :math:`t=2\pi`
   and red dots the exact solution. See [:doc:`s209
   <../../sims/s209/s209-advect-diffuse>`] for input file.
+
+References
+----------
+
+.. [Cockburn1998] Cockburn, B and Shu, C W, "The local discontinuous
+   Galerkin method for time-dependent convection-diffusion systems."
+   *SIAM Journal on Numerical Analysis*, **35** (6), pg. 2440, 1998.
+
+.. [Arnold2002] Arnold, D N and Brezzi, F and Cockburn, B and Marini,
+    L D, "Unified analysis of discontinuous Galerkin methods for
+    elliptic problems", *SIAM Journal on Numerical Analysis*, **39**
+    (5), pg. 1749, 2002.
+
+
