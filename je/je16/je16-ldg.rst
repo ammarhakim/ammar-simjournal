@@ -40,17 +40,16 @@ ability is exercised by solving the 2D scalar advection equation
 
 with specified flow field :math:`\mathbf{u}(x,y,t)`. Note that as the
 velocity field is specified explicitly and does not depend on the
-solution, it must be passes into the DG updater as an *auxiliary*
-variable. This requires creating an extra field and a auxiliary
-equations object and passing it to the nodal DG updater. See the
-script :doc:`s201 <../../sims/s201/s201-aux-dg-advection-rb>` for an
-example of how this is done in Gkeyll.
+solution, it must be passed into the DG updater as an *auxiliary*
+variable. This requires creating extra fields and auxiliary equation
+objects and passing them to the nodal DG updater. See the script
+:doc:`s201 <../../sims/s201/s201-aux-dg-advection-rb>` for an example
+of how this is done in Gkeyll.
 
 Rigid-body rotating flow
 ++++++++++++++++++++++++
 
-In this test a rigid body rotating flow is initialized by initializing
-the flow field as
+In this test a rigid body rotating flow is initialized as
 
 .. math::
 
