@@ -453,7 +453,6 @@ program for that simulation.
     - Advection-diffusion test, 32 cells
   * - ${mdl("s210")}
     - Advection-diffusion test, 64 cells
-
   * - ${mdl("s211")}
     - Advection-diffusion test, 8 cells, 3-point flux
   * - ${mdl("s212")}
@@ -462,4 +461,15 @@ program for that simulation.
     - Advection-diffusion test, 32 cells, 3-point flux
   * - ${mdl("s214")}
     - Advection-diffusion test, 64 cells, 3-point flux
+  * - ${mdl("s215")}
+    - Hasegawa-Wakatani, with adiabacity parameter 0.1
+  * - ${mdl("s216")}
+    - Hasegawa-Wakatani, with adiabacity parameter 0.01
+  * - ${mdl("s217")}
+    - Hasegawa-Wakatani, with adiabacity parameter 0.3
+  * - ${mdl("s218")}
+    - Hasegawa-Wakatani, with adiabacity parameter 1.0
+  * - ${mdl("s219")}
+    - Hasegawa-Wakatani, with adiabacity parameter 2.0
+
 
