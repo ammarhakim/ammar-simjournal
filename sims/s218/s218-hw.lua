@@ -4,7 +4,7 @@
 polyOrder = 2
 
 -- cfl number to use
-cfl = 0.5/(2*polyOrder-1)
+cfl = 0.1/(2*polyOrder-1)
 
 -- adiabacity parameter
 coupleCoeff = 1.0
