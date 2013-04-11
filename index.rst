@@ -49,17 +49,3 @@ means of generating pretty, but irreproducible, pictures.
   je/je15/je15-vlasov-poisson.rst
   je/je16/je16-ldg.rst
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
