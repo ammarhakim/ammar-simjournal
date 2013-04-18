@@ -21,11 +21,20 @@ The following entries are my attempt to maintain a simulation journal,
 mainly for my own use. This allows me to keep notes in one place and
 refer to them while writing papers or making presentations. 
 
-Writing *systematic* entries is a tedious and difficult job as it
-forces us to carefully document the problem, the scripts/programs and
-the results. However, it is a task that *must* be done if
-computational physics is to qualify as a true science and not just a
-means of generating pretty, but irreproducible, pictures.
+Technical Notes
+---------------
+
+.. toctree::
+  :maxdepth: 1
+
+  maxwell-eigensystem
+  euler-eigensystem
+  hancock-muscl
+  tenmom-eigensystem
+  twofluid-sources
+
+Simulation Results
+------------------
 
 .. toctree::
   :maxdepth: 2
