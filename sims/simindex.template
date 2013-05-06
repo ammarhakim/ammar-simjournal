@@ -471,5 +471,7 @@ program for that simulation.
     - Hasegawa-Wakatani, with adiabacity parameter 1.0
   * - ${mdl("s219")}
     - Hasegawa-Wakatani, with adiabacity parameter 2.0
-
+  * - ${mdl("s220")}
+    - 1D Euler shock with low density/pressure
+      region. Wave-propagation scheme with pressure/density fix. (See s8)
 

@@ -4,6 +4,15 @@
 JE2: Benchmarking Two Finite-Volume Schemes for 1D Euler Equations
 ==================================================================
 
+.. note::
+
+  **4/22/2013** A positivity fix has been implemented for the
+  wave-propagation scheme. The basic idea is to switch to a Lax-flux
+  based updater when negative density and/or pressure are
+  detected. Then, the simulation is switched back to using Roe-flux
+  based updater. All of this is achieved in the Lua script. Results
+  have been updated accordingly.
+
 .. contents::
 
 Overview of problems and schemes
@@ -143,11 +152,44 @@ initialized with a shock at :math:`x=0.5`, with left and right states
 
 and is run to :math:`t=0.15`.
 
-Both wave-propagation and MUSCL-Hancock **fail** on this problem. The
-solution quickly develops negative pressure and density. A positivity
-fix is required for both schemes (not implemented as of September 6
-2011). First-order MUSCL-Hancock, however, works and results are shown
-below.
+The second order MUSCL-Hancock **fails** on this problem. The solution
+quickly develops negative pressure and density. A positivity fix is
+required.
+
+The wave-propagation scheme works with this problem. However, a
+positivity fix is required. This is implemented by redoing a time-step
+with Lax fluxes when negative density/pressure is detected and then
+continuing on with regular Roe fluxes. For this particular problem the
+negative density/pressure only occurs in the very first time-step and
+so Roe fluxes can be used for rest of the simulation. The
+wave-propagation scheme also works with the use of Lax fluxes for the
+complete simulation. With Lax fluxes used for the complete simulation,
+the solution is more diffuse, however does not show the strange
+features around :math:`x=0.5`.
+
+Results are shown below.
+
+.. figure:: s220-euler-shock-wave_exact_cmp.png
+  :width: 100%
+  :align: center
+
+  Comparison of wave-propagation with positivity fix solution (black)
+  [:doc:`s220 <../../sims/s220/s220-euler-shock-wave>`] with exact
+  solution (red) [s9] for density (top left), velocity (top right),
+  pressure (bottom left) and internal energy (bottom right).
+
+.. figure:: s8-euler-shock-wave_exact_cmp.png
+  :width: 100%
+  :align: center
+
+  Comparison of wave-propagation with Lax-fluxes solution (black)
+  [:doc:`s8 <../../sims/s8/s8-euler-shock-wave>`] with exact
+  solution (red) [s9] for density (top left), velocity (top right),
+  pressure (bottom left) and internal energy (bottom right).
+
+The first-order MUSCL-Hancock also works for this problem. Results are
+shown below. The wave-propagation scheme seems marginally better than
+the first-order MUSCL scheme for this problem.
 
 .. figure:: s10-euler-shock-muscl_exact_cmp.png
   :width: 100%
