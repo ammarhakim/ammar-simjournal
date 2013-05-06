@@ -3,8 +3,8 @@
 :Completed: 
 :Last Updated:
 
-JE17: Solving (Modified) Hasegawa-Wakatani equations with Gkeyll
-================================================================
+JE17: Solving (Modified) Hasegawa-Wakatani equations
+====================================================
 
 In this note I describe how to solve the Hasegawa-Wakatani system
 using Gkeyll, both in its original incarnation as well as modified to
@@ -71,7 +71,7 @@ with the potential now determined from
 
 Note that I have dropped the hyper-diffusion term in writing these
 equations. As of writing this note, I have not attempted to solve the
-Hasegawa-Mima equations with Gkeyll, although it should be a very easy
+Hasegawa-Mima equations with Gkeyll, although it should be an easy
 task.
 
 Modified Hasegawa-Wakatani system
@@ -80,7 +80,7 @@ Modified Hasegawa-Wakatani system
 When restricted to 2D the HW system described above does not contain
 zonal flows. Numata et. al [Numata2007]_ describe a simple
 modification that allows capturing zonal flows. This is obtained by
-observing that in a tokamak edge any potential fluctuation on a flux
+observing that in a tokamak edge any potential fluctuations on a flux
 surface is neutralized by the parallel electron motion. Define the
 zonal and non-zonal component of any variable :math:`f` as
 
@@ -106,6 +106,9 @@ Hasegawa-Wakatani (MHW) equations can be written as
   - \kappa \frac{\partial \phi}{\partial y}
   - \mu \nabla^4 n
 
+These are identical to the standard HW system, except that the
+adiabatic coupling terms are computed differently.
+
 A note on solving (M)HW systems with Gkeyll
 -------------------------------------------
 
@@ -123,18 +126,21 @@ When solving the MHW system the zonal component is computed using a
 subtracting it off to compute the nonzonal components needed in the
 source terms. 
 
-The Lua programs are long, but relatively straighforward. See
+The Lua programs are long, but relatively straightforward. See
 [:doc:`s215 <../../sims/s215/s215-hw>`] for an example input file
 where these are coded up.
 
 In the HW system, with large value of the adiabaticity parameter
 :math:`\alpha` the relaxation time scale from the source term can make
-the system stiff. In this case is might be better to do a source
-splitting and update the source terms exactly, and combine this with
-the Poisson bracket terms, using Strang splitting, to solve the
-completely system. This removes the restriction from the stiff
-relaxation process, making the system stable with the standard CFL
-condition from the Poisson bracket operator.
+the system stiff. In this case I need to use a much smaller time-step
+than allowed by stability from the Poisson bracket operator alone.
+
+.. might be better to do a source splitting and update the source terms
+.. exactly, and combine this with the Poisson bracket terms, using Strang
+.. splitting, to solve the completely system. This removes the
+.. restriction from the stiff relaxation process, making the system
+.. stable with the standard CFL condition from the Poisson bracket
+.. operator.
 
 References
 ----------
