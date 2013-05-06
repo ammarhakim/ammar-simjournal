@@ -54,24 +54,42 @@ eulerEqn = HyperEquation.Euler {
    -- gas adiabatic constant
    gasGamma = gasGamma,
    -- use Lax fluxes
-   numericalFlux = "lax",   
+   numericalFlux = "roe",
+}
+eulerLaxEqn = HyperEquation.Euler {
+   -- gas adiabatic constant
+   gasGamma = gasGamma,
+   -- use Lax fluxes
+   numericalFlux = "lax",
 }
 
 -- CFL number
-mycfl = 0.99
+mycfl = 0.9
 -- updater for Euler equations
 eulerSlvr = Updater.WavePropagation1D {
    onGrid = grid,
    equation = eulerEqn,
+   -- one of no-limiter, minmod, superbee, van-leer, monotonized-centered, beam-warming
+   limiter = "monotonized-centered",
+   cfl = mycfl,
+   cflm = 1.01*mycfl,
+}
+-- set input/output arrays (these do not change so set it once)
+eulerSlvr:setIn( {q} )
+eulerSlvr:setOut( {qNew} )
+
+-- Lax solver is used when positivity fails
+eulerLaxSlvr = Updater.WavePropagation1D {
+   onGrid = grid,
+   equation = eulerLaxEqn,
    -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
    limiter = "zero",
    cfl = mycfl,
    cflm = 1.01*mycfl,
 }
-
 -- set input/output arrays (these do not change so set it once)
-eulerSlvr:setIn( {q} )
-eulerSlvr:setOut( {qNew} )
+eulerLaxSlvr:setIn( {q} )
+eulerLaxSlvr:setOut( {qNew} )
 
 myDt = 100.0 -- initial time-step to use (this will be discarded and adjusted to CFL value)
 -- parameters to control time-stepping
@@ -81,6 +99,7 @@ tEnd = 0.15
 tCurr = tStart
 step = 1
 
+laxSolverCount = 0
 -- main loop
 while true do
    -- copy qNew in case we need to take this step again
@@ -96,13 +115,23 @@ while true do
    -- set current time
    eulerSlvr:setCurrTime(tCurr)
    -- advance solution
-   status, dtSuggested = eulerSlvr:advance(tCurr+myDt)
+   if (laxSolverCount > 0) then
+      status, dtSuggested = eulerLaxSlvr:advance(tCurr+myDt)
+      laxSolverCount = 0
+   else
+      status, dtSuggested = eulerSlvr:advance(tCurr+myDt)
+   end
 
-   if (dtSuggested < myDt) then
+   if (status == false) then
       -- time-step too large
       print (string.format("** Time step %g too large! Will retake with dt %g", myDt, dtSuggested))
       myDt = dtSuggested
       qNew:copy(qNewDup)
+   elseif (eulerEqn:checkInvariantDomain(qNew)) then
+      -- negative density/pressure occured
+      print (string.format("** Negative pressure or density at %g! Will retake step with Lax fluxes", tCurr+myDt))
+      qNew:copy(qNewDup)
+      laxSolverCount = 1
    else
       -- apply copy BCs on lower and upper edges
       qNew:applyCopyBc(0, "lower")
@@ -110,7 +139,7 @@ while true do
 
       -- check if a nan occured
       if (qNew:hasNan()) then
-	 print (string.format("** Nan occured at %g! Writing out data just before nan", tCurr))
+	 print (string.format("** Nan occured at %g! Writing out data just before nan", tCurr+myDt))
 	 q:write("q_pre_nan.h5")
 	 break
       end
@@ -128,7 +157,7 @@ while true do
 end
 
 -- write final solution
-q:write("q_1.h5")
+q:write("q_1.h5", tEnd)
 
 -- compute primitive quantities from solution
 prim = DataStruct.Field1D {
@@ -140,4 +169,4 @@ prim = DataStruct.Field1D {
 eulerEqn:primitive(q, prim)
 
 -- write out solutioni in primitive form
-prim:write("prim_1.h5")
+prim:write("prim_1.h5", tEnd)

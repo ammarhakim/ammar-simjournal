@@ -436,4 +436,25 @@ program for that simulation.
     - Advection-diffusion test, 32 cells
   * - :doc:`s210 <s210/s210-advect-diffuse>` 
     - Advection-diffusion test, 64 cells
+  * - :doc:`s211 <s211/s211-advect-diffuse>` 
+    - Advection-diffusion test, 8 cells, 3-point flux
+  * - :doc:`s212 <s212/s212-advect-diffuse>` 
+    - Advection-diffusion test, 16 cells, 3-point flux
+  * - :doc:`s213 <s213/s213-advect-diffuse>` 
+    - Advection-diffusion test, 32 cells, 3-point flux
+  * - :doc:`s214 <s214/s214-advect-diffuse>` 
+    - Advection-diffusion test, 64 cells, 3-point flux
+  * - :doc:`s215 <s215/s215-hw>` 
+    - Hasegawa-Wakatani, with adiabacity parameter 0.1
+  * - :doc:`s216 <s216/s216-hw>` 
+    - Hasegawa-Wakatani, with adiabacity parameter 0.01
+  * - :doc:`s217 <s217/s217-hw>` 
+    - Hasegawa-Wakatani, with adiabacity parameter 0.3
+  * - :doc:`s218 <s218/s218-hw>` 
+    - Hasegawa-Wakatani, with adiabacity parameter 1.0
+  * - :doc:`s219 <s219/s219-hw>` 
+    - Hasegawa-Wakatani, with adiabacity parameter 2.0
+  * - :doc:`s220 <s220/s220-euler-shock-wave>` 
+    - 1D Euler shock with low density/pressure
+      region. Wave-propagation scheme with pressure/density fix. (See s8)
 
