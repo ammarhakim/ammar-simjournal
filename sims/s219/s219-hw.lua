@@ -4,7 +4,7 @@
 polyOrder = 2
 
 -- cfl number to use
-cfl = 0.5/(2*polyOrder-1)
+cfl = 0.1/(2*polyOrder-1)
 
 -- adiabacity parameter
 coupleCoeff = 2.0
@@ -384,7 +384,7 @@ function rk3(tCurr, myDt)
    -- copy potential to a DG field
    copyPotential(tCurr, myDt, phi, phiDG)
 
-   return myStatus, myDtSuggested
+   return myStatus, math.min(myDtSuggested, 0.025)
 end
 
 -- function to advance solution from tStart to tEnd
