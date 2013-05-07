@@ -29,12 +29,13 @@ and Wakatani [Wakatani1986]_, [Hasegawa1987]_. These can be written as
   - \kappa \frac{\partial \phi}{\partial y}
   - \mu \nabla^4 n
 
-where :math:`\kappa = -\partial/\partial x \ln{n_0}` is a constant
-density gradient scale-length, :math:`\alpha` is the adiabaticity
-operator and :math:`\mu` is a hyper-diffusion coefficient. Also,
-:math:`\{a,b\}` is the standard canonical Poisson bracket
-operator. The electrostatic potential itself is determined by solving
-a Poisson equation
+where :math:`\zeta` is the vorticity, :math:`\phi` the electrostatic
+potential, and :math:`n` the number density. Also, :math:`\kappa =
+-\partial/\partial x \ln{n_0}` is a constant density gradient
+scale-length, :math:`\alpha` is the adiabaticity operator and
+:math:`\mu` is a hyper-diffusion coefficient. Also, :math:`\{a,b\}` is
+the standard canonical Poisson bracket operator. The electrostatic
+potential itself is determined by solving a Poisson equation
 
 .. math::
 
@@ -62,6 +63,7 @@ written as, after identifying :math:`\phi=n` and defining
  
   \frac{\partial \zeta'}{\partial t} + \{\phi,\zeta' \} &= 
   \kappa \frac{\partial \phi}{\partial y}
+  - \mu \nabla^4 \zeta'
 
 with the potential now determined from
 
@@ -69,13 +71,12 @@ with the potential now determined from
 
   (\nabla_{\perp}^2-1)\phi = \zeta'
 
-Note that I have dropped the hyper-diffusion term in writing these
-equations. As of writing this note, I have not attempted to solve the
+As of writing this note, I have not attempted to solve the
 Hasegawa-Mima equations with Gkeyll, although it should be an easy
 task.
 
-Modified Hasegawa-Wakatani system
----------------------------------
+The modified Hasegawa-Wakatani system
+-------------------------------------
 
 When restricted to 2D the HW system described above does not contain
 zonal flows. Numata et. al [Numata2007]_ describe a simple
@@ -135,12 +136,49 @@ In the HW system, with large value of the adiabaticity parameter
 the system stiff. In this case I need to use a much smaller time-step
 than allowed by stability from the Poisson bracket operator alone.
 
-.. might be better to do a source splitting and update the source terms
-.. exactly, and combine this with the Poisson bracket terms, using Strang
-.. splitting, to solve the completely system. This removes the
-.. restriction from the stiff relaxation process, making the system
-.. stable with the standard CFL condition from the Poisson bracket
-.. operator.
+Simulations of the Hasegawa-Wakatani system
+-------------------------------------------
+
+DESCRIPTION HERE.
+
+.. figure:: hw-cmp-chi_219.png
+  :width: 100%
+  :align: center
+
+  Comparison of Hasegawa-Wakatani solutions of vorticity
+  (:math:`\zeta`) with adiabaticity parameter 0.1 (top-left)
+  [:doc:`s215 <../../sims/s215/s215-hw>`], 0.3 (top-right) :doc:`s217
+  <../../sims/s217/s217-hw>`, 1.0 (bottom-left) :doc:`s215
+  <../../sims/s218/s218-hw>` and 2.0 (bottom-right) :doc:`s215
+  <../../sims/s219/s219-hw>` at :math:`t=200`. The simulations were
+  run on a :math:`128\times 128` grid using piecewise quadratic basis
+  functions.
+
+.. figure:: hw-cmp-phi_219.png
+  :width: 100%
+  :align: center
+
+  Comparison of Hasegawa-Wakatani solutions of potential
+  (:math:`\phi`) with adiabaticity parameter 0.1 (top-left)
+  [:doc:`s215 <../../sims/s215/s215-hw>`], 0.3 (top-right) :doc:`s217
+  <../../sims/s217/s217-hw>`, 1.0 (bottom-left) :doc:`s215
+  <../../sims/s218/s218-hw>` and 2.0 (bottom-right) :doc:`s215
+  <../../sims/s219/s219-hw>` at :math:`t=200`. The simulations were
+  run on a :math:`128\times 128` grid using piecewise quadratic basis
+  functions.
+
+.. figure:: hw-cmp-numDens_219.png
+  :width: 100%
+  :align: center
+
+  Comparison of Hasegawa-Wakatani solutions of number density
+  (:math:`n`) with adiabaticity parameter 0.1 (top-left) [:doc:`s215
+  <../../sims/s215/s215-hw>`], 0.3 (top-right) :doc:`s217
+  <../../sims/s217/s217-hw>`, 1.0 (bottom-left) :doc:`s215
+  <../../sims/s218/s218-hw>` and 2.0 (bottom-right) :doc:`s215
+  <../../sims/s219/s219-hw>` at :math:`t=200`. The simulations were
+  run on a :math:`128\times 128` grid using piecewise quadratic basis
+  functions.
 
 References
 ----------
