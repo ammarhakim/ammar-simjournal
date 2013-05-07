@@ -458,4 +458,7 @@ program for that simulation.
   * - :doc:`s220 <s220/s220-euler-shock-wave>` 
     - 1D Euler shock with low density/pressure
       region. Wave-propagation scheme with pressure/density fix. (See s8)
-
+  * - :doc:`s221 <s221/s221-mhw>` 
+    - Modified Hasegawa-Wakatani, with adiabacity parameter 0.5
+  * - :doc:`s222 <s222/s222-mhw>` 
+    - Modified Hasegawa-Wakatani, with adiabacity parameter 1.0
