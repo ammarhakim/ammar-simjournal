@@ -30,9 +30,9 @@ and Wakatani [Wakatani1986]_, [Hasegawa1987]_. These can be written as
   - \mu \nabla^4 n
 
 where :math:`\zeta` is the vorticity, :math:`\phi` the electrostatic
-potential, and :math:`n` the number density. Also, :math:`\kappa =
--\partial/\partial x \ln{n_0}` is a constant density gradient
-scale-length, :math:`\alpha` is the adiabaticity operator and
+potential, and :math:`n` the perturbed number density. Also,
+:math:`\kappa = -\partial/\partial x \ln{n_0}` is a constant density
+gradient scale-length, :math:`\alpha` is the adiabaticity operator and
 :math:`\mu` is a hyper-diffusion coefficient. Also, :math:`\{a,b\}` is
 the standard canonical Poisson bracket operator. The electrostatic
 potential itself is determined by solving a Poisson equation
@@ -139,7 +139,43 @@ than allowed by stability from the Poisson bracket operator alone.
 Simulations of the Hasegawa-Wakatani system
 -------------------------------------------
 
-DESCRIPTION HERE.
+In this set of simulations the Hasegawa-Wakatani system was
+initialized with a Gaussian initial number density profile.
+
+.. math::
+
+  n(x,0) = e^{-(x^2+y^2)/s^2}
+
+with :math:`s=2.0`. The initial electrostatic potential was set to
+:math:`\phi(x,0)=n(x,0)` from which :math:`\zeta(x,0) = \nabla^2_\perp
+\phi(x,0)`. Simulations were performed for :math:`\alpha=0.1, 0.3,
+1.0, 2.0`. Note that for :math:`\alpha=2.0` the time-scale of
+relaxation of the potential and number density are much faster than
+the time-scale from :math:`E\times B` advection, which indicates that
+solutions will be close to those obtained from the Hasegawa-Mima
+system. For these simulations :math:`\kappa=1.0` which provides a
+free-energy source for the turbulence from the background number
+density gradient.
+
+Comparisons (with different adiabaticity parmeter) for the vorticity,
+potential and number density are shown below. The initial Gaussian
+profiles undergo linear drift-wave instabilities which are eventually
+taken over by nonlinear effects. Once the simulation becomes nonlinear
+vortices are generated, driving the system into a turbulent state. 
+
+With increasing adiabaticity differences in the structure of the
+generated turbulence are clearly visible. In particular, for
+:math:`\alpha=2.0` the number density and the potential are almost
+identical, indicating that this regime is that of the Hasegawa-Mima
+system. The vortex structures smear out with increasing adiabaticity.
+
+.. note::
+
+  As of writing this, I have not performed any statistical analysis of
+  the simulations. However, it is clear that the turbulence is in a
+  saturated state. Among the interesting things one can do (besides
+  statistics) is to extract damped eigenmodes of the system using a
+  SVD of the simulation data.
 
 .. figure:: hw-cmp-chi_219.png
   :width: 100%
@@ -180,10 +216,27 @@ DESCRIPTION HERE.
   run on a :math:`128\times 128` grid using piecewise quadratic basis
   functions.
 
+Simulations of the modified Hasegawa-Wakatani system
+----------------------------------------------------
+
+For the MHW system, the simulations were initialized with random noise
+for :math:`\zeta(x,0)` and :math:`n(x,0)`. With this, Poisson equation
+is used to determine :math:`\phi(x,0)`. Adiabaticity parameters of
+:math:`\alpha=0.5` and :math:`\alpha=1.0` were used, with
+:math:`\kappa=1.0`.
+
+Vortices rapidly form and the solution goes turbulent, initially
+showing similar vortex patterns as in the unmodified HW
+system. However, zonal flows soon set in and the turbulent
+fluctuations in the electrostatic potential are suppressed. The
+:math:`y`-direction gradients in the potential are almost zero, making
+the :math:`E\times B` velocity nearly parallel to the
+:math:`y`-direction.
+
 References
 ----------
 
-.. [Wakatani1986] Masahiro Wakatani and Akira Hasegawa, "A collisional
+.. [WAKATANI198] Masahiro Wakatani and Akira Hasegawa, "A collisional
    drift wave description of plasma edge turbulence", *Physics of
    Fluids*, **27** (3), 1984.
 

@@ -472,4 +472,18 @@ program for that simulation.
   * - ${mdl("s220")}
     - 1D Euler shock with low density/pressure
       region. Wave-propagation scheme with pressure/density fix. (See s8)
+  * - ${mdl("s221")}
+    - Modified Hasegawa-Wakatani, with adiabacity parameter 0.5
+  * - ${mdl("s222")}
+    - Modified Hasegawa-Wakatani, with adiabacity parameter 1.0
+  * - ${mdl("s223")}
+    - Two-fluid 5-moment GEM challenge with zero guide field, :math:`256x128` domain
+  * - ${mdl("s224")}
+    - Two-fluid 5-moment GEM challenge with guide field 0.25, :math:`256x128` domain
+  * - ${mdl("s225")}
+    - Two-fluid 5-moment GEM challenge with guide field 0.5, :math:`256x128` domain
+  * - ${mdl("s226")}
+    - Two-fluid 5-moment GEM challenge with guide field 0.75, :math:`256x128` domain
+  * - ${mdl("s227")}
+    - Two-fluid 5-moment GEM challenge with guide field 1.0, :math:`256x128` domain
 
