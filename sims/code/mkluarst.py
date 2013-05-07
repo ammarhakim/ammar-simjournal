@@ -1,27 +1,15 @@
 #! /usr/bin/env python
-import optparse
+import glob
 
 def main():
-    parser = optparse.OptionParser()
-    parser.add_option("-l", "--lua", dest="lua", help="Name of Lua program")
-    parser.add_option("-x", "--language", dest="language", help="Language")
-    options, args = parser.parse_args()
+    luaList = glob.glob("s*/*.lua")
+    for luaFile in luaList:
 
-    options, args = parser.parse_args()
-    luaFile = options.lua
-    language = options.language
-
-    if luaFile == None:
-        print "Must provide a Lua file to process!"
-        exit(1)
-
-    # contruct name
-    outName = luaFile[:luaFile.find(".")] + ".rst"
-    fh = open(outName, "w")
-    fh.writelines(".. literalinclude:: %s\n" % luaFile[luaFile.find("/")+1:])
-    fh.writelines("  :language: %s\n" % language)
-
-    fh.close()
+        outName = luaFile[:luaFile.find(".lua")] + ".rst"
+        print "Working on %s (outname is %s) ..." % (luaFile, outName)
+        fh = open(outName, "w")
+        fh.writelines(".. literalinclude:: %s\n" % luaFile[luaFile.find("/")+1:])
+        fh.writelines("  :language: %s\n" % "lua")
+        fh.close() 
 
 if __name__ == "__main__" : main()
-

@@ -1,7 +1,5 @@
 <%!
-  import subprocess
   import glob
-
   def makeRst(lua, lang):
     extension = "lua"
 
@@ -12,11 +10,11 @@
 
     fls = glob.glob("%s/%s-*.%s" % (lua, lua, extension))
     if (len(fls)>0):
-      subprocess.Popen(["python", "./code/mkluarst.py", "-l", fls[0], "-x", lang])
       return fls[0][:fls[0].find(".")]
     return ""
 %>
 <%def name="mdl(sim, lang='lua')"><% luaFl = makeRst(sim, lang) %>:doc:`${sim} <${luaFl}>` </%def>
+
 Simulation Index
 ================
 
