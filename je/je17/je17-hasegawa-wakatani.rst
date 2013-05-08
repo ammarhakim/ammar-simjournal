@@ -1,6 +1,6 @@
 :Author: Ammar Hakim
 :Date: May 6th 2013
-:Completed: 
+:Completed: Mat 7th 2013
 :Last Updated:
 
 JE17: Solving (Modified) Hasegawa-Wakatani equations
