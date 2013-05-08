@@ -149,15 +149,17 @@ initialized with a Gaussian initial number density profile.
 with :math:`s=2.0`. The initial electrostatic potential was set to
 :math:`\phi(x,0)=n(x,0)` from which :math:`\zeta(x,0) = \nabla^2_\perp
 \phi(x,0)`. Simulations were performed for :math:`\alpha=0.1, 0.3,
-1.0, 2.0`. Note that for :math:`\alpha=2.0` the time-scale of
-relaxation of the potential and number density are much faster than
-the time-scale from :math:`E\times B` advection, which indicates that
-solutions will be close to those obtained from the Hasegawa-Mima
-system. For these simulations :math:`\kappa=1.0` which provides a
-free-energy source for the turbulence from the background number
-density gradient.
+1.0, 2.0`. The simulations were run on a :math:`128\times 128` grid
+using piecewise quadratic basis functions.
 
-Comparisons (with different adiabaticity parmeter) for the vorticity,
+Note that for :math:`\alpha=2.0` the time-scale of relaxation of the
+potential and number density are much faster than the time-scale from
+:math:`E\times B` advection, which indicates that solutions will be
+close to those obtained from the Hasegawa-Mima system. Also, I set
+:math:`\kappa=1.0` which provides a free-energy source for the
+turbulence from the background number density gradient.
+
+Comparisons (with different adiabaticity parameter) for the vorticity,
 potential and number density are shown below. The initial Gaussian
 profiles undergo linear drift-wave instabilities which are eventually
 taken over by nonlinear effects. Once the simulation becomes nonlinear
@@ -173,55 +175,51 @@ system. The vortex structures smear out with increasing adiabaticity.
 
   As of writing this, I have not performed any statistical analysis of
   the simulations. However, it is clear that the turbulence is in a
-  saturated state. Among the interesting things one can do (besides
-  statistics) is to extract damped eigenmodes of the system using a
-  SVD of the simulation data.
+  saturated state. One way to see this is to monitor the time-step as
+  the simulation progresses. This effectively tracks the
+  :math:`E\times B` velocity. In all the results presented below the
+  early on the time-step fluctuates rapidly, settling down a nearly
+  constant value late in the simulation.
 
 .. figure:: hw-cmp-chi_219.png
   :width: 100%
   :align: center
 
-  Comparison of Hasegawa-Wakatani solutions of vorticity
-  (:math:`\zeta`) with adiabaticity parameter 0.1 (top-left)
-  [:doc:`s215 <../../sims/s215/s215-hw>`], 0.3 (top-right) :doc:`s217
-  <../../sims/s217/s217-hw>`, 1.0 (bottom-left) :doc:`s215
-  <../../sims/s218/s218-hw>` and 2.0 (bottom-right) :doc:`s215
-  <../../sims/s219/s219-hw>` at :math:`t=200`. The simulations were
-  run on a :math:`128\times 128` grid using piecewise quadratic basis
-  functions.
-
-.. figure:: hw-cmp-phi_219.png
-  :width: 100%
-  :align: center
-
-  Comparison of Hasegawa-Wakatani solutions of potential
-  (:math:`\phi`) with adiabaticity parameter 0.1 (top-left)
-  [:doc:`s215 <../../sims/s215/s215-hw>`], 0.3 (top-right) :doc:`s217
-  <../../sims/s217/s217-hw>`, 1.0 (bottom-left) :doc:`s215
-  <../../sims/s218/s218-hw>` and 2.0 (bottom-right) :doc:`s215
-  <../../sims/s219/s219-hw>` at :math:`t=200`. The simulations were
-  run on a :math:`128\times 128` grid using piecewise quadratic basis
-  functions.
+  Comparison of vorticity (:math:`\zeta`) with adiabaticity parameter
+  0.1 (top-left) [:doc:`s215 <../../sims/s215/s215-hw>`], 0.3
+  (top-right) :doc:`s217 <../../sims/s217/s217-hw>`], 1.0
+  (bottom-left) [:doc:`s215 <../../sims/s218/s218-hw>`] and 2.0
+  (bottom-right) [:doc:`s215 <../../sims/s219/s219-hw>`] at
+  :math:`t=200`.
 
 .. figure:: hw-cmp-numDens_219.png
   :width: 100%
   :align: center
 
-  Comparison of Hasegawa-Wakatani solutions of number density
-  (:math:`n`) with adiabaticity parameter 0.1 (top-left) [:doc:`s215
-  <../../sims/s215/s215-hw>`], 0.3 (top-right) :doc:`s217
-  <../../sims/s217/s217-hw>`, 1.0 (bottom-left) :doc:`s215
-  <../../sims/s218/s218-hw>` and 2.0 (bottom-right) :doc:`s215
-  <../../sims/s219/s219-hw>` at :math:`t=200`. The simulations were
-  run on a :math:`128\times 128` grid using piecewise quadratic basis
-  functions.
+  Comparison of number density (:math:`n`) with adiabaticity parameter
+  0.1 (top-left) [:doc:`s215 <../../sims/s215/s215-hw>`], 0.3
+  (top-right) [:doc:`s217 <../../sims/s217/s217-hw>`], 1.0
+  (bottom-left) [:doc:`s215 <../../sims/s218/s218-hw>`] and 2.0
+  (bottom-right) [:doc:`s215 <../../sims/s219/s219-hw>`] at
+  :math:`t=200`.
+
+.. figure:: hw-cmp-phi_219.png
+  :width: 100%
+  :align: center
+
+  Comparison of potential (:math:`\phi`) with adiabaticity parameter
+  0.1 (top-left) [:doc:`s215 <../../sims/s215/s215-hw>`], 0.3
+  (top-right) [:doc:`s217 <../../sims/s217/s217-hw>`], 1.0
+  (bottom-left) [:doc:`s215 <../../sims/s218/s218-hw>`] and 2.0
+  (bottom-right) [:doc:`s215 <../../sims/s219/s219-hw>`] at
+  :math:`t=200`.
 
 Simulations of the modified Hasegawa-Wakatani system
 ----------------------------------------------------
 
 For the MHW system, the simulations were initialized with random noise
-for :math:`\zeta(x,0)` and :math:`n(x,0)`. With this, Poisson equation
-is used to determine :math:`\phi(x,0)`. Adiabaticity parameters of
+for :math:`\zeta(x,0)` and :math:`n(x,0)`. Poisson equation is solved
+to determine :math:`\phi(x,0)`. Adiabaticity parameters of
 :math:`\alpha=0.5` and :math:`\alpha=1.0` were used, with
 :math:`\kappa=1.0`.
 
@@ -233,10 +231,46 @@ fluctuations in the electrostatic potential are suppressed. The
 the :math:`E\times B` velocity nearly parallel to the
 :math:`y`-direction.
 
+.. figure:: mhw-cmp-chi_222.png
+  :width: 100%
+  :align: center
+
+  Comparison of vorticity (:math:`\zeta`) with adiabaticity parameter
+  1.0 with Hasegawa-Wakatani (left) [:doc:`s215
+  <../../sims/s218/s218-hw>`] and modified Hasegawa-Wakatani
+  [:doc:`s215 <../../sims/s222/s222-mhw>`] at :math:`t=200`. Not only
+  is the structure of the fluctuations different, the magnitudes are
+  smaller in the MHW case.
+
+.. figure:: mhw-cmp-numDens_222.png
+  :width: 100%
+  :align: center
+
+
+  Comparison of potential (:math:`n`) with adiabaticity parameter 1.0
+  with Hasegawa-Wakatani (left) [:doc:`s215
+  <../../sims/s218/s218-hw>`] and modified Hasegawa-Wakatani
+  [:doc:`s215 <../../sims/s222/s222-mhw>`] at :math:`t=200`. Not only
+  is the structure of the fluctuations different, the magnitudes are
+  smaller in the MHW case.
+
+.. figure:: mhw-cmp-phi_222.png
+  :width: 100%
+  :align: center
+
+  Comparison of of number density (:math:`\phi`) with adiabaticity
+  parameter 1.0 with Hasegawa-Wakatani (left) [:doc:`s215
+  <../../sims/s218/s218-hw>`] and modified Hasegawa-Wakatani
+  [:doc:`s215 <../../sims/s222/s222-mhw>`] at :math:`t=200`. Unlike
+  the vorticity and the number density, the magnitude of the potential
+  are similar. However, the structure is completely different, the
+  turbulence suppressed in the MHW case.
+
+
 References
 ----------
 
-.. [WAKATANI198] Masahiro Wakatani and Akira Hasegawa, "A collisional
+.. [Wakatani1986] Masahiro Wakatani and Akira Hasegawa, "A collisional
    drift wave description of plasma edge turbulence", *Physics of
    Fluids*, **27** (3), 1984.
 
