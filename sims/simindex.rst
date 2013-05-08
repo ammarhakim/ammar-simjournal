@@ -462,3 +462,14 @@ program for that simulation.
     - Modified Hasegawa-Wakatani, with adiabacity parameter 0.5
   * - :doc:`s222 <s222/s222-mhw>` 
     - Modified Hasegawa-Wakatani, with adiabacity parameter 1.0
+  * - :doc:`s223 <s223/s223-gemguide-5m>` 
+    - Two-fluid 5-moment GEM challenge with zero guide field, :math:`256x128` domain
+  * - :doc:`s224 <s224/s224-gemguide-5m>` 
+    - Two-fluid 5-moment GEM challenge with guide field 0.25, :math:`256x128` domain
+  * - :doc:`s225 <>` 
+    - Two-fluid 5-moment GEM challenge with guide field 0.5, :math:`256x128` domain
+  * - :doc:`s226 <>` 
+    - Two-fluid 5-moment GEM challenge with guide field 0.75, :math:`256x128` domain
+  * - :doc:`s227 <s227/s227-gemguide-5m>` 
+    - Two-fluid 5-moment GEM challenge with guide field 1.0, :math:`256x128` domain
+
