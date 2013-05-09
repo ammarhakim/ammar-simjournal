@@ -130,6 +130,19 @@ ionEulerEqn = HyperEquation.Euler {
    -- gas adiabatic constant
    gasGamma = gasGamma,
 }
+-- (Lax equations are used to fix negative pressure/density)
+elcEulerLaxEqn = HyperEquation.Euler {
+   -- gas adiabatic constant
+   gasGamma = gasGamma,
+   -- use Lax fluxes
+   numericalFlux = "lax",   
+}
+ionEulerLaxEqn = HyperEquation.Euler {
+   -- gas adiabatic constant
+   gasGamma = gasGamma,
+   -- use Lax fluxes
+   numericalFlux = "lax",
+}
 maxwellEqn = HyperEquation.PhMaxwell {
    -- speed of light
    lightSpeed = lightSpeed,
@@ -177,6 +190,33 @@ maxSlvr = Updater.WavePropagation2D {
 maxSlvr:setIn( {emField} )
 maxSlvr:setOut( {emFieldNew} )
 
+-- (Lax equation solver are used to fix negative pressure/density)
+-- updater for electron equations
+elcEulerLaxSlvr = Updater.WavePropagation2D {
+   onGrid = grid,
+   equation = elcEulerLaxEqn,
+   -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
+   limiter = "zero",
+   cfl = cfl,
+   cflm = 1.1*cfl,
+}
+-- set input/output arrays (these do not change so set it once)
+elcEulerLaxSlvr:setIn( {elcFluid} )
+elcEulerLaxSlvr:setOut( {elcFluidNew} )
+
+-- updater for ion equations
+ionEulerLaxSlvr = Updater.WavePropagation2D {
+   onGrid = grid,
+   equation = ionEulerLaxEqn,
+   -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
+   limiter = "zero",
+   cfl = cfl,
+   cflm = 1.1*cfl,
+}
+-- set input/output arrays (these do not change so set it once)
+ionEulerLaxSlvr:setIn( {ionFluid} )
+ionEulerLaxSlvr:setOut( {ionFluidNew} )
+
 -- updater for two-fluid sources
 sourceSlvrImpl = Updater.ImplicitFiveMomentSrc2D {
    -- grid on which to run updater
@@ -191,7 +231,7 @@ sourceSlvrImpl = Updater.ImplicitFiveMomentSrc2D {
    epsilon0 = epsilon0,
    -- linear solver to use: one of partialPivLu or colPivHouseholderQr
    linearSolver = "partialPivLu",
-   -- has static magnetic field
+   -- has static magentic field
    hasStaticField = true,
 }
 
@@ -287,6 +327,38 @@ function solveTwoFluidSystem(tCurr, t)
    return status, dtSuggested
 end
 
+-- function to take one time-step
+function solveTwoFluidLaxSystem(tCurr, t)
+   local dthalf = 0.5*(t-tCurr)
+
+   -- update source terms
+   calcSourceImpl(elcFluid, ionFluid, emField, tCurr, tCurr+dthalf)
+   applyBc(q)
+
+   -- advance electrons
+   elcEulerLaxSlvr:setCurrTime(tCurr)
+   local elcStatus, elcDtSuggested = elcEulerLaxSlvr:advance(t)
+   -- advance ions
+   ionEulerLaxSlvr:setCurrTime(tCurr)
+   local ionStatus, ionDtSuggested = ionEulerLaxSlvr:advance(t)
+   -- advance fields
+   maxSlvr:setCurrTime(tCurr)
+   local maxStatus, maxDtSuggested = maxSlvr:advance(t)
+
+   -- check if any updater failed
+   local status = false
+   local dtSuggested = math.min(elcDtSuggested, ionDtSuggested, maxDtSuggested)
+   if (elcStatus and ionStatus and maxStatus) then
+      status = true
+   end
+
+   -- update source terms
+   calcSourceImpl(elcFluidNew, ionFluidNew, emFieldNew, tCurr, tCurr+dthalf)
+   applyBc(qNew)
+
+   return status, dtSuggested
+end
+
 -- dynvector to store integrated flux
 byFlux = DataStruct.DynVector { numComponents = 1 }
 
@@ -320,6 +392,7 @@ function advanceFrame(tStart, tEnd, initDt)
    local tCurr = tStart
    local myDt = initDt
    local tfStatus, tfDtSuggested
+   local laxSolverCount = 0
    while true do
       -- copy n case we need to take this step again
       qDup:copy(q)
@@ -332,7 +405,12 @@ function advanceFrame(tStart, tEnd, initDt)
 
       Lucee.logInfo (string.format(" Taking step %d at time %g with dt %g", step, tCurr, myDt))
       -- advance fluids and fields
-      tfStatus, tfDtSuggested = solveTwoFluidSystem(tCurr, tCurr+myDt)
+      if (laxSolverCount > 0) then
+	 tfStatus, tfDtSuggested = solveTwoFluidLaxSystem(tCurr, tCurr+myDt)
+	 laxSolverCount = 0
+      else
+	 tfStatus, tfDtSuggested = solveTwoFluidSystem(tCurr, tCurr+myDt)
+      end
 
       if (tfStatus == false) then
 	 -- time-step too large
@@ -340,6 +418,13 @@ function advanceFrame(tStart, tEnd, initDt)
 	 myDt = tfDtSuggested
 	 qNew:copy(qNewDup)
 	 q:copy(qDup)
+      elseif ((elcEulerEqn:checkInvariantDomain(elcFluidNew) == false) 
+	   or (ionEulerEqn:checkInvariantDomain(ionFluidNew) == false)) then
+	 -- negative density/pressure occured
+	 Lucee.logInfo (string.format("** Negative pressure or density at %g! Will retake step with Lax fluxes", tCurr+myDt))
+	 q:copy(qDup)
+	 qNew:copy(qNewDup)
+	 laxSolverCount = 1 
       else
 	 -- check if a nan occured
 	 if (qNew:hasNan()) then

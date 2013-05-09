@@ -486,4 +486,11 @@ program for that simulation.
     - Two-fluid 5-moment GEM challenge with guide field 0.75, :math:`256x128` domain
   * - ${mdl("s227")}
     - Two-fluid 5-moment GEM challenge with guide field 1.0, :math:`256x128` domain
+  * - ${mdl("s228")}
+    - Two-fluid 5-moment GEM challenge with guide field 2.0, :math:`256x128` domain
+  * - ${mdl("s229")}
+    - Two-fluid 5-moment GEM challenge with guide field 5.0, :math:`256x128` domain
+  * - ${mdl("s230")}
+    - Two-fluid 5-moment GEM challenge with guide field 10.0, :math:`256x128` domain
+
 
