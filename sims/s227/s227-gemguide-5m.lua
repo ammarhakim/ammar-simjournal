@@ -23,8 +23,8 @@ bGuideFactor = 1.0
 
 nSpecies = 2
 
-NX = 128
-NY = 64
+NX = 256
+NY = 128
 
 -- computational domain
 grid = Grid.RectCart2D {
@@ -416,13 +416,13 @@ function advanceFrame(tStart, tEnd, initDt)
 	 myDt = tfDtSuggested
 	 qNew:copy(qNewDup)
 	 q:copy(qDup)
-      elseif ((elcEulerEqn:checkInvariantDomain(elcFluid) == false) 
-	   or (ionEulerEqn:checkInvariantDomain(ionFluid) == false)) then
+      elseif ((elcEulerEqn:checkInvariantDomain(elcFluidNew) == false) 
+	   or (ionEulerEqn:checkInvariantDomain(ionFluidNew) == false)) then
 	 -- negative density/pressure occured
 	 Lucee.logInfo (string.format("** Negative pressure or density at %g! Will retake step with Lax fluxes", tCurr+myDt))
-	 qNew:copy(qNewDup)
 	 q:copy(qDup)
-	 laxSolverCount = 1	 
+	 qNew:copy(qNewDup)
+	 laxSolverCount = 1 
       else
 	 -- check if a nan occured
 	 if (qNew:hasNan()) then
