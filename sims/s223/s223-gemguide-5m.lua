@@ -191,7 +191,7 @@ sourceSlvrImpl = Updater.ImplicitFiveMomentSrc2D {
    epsilon0 = epsilon0,
    -- linear solver to use: one of partialPivLu or colPivHouseholderQr
    linearSolver = "partialPivLu",
-   -- has static magentic field
+   -- has static magnetic field
    hasStaticField = true,
 }
 

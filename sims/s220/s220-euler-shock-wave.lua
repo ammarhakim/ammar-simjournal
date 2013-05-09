@@ -127,7 +127,7 @@ while true do
       print (string.format("** Time step %g too large! Will retake with dt %g", myDt, dtSuggested))
       myDt = dtSuggested
       qNew:copy(qNewDup)
-   elseif (eulerEqn:checkInvariantDomain(qNew)) then
+   elseif (not eulerEqn:checkInvariantDomain(qNew)) then
       -- negative density/pressure occured
       print (string.format("** Negative pressure or density at %g! Will retake step with Lax fluxes", tCurr+myDt))
       qNew:copy(qNewDup)
