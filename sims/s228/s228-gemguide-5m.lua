@@ -19,7 +19,7 @@ B0 = 0.1
 n0 = 1.0
 lambda = 0.5
 cfl = 0.25
-bGuideFactor = 1.0
+bGuideFactor = 2.0
 
 nSpecies = 2
 
