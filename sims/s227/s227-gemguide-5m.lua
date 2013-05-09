@@ -23,8 +23,8 @@ bGuideFactor = 1.0
 
 nSpecies = 2
 
-NX = 256
-NY = 128
+NX = 128
+NY = 64
 
 -- computational domain
 grid = Grid.RectCart2D {
@@ -130,6 +130,18 @@ ionEulerEqn = HyperEquation.Euler {
    -- gas adiabatic constant
    gasGamma = gasGamma,
 }
+elcEulerLaxEqn = HyperEquation.Euler {
+   -- gas adiabatic constant
+   gasGamma = gasGamma,
+   -- use Lax fluxes
+   numericalFlux = "lax",   
+}
+ionEulerLaxEqn = HyperEquation.Euler {
+   -- gas adiabatic constant
+   gasGamma = gasGamma,
+   -- use Lax fluxes
+   numericalFlux = "lax",
+}
 maxwellEqn = HyperEquation.PhMaxwell {
    -- speed of light
    lightSpeed = lightSpeed,
@@ -176,6 +188,32 @@ maxSlvr = Updater.WavePropagation2D {
 -- set input/output arrays (these do not change so set it once)
 maxSlvr:setIn( {emField} )
 maxSlvr:setOut( {emFieldNew} )
+
+-- updater for electron equations
+elcEulerLaxSlvr = Updater.WavePropagation2D {
+   onGrid = grid,
+   equation = elcEulerLaxEqn,
+   -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
+   limiter = "zero",
+   cfl = cfl,
+   cflm = 1.1*cfl,
+}
+-- set input/output arrays (these do not change so set it once)
+elcEulerLaxSlvr:setIn( {elcFluid} )
+elcEulerLaxSlvr:setOut( {elcFluidNew} )
+
+-- updater for ion equations
+ionEulerLaxSlvr = Updater.WavePropagation2D {
+   onGrid = grid,
+   equation = ionEulerLaxEqn,
+   -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
+   limiter = "zero",
+   cfl = cfl,
+   cflm = 1.1*cfl,
+}
+-- set input/output arrays (these do not change so set it once)
+ionEulerLaxSlvr:setIn( {ionFluid} )
+ionEulerLaxSlvr:setOut( {ionFluidNew} )
 
 -- updater for two-fluid sources
 sourceSlvrImpl = Updater.ImplicitFiveMomentSrc2D {
@@ -287,6 +325,38 @@ function solveTwoFluidSystem(tCurr, t)
    return status, dtSuggested
 end
 
+-- function to take one time-step
+function solveTwoFluidLaxSystem(tCurr, t)
+   local dthalf = 0.5*(t-tCurr)
+
+   -- update source terms
+   calcSourceImpl(elcFluid, ionFluid, emField, tCurr, tCurr+dthalf)
+   applyBc(q)
+
+   -- advance electrons
+   elcEulerLaxSlvr:setCurrTime(tCurr)
+   local elcStatus, elcDtSuggested = elcEulerLaxSlvr:advance(t)
+   -- advance ions
+   ionEulerLaxSlvr:setCurrTime(tCurr)
+   local ionStatus, ionDtSuggested = ionEulerLaxSlvr:advance(t)
+   -- advance fields
+   maxSlvr:setCurrTime(tCurr)
+   local maxStatus, maxDtSuggested = maxSlvr:advance(t)
+
+   -- check if any updater failed
+   local status = false
+   local dtSuggested = math.min(elcDtSuggested, ionDtSuggested, maxDtSuggested)
+   if (elcStatus and ionStatus and maxStatus) then
+      status = true
+   end
+
+   -- update source terms
+   calcSourceImpl(elcFluidNew, ionFluidNew, emFieldNew, tCurr, tCurr+dthalf)
+   applyBc(qNew)
+
+   return status, dtSuggested
+end
+
 -- dynvector to store integrated flux
 byFlux = DataStruct.DynVector { numComponents = 1 }
 
@@ -320,6 +390,7 @@ function advanceFrame(tStart, tEnd, initDt)
    local tCurr = tStart
    local myDt = initDt
    local tfStatus, tfDtSuggested
+   local laxSolverCount = 0
    while true do
       -- copy n case we need to take this step again
       qDup:copy(q)
@@ -332,7 +403,12 @@ function advanceFrame(tStart, tEnd, initDt)
 
       Lucee.logInfo (string.format(" Taking step %d at time %g with dt %g", step, tCurr, myDt))
       -- advance fluids and fields
-      tfStatus, tfDtSuggested = solveTwoFluidSystem(tCurr, tCurr+myDt)
+      if (laxSolverCount > 0) then
+	 tfStatus, tfDtSuggested = solveTwoFluidLaxSystem(tCurr, tCurr+myDt)
+	 laxSolverCount = 0
+      else
+	 tfStatus, tfDtSuggested = solveTwoFluidSystem(tCurr, tCurr+myDt)
+      end
 
       if (tfStatus == false) then
 	 -- time-step too large
@@ -340,6 +416,13 @@ function advanceFrame(tStart, tEnd, initDt)
 	 myDt = tfDtSuggested
 	 qNew:copy(qNewDup)
 	 q:copy(qDup)
+      elseif ((elcEulerEqn:checkInvariantDomain(elcFluid) == false) 
+	   or (ionEulerEqn:checkInvariantDomain(ionFluid) == false)) then
+	 -- negative density/pressure occured
+	 Lucee.logInfo (string.format("** Negative pressure or density at %g! Will retake step with Lax fluxes", tCurr+myDt))
+	 qNew:copy(qNewDup)
+	 q:copy(qDup)
+	 laxSolverCount = 1	 
       else
 	 -- check if a nan occured
 	 if (qNew:hasNan()) then
