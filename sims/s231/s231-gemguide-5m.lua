@@ -18,7 +18,7 @@ Ly = 4*Lucee.Pi
 B0 = 0.1
 n0 = 1.0
 lambda = 0.5
-cfl = 0.25
+cfl = 0.1
 bGuideFactor = 0.0
 
 nSpecies = 2
@@ -231,7 +231,7 @@ sourceSlvrImpl = Updater.ImplicitFiveMomentSrc2D {
    epsilon0 = epsilon0,
    -- linear solver to use: one of partialPivLu or colPivHouseholderQr
    linearSolver = "partialPivLu",
-   -- has static magentic field
+   -- has static magnetic field
    hasStaticField = true,
 }
 
