@@ -506,4 +506,5 @@ program for that simulation.
     - Same as 235, except using open BCs instead of walls
   * - ${mdl("s237")}
     - Same as 235 (guide field 1.0), except with 5% perturbation instead of 10%.
-
+  * - ${mdl("s238")}
+    - Two-fluid 5-moment GEM challenge, :math:`768x768` on :math:`25x25` domain and open BCs
