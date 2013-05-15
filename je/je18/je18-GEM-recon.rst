@@ -10,8 +10,8 @@ JE18: Five-moment two-fluid reconnection with zero guide field
 
   These are *very* preliminary notes (as of May 15th 2013) on using
   five-moment two-fluid model to do reconnection with zero guide
-  field. I have done many more simulations that the one showed here,
-  and will put those up soon.
+  field. I have done many more simulations in addition to the one
+  showed here, and will put those up soon.
 
 In this initial comparison I have used the same parameters as in the
 original GEM problem, which are slightly different than in the PIC
