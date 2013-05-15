@@ -466,10 +466,31 @@ program for that simulation.
     - Two-fluid 5-moment GEM challenge with zero guide field, :math:`256x128` domain
   * - :doc:`s224 <s224/s224-gemguide-5m>` 
     - Two-fluid 5-moment GEM challenge with guide field 0.25, :math:`256x128` domain
-  * - :doc:`s225 <>` 
+  * - :doc:`s225 <s225/s225-gemguide-5m>` 
     - Two-fluid 5-moment GEM challenge with guide field 0.5, :math:`256x128` domain
-  * - :doc:`s226 <>` 
+  * - :doc:`s226 <s226/s226-gemguide-5m>` 
     - Two-fluid 5-moment GEM challenge with guide field 0.75, :math:`256x128` domain
   * - :doc:`s227 <s227/s227-gemguide-5m>` 
     - Two-fluid 5-moment GEM challenge with guide field 1.0, :math:`256x128` domain
-
+  * - :doc:`s228 <s228/s228-gemguide-5m>` 
+    - Two-fluid 5-moment GEM challenge with guide field 2.0, :math:`256x128` domain
+  * - :doc:`s229 <s229/s229-gemguide-5m>` 
+    - Two-fluid 5-moment GEM challenge with guide field 5.0, :math:`256x128` domain
+  * - :doc:`s230 <s230/s230-gemguide-5m>` 
+    - Two-fluid 5-moment GEM challenge with guide field 10.0, :math:`256x128` domain
+  * - :doc:`s231 <s231/s231-gemguide-5m>` 
+    - Two-fluid 5-moment GEM challenge with zero guide field, :math:`512x256` domain
+  * - :doc:`s232 <s232/s232-gemguide-5m>` 
+    - Two-fluid 5-moment GEM challenge with guide field 0.25, :math:`512x256` domain
+  * - :doc:`s233 <s233/s233-gemguide-5m>` 
+    - Two-fluid 5-moment GEM challenge with guide field 0.5, :math:`512x256` domain
+  * - :doc:`s234 <s234/s234-gemguide-5m>` 
+    - Two-fluid 5-moment GEM challenge with guide field 0.75, :math:`512x256` domain
+  * - :doc:`s235 <s235/s235-gemguide-5m>` 
+    - Two-fluid 5-moment GEM challenge with guide field 1.0, :math:`512x256` domain
+  * - :doc:`s236 <s236/s236-gemguide-5m>` 
+    - Same as 235, except using open BCs instead of walls
+  * - :doc:`s237 <s237/s237-gemguide-5m>` 
+    - Same as 235 (guide field 1.0), except with 5% perturbation instead of 10%.
+  * - :doc:`s238 <s238/s238-gemguide-5m>` 
+    - Two-fluid 5-moment GEM challenge, :math:`768x768` on :math:`25x25` domain and open BCs
