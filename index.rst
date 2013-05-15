@@ -48,4 +48,5 @@ Gkeyll Simulation Results
   je/je15/je15-vlasov-poisson.rst
   je/je16/je16-ldg.rst
   je/je17/je17-hasegawa-wakatani.rst
+  je/je18/je18-GEM-recon.rst
 
