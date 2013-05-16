@@ -13,7 +13,7 @@ nb/n0 = 0.3
 These they claim lead to vte = sqrt(2Te/me) \appox 0.136. I do not see
 how this can be. Assuming di = 1 and L = di, I get vte \approx 0.149.
 
-Also, plasma beta for these parameters turns out be 1.2.
+Plasma beta for these parameters turns out be 1.2.
 
 --]]
 
@@ -36,7 +36,7 @@ B0 = 0.1
 n0 = 1.0
 nb = 0.3*n0
 beta = 1.2 -- see notes above
-lambda = 0.5
+lambda = 1.0
 cfl = 0.25
 bGuideFactor = 0.0
 
