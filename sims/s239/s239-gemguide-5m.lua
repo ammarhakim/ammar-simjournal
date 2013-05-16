@@ -1,5 +1,22 @@
 -- Program to solve Two-Fluid equations
 
+--[[
+
+According to Daughton et. al. 2006 PoP paper one has
+ 
+rhoi/L = 1.0
+mi/me = 25
+Ti/Te = 5
+wpe/wce = 3
+nb/n0 = 0.3
+
+These they claim lead to vte = sqrt(2Te/me) \appox 0.136. I do not see
+how this can be. Assuming di = 1 and L = di, I get vte \approx 0.149.
+
+Also, plasma beta for these parameters turns out be 1.2.
+
+--]]
+
 -- decomposition object to use
 decomp = DecompRegionCalc2D.CartGeneral {}
 
@@ -17,14 +34,16 @@ Lx = 25.0
 Ly = 25.0
 B0 = 0.1
 n0 = 1.0
+nb = 0.3*n0
+beta = 1.2 -- see notes above
 lambda = 0.5
-cfl = 0.1
+cfl = 0.25
 bGuideFactor = 0.0
 
 nSpecies = 2
 
-NX = 250
-NY = 250
+NX = 256
+NY = 256
 
 -- computational domain
 grid = Grid.RectCart2D {
@@ -80,7 +99,7 @@ function init(x,y,z)
    local qe = elcCharge
    local qi = ionCharge
    local gasGamma1 = gasGamma-1
-   local psi0 = 0.1*B0
+   local psi0 = 0.1*B0 -- 10% perturbation
 
    local pi = Lucee.Pi
    local twopi = 2*pi
@@ -93,11 +112,15 @@ function init(x,y,z)
 
    -- electron momentum is computed from plasma current that supports field
    local ezmom = -B0*(1/lambda)*(1/math.cosh(y/lambda))^2*(me/qe)
-   local rhoe = n0*me*(1/math.cosh(y/lambda))^2 + 0.2*n0*me
-   local ere = B0*B0*rhoe/(12*me*gasGamma1) + 0.5*ezmom*ezmom/rhoe
-   
-   local rhoi = n0*mi*(1/math.cosh(y/lambda)^2) + 0.2*n0*mi
-   local eri = 5.0*B0*B0*rhoi/(12.0*mi*gasGamma1)
+   -- mass density is background plus Harris sheet profile
+   local rhoe = n0*me*(1/math.cosh(y/lambda))^2 + nb*me
+   -- electron total energy is thermal plus kinetic
+   local ere = beta*B0*B0*rhoe/(12*me*gasGamma1) + 0.5*ezmom*ezmom/rhoe
+
+   -- mass density is background plus Harris sheet profile
+   local rhoi = n0*mi*(1/math.cosh(y/lambda)^2) + nb*mi
+   -- ion total energy is thermal: ions do not carry any current
+   local eri = 5.0*beta*B0*B0*rhoi/(12.0*mi*gasGamma1)
 
    return rhoe, 0.0, 0.0, ezmom, ere, rhoi, 0.0, 0.0, 0.0, eri, 0.0, 0.0, 0.0, Bx, By, 0.0, 0.0, 0.0
 end
@@ -463,9 +486,9 @@ writeFrame(0, 0.0)
 dtSuggested = 1.0 -- initial time-step to use (this will be discarded and adjusted to CFL value)
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 400.0
+tEnd = 600.0
 
-nFrames = 20
+nFrames = 60
 tFrame = (tEnd-tStart)/nFrames -- time between frames
 
 tCurr = tStart
