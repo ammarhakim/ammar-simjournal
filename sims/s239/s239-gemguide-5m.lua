@@ -437,7 +437,7 @@ function advanceFrame(tStart, tEnd, initDt)
 
       if (tfStatus == false) then
 	 -- time-step too large
-	 Lucee.logInfo (string.format(" ** Time step %g too large! Will retake with dt %g", myDt, dtSuggested))
+	 Lucee.logInfo (string.format(" ** Time step %g too large! Will retake with dt %g", myDt, tfDtSuggested))
 	 myDt = tfDtSuggested
 	 qNew:copy(qNewDup)
 	 q:copy(qDup)
