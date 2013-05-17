@@ -32,7 +32,7 @@ mgnErrorSpeedFactor = 1.0
 
 Lx = 25.0
 Ly = 25.0
-B0 = 0.1
+B0 = 1/15.0
 n0 = 1.0
 nb = 0.3*n0
 beta = 1.2 -- see notes above
