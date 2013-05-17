@@ -39,6 +39,7 @@ beta = 1.2 -- see notes above
 lambda = 1.0
 cfl = 0.25
 bGuideFactor = 0.0
+wci = ionCharge*B0/mi -- ion cyclotron frequency
 
 nSpecies = 2
 
@@ -486,7 +487,7 @@ writeFrame(0, 0.0)
 dtSuggested = 1.0 -- initial time-step to use (this will be discarded and adjusted to CFL value)
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 600.0
+tEnd = 60.0/wci
 
 nFrames = 60
 tFrame = (tEnd-tStart)/nFrames -- time between frames
