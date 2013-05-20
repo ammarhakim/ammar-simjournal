@@ -10,11 +10,6 @@ Ti/Te = 5
 wpe/wce = 3
 nb/n0 = 0.3
 
-These they claim lead to vte = sqrt(2Te/me) \appox 0.136. I do not see
-how this can be. Assuming di = 1 and L = di, I get vte \approx 0.149.
-
-Plasma beta for these parameters turns out be 1.2.
-
 --]]
 
 -- decomposition object to use
@@ -32,13 +27,13 @@ mgnErrorSpeedFactor = 1.0
 
 Lx = 25.0
 Ly = 25.0
-B0 = 0.1
+B0 = 1/15.0
 n0 = 1.0
 nb = 0.3*n0
-beta = 1.2 -- see notes above
-lambda = 1.0
-cfl = 0.1
+lambda = math.sqrt(10/12)
+cfl = 0.25
 bGuideFactor = 0.0
+wci = ionCharge*B0/ionMass -- ion cyclotron frequency
 
 nSpecies = 2
 
@@ -99,7 +94,7 @@ function init(x,y,z)
    local qe = elcCharge
    local qi = ionCharge
    local gasGamma1 = gasGamma-1
-   local psi0 = 0.1*B0 -- 10% perturbation
+   local psi0 = 0.1*B0
 
    local pi = Lucee.Pi
    local twopi = 2*pi
@@ -110,17 +105,21 @@ function init(x,y,z)
    local Bx = Bx - psi0*(pi/Ly)*math.cos(twopi*x/Lx)*math.sin(pi*y/Ly)
    local By = psi0*(twopi/Lx)*math.sin(twopi*x/Lx)*math.cos(pi*y/Ly)
 
+   local numDens = n0*(1/math.cosh(y/lambda))^2 + nb
+
    -- electron momentum is computed from plasma current that supports field
    local ezmom = -B0*(1/lambda)*(1/math.cosh(y/lambda))^2*(me/qe)
    -- mass density is background plus Harris sheet profile
-   local rhoe = n0*me*(1/math.cosh(y/lambda))^2 + nb*me
+   local rhoe = numDens*me
+   local pre = numDens*B0^2/12.0
    -- electron total energy is thermal plus kinetic
-   local ere = beta*B0*B0*rhoe/(12*me*gasGamma1) + 0.5*ezmom*ezmom/rhoe
+   local ere = pre/gasGamma1 + 0.5*ezmom*ezmom/rhoe
 
    -- mass density is background plus Harris sheet profile
-   local rhoi = n0*mi*(1/math.cosh(y/lambda)^2) + nb*mi
+   local rhoi = numDens*mi
+   local pri = 5*pre
    -- ion total energy is thermal: ions do not carry any current
-   local eri = 5.0*beta*B0*B0*rhoi/(12.0*mi*gasGamma1)
+   local eri = pri/gasGamma1
 
    return rhoe, 0.0, 0.0, ezmom, ere, rhoi, 0.0, 0.0, 0.0, eri, 0.0, 0.0, 0.0, Bx, By, 0.0, 0.0, 0.0
 end
@@ -486,7 +485,7 @@ writeFrame(0, 0.0)
 dtSuggested = 1.0 -- initial time-step to use (this will be discarded and adjusted to CFL value)
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 600.0
+tEnd = 60.0/wci
 
 nFrames = 60
 tFrame = (tEnd-tStart)/nFrames -- time between frames
