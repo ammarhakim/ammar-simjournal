@@ -3,10 +3,10 @@
 :Completed: 
 :Last Updated:
 
-JE18: Five-moment two-fluid reconnection on open domains
-========================================================
+JE18: Five-moment two-fluid reconnection on open domain
+=======================================================
 
-In this note I study the process of magentic reconnection with the
+In this note I study the process of magnetic reconnection with the
 five-moment model. This model consists of a set of fluid equations for
 each of the species in the plasma (electron and ions in this case),
 coupled to the Maxwell equations via Lorentz force and currents. With
@@ -30,7 +30,7 @@ velocity, :math:`p` is the scalar pressure and :math:`E_i` and
 fields are computed by solving the full Maxwell equations.
 
 The simulations are performed on an open domain, with the plasma
-initialized with a Harris current sheet with initial magentic field
+initialized with a Harris current sheet with initial magnetic field
 given by
 
 .. math::
@@ -71,11 +71,14 @@ plasma frequency.
 
 Picking a normalization as :math:`n_0=\epsilon_0=\mu_0=m_i=1`, gives
 :math:`B_0=1/15`, :math:`v_{the}=1/3\sqrt{6}\approx 0.361`, :math:`T_e
-= B_0^2/12` and :math:`\rho_i=\sqrt{10/12}`,
+= B_0^2/12` and :math:`\rho_i=\sqrt{10/12}`. 
 
-The BCs are open (zero normal derivative of all quantities). The
-domain is :math:`25d_i \times 25d_i`, where :math:`d_i=c/\omega_{pi}`
-is the ion inertial length.
+Reconnection on a :math:`25d_i\times 25 d_i` open domain
+--------------------------------------------------------
+
+In the first set of simulations, the BCs are open (zero normal
+derivative of all quantities). The domain is :math:`25d_i \times
+25d_i`, where :math:`d_i=c/\omega_{pi}` is the ion inertial length.
 
 Different grid sizes were used: :math:`256\times 256`,
 :math:`512\times 512` and :math:`768\times 768`. This gives about 10
