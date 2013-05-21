@@ -70,8 +70,8 @@ where :math:`\rho_i=v_{thi}/\Omega_{ci}` is the ion gyroradius,
 plasma frequency.
 
 Picking a normalization as :math:`n_0=\epsilon_0=\mu_0=m_i=1`, gives
-:math:`B_0=1/15`, :math:`v_{the}=1/3\sqrt{6}\approx 0.361` and
-:math:`L=\sqrt{10/12}`, :math:`T_e = B_0^2/12`.
+:math:`B_0=1/15`, :math:`v_{the}=1/3\sqrt{6}\approx 0.361`, :math:`T_e
+= B_0^2/12` and :math:`\rho_i=\sqrt{10/12}`,
 
 The BCs are open (zero normal derivative of all quantities). The
 domain is :math:`25d_i \times 25d_i`, where :math:`d_i=c/\omega_{pi}`
@@ -83,29 +83,7 @@ Different grid sizes were used: :math:`256\times 256`,
 respectively. For a complete description of the simulation see the Lua
 program [:doc:`s238 <../../sims/s238/s238-gemguide-5m>`].
 
-I do not completely understand the PIC open BCs. It seems like there
-is a constant background density in the ghost cells in the PIC
-simulation that serves as a source of particles. This can potentially
-be done in a fluid simulation also, but I think there might be
-reflections from the domain boundaries of plasma waves (though not of
-EM waves).
-
-These plots are very preliminary (as of 5/15/2013) as my simulation
-was killed by the batch script as I "exceeded requested resources". I
-have now restarted the simulation again.
-
-The overall structures in the PIC and five-moment model look
-similar. There is strong outflow of the electrons from the diffusion
-region, the flow direction changing sign across the seperatrix.  In
-the five-moment calculations this flow shear leads to Kelvin-Helmholtz
-instabilities, which are visible early in time. These instabilities do
-not appear in PIC, as far I can tell.
-
-The other key difference between the PIC and five-moment results is in
-the electron out-of-plane velocity. The five-moment results show a
-much thinner and less extended flow structure than the PIC
-results. However, there is a thin extended current sheet, although
-much less extended than in the PIC simulations.
+XXX
 
 .. _fig:
 
