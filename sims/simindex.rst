@@ -493,4 +493,6 @@ program for that simulation.
   * - :doc:`s237 <s237/s237-gemguide-5m>` 
     - Same as 235 (guide field 1.0), except with 5% perturbation instead of 10%.
   * - :doc:`s238 <s238/s238-gemguide-5m>` 
-    - Two-fluid 5-moment GEM challenge, :math:`768x768` on :math:`25x25` domain and open BCs
+    - Two-fluid 5-moment GEM challenge, :math:`768\times768` on :math:`25\times 25` domain and open BCs
+  * - :doc:`s239 <s239/s239-gemguide-5m>` 
+    - Same as s238, except on a :math:`250\times 250` grid.
