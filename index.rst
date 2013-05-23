@@ -23,11 +23,11 @@ Technical Notes
   tenmom-eigensystem
   twofluid-sources
 
-Gkeyll Simulation Results
+Gkeyll Simulation Journal
 -------------------------
 
 .. toctree::
-  :maxdepth: 2
+  :maxdepth: 1
 
   sims/simindex.rst
   je/je0/je0-repro-research.rst
