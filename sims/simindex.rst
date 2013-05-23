@@ -495,4 +495,6 @@ program for that simulation.
   * - :doc:`s238 <s238/s238-gemguide-5m>` 
     - Two-fluid 5-moment GEM challenge, :math:`768\times768` on :math:`25\times 25` domain and open BCs
   * - :doc:`s239 <s239/s239-gemguide-5m>` 
-    - Same as s238, except on a :math:`250\times 250` grid.
+    - Same as s238, except on a :math:`252\times 252` grid.
+  * - :doc:`s240 <s240/s240-gemguide-5m>` 
+    - Same as s238, except on a :math:`512\times 512` grid.
