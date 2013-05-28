@@ -512,3 +512,5 @@ program for that simulation.
     - Same as s238, except on a :math:`252\times 252` grid.
   * - ${mdl("s240")}
     - Same as s238, except on a :math:`512\times 512` grid.
+  * - ${mdl("s241")}
+    - Open domain reconnection on :math:`50\times 25` domain, :math:`1024\times 512` grid.
