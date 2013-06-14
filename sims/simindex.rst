@@ -498,3 +498,24 @@ program for that simulation.
     - Same as s238, except on a :math:`252\times 252` grid.
   * - :doc:`s240 <s240/s240-gemguide-5m>` 
     - Same as s238, except on a :math:`512\times 512` grid.
+  * - :doc:`s241 <s241/s241-gemguide-5m>` 
+    - Open domain reconnection on :math:`50\times 25` domain, :math:`1024\times 512` grid.
+  * - :doc:`s242 <s242/s242-dg-diffuse>` 
+    - Diffusion equation with RDG scheme, using 8 cells, polyOrder 1.
+  * - :doc:`s243 <s243/s243-dg-diffuse>` 
+    - Same as 242, except with 16 cells.
+  * - :doc:`s244 <s244/s244-dg-diffuse>` 
+    - Same as 242, except with 32 cells.
+  * - :doc:`s245 <s245/s245-dg-diffuse>` 
+    - Same as 242, except with 64 cells.
+  * - :doc:`s246 <s246/s246-dg-diffuse>` 
+    - Diffusion equation with RDG scheme, using 4 cells, polyOrder 2.
+  * - :doc:`s247 <s247/s247-dg-diffuse>` 
+    - Same as 246, except with 8 cells.
+  * - :doc:`s248 <s248/s248-dg-diffuse>` 
+    - Same as 246, except with 16 cells.
+  * - :doc:`s249 <s249/s249-dg-diffuse>` 
+    - Same as 249, except with 32 cells.
+  * - :doc:`s250 <s250/s250-dg-diffuse-2d>` 
+    - Diffusion equation with RDG scheme in 2D, using :math:`8\times 8` cells, polyOrder 1.
+

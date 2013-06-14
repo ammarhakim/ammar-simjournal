@@ -514,3 +514,28 @@ program for that simulation.
     - Same as s238, except on a :math:`512\times 512` grid.
   * - ${mdl("s241")}
     - Open domain reconnection on :math:`50\times 25` domain, :math:`1024\times 512` grid.
+  * - ${mdl("s242")}
+    - Diffusion equation with RDG scheme, using 8 cells, polyOrder 1.
+  * - ${mdl("s243")}
+    - Same as 242, except with 16 cells.
+  * - ${mdl("s244")}
+    - Same as 242, except with 32 cells.
+  * - ${mdl("s245")}
+    - Same as 242, except with 64 cells.
+  * - ${mdl("s246")}
+    - Diffusion equation with RDG scheme, using 4 cells, polyOrder 2.
+  * - ${mdl("s247")}
+    - Same as 246, except with 8 cells.
+  * - ${mdl("s248")}
+    - Same as 246, except with 16 cells.
+  * - ${mdl("s249")}
+    - Same as 249, except with 32 cells.
+  * - ${mdl("s250")}
+    - Diffusion equation with RDG scheme in 2D, using :math:`8\times 8` cells, polyOrder 1.
+  * - ${mdl("s251")}
+    - Same as s250, except on :math:`16\times 16` grid.
+  * - ${mdl("s252")}
+    - Same as s250, except on :math:`32\times 32` grid.
+  * - ${mdl("s253")}
+    - Same as s250, except on :math:`64\times 64` grid.
+
