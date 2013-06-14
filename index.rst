@@ -49,4 +49,5 @@ Gkeyll Simulation Journal
   je/je16/je16-ldg.rst
   je/je17/je17-hasegawa-wakatani.rst
   je/je18/je18-GEM-recon.rst
+  je/je19/je19-rdg.rst
 

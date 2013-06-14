@@ -31,6 +31,20 @@ velocity, :math:`p` is the scalar pressure and :math:`E_i` and
 :math:`B_i` are the electric and magnetic fields. The electromagnetic
 fields are computed by solving the full Maxwell equations.
 
+.. note::
+ 
+  In the code the equations are solved in conservation-law form. The
+  numerical scheme is a second-order finite-volume scheme, using a
+  :doc:`Roe approximate Riemann solver <../../euler-eigensystem>` to
+  compute numerical fluxes at cell interfaces to update the solution
+  in a cell. The sources are handled using Strang splitting, and the
+  source ODE is :doc:`updated using a Crank-Nicholson implicit scheme
+  <../../twofluid-sources>`. Positivity is ensured by switching to Lax
+  fluxes and a first-order scheme on detection of negative
+  pressure/density. This positivity fix occurs only very rarely, or
+  not at all, and hence has negligible impact on the overall
+  simulation accuracy.
+
 The simulations are performed on an open domain, with the plasma
 initialized with a Harris current sheet with initial magnetic field
 given by
