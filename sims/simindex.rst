@@ -518,4 +518,10 @@ program for that simulation.
     - Same as 249, except with 32 cells.
   * - :doc:`s250 <s250/s250-dg-diffuse-2d>` 
     - Diffusion equation with RDG scheme in 2D, using :math:`8\times 8` cells, polyOrder 1.
+  * - :doc:`s251 <s251/s251-dg-diffuse-2d>` 
+    - Same as s250, except on :math:`16\times 16` grid.
+  * - :doc:`s252 <s252/s252-dg-diffuse-2d>` 
+    - Same as s250, except on :math:`32\times 32` grid.
+  * - :doc:`s253 <s253/s253-dg-diffuse-2d>` 
+    - Same as s250, except on :math:`64\times 64` grid.
 
