@@ -13,3 +13,7 @@ convergence(dat[:,0], dat[:,1])
 print "polyOrder 2 1D"
 dat = pylab.loadtxt("dg-1d-p2-err.txt")
 convergence(dat[:,0], dat[:,1])
+
+print "polyOrder 1 2D"
+dat = pylab.loadtxt("dg-2d-p1-err.txt")
+convergence(dat[:,0], dat[:,1])

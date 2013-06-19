@@ -1,10 +1,12 @@
 :Author: Ammar Hakim
 :Date: 10th June 2013
-:Completed: 
+:Completed: 14th June 2013
 :Last Updated:
 
 JE19: Tests for the recovery based DG scheme for diffusion
 ==========================================================
+
+.. contents::
 
 In this note I describe and test a DG scheme for solving the diffusion
 equation using the recovery procedure proposed by van Leer
@@ -176,9 +178,18 @@ performed. The heat-conduction equation was solved on a domain
 exact solution for this problem is :math:`e^{-2t}\sin(x)\cos(y)`.
 
 The time-step was held fixed while grid sizes of :math:`8\times 8`,
-:math:`16\times 16`, :math:`32\times 32`, cell grids were used. The
-results are shown in the following tables for polynomial order 1 and 2
-2D Serendipity nodal basis functions.
+:math:`16\times 16`, :math:`32\times 32` and :math:`64\times 64`, cell
+grids were used. The following figure shows the results from the
+:math:`16\times 16` case compared to the exact solution.
+
+.. figure:: s251-exact-cmp.png
+  :width: 100%
+  :align: center
+
+  Solution to diffusion equation in 2D with recovery DG scheme (left)
+  and exact solution (right). The simulation [:doc:`s251
+  <../../sims/s251/s251-dg-diffuse-2d>`] was run on a :math:`16\times
+  16` grid.
 
 References
 ----------
