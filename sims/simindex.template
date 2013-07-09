@@ -538,4 +538,7 @@ program for that simulation.
     - Same as s250, except on :math:`32\times 32` grid.
   * - ${mdl("s253")}
     - Same as s250, except on :math:`64\times 64` grid.
+  * - ${mdl("s254")}
+    - Free streaming of particles on a boundary domain.
+
 
