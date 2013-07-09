@@ -3,6 +3,23 @@
 SimJournal: Ammar Hakim's Simulation Journal
 ============================================
 
+.. warning::
+
+  **PLEASE READ FIRST**
+
+  The results presented below are **preliminary** and for **my
+  personal use** only. My intent is to use these notes to communicate
+  with my close colleagues.
+
+  It is likely that the text of my notes **may undergo significant
+  revisions**. Although I have taken care, **many results might be
+  wrong**. That is just the nature of scientific work. If in doubt
+  please talk to me directly or send me an email to discuss.
+
+  If you are not a part of the Gkeyll project, please do not share or
+  use these results in any form whatsoever **without my explicit
+  permission**.
+
 Below are a list of journal entries, documenting various problems that
 have been attempted with Gkeyll. The eventual goal of Gkeyll is to
 solve the gyrokinetic equations in the edge region of tokamaks,
@@ -50,4 +67,4 @@ Gkeyll Simulation Journal
   je/je17/je17-hasegawa-wakatani.rst
   je/je18/je18-GEM-recon.rst
   je/je19/je19-rdg.rst
-  je/je20/je20-vlasov-bounder.rst
+  je/je20/je20-vlasov-bounded.rst
