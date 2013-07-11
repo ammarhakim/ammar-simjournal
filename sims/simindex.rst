@@ -524,4 +524,7 @@ program for that simulation.
     - Same as s250, except on :math:`32\times 32` grid.
   * - :doc:`s253 <s253/s253-dg-diffuse-2d>` 
     - Same as s250, except on :math:`64\times 64` grid.
+  * - :doc:`s254 <s254/s254-free-stream-bounded>` 
+    - Free streaming of particles on a boundary domain.
+
 

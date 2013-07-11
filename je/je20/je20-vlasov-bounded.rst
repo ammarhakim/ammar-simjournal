@@ -9,10 +9,11 @@ JE20: Vlasov equation on bounded domain
 In many practical problems of interest the Vlasov equation needs to be
 solved on a domain bounded by walls. In this document I describe the
 boundary conditions for such bounded domain simulations and present
-some example calculations with specified electric potential. For
+some example calculations the case of free-streaming particles, with
+specified electric potential and for a simple plasma sheath. For
 periodic domain calculations, see :doc:`JE14
-<../je14/je14-vlasov-fixed-pot.rst>` and :doc:`JE15
-<../je14/je15-vlasov-poisson.rst>`.
+<../je14/je14-vlasov-fixed-pot>` and :doc:`JE15
+<../je15/je15-vlasov-poisson>`.
 
 Free-streaming
 --------------
@@ -34,7 +35,7 @@ absorbed. The boundary condition can be hence written as
   f(0,v,t) &= 0 \\
   f(L,-v,t) &= 0
 
-for :math:`v>0`. In Gkeyll these boundary conditions are impemented by
+for :math:`v>0`. In Gkeyll these boundary conditions are implemented by
 simply setting the distribution function to zero in the ghost
 cells. Proper upwinding insures that all the particles flow out of the
 domain and none enter.
@@ -67,6 +68,14 @@ piece-wise quadratic Serendipity basis functions. The number of
 particles in the domain was compared to the exact solution. The
 results are shown below.
 
+.. figure:: s254-totalPtcl-fs-bounded.png
+  :width: 100%
+  :align: center
+
+  Total number of particles in domain computed by Gkeyll (black line)
+  compared to the exact solution (red dots) as a function of time. The
+  walls in this simulation are assumed to be perfectly absorbing. See
+  [:doc:`s254 <../../sims/s254/s254-free-stream-bounded>`] for details.
 
 .. Footnotes
 .. ---------

@@ -539,6 +539,9 @@ program for that simulation.
   * - ${mdl("s253")}
     - Same as s250, except on :math:`64\times 64` grid.
   * - ${mdl("s254")}
-    - Free streaming of particles on a boundary domain.
-
+    - Free streaming of particles on a bounded domain.
+  * - ${mdl("s255")}
+    - Vlasov equation with fixed potential on a bounded domain.
+  * - ${mdl("s256")}
+    - Open domain reconnection on :math:`50\times 25` domain, :math:`1280\times 768` grid.
 
