@@ -544,4 +544,8 @@ program for that simulation.
     - Vlasov equation with fixed potential on a bounded domain.
   * - ${mdl("s256")}
     - Open domain reconnection on :math:`50\times 25` domain, :math:`1280\times 768` grid.
+  * - ${mdl("s257")}
+    - Blob simulation on :math:`30\times 20` domain and :math:`96\times 64` grid, no diffusion.
+  * - ${mdl("s258")}
+    - Blob simulation on :math:`60\times 40` domain and :math:`192\times 128` grid, no diffusion.
 
