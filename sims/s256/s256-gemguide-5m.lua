@@ -37,7 +37,7 @@ wci = ionCharge*B0/ionMass -- ion cyclotron frequency
 
 nSpecies = 2
 
-NX = 1280
+NX = 1536
 NY = 768
 
 -- computational domain
