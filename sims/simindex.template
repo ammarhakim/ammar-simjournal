@@ -548,4 +548,8 @@ program for that simulation.
     - Blob simulation on :math:`30\times 20` domain and :math:`96\times 64` grid, no diffusion.
   * - ${mdl("s258")}
     - Blob simulation on :math:`60\times 40` domain and :math:`192\times 128` grid, no diffusion.
+  * - ${mdl("s259")}
+    - Same as s257, except :math:`\mu` = :math:`D` = :math:`1\times 10^{-2}`.
+  * - ${mdl("s260")}
+    - Same as s259, except on :math:`192\times 128` grid.
 
