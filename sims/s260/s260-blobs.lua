@@ -23,8 +23,8 @@ cfl = 0.1
 alpha = 0.0
 beta = 1.0
 Ra = 1e4 -- Rayleigh number
-D = 0.0
-mu = 0.0
+D = math.sqrt(1/Ra)
+mu = math.sqrt(1/Ra)
 n0 = 0.1 -- background density
 
 LX, LY = 30, 20

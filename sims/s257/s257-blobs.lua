@@ -17,17 +17,24 @@ del_perp^2 phi = C
 polyOrder = 2
 
 -- cfl number to use
-cfl = 0.5/(2*polyOrder-1)
+cfl = 0.1
 
 -- simulation parameters
 alpha = 0.0
 beta = 1.0
+Ra = 1e4 -- Rayleigh number
 D = 0.0
 mu = 0.0
+n0 = 0.1 -- background density
 
 LX, LY = 30, 20
 -- number of cells
 NX, NY = 96, 64
+
+-- time to run simulation
+tEnd = 25.0
+-- number of frames
+nFrames = 10
 
 -- grid on which equations are to be solved
 grid = Grid.RectCart2D {
@@ -74,6 +81,11 @@ chiDup = DataStruct.Field2D {
    numComponents = 1*numDgNodesPerCell,
    ghost = {1, 1},
 }
+chiD2 = DataStruct.Field2D {
+   onGrid = grid,
+   numComponents = 1*numDgNodesPerCell,
+   ghost = {1, 1},
+}
 
 -- number density fluctuations
 numDens = DataStruct.Field2D {
@@ -100,6 +112,11 @@ numDensDup = DataStruct.Field2D {
    numComponents = 1*numDgNodesPerCell,
    ghost = {1, 1},
 }
+numDensD2 = DataStruct.Field2D {
+   onGrid = grid,
+   numComponents = 1*numDgNodesPerCell,
+   ghost = {1, 1},
+}
 
 -- Poisson source term
 poissonSrc = DataStruct.Field2D {
@@ -117,11 +134,14 @@ numAdvectFld = DataStruct.Field2D {
 -- clear out contents
 numAdvectFld:clear(0.0)
 
-function oneVortex(x,y,z)
-   local r1 = x^2 + y^2
-   local s = 2.0
-   return math.exp(-r1/s^2)
-end
+-- updater to solve diffusion equation
+diffSolver = Updater.HyperDiffusion2D {
+   onGrid = grid,
+   basis = basis,
+   diffusionCoeff = mu,
+   cfl = cfl,
+   onlyIncrement = true, -- just compute increments
+}
 
 -- create updater to initialize vorticity
 initNumDens = Updater.EvalOnNodes2D {
@@ -134,7 +154,7 @@ initNumDens = Updater.EvalOnNodes2D {
    evaluate = function (x,y,z,t)
 		 local xc, yc = LX/6.0, LY/2.0
 		 local r2 = (x-xc)^2 + (y-yc)^2
-		 return 0.1 + math.exp(-r2/2)
+		 return n0 + math.exp(-r2/2)
 	      end
 }
 initNumDens:setOut( {numDens} )
@@ -228,6 +248,19 @@ copyCToD = Updater.CopyContToDisCont2D {
 
 poissonSolveTime = 0.0 -- time spent in Poisson solve
 
+-- to store center-of-mass
+centerOfMass = DataStruct.DynVector { numComponents = 2, }
+
+-- to compute total number of particles in domain
+centerOfMassCalc = Updater.CenterOfMass2D {
+   onGrid = grid,
+   basis = basis,
+   -- are common nodes shared?
+   shareCommonNodes = false, -- for DG fields common nodes not shared
+   -- background value to subtract
+   background = n0,
+}
+
 -- function to solve Poisson equation
 function solvePoissonEqn(srcFld, outFld)
    local t1 = os.time() -- begin timer
@@ -289,42 +322,64 @@ function copyPotential(tCurr, dt, cgIn, dgOut)
    copyCToD:advance(tCurr+dt)
 end
 
+-- solve advection equation
+function solveDiffusion(curr, dt, qIn, qOut)
+   diffSolver:setIn( {qIn} )
+   diffSolver:setOut( {qOut} )
+   diffSolver:setCurrTime(curr)
+   return diffSolver:advance(curr+dt)
+end
+
 -- solve Poisson equation to determine initial potential
 solvePoissonEqn(chi, phi)
 copyPotential(0.0, 0.0, phi, phiDG)
 
 -- function to compute diagnostics
-function calcDiagnostics(tc, dt)
+function calcDiagnostics(numDensIn, curr, dt)
    -- for now not doing anything
+   centerOfMassCalc:setIn( {numDensIn} )
+   centerOfMassCalc:setOut( {centerOfMass} )
+   centerOfMassCalc:setCurrTime(curr)
+   centerOfMassCalc:advance(curr+dt)
 end
 
 -- function to take a time-step using SSP-RK3 time-stepping scheme
 function rk3(tCurr, myDt)
+   local myStatus, myDtSuggested
+   local myNumDensDiffStatus, myNumDensDiffDtSuggested
+   local myChiDiffStatus, myChiDiffDtSuggested
+   
    -- RK stage 1
-   solveNumDensEqn(tCurr, myDt, numDens, numDens1, phi)
-   local myStatus, myDtSuggested = solveVorticityEqn(tCurr, myDt, chi, chi1, phi, numDens)
+   myStatus, myDtSuggested = solveNumDensEqn(tCurr, myDt, numDens, numDens1, phi)
+   myNumDensDiffStatus, myNumDensDiffDtSuggested = solveDiffusion(tCurr, myDt, numDens, numDensD2)
 
+   myStatus, myDtSuggested = solveVorticityEqn(tCurr, myDt, chi, chi1, phi, numDens)
+   myChiDiffStatus, myChiDtSuggested = solveDiffusion(tCurr, myDt, chi, chiD2)
+
+   numDens1:accumulate(-alpha*myDt, numDens, myDt, numDensD2)
    copyPotential(tCurr, myDt, phi, phiDG)
-   numDens1:accumulate(-alpha*myDt, numDens)
-   chi1:accumulate(alpha*myDt, phiDG)
+   chi1:accumulate(alpha*myDt, phiDG, myDt, chiD2)
 
-   if (myStatus == false) then
-      return myStatus, myDtSuggested
+   if ((myStatus == false) or (myNumDensDiffStatus == false) or (myChiDiffStatus == false)) then
+      return false, math.min(myDtSuggested, myNumDensDiffDtSuggested, myChiDtSuggested)
    end
    applyBc(chi1)
    applyBc(numDens1)
    solvePoissonEqn(chi1, phi)
 
    -- RK stage 2
-   solveNumDensEqn(tCurr, myDt, numDens1, numDensNew, phi)
-   local myStatus, myDtSuggested = solveVorticityEqn(tCurr, myDt, chi1, chiNew, phi, numDens1)
+   myStatus, myDtSuggested = solveNumDensEqn(tCurr, myDt, numDens1, numDensNew, phi)
+   myNumDensDiffStatus, myNumDensDiffDtSuggested = solveDiffusion(tCurr, myDt, numDens1, numDensD2)
 
+   myStatus, myDtSuggested = solveVorticityEqn(tCurr, myDt, chi1, chiNew, phi, numDens1)
+   myChiDiffStatus, myChiDtSuggested = solveDiffusion(tCurr, myDt, chi1, chiD2)
+
+   numDensNew:accumulate(-alpha*myDt, numDens1, myDt, numDensD2)
    copyPotential(tCurr, myDt, phi, phiDG)
-   numDensNew:accumulate(-alpha*myDt, numDens1)
-   chiNew:accumulate(alpha*myDt, phiDG)
+   chiNew:accumulate(alpha*myDt, phiDG, myDt, chiD2)
 
-   if (myStatus == false) then
-      return myStatus, myDtSuggested
+   if ((myStatus == false) or (myNumDensDiffStatus == false) or (myChiDiffStatus == false)) then
+      return false, math.min(myDtSuggested, myNumDensDiffDtSuggested, myChiDtSuggested)
    end
    chi1:combine(3.0/4.0, chi, 1.0/4.0, chiNew)
    numDens1:combine(3.0/4.0, numDens, 1.0/4.0, numDensNew)
@@ -333,15 +388,18 @@ function rk3(tCurr, myDt)
    solvePoissonEqn(chi1, phi)
 
    -- RK stage 3
-   solveNumDensEqn(tCurr, myDt, numDens1, numDensNew, phi)
-   local myStatus, myDtSuggested = solveVorticityEqn(tCurr, myDt, chi1, chiNew, phi,numDens1)
+   myStatus, myDtSuggested = solveNumDensEqn(tCurr, myDt, numDens1, numDensNew, phi)
+   myNumDensDiffStatus, myNumDensDiffDtSuggested = solveDiffusion(tCurr, myDt, numDens1, numDensD2)
 
+   myStatus, myDtSuggested = solveVorticityEqn(tCurr, myDt, chi1, chiNew, phi, numDens1)
+   myChiDiffStatus, myChiDtSuggested = solveDiffusion(tCurr, myDt, chi1, chiD2)
+
+   numDensNew:accumulate(-alpha*myDt, numDens1, myDt, numDensD2)
    copyPotential(tCurr, myDt, phi, phiDG)
-   numDensNew:accumulate(-alpha*myDt, numDens1)
-   chiNew:accumulate(alpha*myDt, phiDG)
+   chiNew:accumulate(alpha*myDt, phiDG, myDt, chiD2)
 
-   if (myStatus == false) then
-      return myStatus, myDtSuggested
+   if ((myStatus == false) or (myNumDensDiffStatus == false) or (myChiDiffStatus == false)) then
+      return false, math.min(myDtSuggested, myNumDensDiffDtSuggested, myChiDtSuggested)
    end
    chi1:combine(1.0/3.0, chi, 2.0/3.0, chiNew)
    numDens1:combine(1.0/3.0, numDens, 2.0/3.0, numDensNew)
@@ -354,7 +412,7 @@ function rk3(tCurr, myDt)
    solvePoissonEqn(chi, phi)
    copyPotential(tCurr, myDt, phi, phiDG)
 
-   return myStatus, myDtSuggested
+   return true, math.min(myDtSuggested, myNumDensDiffDtSuggested, myChiDtSuggested)
 end
 
 -- function to advance solution from tStart to tEnd
@@ -390,9 +448,7 @@ function advanceFrame(tStart, tEnd, initDt)
 	 numDens:copy(numDensDup)
 	 myDt = advDtSuggested
       else
-	 -- compute diagnostics
-	 calcDiagnostics(tCurr, myDt)
-
+	 calcDiagnostics(numDens, tCurr, myDt)
 	 tCurr = tCurr + myDt
 	 myDt = advDtSuggested
 	 step = step + 1
@@ -408,20 +464,20 @@ function advanceFrame(tStart, tEnd, initDt)
 end
 
 -- write out data
-function writeFields(frame)
-   phiDG:write( string.format("phi_%d.h5", frame) )
-   chi:write( string.format("chi_%d.h5", frame) )
-   numDens:write( string.format("numDens_%d.h5", frame) )
+function writeFields(frame, tm)
+   phiDG:write( string.format("phi_%d.h5", frame), tm )
+   chi:write( string.format("chi_%d.h5", frame), tm )
+   numDens:write( string.format("numDens_%d.h5", frame), tm )
+   centerOfMass:write( string.format("centerOfMass_%d.h5", frame), tm )
 end
 
+calcDiagnostics(numDens, 0.0, 0.0)
 -- write out initial conditions
-writeFields(0)
+writeFields(0, 0.0)
 
--- parameters to control time-stepping
 tStart = 0.0
-tEnd = 40.0
 dtSuggested = 0.1*tEnd -- initial time-step to use (will be adjusted)
-nFrames = 10
+-- parameters to control time-stepping
 tFrame = (tEnd-tStart)/nFrames -- time between frames
 
 tCurr = tStart
@@ -431,7 +487,7 @@ for frame = 1, nFrames do
    retDtSuggested = advanceFrame(tCurr, tCurr+tFrame, dtSuggested)
    dtSuggested = retDtSuggested
    -- write out data
-   writeFields(frame)
+   writeFields(frame, tCurr+tFrame)
    tCurr = tCurr+tFrame
    Lucee.logInfo ("")
 end
