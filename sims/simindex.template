@@ -556,3 +556,5 @@ program for that simulation.
     - Same as s260, except with Rayleigh number :math:`1\times10^{6}`
   * - ${mdl("s262")}
     - Same as s260, except with Rayleigh number :math:`1\times10^{8}`
+  * - ${mdl("s263")}
+    - Same as s260, except on a :math:`60\times 40` domain.
