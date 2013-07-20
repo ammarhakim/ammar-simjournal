@@ -17,7 +17,7 @@ del_perp^2 phi = C
 polyOrder = 2
 
 -- cfl number to use
-cfl = 0.05
+cfl = 0.1
 
 -- simulation parameters
 alpha = 0.0
