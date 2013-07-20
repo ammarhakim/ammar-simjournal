@@ -562,3 +562,5 @@ program for that simulation.
     - Same as s260, except on a :math:`60\times 40` domain, :math:`384\times 256` grid.
   * - ${mdl("s265")}
     - Same as s260, except on a :math:`60\times 40` domain and fixed BCs in X and periodic in Y.
+  * - ${mdl("s266")}
+    - Same as s266, except on a :math:`384\times 256` grid.
