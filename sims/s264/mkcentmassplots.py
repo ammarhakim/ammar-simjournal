@@ -25,7 +25,7 @@ def calcVel(T, xloc):
     return tm, vx
 
 # this skip is needed to smooth out some of the spiky data
-skip = 13
+skip = 1
 # compute velocity
 tm_264, v_264 = calcVel(com_264[0:-1:skip,0], com_264[0:-1:skip,1])
 
