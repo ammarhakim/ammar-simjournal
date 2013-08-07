@@ -6,7 +6,7 @@ def exactSol(T):
     Nt = T*0.0
     for i in range(T.shape[0]):
         t = T[i]
-        # auto-generatef from Maxima
+        # auto-generated with Maxima
         Nt[i] = pi*erf(1/sqrt(2))+((t+sqrt(2)*pi**(3.0/2.0)*exp(min(6,2*pi/t)**2/2.0)*erf(min(6,2*pi/t)/sqrt(2)))*exp(-min(6,2*pi/t)**2/2.0)-exp((-1.0)/2.0)*(t+sqrt(2)*exp(1.0/2.0)*pi**(3.0/2.0)*erf(1/sqrt(2))))/(sqrt(2)*sqrt(pi))
     return Nt
 
