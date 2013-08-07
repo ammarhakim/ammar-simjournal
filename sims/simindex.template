@@ -570,3 +570,5 @@ program for that simulation.
     - Same as s266, except with central fluxes.
   * - ${mdl("s269")}
     - Free streaming of particles on a bounded domain, with partially reflecting walls. See s254.      
+  * - ${mdl("s270")}
+    - Open domain reconnection on :math:`50\times 25` domain, :math:`250\times 125` grid.

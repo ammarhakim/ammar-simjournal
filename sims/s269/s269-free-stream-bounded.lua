@@ -10,7 +10,7 @@ cfl = 0.2
 XL, XU = 0.0, 2*Lucee.Pi
 VL, VU = -6.0, 6.0
 -- number of cells
-NX, NV = 16, 256
+NX, NV = 16, 32
 
 -- phase space grid 
 grid = Grid.RectCart2D {
