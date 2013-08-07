@@ -568,3 +568,5 @@ program for that simulation.
     - Same as s266, except on a :math:`450\times 300` grid.
   * - ${mdl("s268")}
     - Same as s266, except with central fluxes.
+  * - ${mdl("s269")}
+    - Free streaming of particles on a bounded domain, with partially reflecting walls. See s254.      
