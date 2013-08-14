@@ -7,10 +7,10 @@ polyOrder = 2
 cfl = 0.2
 
 -- domain extents
-XL, XU = -1.0, 1.0
+XL, XU = 0.0, 10.0
 VL, VU = -6.0, 6.0
 -- number of cells
-NX, NV = 16, 32
+NX, NV = 32, 16
 
 -- phase space grid 
 grid = Grid.RectCart2D {
@@ -69,14 +69,13 @@ initHamil = Updater.EvalOnNodes2D {
    shareCommonNodes = true,
    -- function to use for initialization
    evaluate = function (x,y,z,t)
-		 local phi = x^10/5*math.exp(x^2)/math.exp(1.0)
-		 return y^2/2 + phi
+		 local phi = math.tanh((10-x))  --x^10/5*math.exp(x^2)/math.exp(1.0)
+		 return y^2/2 + phi/1836.2
 	      end
 }
 initHamil:setOut( {hamil} )
 -- initialize potential
 initHamil:advance(0.0) -- time is irrelevant
-hamil:applyPeriodicBc(0)
 
 -- updater to initialize distribution function
 initDistf = Updater.EvalOnNodes2D {
@@ -214,14 +213,26 @@ function applyFld1D(fld)
    fld:applyCopyBc(0, "upper")
 end
 
-bcConst = BoundaryCondition.Const { 
-   components = {0, 1, 2, 3, 4, 5, 6, 7},
-   values = {0, 0, 0, 0, 0, 0, 0, 0} 
+bcLeftWall = BoundaryCondition.NodalDgFunction2D {
+   basis = basis,
+   components = {0},
+   bc = function(x,y,z,t)
+	   local v, vt = y, 1.0
+	   local vdrift = 0.0
+	   return 1/math.sqrt(2*Lucee.Pi*vt)*math.exp(-(v-vdrift)^2/(2*vt^2))
+	end,
+}
+bcRightWall = BoundaryCondition.NodalDgFunction2D {
+   basis = basis,
+   components = {0},
+   bc = function(x,y,z,t)
+	   return 0.0
+	end,
 }
 bcLower = Updater.Bc2D {
    onGrid = grid,
    -- boundary conditions to apply
-   boundaryConditions = {bcConst},
+   boundaryConditions = {bcLeftWall},
    -- direction to apply
    dir = 0,
    -- edge to apply on
@@ -230,7 +241,7 @@ bcLower = Updater.Bc2D {
 bcUpper = Updater.Bc2D {
    onGrid = grid,
    -- boundary conditions to apply
-   boundaryConditions = {bcConst},
+   boundaryConditions = {bcRightWall},
    -- direction to apply
    dir = 0,
    -- edge to apply on
@@ -251,13 +262,9 @@ function calcMoments(curr, dt, distfIn)
    numDensityCalc:setIn( {distfIn} )
    numDensityCalc:advance(curr+dt)
 
-   applyFld2D(0.0, 0.0, distIn)
-
    ptclEnergyCalc:setCurrTime(curr)
    ptclEnergyCalc:setIn( {distfIn} )
    ptclEnergyCalc:advance(curr+dt)
-
-   applyFld2D(0.0, 0.0, distIn)
 end
 
 -- compute initial moments
@@ -274,6 +281,7 @@ end
 applyBc(distf)
 
 -- write initial conditions
+hamil:write("hamil_0.h5")
 distf:write("distf_0.h5")
 numDensity:write("numDensity_0.h5")
 
@@ -384,19 +392,19 @@ function advanceFrame(tStart, tEnd, initDt)
 end
 
 -- write data to H5 files
-function writeFields(frame)
-   distf:write( string.format("distf_%d.h5", frame) )
-   numDensity:write( string.format("numDensity_%d.h5", frame) )
-   totalPtcl:write(string.format("totalPtcl_%d.h5", frame) )
-   totalPtclEnergy:write(string.format("totalPtclEnergy_%d.h5", frame) )
-   numDensInCell:write(string.format("numDensInCell_%d.h5", frame) )
+function writeFields(frame, tm)
+   distf:write( string.format("distf_%d.h5", frame), tm )
+   numDensity:write( string.format("numDensity_%d.h5", frame), tm )
+   totalPtcl:write(string.format("totalPtcl_%d.h5", frame), tm )
+   totalPtclEnergy:write(string.format("totalPtclEnergy_%d.h5", frame), tm )
+   numDensInCell:write(string.format("numDensInCell_%d.h5", frame), tm )
 end
 
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 20.0
+tEnd = 100.0
 dtSuggested = 0.1*tEnd -- initial time-step to use (will be adjusted)
-nFrames = 4
+nFrames = 10
 tFrame = (tEnd-tStart)/nFrames
 
 tCurr = tStart
@@ -404,7 +412,7 @@ for frame = 1, nFrames do
 
    Lucee.logInfo (string.format("-- Advancing solution from %g to %g", tCurr, tCurr+tFrame))
    dtSuggested = advanceFrame(tCurr, tCurr+tFrame, dtSuggested)
-   writeFields(frame)
+   writeFields(frame, tCurr+tFrame)
    tCurr = tCurr+tFrame
    Lucee.logInfo ("")
 end

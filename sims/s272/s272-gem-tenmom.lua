@@ -1,22 +1,9 @@
 -- Program to solve Two-Fluid equations
 
---[[
-
-According to Daughton et. al. 2006 PoP paper one has
- 
-rhoi/L = 1.0
-mi/me = 25
-Ti/Te = 5
-wpe/wce = 3
-nb/n0 = 0.3
-
---]]
-
 -- decomposition object to use
 decomp = DecompRegionCalc2D.CartGeneral {}
 
 -- global parameters
-gasGamma = 5./3.
 elcCharge = -1.0
 ionCharge = 1.0
 ionMass = 1.0
@@ -25,20 +12,14 @@ lightSpeed = 1.0
 epsilon0 = 1.0
 mgnErrorSpeedFactor = 1.0
 
-Lx = 50.0
-Ly = 25.0
-B0 = 1/15.0
+Lx = 8*Lucee.Pi
+Ly = 4*Lucee.Pi
+B0 = 0.1
 n0 = 1.0
-nb = 0.3*n0
-lambda = math.sqrt(10/12)
-cfl = 0.1
-bGuideFactor = 0.0
-wci = ionCharge*B0/ionMass -- ion cyclotron frequency
-
-nSpecies = 2
-
-NX = 500
-NY = 250
+lambda = 0.5
+cfl = 0.25
+NX = 256
+NY = 128
 
 -- computational domain
 grid = Grid.RectCart2D {
@@ -46,56 +27,75 @@ grid = Grid.RectCart2D {
    upper = {Lx/2, Ly/2},
    cells = {NX, NY},
    decomposition = decomp,
+   periodicDirs = {0},
 }
 
 -- solution
 q = DataStruct.Field2D {
    onGrid = grid,
-   numComponents = 18+6,
+   numComponents = 28,
    ghost = {2, 2},
 }
 qDup = DataStruct.Field2D {
    onGrid = grid,
-   numComponents = 18+6,
+   numComponents = 28,
    ghost = {2, 2},
 }
 -- updated solution
 qNew = DataStruct.Field2D {
    onGrid = grid,
-   numComponents = 18+6,
+   numComponents = 28,
    ghost = {2, 2},
 }
 -- create duplicate copy in case we need to take step again
 qNewDup = DataStruct.Field2D {
    onGrid = grid,
-   numComponents = 18+6,
+   numComponents = 28,
    ghost = {2, 2},
 }
 
 -- create aliases to various sub-system
-elcFluid = q:alias(0, 5)
-ionFluid = q:alias(5, 10)
-emField = q:alias(10, 18)
+elcFluid = q:alias(0, 10)
+ionFluid = q:alias(10, 20)
+emField = q:alias(20, 28)
 
-elcFluidNew = qNew:alias(0, 5)
-ionFluidNew = qNew:alias(5, 10)
-emFieldNew = qNew:alias(10, 18)
+elcFluidNew = qNew:alias(0, 10)
+ionFluidNew = qNew:alias(10, 20)
+emFieldNew = qNew:alias(20, 28)
 
 -- alias for By
-byAlias = qNew:alias(14, 15)
-
--- starting index for static EM field
-sebs = 5*2+8
+byAlias = qNew:alias(24, 25)
 
 -- function to apply initial conditions
-function init(x,y,z)
+function initElc(x,y,z)
    local me = elcMass
-   local mi = ionMass
    local qe = elcCharge
-   local qi = ionCharge
-   local gasGamma1 = gasGamma-1
-   local psi0 = 0.1*B0
 
+   -- electron momentum is computed from plasma current that supports field
+   local ezmom = -B0*(1/lambda)*(1/math.cosh(y/lambda))^2*(me/qe)
+   local rhoe = n0*me*(1/math.cosh(y/lambda))^2 + 0.2*n0*me
+   local pre = B0*B0*rhoe/(12*me)
+   local pzz = pre + ezmom*ezmom/rhoe
+   
+   return rhoe, 0.0, 0.0, ezmom, pre, 0.0, 0.0, pre, 0.0, pzz
+end
+-- set electron initial conditions
+elcFluid:set(initElc)
+
+function initIon(x,y,z)
+   local mi = ionMass
+   local qi = ionCharge
+
+   local rhoi = n0*mi*(1/math.cosh(y/lambda)^2) + 0.2*n0*mi
+   local pri = 5.0*B0*B0*rhoi/(12.0*mi)
+
+   return rhoi, 0.0, 0.0, 0.0, pri, 0.0, 0.0, pri, 0.0, pri
+end
+-- set ion initial conditions
+ionFluid:set(initIon)
+
+function initEmField(x,y,z)
+   local psi0 = 0.1*B0
    local pi = Lucee.Pi
    local twopi = 2*pi
 
@@ -105,65 +105,28 @@ function init(x,y,z)
    local Bx = Bx - psi0*(pi/Ly)*math.cos(twopi*x/Lx)*math.sin(pi*y/Ly)
    local By = psi0*(twopi/Lx)*math.sin(twopi*x/Lx)*math.cos(pi*y/Ly)
 
-   local numDens = n0*(1/math.cosh(y/lambda))^2 + nb
-
-   -- electron momentum is computed from plasma current that supports field
-   local ezmom = -B0*(1/lambda)*(1/math.cosh(y/lambda))^2*(me/qe)
-   -- mass density is background plus Harris sheet profile
-   local rhoe = numDens*me
-   local pre = numDens*B0^2/12.0
-   -- electron total energy is thermal plus kinetic
-   local ere = pre/gasGamma1 + 0.5*ezmom*ezmom/rhoe
-
-   -- mass density is background plus Harris sheet profile
-   local rhoi = numDens*mi
-   local pri = 5*pre
-   -- ion total energy is thermal: ions do not carry any current
-   local eri = pri/gasGamma1
-
-   return rhoe, 0.0, 0.0, ezmom, ere, rhoi, 0.0, 0.0, 0.0, eri, 0.0, 0.0, 0.0, Bx, By, 0.0, 0.0, 0.0
+   return 0.0, 0.0, 0.0, Bx, By, 0.0, 0.0, 0.0
 end
+-- set ion initial conditions
+emField:set(initEmField)
 
-qTwoFluids = q:alias(0, 5*nSpecies+8)
--- set initial conditions for fields and fluids
-qTwoFluids:set(init)
-
--- alias to static magnetic field
-staticEB = q:alias(sebs, sebs+6)
-function initStaticEB(x,y,z)
-   local Bz = bGuideFactor*B0
-
-   return 0.0, 0.0, 0.0, 0.0, 0.0, Bz
-end
-staticEB:set(initStaticEB)
-
--- get ghost cells correct
+-- make sure ghosts are set correctly
 q:sync()
 -- copy initial conditions over
 qNew:copy(q)
 
 -- define various equations to solve
-elcEulerEqn = HyperEquation.Euler {
-   -- gas adiabatic constant
-   gasGamma = gasGamma,
+elcEqn = HyperEquation.TenMoment {
 }
-ionEulerEqn = HyperEquation.Euler {
-   -- gas adiabatic constant
-   gasGamma = gasGamma,
+ionEqn = HyperEquation.TenMoment {
 }
--- (Lax equations are used to fix negative pressure/density)
-elcEulerLaxEqn = HyperEquation.Euler {
-   -- gas adiabatic constant
-   gasGamma = gasGamma,
-   -- use Lax fluxes
-   numericalFlux = "lax",   
-}
-ionEulerLaxEqn = HyperEquation.Euler {
-   -- gas adiabatic constant
-   gasGamma = gasGamma,
-   -- use Lax fluxes
+elcLaxEqn = HyperEquation.TenMoment {
    numericalFlux = "lax",
 }
+ionLaxEqn = HyperEquation.TenMoment {
+   numericalFlux = "lax",
+}
+
 maxwellEqn = HyperEquation.PhMaxwell {
    -- speed of light
    lightSpeed = lightSpeed,
@@ -173,30 +136,30 @@ maxwellEqn = HyperEquation.PhMaxwell {
 }
 
 -- updater for electron equations
-elcEulerSlvr = Updater.WavePropagation2D {
+elcFluidSlvr = Updater.WavePropagation2D {
    onGrid = grid,
-   equation = elcEulerEqn,
+   equation = elcEqn,
    -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
    limiter = "monotonized-centered",
    cfl = cfl,
    cflm = 1.1*cfl,
 }
 -- set input/output arrays (these do not change so set it once)
-elcEulerSlvr:setIn( {elcFluid} )
-elcEulerSlvr:setOut( {elcFluidNew} )
+elcFluidSlvr:setIn( {elcFluid} )
+elcFluidSlvr:setOut( {elcFluidNew} )
 
 -- updater for ion equations
-ionEulerSlvr = Updater.WavePropagation2D {
+ionFluidSlvr = Updater.WavePropagation2D {
    onGrid = grid,
-   equation = ionEulerEqn,
+   equation = ionEqn,
    -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
    limiter = "monotonized-centered",
    cfl = cfl,
    cflm = 1.1*cfl,
 }
 -- set input/output arrays (these do not change so set it once)
-ionEulerSlvr:setIn( {ionFluid} )
-ionEulerSlvr:setOut( {ionFluidNew} )
+ionFluidSlvr:setIn( {ionFluid} )
+ionFluidSlvr:setOut( {ionFluidNew} )
 
 -- updater for Maxwell equations
 maxSlvr = Updater.WavePropagation2D {
@@ -213,47 +176,95 @@ maxSlvr:setOut( {emFieldNew} )
 
 -- (Lax equation solver are used to fix negative pressure/density)
 -- updater for electron equations
-elcEulerLaxSlvr = Updater.WavePropagation2D {
+elcLaxSlvr = Updater.WavePropagation2D {
    onGrid = grid,
-   equation = elcEulerLaxEqn,
+   equation = elcLaxEqn,
    -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
    limiter = "zero",
    cfl = cfl,
    cflm = 1.1*cfl,
 }
 -- set input/output arrays (these do not change so set it once)
-elcEulerLaxSlvr:setIn( {elcFluid} )
-elcEulerLaxSlvr:setOut( {elcFluidNew} )
+elcLaxSlvr:setIn( {elcFluid} )
+elcLaxSlvr:setOut( {elcFluidNew} )
 
 -- updater for ion equations
-ionEulerLaxSlvr = Updater.WavePropagation2D {
+ionLaxSlvr = Updater.WavePropagation2D {
    onGrid = grid,
-   equation = ionEulerLaxEqn,
+   equation = ionLaxEqn,
    -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
    limiter = "zero",
    cfl = cfl,
    cflm = 1.1*cfl,
 }
 -- set input/output arrays (these do not change so set it once)
-ionEulerLaxSlvr:setIn( {ionFluid} )
-ionEulerLaxSlvr:setOut( {ionFluidNew} )
+ionLaxSlvr:setIn( {ionFluid} )
+ionLaxSlvr:setOut( {ionFluidNew} )
 
--- updater for two-fluid sources
-sourceSlvrImpl = Updater.ImplicitFiveMomentSrc2D {
-   -- grid on which to run updater
-   onGrid = grid,
-   -- number of fluids
-   numFluids = 2,
-   -- species charge
-   charge = {elcCharge, ionCharge},
-   -- species mass
-   mass = {elcMass, ionMass},
+-- Lorentz force on electrons
+elcFluidSrc = PointSource.TenMomentFluid {
+   -- takes electron fluid and EM fields
+   inpComponents = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 20, 21, 22, 23, 24, 25},
+   -- sets electron fluid source
+   outComponents = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+
+   -- species charge and mass
+   charge = elcCharge,
+   mass = elcMass,
+}
+-- Lorentz force on ions
+ionFluidSrc = PointSource.TenMomentFluid {
+   -- takes ion fluid EM fields
+   inpComponents = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25},
+   -- sets ion fluid source
+   outComponents = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19},
+
+   -- species charge and mass
+   charge = ionCharge,
+   mass = ionMass,
+}
+-- electron current contribution to fields
+elcCurrent = PointSource.Current {
+   -- takes electron momentum
+   inpComponents = {1, 2, 3},
+   -- sets current contribution to dE/dt equations
+   outComponents = {20, 21, 22},
+
+   -- species charge and mass
+   charge = elcCharge,
+   mass = elcMass,
    -- premittivity of free space
    epsilon0 = epsilon0,
-   -- linear solver to use: one of partialPivLu or colPivHouseholderQr
-   linearSolver = "partialPivLu",
-   -- has static magnetic field
-   hasStaticField = true,
+}
+-- ion current contribution to fields
+ionCurrent = PointSource.Current {
+   -- takes ion momentum
+   inpComponents = {11, 12, 13},
+   -- sets current contribution to dE/dt equations
+   outComponents = {20, 21, 22},
+
+   -- species charge and mass
+   charge = ionCharge,
+   mass = ionMass,
+   -- premittivity of free space
+   epsilon0 = epsilon0,
+}
+
+-- updater to solve ODEs for source-term splitting scheme
+sourceSlvr = Updater.GridOdePointIntegrator2D {
+   onGrid = grid,
+   -- terms to include in integration step
+   terms = {elcFluidSrc, ionFluidSrc, elcCurrent, ionCurrent},
+}
+
+-- Collisional source updaters
+elcCollSrcSlvr = Updater.ImplicitTenMomentCollisionSrc2D {
+   onGrid = grid,
+   collisionFrequency = 10.0
+}
+ionCollSrcSlvr = Updater.ImplicitTenMomentCollisionSrc2D {
+   onGrid = grid,
+   collisionFrequency = 0.0
 }
 
 -- boundary applicator objects for fluids and fields
@@ -298,38 +309,49 @@ bcTop:setOut( {qNew} )
 
 -- function to apply boundary conditions
 function applyBc(fld, t)
-   -- in X
-   fld:applyCopyBc(0, "lower")
-   fld:applyCopyBc(0, "upper")
-   -- in Y
+   -- apply BCs on lower and upper edges
    fld:applyCopyBc(1, "lower")
    fld:applyCopyBc(1, "upper")
-   -- sync ghost cells
+
+   -- sync ghost cells, including periodic BCs
    fld:sync()
 end
 
--- function to update source terms
-function calcSourceImpl(elcIn, ionIn, emIn, tCurr, t)
-   sourceSlvrImpl:setIn( {staticEB} )
-   sourceSlvrImpl:setOut( {elcIn, ionIn, emIn} )
-   sourceSlvrImpl:setCurrTime(tCurr)
-   sourceSlvrImpl:advance(t)
+function updateSource(inpQ, inpElc, inpIon, tCurr, tEnd)
+   -- EM sources
+   sourceSlvr:setOut( {inpQ} )
+   sourceSlvr:setCurrTime(tCurr)
+   sourceSlvr:advance(tEnd)
+
+   -- electron collisional relaxation
+   elcCollSrcSlvr:setOut( {inpElc} )
+   elcCollSrcSlvr:setCurrTime(tCurr)
+   elcCollSrcSlvr:advance(tEnd)
+
+   -- ion collisional relaxation
+   ionCollSrcSlvr:setOut( {inpIon} )
+   ionCollSrcSlvr:setCurrTime(tCurr)
+   ionCollSrcSlvr:advance(tEnd)
 end
+
+-- apply BCs to initial conditions
+applyBc(q)
+applyBc(qNew)
 
 -- function to take one time-step
 function solveTwoFluidSystem(tCurr, t)
    local dthalf = 0.5*(t-tCurr)
 
-   -- update source terms
-   calcSourceImpl(elcFluid, ionFluid, emField, tCurr, tCurr+dthalf)
+   -- update source term
+   updateSource(q, elcFluid, ionFluid, tCurr, tCurr+dthalf)
    applyBc(q)
 
    -- advance electrons
-   elcEulerSlvr:setCurrTime(tCurr)
-   local elcStatus, elcDtSuggested = elcEulerSlvr:advance(t)
+   elcFluidSlvr:setCurrTime(tCurr)
+   local elcStatus, elcDtSuggested = elcFluidSlvr:advance(t)
    -- advance ions
-   ionEulerSlvr:setCurrTime(tCurr)
-   local ionStatus, ionDtSuggested = ionEulerSlvr:advance(t)
+   ionFluidSlvr:setCurrTime(tCurr)
+   local ionStatus, ionDtSuggested = ionFluidSlvr:advance(t)
    -- advance fields
    maxSlvr:setCurrTime(tCurr)
    local maxStatus, maxDtSuggested = maxSlvr:advance(t)
@@ -342,7 +364,7 @@ function solveTwoFluidSystem(tCurr, t)
    end
 
    -- update source terms
-   calcSourceImpl(elcFluidNew, ionFluidNew, emFieldNew, tCurr, tCurr+dthalf)
+   updateSource(qNew, elcFluidNew, ionFluidNew, tCurr, tCurr+dthalf)
    applyBc(qNew)
 
    return status, dtSuggested
@@ -352,16 +374,16 @@ end
 function solveTwoFluidLaxSystem(tCurr, t)
    local dthalf = 0.5*(t-tCurr)
 
-   -- update source terms
-   calcSourceImpl(elcFluid, ionFluid, emField, tCurr, tCurr+dthalf)
+   -- update source term
+   updateSource(q, elcFluid, ionFluid, tCurr, tCurr+dthalf)
    applyBc(q)
 
    -- advance electrons
-   elcEulerLaxSlvr:setCurrTime(tCurr)
-   local elcStatus, elcDtSuggested = elcEulerLaxSlvr:advance(t)
+   elcLaxSlvr:setCurrTime(tCurr)
+   local elcStatus, elcDtSuggested = elcLaxSlvr:advance(t)
    -- advance ions
-   ionEulerLaxSlvr:setCurrTime(tCurr)
-   local ionStatus, ionDtSuggested = ionEulerLaxSlvr:advance(t)
+   ionLaxSlvr:setCurrTime(tCurr)
+   local ionStatus, ionDtSuggested = ionLaxSlvr:advance(t)
    -- advance fields
    maxSlvr:setCurrTime(tCurr)
    local maxStatus, maxDtSuggested = maxSlvr:advance(t)
@@ -374,7 +396,7 @@ function solveTwoFluidLaxSystem(tCurr, t)
    end
 
    -- update source terms
-   calcSourceImpl(elcFluidNew, ionFluidNew, emFieldNew, tCurr, tCurr+dthalf)
+   updateSource(qNew, elcFluidNew, ionFluidNew, tCurr, tCurr+dthalf)
    applyBc(qNew)
 
    return status, dtSuggested
@@ -485,9 +507,9 @@ writeFrame(0, 0.0)
 dtSuggested = 1.0 -- initial time-step to use (this will be discarded and adjusted to CFL value)
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 60.0/wci
+tEnd = 200.0
 
-nFrames = 60
+nFrames = 20
 tFrame = (tEnd-tStart)/nFrames -- time between frames
 
 tCurr = tStart
