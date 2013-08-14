@@ -572,3 +572,9 @@ program for that simulation.
     - Free streaming of particles on a bounded domain, with partially reflecting walls. See s254.      
   * - ${mdl("s270")}
     - Open domain reconnection on :math:`50\times 25` domain, :math:`250\times 125` grid.
+  * - ${mdl("s271")}
+    - Open domain reconnection on :math:`50\times 25` domain, :math:`500\times 250` grid.
+  * - ${mdl("s272")}
+    - GEM challenge problem with 10-momnent equations, :math:`256\times 128` grid.
+  * - ${mdl("s273")}
+    - GEM challenge problem with 10-momnent equations, :math:`512\times 256` grid.

@@ -170,8 +170,33 @@ numDensInCellCalc:setIn( {numDensity} )
 -- set output dynvector
 numDensInCellCalc:setOut( {numDensInCell} )
 
+-- Ion momentum
+momentumIon = DataStruct.Field1D {
+   onGrid = grid_1d,
+   numComponents = basis_1d:numNodes(),
+   ghost = {1, 1},
+}
+initMometumIon = Updater.EvalOnNodes1D {
+   onGrid = grid_1d,
+   -- basis functions to use
+   basis = basis_1d,
+   -- are common nodes shared?
+   shareCommonNodes = false,
+   -- function to use for initialization
+   evaluate = function (x,y,z,t)
+		 return -0.1*(XU-x)/(XU-XL) + 0.1*(x-XL)/(XU-XL)
+	      end
+}
+initMometumIon:setOut( {momentumIon} )
+initMometumIon:advance(0.0)
+
 -- ptcl energy
 ptclEnergy = DataStruct.Field1D {
+   onGrid = grid_1d,
+   numComponents = 1*basis_1d:numNodes(),
+   ghost = {1, 1},
+}
+ptclMomentum = DataStruct.Field1D {
    onGrid = grid_1d,
    numComponents = 1*basis_1d:numNodes(),
    ghost = {1, 1},
@@ -190,6 +215,19 @@ ptclEnergyCalc = Updater.DistFuncMomentCalc1D {
 }
 -- output is ptcl energy
 ptclEnergyCalc:setOut( {ptclEnergy} )
+
+ptclMomentumCalc = Updater.DistFuncMomentCalc1D {
+   -- 2D phase-space grid 
+   onGrid = grid,
+   -- 2D phase-space basis functions
+   basis2d = basis,
+   -- 1D spatial basis functions
+   basis1d = basis_1d,
+   -- desired moment (0, 1 or 2)
+   moment = 1,
+}
+-- output is ptcl momentum
+ptclMomentumCalc:setOut( {ptclMomentum} )
 
 -- dynvector for total ptcl energy
 totalPtclEnergy = DataStruct.DynVector { numComponents = 1, }
@@ -236,6 +274,9 @@ bcUpper = Updater.Bc2D {
    edge = "upper",
 }
 
+-- Output dynvector for reflectingBc (always size 2)
+cutoffVelocities = DataStruct.DynVector { numComponents = 2, }
+
 -- updater to apply boundary condition on distribution function
 reflectingBc = Updater.DistFuncReflectionBc {
    onGrid = grid,
@@ -243,14 +284,13 @@ reflectingBc = Updater.DistFuncReflectionBc {
    basis = basis,
    -- edges to apply BC on (one of "left", "right" or "both")
    edge = "both",
-   -- cut-off velocity
-   cutOffVelocity = 1.0,
 }
 
 function applyFld2D(curr, dt, fld)
    for i,bc in ipairs({reflectingBc}) do
       bc:setCurrTime(curr)
-      bc:setOut( {fld} )
+      bc:setIn( {momentumIon} )
+      bc:setOut( {fld, cutoffVelocities} )
       bc:advance(curr+dt)
    end
 end
@@ -264,20 +304,24 @@ function calcMoments(curr, dt, distfIn)
    ptclEnergyCalc:setCurrTime(curr)
    ptclEnergyCalc:setIn( {distfIn} )
    ptclEnergyCalc:advance(curr+dt)
+
+   ptclMomentumCalc:setCurrTime(curr)
+   ptclMomentumCalc:setIn( {distfIn} )
+   ptclMomentumCalc:advance(curr+dt)
 end
 
 -- compute initial moments
 calcMoments(0.0, 0.0, distf)
 
 -- function to apply boundary conditions
-function applyBc(fld)
-   applyFld2D(0.0, 0.0, fld)
+function applyBc(tm, fld)
+   applyFld2D(tm, 0.0, fld)
    fld:applyCopyBc(1, "lower")
    fld:applyCopyBc(1, "upper")
 end
 
 -- apply BCs to initial conditions
-applyBc(distf)
+applyBc(0.0, distf)
 
 -- write initial conditions
 distf:write("distf_0.h5")
@@ -312,35 +356,29 @@ function rk3(tCurr, myDt)
 
    -- RK stage 1
    status, dtSuggested = poissonBracket(tCurr, myDt, distf, hamil, distf1)
-
    if (status == false) then
       return status, dtSuggested
    end
-
-   applyBc(distf1)
+   applyBc(tCurr, distf1)
    calcMoments(tCurr, myDt, distf1)
 
    -- RK stage 2
    status, dtSuggested = poissonBracket(tCurr, myDt, distf1, hamil, distfNew)
-
    if (status == false) then
       return status, dtSuggested
    end
-
    distf1:combine(3.0/4.0, distf, 1.0/4.0, distfNew)
-   applyBc(distf1)
+   applyBc(tCurr, distf1)
    calcMoments(tCurr, myDt, distf1)
 
    -- RK stage 3
    status, dtSuggested = poissonBracket(tCurr, myDt, distf1, hamil, distfNew)
-
    if (status == false) then
       return status, dtSuggested
    end
-
    distf1:combine(1.0/3.0, distf, 2.0/3.0, distfNew)
 
-   applyBc(distf1)
+   applyBc(tCurr, distf1)
    distf:copy(distf1)
    calcMoments(tCurr, myDt, distf)
 
@@ -391,11 +429,14 @@ end
 
 -- write data to H5 files
 function writeFields(frame)
+   momentumIon:write( string.format("momentumIon_%d.h5", frame) )
    distf:write( string.format("distf_%d.h5", frame) )
    numDensity:write( string.format("numDensity_%d.h5", frame) )
    totalPtcl:write(string.format("totalPtcl_%d.h5", frame) )
    totalPtclEnergy:write(string.format("totalPtclEnergy_%d.h5", frame) )
    numDensInCell:write(string.format("numDensInCell_%d.h5", frame) )
+   ptclMomentum:write(string.format("ptclMomentum_%d.h5", frame) )
+   cutoffVelocities:write(string.format("cutoffVelocities_%d.h5", frame) )
 end
 
 -- parameters to control time-stepping
