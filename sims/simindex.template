@@ -578,3 +578,5 @@ program for that simulation.
     - GEM challenge problem with 10-momnent equations, :math:`256\times 128` grid.
   * - ${mdl("s273")}
     - GEM challenge problem with 10-momnent equations, :math:`512\times 256` grid.
+  * - ${mdl("s274")}
+    - GEM challenge problem with 5-momnent equations, :math:`512\times 256` grid and open domain (see s231)
