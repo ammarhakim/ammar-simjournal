@@ -18,7 +18,7 @@ Ly = 4*Lucee.Pi
 B0 = 0.1
 n0 = 1.0
 lambda = 0.5
-cfl = 0.1
+cfl = 0.25
 bGuideFactor = 0.0
 
 nSpecies = 2
