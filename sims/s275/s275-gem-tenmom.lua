@@ -1,9 +1,20 @@
 -- Program to solve Two-Fluid equations
 
+--[[
+
+According to Daughton et. al. 2006 PoP paper one has
+ 
+rhoi/L = 1.0
+mi/me = 25
+Ti/Te = 5
+wpe/wce = 3
+nb/n0 = 0.3
+
+--]]
+
 -- decomposition object to use
 decomp = DecompRegionCalc2D.CartGeneral {}
 
--- global parameters
 elcCharge = -1.0
 ionCharge = 1.0
 ionMass = 1.0
@@ -12,14 +23,20 @@ lightSpeed = 1.0
 epsilon0 = 1.0
 mgnErrorSpeedFactor = 1.0
 
-Lx = 8*Lucee.Pi
-Ly = 4*Lucee.Pi
-B0 = 0.1
+Lx = 50.0
+Ly = 25.0
+B0 = 1/15.0
 n0 = 1.0
-lambda = 0.5
-cfl = 0.25
-NX = 512
-NY = 256
+nb = 0.3*n0
+lambda = math.sqrt(10/12)
+cfl = 0.1
+bGuideFactor = 0.0
+wci = ionCharge*B0/ionMass -- ion cyclotron frequency
+
+nSpecies = 2
+
+NX = 500
+NY = 250
 
 -- computational domain
 grid = Grid.RectCart2D {
@@ -27,7 +44,6 @@ grid = Grid.RectCart2D {
    upper = {Lx/2, Ly/2},
    cells = {NX, NY},
    decomposition = decomp,
-   periodicDirs = {0},
 }
 
 -- solution
@@ -71,10 +87,12 @@ function initElc(x,y,z)
    local me = elcMass
    local qe = elcCharge
 
+  local numDens = n0*(1/math.cosh(y/lambda))^2 + nb
+
    -- electron momentum is computed from plasma current that supports field
    local ezmom = -B0*(1/lambda)*(1/math.cosh(y/lambda))^2*(me/qe)
-   local rhoe = n0*me*(1/math.cosh(y/lambda))^2 + 0.2*n0*me
-   local pre = B0*B0*rhoe/(12*me)
+   local rhoe = numDens*me
+   local pre = numDens*B0^2/12.0
    local pzz = pre + ezmom*ezmom/rhoe
    
    return rhoe, 0.0, 0.0, ezmom, pre, 0.0, 0.0, pre, 0.0, pzz
@@ -86,8 +104,10 @@ function initIon(x,y,z)
    local mi = ionMass
    local qi = ionCharge
 
-   local rhoi = n0*mi*(1/math.cosh(y/lambda)^2) + 0.2*n0*mi
-   local pri = 5.0*B0*B0*rhoi/(12.0*mi)
+   local numDens = n0*(1/math.cosh(y/lambda))^2 + nb
+   local rhoi = numDens*mi
+   local pre = numDens*B0^2/12.0
+   local pri = 5*pre
 
    return rhoi, 0.0, 0.0, 0.0, pri, 0.0, 0.0, pri, 0.0, pri
 end
@@ -309,11 +329,13 @@ bcTop:setOut( {qNew} )
 
 -- function to apply boundary conditions
 function applyBc(fld, t)
-   -- apply BCs on lower and upper edges
+   -- in X
+   fld:applyCopyBc(0, "lower")
+   fld:applyCopyBc(0, "upper")
+   -- in Y
    fld:applyCopyBc(1, "lower")
    fld:applyCopyBc(1, "upper")
-
-   -- sync ghost cells, including periodic BCs
+   -- sync ghost cells
    fld:sync()
 end
 

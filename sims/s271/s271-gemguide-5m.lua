@@ -440,8 +440,8 @@ function advanceFrame(tStart, tEnd, initDt)
 	 myDt = tfDtSuggested
 	 qNew:copy(qNewDup)
 	 q:copy(qDup)
-      elseif ((elcEqn:checkInvariantDomain(elcFluidNew) == false)
-	   or (ionEqn:checkInvariantDomain(ionFluidNew) == false)) then
+      elseif ((elcEulerEqn:checkInvariantDomain(elcFluidNew) == false)
+	   or (ionEulerEqn:checkInvariantDomain(ionFluidNew) == false)) then
 	 -- negative density/pressure occured
 	 Lucee.logInfo (string.format("** Negative pressure or density at %g! Will retake step with Lax fluxes", tCurr+myDt))
 	 q:copy(qDup)
