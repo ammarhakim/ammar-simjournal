@@ -288,7 +288,7 @@ pbSlvr = Updater.PoissonBracket {
 -- define equation to solve
 advectionEqn = HyperEquation.Advection {
    -- advection velocity
-   speeds = {0.0, 1.0, 0.0}
+   speeds = {0.0, 1.0, 0.0},
    -- flux type: one of "upwind" (default) or "central"
    fluxType = "central",
 }
