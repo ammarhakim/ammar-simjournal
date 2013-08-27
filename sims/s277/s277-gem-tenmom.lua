@@ -36,8 +36,8 @@ wci = ionCharge*B0/ionMass -- ion cyclotron frequency
 
 nSpecies = 2
 
-NX = 1000
-NY = 500
+NX = 500
+NY = 250
 
 -- computational domain
 grid = Grid.RectCart2D {
