@@ -29,7 +29,7 @@ B0 = 1/15.0
 n0 = 1.0
 nb = 0.3*n0
 lambda = math.sqrt(10/12)
-cfl = 0.25
+cfl = 0.15
 bGuideFactor = 0.0
 wci = ionCharge*B0/ionMass -- ion cyclotron frequency
 
