@@ -584,3 +584,7 @@ program for that simulation.
     - Open domain reconnection with 10-moment equations, :math:`500\times 250` grid. (See s271)
   * - ${mdl("s276")}
     - Open domain reconnection with 10-moment equations, :math:`1000\times 500` grid. (See s275)
+  * - ${mdl("s277")}
+    - Same as s275 expect collision frequency of 1.0.
+  * - ${mdl("s278")}
+    - Same as s275 expect collision frequency of 0.0.
