@@ -588,3 +588,6 @@ program for that simulation.
     - Same as s275 expect collision frequency of 1.0.
   * - ${mdl("s278")}
     - Same as s275 expect collision frequency of 0.0.
+  * - ${mdl("s279")}
+    - Same as s277 expect on :math:`1000\times 500` grid.
+
