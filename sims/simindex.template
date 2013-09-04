@@ -592,4 +592,5 @@ program for that simulation.
     - Same as s277 expect on :math:`1000\times 500` grid.
   * - ${mdl("s280")}
     - Same as s271 (5-moment) except on :math:`1000\times 500` grid.
-
+  * - ${mdl("s281")}
+    - Open domain reconnection with 10-moment equations, :math:`500\times 250` grid with local relaxation heat-flux. (See s271)
