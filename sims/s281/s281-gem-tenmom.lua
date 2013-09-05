@@ -38,8 +38,8 @@ elcSkinDepth = lightSpeed/elcPlasmaFreq
 
 nSpecies = 2
 
-NX = 500
-NY = 250
+NX = 250
+NY = 125
 
 -- computational domain
 grid = Grid.RectCart2D {
