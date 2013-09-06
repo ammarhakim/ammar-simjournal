@@ -46,12 +46,20 @@ title('Electron out-of-plane current, $t\Omega_{ci}$=%g. Extension=%g' % (tm,xte
 
 #figure(2)
 subplot(2,1,1)
-plot(X, ux1/va)
+plot(X, ux1)
 axis('tight')
 yl = gca().get_ylim()
 plot([minx,minx], yl, '--k')
 plot([maxx,maxx], yl, '--k')
-title('10M Normalized electron out-flow velocity at $t\Omega_{ci}$=%g' % tm)
+title('10M Electron out-flow velocity at $t\Omega_{ci}$=%g' % tm)
 savefig('s279_extension.png')
+
+figure(2)
+Bfld = sqrt(q[:,:,23]**2+q[:,:,24]**2+q[:,:,25]**2)
+uxNorm = ux/(Bfld/sqrt(mu0*elcMass*q[:,:,0]))
+plot(X, uxNorm[:,250])
+axis('tight')
+title('10M Normalized electron out-flow velocity at $t\Omega_{ci}$=%g' % tm)
+savefig('s279_normvx.png')
 
 show()
