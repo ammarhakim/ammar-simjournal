@@ -540,7 +540,26 @@ merge(config.commands.cancelTiddler,{
 //}}}
 </pre>
 </div>
-<div title="Current sheet extension with five-moment model" modifier="AmmarHakim" created="201309051707" modified="201309051737" tags="five-moment" changecount="7">
+<div title="ColorPalette" modifier="AmmarHakim" created="201309052324" changecount="1">
+<pre>Name: MptwTeal
+Background: #fff
+Foreground: #000
+PrimaryPale: #B5D1DF
+PrimaryLight: #618FA9
+PrimaryMid: #1a3844
+PrimaryDark: #000
+SecondaryPale: #ffc
+SecondaryLight: #fe8
+SecondaryMid: #db4
+SecondaryDark: #841
+TertiaryPale: #f8f8f8
+TertiaryLight: #bbb
+TertiaryMid: #999
+TertiaryDark: #888
+Error: #f88
+</pre>
+</div>
+<div title="Current sheet extension with five-moment model" modifier="AmmarHakim" created="201309051707" modified="201309052228" tags="five-moment" changecount="8">
 <pre>The following figure shows the extension of the current sheet as measured in the five-moment simulation. The extension was defined in the same way as used in the [[Sullivan2009]] paper.
 
 [img[s280_extension.png]]</pre>
@@ -553,12 +572,14 @@ merge(config.commands.cancelTiddler,{
 <div title="Daughton2006" modifier="AmmarHakim" created="201309051713" changecount="1">
 <pre>Daughton, W., Scudder, J., &amp; Karimabadi, H. (2006). &quot;Fully kinetic simulations of undriven magnetic reconnection with open boundary conditions.&quot; Physics of Plasmas, ''13''(7), 072101. doi:10.1063/1.2218817</pre>
 </div>
-<div title="DefaultTiddlers" modifier="AmmarHakim" created="201309051640" modified="201309051741" changecount="6">
+<div title="DefaultTiddlers" modifier="AmmarHakim" created="201309051640" modified="201309060122" changecount="8">
 <pre>[[Introduction]]
 [[Problem setup]]
 [[Current sheet extension with five-moment model]]
 [[Current sheet extension with ten-moment model]]
-[[Width of the current sheet]]</pre>
+[[Width of the current sheet]]
+[[Normalized outflow velocity for five-moment model]]
+[[Normalized outflow velocity for ten-moment model]]</pre>
 </div>
 <div title="ExtendTagButtonPlugin" modifier="MPTW" created="201306162218" modified="201306162244" tags="systemConfig">
 <pre>/***
@@ -874,7 +895,10 @@ window.getBackupPath = function(localPath) {
 //}}}
 </pre>
 </div>
-<div title="Maxwell equations" modifier="AmmarHakim" created="201309051755" modified="201309051822" changecount="2">
+<div title="MainMenu" modifier="AmmarHakim" created="201309060120" modified="201309060122" changecount="3">
+<pre>[[DefaultTiddlers]]</pre>
+</div>
+<div title="Maxwell equations" modifier="AmmarHakim" created="201309051755" modified="201309060137" changecount="3">
 <pre>The Maxwell equations determine the electromagnetic field. They can be written as
 \begin{align}
   \frac{\partial \mathbf{B}}{\partial t} + \nabla\times\mathbf{E} &amp;= 0 \\
@@ -882,7 +906,7 @@ window.getBackupPath = function(localPath) {
   \nabla\times\mathbf{B} &amp;= -\mu_0\mathbf{J}
 \end{align}
 
-In the code the Perfectly Hyperbolic Maxwell equations, listed below are solved.
+In the code the Perfectly Hyperbolic Maxwell equations, listed below, are solved.
 \begin{align}
   \frac{\partial \mathbf{B}}{\partial t} + \nabla\times\mathbf{E} +
   \gamma \nabla\psi
@@ -1587,6 +1611,26 @@ config.macros.newTiddler.onClickNewTiddler = function()
 //}}}
 </pre>
 </div>
+<div title="Normalized outflow velocity for five-moment model" modifier="AmmarHakim" created="201309052227" modified="201309052231" tags="five-moment" changecount="4">
+<pre>The local normalized outflow velocity of the electrons can be computed as
+\begin{align}
+U \equiv u_x/v_{Ae}
+\end{align}
+where \(v_{Ae} \equiv B^2/\sqrt{\mu_0 m_e n_e}\) is the Alfven velocity computed using the electron mass. This is shown in the following figure. Note that the electron outflow velocity peaks to about the local electron Alfven velocity.
+
+[img[s280_normvx.png]]</pre>
+</div>
+<div title="Normalized outflow velocity for ten-moment model" modifier="AmmarHakim" created="201309052230" modified="201309052231" tags="ten-moment" changecount="2">
+<pre>The local normalized outflow velocity of the electrons can be computed as
+\begin{align}
+U \equiv u_x/v_{Ae}
+\end{align}
+where \(v_{Ae} \equiv B^2/\sqrt{\mu_0 m_e n_e}\) is the Alfven velocity computed using the electron mass. This is shown in the following figure. 
+
+Note that the electron outflow velocity now peaks to a lower values than it does for the five-moment model. See [[Normalized outflow velocity for five-moment model]].
+
+[img[s279_normvx.png]]</pre>
+</div>
 <div title="PluginMathJax" modifier="AmmarHakim" created="201309051642" modified="201309051657" tags="systemConfig" changecount="2">
 <pre>/***
 |''Name''|PluginMathJax|
@@ -2041,14 +2085,80 @@ config.macros.refreshAll = { handler: function(place,macroName,params,wikifier,p
 //}}}
 </pre>
 </div>
+<div title="SideBarOptions" modifier="AmmarHakim" created="201309060133" changecount="1">
+<pre>&lt;&lt;search&gt;&gt;&lt;&lt;closeAll&gt;&gt;&lt;&lt;permaview&gt;&gt;&lt;&lt;newTiddler&gt;&gt;&lt;&lt;newJournal &quot;DD MMM YYYY&quot; &quot;journal&quot;&gt;&gt;&lt;&lt;saveChanges&gt;&gt;&lt;&lt;slider chkSliderOptionsPanel OptionsPanel &quot;options »&quot; &quot;Change TiddlyWiki advanced options&quot;&gt;&gt;</pre>
+</div>
+<div title="SideBarTabs" modifier="AmmarHakim" created="201309060131" modified="201309060132" changecount="2">
+<pre>&lt;&lt;tabs txtMainTab &quot;Timeline&quot; &quot;Timeline&quot; TabTimeline &quot;All&quot; &quot;All tiddlers&quot; TabAll &quot;Tags&quot; &quot;All tags&quot; TabTags &quot;More&quot; &quot;More lists&quot; TabMore&gt;&gt;</pre>
+</div>
 <div title="SiteSubtitle" modifier="AmmarHakim" created="201309051639" modified="201309051639" changecount="2">
 <pre>With Five- and ~Ten-Moment Models</pre>
 </div>
 <div title="SiteTitle" modifier="AmmarHakim" created="201309051639" modified="201309051720" changecount="3">
 <pre>Magnetic Reconnection</pre>
 </div>
+<div title="StyleSheet" modifier="AmmarHakim" created="201309060102" changecount="1">
+<pre>/***
+This fixes a problem with the tabs slider
+***/
+/*{{{*/
+#sidebarTabs .button {
+margin:0em 0.2em;
+padding:0.2em 0.3em;
+display:block;
+}
+/*}}}*/
+/***
+This is a sample style definition to demonstrate [[CustomCssClass|CSS Formatting]] formatting
+***/
+/*{{{*/
+.wrappingClass {color: #666; background: #bbb;}
+/*}}}*/
+/***
+Prettyify
+***/
+/*{{{*/
+body {
+	font-size: 0.92em;
+	margin-bottom: 4em;
+}
+
+.tiddler .viewer {
+	font-size: 1.1em;
+}
+
+#contentWrapper .chunkyButton {
+	width: auto;
+}
+
+#contentWrapper span.chunkyButton {
+	border: none;
+}
+
+#contentWrapper span.chunkyButton a.button, #contentWrapper span.chunkyButton a:active.button {
+	font-weight: bold;
+	font-size: 1.3em;
+	color: [[ColorPalette::Background]];
+	background-color: [[ColorPalette::QuaternaryMid]];
+	text-align: center;
+	padding: 0.5em 1em;
+	border-radius: 1ex;
+	border-style: none !important;
+}
+
+#contentWrapper span.chunkyButton a.button:hover {
+	background-color: [[ColorPalette::QuaternaryDark]];
+	color: [[ColorPalette::Background]];
+	border-style: none !important;
+}
+
+/*}}}*/</pre>
+</div>
 <div title="Sullivan2009" modifier="AmmarHakim" created="201309051711" modified="201309051713" changecount="3">
 <pre>Sullivan, B. P., Bhattacharjee, A., &amp; Huang, Y.-M. (2009). &quot;Extension of the electron dissipation region in collisionless Hall magnetohydrodynamics reconnection.&quot; Physics of Plasmas, ''16''(10), 102111. doi:10.1063/1.3251423</pre>
+</div>
+<div title="TabTimeline" modifier="AmmarHakim" created="201309060134" changecount="1">
+<pre>&lt;&lt;timeline&gt;&gt;</pre>
 </div>
 <div title="TagglyTaggingPlugin" modifier="MPTW" created="201306162218" modified="201306162244" tags="systemConfig">
 <pre>/***
