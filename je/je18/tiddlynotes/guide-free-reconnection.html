@@ -540,7 +540,7 @@ merge(config.commands.cancelTiddler,{
 //}}}
 </pre>
 </div>
-<div title="ColorPalette" modifier="AmmarHakim" created="201309052324" changecount="1">
+<div title="ColorPalette" modifier="AmmarHakim" created="201309071815" changecount="1">
 <pre>Name: MptwTeal
 Background: #fff
 Foreground: #000
@@ -559,21 +559,22 @@ TertiaryDark: #888
 Error: #f88
 </pre>
 </div>
-<div title="Current sheet extension with five-moment model" modifier="AmmarHakim" created="201309051707" modified="201309052228" tags="five-moment" changecount="8">
-<pre>The following figure shows the extension of the current sheet as measured in the five-moment simulation. The extension was defined in the same way as used in the [[Sullivan2009]] paper.
+<div title="Current sheet extension with five-moment model" modifier="AmmarHakim" created="201309051707" modified="201309061537" tags="five-moment" changecount="9">
+<pre>The following figure shows the extension of the current sheet as measured in the five-moment simulation. The extension was defined in the same way as used in the [[Sullivan2009]] paper. I.e. the locations of the maximum outflow electron velocity were used to define the edge of the current sheet.
 
 [img[s280_extension.png]]</pre>
 </div>
-<div title="Current sheet extension with ten-moment model" modifier="AmmarHakim" created="201309051714" modified="201309051741" tags="ten-moment" changecount="5">
-<pre>The following figure shows the extension of the current sheet as measured in the five-moment simulation. The extension was defined in the same way as used in the [[Sullivan2009]] paper.
+<div title="Current sheet extension with ten-moment model" modifier="AmmarHakim" created="201309051714" modified="201309061537" tags="ten-moment" changecount="6">
+<pre>The following figure shows the extension of the current sheet as measured in the five-moment simulation. The extension was defined in the same way as used in the [[Sullivan2009]] paper. I.e. the locations of the maximum outflow electron velocity were used to define the edge of the current sheet.
 
 [img[s279_extension.png]]</pre>
 </div>
 <div title="Daughton2006" modifier="AmmarHakim" created="201309051713" changecount="1">
 <pre>Daughton, W., Scudder, J., &amp; Karimabadi, H. (2006). &quot;Fully kinetic simulations of undriven magnetic reconnection with open boundary conditions.&quot; Physics of Plasmas, ''13''(7), 072101. doi:10.1063/1.2218817</pre>
 </div>
-<div title="DefaultTiddlers" modifier="AmmarHakim" created="201309051640" modified="201309060122" changecount="8">
+<div title="DefaultTiddlers" modifier="AmmarHakim" created="201309051640" modified="201309071300" changecount="10">
 <pre>[[Introduction]]
+[[Key Questions]]
 [[Problem setup]]
 [[Current sheet extension with five-moment model]]
 [[Current sheet extension with ten-moment model]]
@@ -800,8 +801,17 @@ setStylesheet(&quot;.ts,.ds { font-style:italic; }&quot;,&quot;instantTimestampS
 //}}}
 </pre>
 </div>
-<div title="Introduction" modifier="AmmarHakim" created="201309051657" modified="201309051751" changecount="3">
-<pre>In this note I present results of magnetic reconnection with the [[five-moment]] and [[ten-moment]] models in the absence of a guide field. The equations are solved in conservation-law form. The numerical scheme is a second-order finite-volume scheme, using approximate Riemann solve to compute numerical fluxes at cell interfaces to update the solution in a cell. The sources are handled using Strang splitting, and the source ODE is updated using either a ~RK4 or a ~Crank-Nicholson implicit scheme. Positivity is ensured by switching to Lax fluxes and a first-order scheme on detection of negative pressure/density. This positivity fix occurs only very rarely, or not at all, and hence has negligible impact on the overall simulation accuracy.</pre>
+<div title="Introduction" modifier="AmmarHakim" created="201309051657" modified="201309071240" changecount="4">
+<pre>In this note I present results of magnetic reconnection with the [[five-moment]] and [[ten-moment]] models in the absence of a guide field. The equations are solved in conservation-law form. The numerical scheme is a second-order finite-volume scheme, using approximate Riemann solver to compute numerical fluxes at cell interfaces to update the solution in a cell. The sources are handled using Strang splitting, and the source ODE is updated using either a ~RK4 or a ~Crank-Nicholson implicit scheme. Positivity is ensured by switching to Lax fluxes and a first-order scheme on detection of negative pressure/density. This positivity fix occurs only very rarely, or not at all, and hence has negligible impact on the overall simulation accuracy.</pre>
+</div>
+<div title="Key Questions" modifier="AmmarHakim" created="201309071245" modified="201309072049" changecount="14">
+<pre>The key question we wish to answer is: what physical mechanism controls the width and the extension of the current sheet in collisionless reconnection? The problem setup is an initially isolated reconnection site on a large open domain. A secondary question we wish to address is: does current sheet extension lead to instabilities, breaking up the sheet into plasmoids? What controls the plasmoid dynamics?
+
+In the original set of GEM Challenge papers the extension of the current sheet was suppressed due to periodic boundary conditions on a small domain. PIC simulations performed in [[Daughton2006]] showed that with open boundary conditions and larger domains, the current sheet extended to several \(d_i\), where \(d_i\equiv c/\omega_{pi}\) is the ion intertial length, with \(\omega_{pi}\) the plasma frequency computed using the ion mass.
+
+Recent work has indicated that the extension of the current sheet could be due to anisotropic pressure tensor. As ~Hall-MHD and [[five-moment]] two-fluid models assume a scalar pressure, the extension in these models can only be caused, in the absence of physical resistivity, by electron intertia and hyper-resistivity.
+
+Numerical simulation are difficult to perform, specially with large \(m_i/m_e\) ratio: the electron interial length, \(d_e\), needs to be resolved, while keeping the domain large enough (several tens to hundreds of \(d_i\)) to avoid interference from the boundaries. Further, in the absence of collision, long current sheet are highly unstable and the exact nature of the unstable solution depends sensitively on the details of the numerical method used.</pre>
 </div>
 <div title="LessBackupsPlugin" modifier="MPTW" created="201306162218" modified="201306162244" tags="systemConfig">
 <pre>/***
@@ -898,7 +908,7 @@ window.getBackupPath = function(localPath) {
 <div title="MainMenu" modifier="AmmarHakim" created="201309060120" modified="201309060122" changecount="3">
 <pre>[[DefaultTiddlers]]</pre>
 </div>
-<div title="Maxwell equations" modifier="AmmarHakim" created="201309051755" modified="201309060137" changecount="3">
+<div title="Maxwell equations" modifier="AmmarHakim" created="201309051755" modified="201309091615" changecount="4">
 <pre>The Maxwell equations determine the electromagnetic field. They can be written as
 \begin{align}
   \frac{\partial \mathbf{B}}{\partial t} + \nabla\times\mathbf{E} &amp;= 0 \\
