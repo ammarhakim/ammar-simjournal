@@ -596,3 +596,7 @@ program for that simulation.
     - Open domain reconnection with 10-moment equations, :math:`500\times 250` grid with local relaxation heat-flux. (See s271)
   * - ${mdl("s282")}
     - Same as s281, except on :math:`1000\times 500` grid.
+  * - ${mdl("s283")}
+    - Same as s281, except on :math:`250\times 125` grid and no divergence correction.
+  * - ${mdl("s284")}
+    - EM pulse in box (see s57). This is to test flux and electric field relations.

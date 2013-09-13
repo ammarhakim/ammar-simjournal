@@ -16,8 +16,8 @@ elcMass = ionMass/25
 va = B0/sqrt(mu0*elcMass*n0)
 ionCycl = ionCharge*B0/ionMass
 
-start = 10
-end  = 40
+start = 0
+end  = 24
 nFrame = end-start+1
 tm = zeros((nFrame,), float)
 elcX = zeros((nFrame,), float)
@@ -28,7 +28,7 @@ psiCont = zeros((nFrame,), float)
 count = 0
 for i in range(start, end+1):
     print ("Working on %d ..." % i)
-    fh = tables.openFile("s282-gem-tenmom_q_%d.h5" % i)
+    fh = tables.openFile("s283-gem-tenmom_q_%d.h5" % i)
     q = fh.root.StructGridField
     nx, ny = q.shape[0], q.shape[1]
     YI = 10
@@ -44,10 +44,10 @@ for i in range(start, end+1):
     psiDiff = (psiB_Up-psiB_Dn)/(2*dy)
 
     tm[count] = fh.root.timeData._v_attrs['vsTime']
-    flx[count] = dx*sum(q[0:nx/2,YI,24])
-    elcX[count] = q[nx/2,YI,22]
-    elcO[count] = q[0,YI,22]
-    psiCont[count] = dx*sum(psiDiff[0:nx/2])
+    flx[count] = dx*sum(q[1:nx/2,YI,24])
+    elcX[count] = 0.5*(q[nx/2,YI,22]+q[nx/2+1,YI,22])
+    elcO[count] = 0.5*(q[0,YI,22]+q[1,YI,22])
+    psiCont[count] = dx*sum(psiDiff[1:nx/2])
 
     count = count+1
 
@@ -69,7 +69,7 @@ plot(tm, -elcO, 'y-', label='EzO')
 plot(tm, -psiCont, 'b-', label='-div(B) error')
 plot(tm, elcX-elcO-psiCont, 'g-', label='Total')
 plot(tmDiff, flxDiff, '-ko', label='d\psi/dt')
-legend(loc='upper left')
+legend(loc='upper right')
 title('$\Delta Ez$ and $d\psi/dt$')
 xlabel('Time')
 ylabel('Ez')
