@@ -559,20 +559,25 @@ TertiaryDark: #888
 Error: #f88
 </pre>
 </div>
+<div title="Comparison of five-moment and ten-moment current sheet extension" modifier="AmmarHakim" created="201309111504" modified="201309131304" tags="five-moment ten-moment" changecount="2">
+<pre>Current sheet extension in the five-moment (black) and ten-moment (red) models with time. The ten-moment extensions are about a factor of two larger.
+
+[img[s282-s280-current-extension-cmp-vs-t.png]]</pre>
+</div>
 <div title="Current sheet extension with five-moment model" modifier="AmmarHakim" created="201309051707" modified="201309061537" tags="five-moment" changecount="9">
 <pre>The following figure shows the extension of the current sheet as measured in the five-moment simulation. The extension was defined in the same way as used in the [[Sullivan2009]] paper. I.e. the locations of the maximum outflow electron velocity were used to define the edge of the current sheet.
 
 [img[s280_extension.png]]</pre>
 </div>
-<div title="Current sheet extension with ten-moment model" modifier="AmmarHakim" created="201309051714" modified="201309061537" tags="ten-moment" changecount="6">
+<div title="Current sheet extension with ten-moment model" modifier="AmmarHakim" created="201309051714" modified="201309131258" tags="ten-moment" changecount="8">
 <pre>The following figure shows the extension of the current sheet as measured in the five-moment simulation. The extension was defined in the same way as used in the [[Sullivan2009]] paper. I.e. the locations of the maximum outflow electron velocity were used to define the edge of the current sheet.
 
-[img[s279_extension.png]]</pre>
+[img[s282_extension.png]]</pre>
 </div>
 <div title="Daughton2006" modifier="AmmarHakim" created="201309051713" changecount="1">
 <pre>Daughton, W., Scudder, J., &amp; Karimabadi, H. (2006). &quot;Fully kinetic simulations of undriven magnetic reconnection with open boundary conditions.&quot; Physics of Plasmas, ''13''(7), 072101. doi:10.1063/1.2218817</pre>
 </div>
-<div title="DefaultTiddlers" modifier="AmmarHakim" created="201309051640" modified="201309071300" changecount="10">
+<div title="DefaultTiddlers" modifier="AmmarHakim" created="201309051640" modified="201309131305" changecount="12">
 <pre>[[Introduction]]
 [[Key Questions]]
 [[Problem setup]]
@@ -580,7 +585,9 @@ Error: #f88
 [[Current sheet extension with ten-moment model]]
 [[Width of the current sheet]]
 [[Normalized outflow velocity for five-moment model]]
-[[Normalized outflow velocity for ten-moment model]]</pre>
+[[Normalized outflow velocity for ten-moment model]]
+[[Comparison of five-moment and ten-moment current sheet extension]]
+[[Things to do]]</pre>
 </div>
 <div title="ExtendTagButtonPlugin" modifier="MPTW" created="201306162218" modified="201306162244" tags="systemConfig">
 <pre>/***
@@ -1630,7 +1637,7 @@ where \(v_{Ae} \equiv B^2/\sqrt{\mu_0 m_e n_e}\) is the Alfven velocity computed
 
 [img[s280_normvx.png]]</pre>
 </div>
-<div title="Normalized outflow velocity for ten-moment model" modifier="AmmarHakim" created="201309052230" modified="201309052231" tags="ten-moment" changecount="2">
+<div title="Normalized outflow velocity for ten-moment model" modifier="AmmarHakim" created="201309052230" modified="201309131302" tags="ten-moment" changecount="4">
 <pre>The local normalized outflow velocity of the electrons can be computed as
 \begin{align}
 U \equiv u_x/v_{Ae}
@@ -1639,7 +1646,7 @@ where \(v_{Ae} \equiv B^2/\sqrt{\mu_0 m_e n_e}\) is the Alfven velocity computed
 
 Note that the electron outflow velocity now peaks to a lower values than it does for the five-moment model. See [[Normalized outflow velocity for five-moment model]].
 
-[img[s279_normvx.png]]</pre>
+[img[s282_normvx.png]]</pre>
 </div>
 <div title="PluginMathJax" modifier="AmmarHakim" created="201309051642" modified="201309051657" tags="systemConfig" changecount="2">
 <pre>/***
@@ -2167,7 +2174,7 @@ body {
 <div title="Sullivan2009" modifier="AmmarHakim" created="201309051711" modified="201309051713" changecount="3">
 <pre>Sullivan, B. P., Bhattacharjee, A., &amp; Huang, Y.-M. (2009). &quot;Extension of the electron dissipation region in collisionless Hall magnetohydrodynamics reconnection.&quot; Physics of Plasmas, ''16''(10), 102111. doi:10.1063/1.3251423</pre>
 </div>
-<div title="TabTimeline" modifier="AmmarHakim" created="201309060134" changecount="1">
+<div title="TabTimeline" modifier="AmmarHakim" created="201309060134" modified="201309131309" changecount="2">
 <pre>&lt;&lt;timeline&gt;&gt;</pre>
 </div>
 <div title="TagglyTaggingPlugin" modifier="MPTW" created="201306162218" modified="201306162244" tags="systemConfig">
@@ -2819,6 +2826,14 @@ config.formatters.unshift( {
 //}}}
 </pre>
 </div>
+<div title="Things to do" modifier="AmmarHakim" created="201309131306" modified="201309131308" changecount="3">
+<pre># Do simulations on even larger domain.
+# Do simulations of \(m_i/m_e\) of 100 and 400.
+# Do simulations on doubly periodic domain, mainly to test energy conservation of scheme
+# Figure out a way of computing reconnection rate.
+# Give some explanation of current sheet extension and observed outflow peak velocity of the electrons.
+# Justify the closure for \(Q_{ijk,k}\). Are there missing constants in front of the \(v_t k\) coefficient?</pre>
+</div>
 <div title="ToggleTagPlugin" modifier="MPTW" created="201306162218" modified="201306162244" tags="systemConfig">
 <pre>/***
 |Name:|ToggleTagPlugin|
@@ -2893,12 +2908,12 @@ merge(config.macros,{
 
 </pre>
 </div>
-<div title="Width of the current sheet" modifier="AmmarHakim" created="201309051717" modified="201309051741" tags="five-moment ten-moment" changecount="3">
+<div title="Width of the current sheet" modifier="AmmarHakim" created="201309051717" modified="201309131302" tags="five-moment ten-moment" changecount="4">
 <pre>Define the width of the current sheet as the full-width at half-max (as done in [[Sullivan2009]]). With this, the ten-moment width is larger by a factor of about \(5/3\) as seen in the following figure.
 
-[img[5m10m_width_cmp.png]]</pre>
+[img[s282-s280-5m10m_width_cmp.png]]</pre>
 </div>
-<div title="five-moment" modifier="AmmarHakim" created="201309051752" modified="201309051757" changecount="4">
+<div title="five-moment" modifier="AmmarHakim" created="201309051752" modified="201309051757" changecount="4" taggly.excerpts="sliders">
 <pre>The five-moment model consists of Euler equations for each plasma species coupled to the full [[Maxwell equations]]. Displacement currents are retained in Maxwell equations, as well as electron interia and non-neutral effects.
 
 In non-conservative form these can be written as

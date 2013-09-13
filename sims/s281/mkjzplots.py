@@ -25,7 +25,7 @@ elcMass = ionMass/25
 va = B0/sqrt(mu0*elcMass*n0)
 ionCycl = ionCharge*B0/ionMass
 
-fh = tables.openFile("s281-gem-tenmom_q_30.h5")
+fh = tables.openFile("s281-gem-tenmom_q_35.h5")
 tm = fh.root.timeData._v_attrs['vsTime']*ionCycl
 q = fh.root.StructGridField
 nx, ny = q.shape[0], q.shape[1]
@@ -75,10 +75,10 @@ savefig('s281_normvx.png')
 figure(3)
 Bfld = sqrt(q[:,:,23]**2+q[:,:,24]**2+q[:,:,25]**2)
 uxNorm = ux/(Bfld/sqrt(mu0*elcMass*q[:,:,0]))
-pcolormesh(XX, YY, transpose(uxNorm))
+pcolormesh(XX, YY, transpose(ux))
 colorbar()
 axis('image')
-title('10M Normalized electron out-flow velocity at $t\Omega_{ci}$=%g' % tm)
+title('10M Electron out-flow velocity at $t\Omega_{ci}$=%g' % tm)
 savefig('s281_normvx_pcolor.png')
 
 figure(4)

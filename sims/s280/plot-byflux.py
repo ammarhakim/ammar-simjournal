@@ -25,16 +25,16 @@ def calcDeriv(T, func):
 
     return tm, vx
 
-dat = loadtxt("s281-gem-tenmom_byFlux.txt")
+dat = loadtxt("s280-gemguide-5m_byFlux.txt")
 T = dat[:,0]
 byFlux = dat[:,1]
 tm, diffByFlux = calcDeriv(T, byFlux)
 tmNorm = tm*ionCycl
 
 figure(1)
-plot(tmNorm, diffByFlux/(LX/2.0)/B0/va)
-#plot([tmNorm[0],tmNorm[-1]], [0.1,0.1], '--k')
-#text(50, 0.11, '$0.1v_A$')
+plot(tmNorm, diffByFlux/B0/va)
+plot([tmNorm[0],tmNorm[-1]], [0.1,0.1], '--k')
+text(50, 0.11, '$0.1v_A$')
 title('Normalized reconnection rate')
 xlabel('T')
 ylabel('d(flux)/dt')
