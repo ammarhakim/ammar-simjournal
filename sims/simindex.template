@@ -600,3 +600,5 @@ program for that simulation.
     - Same as s281, except on :math:`250\times 125` grid and no divergence correction.
   * - ${mdl("s284")}
     - EM pulse in box (see s57). This is to test flux and electric field relations.
+  * - ${mdl("s285")}
+    - EM pulse in box (see s57 and s284). With in-plane electric field.

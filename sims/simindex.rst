@@ -525,6 +525,64 @@ program for that simulation.
   * - :doc:`s253 <s253/s253-dg-diffuse-2d>` 
     - Same as s250, except on :math:`64\times 64` grid.
   * - :doc:`s254 <s254/s254-free-stream-bounded>` 
-    - Free streaming of particles on a boundary domain.
-
-
+    - Free streaming of particles on a bounded domain.
+  * - :doc:`s255 <s255/s255-vlasov-fp-bounded>` 
+    - Vlasov equation with fixed potential on a bounded domain.
+  * - :doc:`s256 <s256/s256-gemguide-5m>` 
+    - Open domain reconnection on :math:`50\times 25` domain, :math:`1536\times 768` grid.
+  * - :doc:`s257 <s257/s257-blobs>` 
+    - Blob simulation on :math:`30\times 20` domain and :math:`96\times 64` grid, no diffusion.
+  * - :doc:`s258 <s258/s258-blobs>` 
+    - Blob simulation on :math:`60\times 40` domain and :math:`192\times 128` grid, no diffusion.
+  * - :doc:`s259 <s259/s259-blobs>` 
+    - Same as s257, except with Rayleigh number :math:`1\times10^{4}`
+  * - :doc:`s260 <s260/s260-blobs>` 
+    - Same as s259, except on :math:`192\times 128` grid.
+  * - :doc:`s261 <s261/s261-blobs>` 
+    - Same as s260, except with Rayleigh number :math:`1\times10^{6}`
+  * - :doc:`s262 <s262/s262-blobs>` 
+    - Same as s260, except with Rayleigh number :math:`1\times10^{8}`
+  * - :doc:`s263 <s263/s263-blobs>` 
+    - Same as s260, except on a :math:`60\times 40` domain.
+  * - :doc:`s264 <s264/s264-blobs>` 
+    - Same as s260, except on a :math:`60\times 40` domain, :math:`384\times 256` grid.
+  * - :doc:`s265 <s265/s265-blobs>` 
+    - Same as s260, except on a :math:`60\times 40` domain and fixed BCs in X and periodic in Y.
+  * - :doc:`s266 <s266/s266-blobs>` 
+    - Same as s265, except on a :math:`384\times 256` grid.
+  * - :doc:`s267 <s267/s267-blobs>` 
+    - Same as s266, except on a :math:`450\times 300` grid.
+  * - :doc:`s268 <s268/s268-blobs>` 
+    - Same as s266, except with central fluxes.
+  * - :doc:`s269 <s269/s269-free-stream-bounded>` 
+    - Free streaming of particles on a bounded domain, with partially reflecting walls. See s254.      
+  * - :doc:`s270 <s270/s270-gemguide-5m>` 
+    - Open domain reconnection on :math:`50\times 25` domain, :math:`250\times 125` grid.
+  * - :doc:`s271 <s271/s271-gemguide-5m>` 
+    - Open domain reconnection on :math:`50\times 25` domain, :math:`500\times 250` grid.
+  * - :doc:`s272 <s272/s272-gem-tenmom>` 
+    - GEM challenge problem with 10-momnent equations, :math:`256\times 128` grid.
+  * - :doc:`s273 <s273/s273-gem-tenmom>` 
+    - GEM challenge problem with 10-momnent equations, :math:`512\times 256` grid.
+  * - :doc:`s274 <s274/s274-gemguide-5m>` 
+    - GEM challenge problem with 5-moment equations, :math:`512\times 256` grid and open domain (see s231)
+  * - :doc:`s275 <s275/s275-gem-tenmom>` 
+    - Open domain reconnection with 10-moment equations, :math:`500\times 250` grid. (See s271)
+  * - :doc:`s276 <s276/s276-gem-tenmom>` 
+    - Open domain reconnection with 10-moment equations, :math:`1000\times 500` grid. (See s275)
+  * - :doc:`s277 <s277/s277-gem-tenmom>` 
+    - Same as s275 expect collision frequency of 1.0.
+  * - :doc:`s278 <s278/s278-gem-tenmom>` 
+    - Same as s275 expect collision frequency of 0.0.
+  * - :doc:`s279 <s279/s279-gem-tenmom>` 
+    - Same as s277 expect on :math:`1000\times 500` grid.
+  * - :doc:`s280 <s280/s280-gemguide-5m>` 
+    - Same as s271 (5-moment) except on :math:`1000\times 500` grid.
+  * - :doc:`s281 <s281/s281-gem-tenmom>` 
+    - Open domain reconnection with 10-moment equations, :math:`500\times 250` grid with local relaxation heat-flux. (See s271)
+  * - :doc:`s282 <s282/s282-gem-tenmom>` 
+    - Same as s281, except on :math:`1000\times 500` grid.
+  * - :doc:`s283 <s283/s283-gem-tenmom>` 
+    - Same as s281, except on :math:`250\times 125` grid and no divergence correction.
+  * - :doc:`s284 <s284/s284-pulsebox-wave>` 
+    - EM pulse in box (see s57). This is to test flux and electric field relations.
