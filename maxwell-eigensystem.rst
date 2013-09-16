@@ -1,8 +1,6 @@
 The eigensystem of the Maxwell equations with extension to perfectly hyperbolic Maxwell equations
 =================================================================================================
 
-`PDF of note <./_static/files/1012-maxwell-eigsys.pdf>`_
-
 Eigensystem of Maxwell equations
 --------------------------------
 
@@ -61,7 +59,7 @@ be written as, ignoring sources,
   =
   0.
 
-The eigenvalues of this system are :math:`\{0,0,c,c,-c,-c\}`. The
+The eigenvalues of this system are :math:`\{-c,-c,c,c,0,0\}`. The
 right eigenvectors of the flux Jacobian are given by the columns of
 the matrix
 
@@ -71,12 +69,12 @@ the matrix
   =
   \left[
     \begin{matrix}
-      0 & 1 & 0 & 0 & 0 & 0 \\
-      0 & 0 & c & 0 & -c & 0 \\
-      0 & 0 & 0 & -c & 0 & c \\
-      1 & 0 & 0 & 0 & 0 & 0 \\
-      0 & 0 & 0 & 1 & 0 & 1 \\
-      0 & 0 & 1 & 0 & 1 & 0
+    0&0&0&0&1&0 \\ 
+    1&0&1&0&0&0 \\ 
+    0&1&0&1&0&0 \\ 
+    0&0&0&0&0&1 \\ 
+    0&{{1}\over{c}}&0&-{{1}\over{c}}&0&0 \\ 
+    -{{1}\over{c}}&0&{{1}\over{c}}&0&0&0
     \end{matrix}
   \right].
 
@@ -88,12 +86,12 @@ The left eigenvectors are the rows of the matrix
   =
   \left[
     \begin{matrix}
-      0 & 0 & 0 & 1 & 0 & 0 \\
-      1 & 0 & 0 & 0 & 0 & 0 \\
-      0 & \frac{1}{2c} & 0 & 0 & 0 & \frac{1}{2} \\
-      0 & 0 & -\frac{1}{2c} & 0 & \frac{1}{2} & 0 \\
-      0 & -\frac{1}{2c} & 0 & 0 & 0 & \frac{1}{2} \\
-      0 & 0 & \frac{1}{2c} & 0 & \frac{1}{2} & 0
+    0&{{1}\over{2}}&0&0&0&-{{c}\over{2}} \\
+    0&0&{{1}\over{2}}&0&{{c}\over{2}}&0 \\
+    0&{{1}\over{2}}&0&0&0&{{c}\over{2}} \\ 
+    0&0&{{1}\over{2}}&0&-{{c}\over{2}}&0 \\
+    1&0&0&0&0&0 \\ 
+    0&0&0&1&0&0
     \end{matrix}
   \right].
 
@@ -162,7 +160,7 @@ In 1D these equations can be written as, ignoring sources,
   0.
 
 The eigenvalues of this system are :math:`\{-c\gamma, c\gamma, -c\chi,
-c\chi, c, c, -c, -c\}`. The right eigenvectors of the flux Jacobian
+c\chi, -c, -c, c, c\}`. The right eigenvectors of the flux Jacobian
 are given by the columns of the matrix
 
 .. math::
@@ -170,14 +168,14 @@ are given by the columns of the matrix
   =
   \left[
     \begin{matrix}
-      0  & 0 & 1 & 1 & 0 &  0 &  0 & 0 \\
-      0  & 0 & 0 & 0 & c &  0 & -c & 0 \\
-      0  & 0 & 0 & 0 & 0 & -c &  0 & c \\
-      1  & 1 & 0 & 0 & 0 &  0 &  0 & 0 \\
-      0  & 0 & 0 & 0 & 0 &  1 &  0 & 1 \\
-      0  & 0 & 0 & 0 & 1 &  0 &  1 & 0 \\
-      0  & 0 & -\frac{1}{c} & \frac{1}{c} & 0 &  0 &  0 & 0 \\
-     -c  & c & 0 & 0 & 0 &  0 &  0 & 0
+    0&0&1&1&0&0&0&0 \\
+    0&0&0&0&1&0&1&0 \\
+    0&0&0&0&0&1&0&1 \\
+    1&1&0&0&0&0&0&0 \\
+    0&0&0&0&0&{{1}\over{c}}&0&-{{1}\over{c}} \\
+    0&0&0&0&-{{1}\over{c}}&0&{{1}\over{c}}&0 \\
+    0&0&-{{1}\over{c}}&{{1}\over{c}}&0&0&0&0 \\
+    -c&c&0&0&0&0&0&0
     \end{matrix}
   \right].
 
@@ -188,14 +186,14 @@ The left eigenvectors are the rows of the matrix
   =
   \left[
     \begin{matrix}
-      0 & 0 & 0 & \frac{1}{2} & 0 & 0 & 0 & -\frac{1}{2c} \\
-      0 & 0 & 0 & \frac{1}{2} & 0 & 0 & 0 & \frac{1}{2c} \\
-      \frac{1}{2} & 0 & 0 & 0 & 0 & 0 & -\frac{c}{2} & 0 \\
-      \frac{1}{2} & 0 & 0 & 0 & 0 & 0 & \frac{c}{2} & 0 \\
-      0 & \frac{1}{2c} & 0 & 0 & 0 & \frac{1}{2} & 0 & 0 \\
-      0 & 0 & -\frac{1}{2c} & 0 & \frac{1}{2} & 0 & 0 & 0 \\
-      0 & -\frac{1}{2c} & 0 & 0 & 0 & \frac{1}{2} & 0 & 0 \\
-      0 & 0 & \frac{1}{2c} & 0 & \frac{1}{2} & 0 & 0 & 0
+    0&0&0&{{1}\over{2}}&0&0&0&-{{1}\over{2\,c}} \\ 
+    0&0&0&{{1}\over{2}}&0&0&0&{{1}\over{2\,c}} \\ 
+    {{1}\over{2}}&0&0&0&0&0&-{{c}\over{2}}&0 \\ 
+    {{1}\over{2}}&0&0&0&0&0&{{c}\over{2}}&0 \\ 
+    0&{{1}\over{2}}&0&0&0&-{{c}\over{2}}&0&0 \\ 
+    0&0&{{1}\over{2}}&0&{{c}\over{2}}&0&0&0 \\
+    0&{{1}\over{2}}&0&0&0&{{c}\over{2}}&0&0 \\ 
+    0&0&{{1}\over{2}}&0&-{{c}\over{2}}&0&0&0
     \end{matrix}
   \right].
 
