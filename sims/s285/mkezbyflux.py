@@ -22,7 +22,7 @@ for i in range(start, end+1):
     fh = tables.openFile("s285-pulsebox-wave_q_%d.h5" % i)
     q = fh.root.StructGridField
     nx, ny = q.shape[0], q.shape[1]
-    YI = 10
+    YI = ny/2
 
     X = linspace(-LX/2, LX/2, nx)
     Y = linspace(-LY/2, LY/2, ny)
@@ -35,10 +35,10 @@ for i in range(start, end+1):
     psiDiff = (psiB_Up-psiB_Dn)/(2*dy)
 
     tm[count] = fh.root.timeData._v_attrs['vsTime']
-    flx[count] = dx*sum(q[1:nx/2,YI,4])
+    flx[count] = dx*sum(q[1:nx/2+1,YI,4])
     elcX[count] = 0.5*(q[nx/2,YI,2]+q[nx/2+1,YI,2])
     elcO[count] = 0.5*(q[0,YI,2]+q[1,YI,2])
-    psiCont[count] = dx*sum(psiDiff[1:nx/2])
+    psiCont[count] = dx*sum(psiDiff[1:nx/2+1])
 
     count = count+1
 
@@ -58,7 +58,7 @@ tmDiff, flxDiff = calcDeriv(tm, flx)
 plot(tm, elcX, 'r-', label='EzX')
 plot(tm, -elcO, 'y-', label='EzO')
 plot(tm, -psiCont, 'b-', label='-div(B) error')
-plot(tm, elcX-elcO-psiCont, 'g-', label='Total')
+plot(tm, elcX-elcO-psiCont, 'og-', label='Total')
 plot(tmDiff, flxDiff, '-ko', label='d\psi/dt')
 legend(loc='best')
 title('$\Delta Ez$ and $d\psi/dt$')
