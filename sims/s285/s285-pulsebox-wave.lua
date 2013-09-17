@@ -44,8 +44,8 @@ function init(x,y,z)
    local delE = 0.1
 
    local ez = math.exp(-25*((x-xc)^2 + (y-yc)^2))
-   local ex = -delE*(pi/Ly)*math.cos(twopi*x/Lx)*math.sin(pi*y/Ly)*ez
-   local ey = delE*(twopi/Lx)*math.sin(twopi*x/Lx)*math.cos(pi*y/Ly)*ez
+   local ex = 0.0 --2*delE*25*(y-yc)*math.exp(-25*((x-xc)^2 + (y-yc)^2))
+   local ey = 0.0 ---2*delE*25*(x-xc)*math.exp(-25*((x-xc)^2 + (y-yc)^2))
    return ex, ey, ez, 0.0, 0.0, 0.0, 0.0, 0.0
 end
 
@@ -162,9 +162,9 @@ end
 dtSuggested = 100.0 -- initial suggested time-step
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 3.0
+tEnd = 0.1
 
-nFrames = 60
+nFrames = 5
 tFrame = (tEnd-tStart)/nFrames -- time between frames
 
 tCurr = tStart
