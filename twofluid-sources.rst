@@ -4,12 +4,12 @@ Handling two-fluid five-moment and ten-moment source terms
 The two-fluid system treats a plasma as a mixture of electron and ion
 fluids, coupled via the electromagnetic field and collisions. In the
 *ideal* two-fluid system collisions and heat-flux are neglected,
-leading two a closed system of coupled PDEs: one set of fluid
-equations for each of the fluids, and Maxwell equations for the
-electromagnetic field. Non-neutral effects, electron interia as well
-as displacement currents are retained. Further, the fluid pressures
-can be treated as either a scalar (five-moment model) or a symmetric
-:math:`3\times 3` tensor (ten-moment model), or a combination.
+leading to a closed system of coupled PDEs: one set of fluid equations
+for each of the fluids, and Maxwell equations for the electromagnetic
+field. Non-neutral effects, electron interia as well as displacement
+currents are retained. Further, the fluid pressures can be treated as
+either a scalar (five-moment model) or a symmetric :math:`3\times 3`
+tensor (ten-moment model), or a combination.
 
 See `this paper
 <./_static/files/Journal-of-Computational-Physics-2006-Hakim.pdf>`_
@@ -91,3 +91,46 @@ system of linear equations for the :math:`3p+3` unknowns
 :math:`\mathbf{J}_s^{n+1/2}`, :math:`s=1,\ldots,p` and
 :math:`\mathbf{E}_s^{n+1/2}` and can be solved with any linear algebra
 routine.
+
+Ten-moment source updates
+-------------------------
+
+The ten-moment equations have identical sources for currents and
+electric field. For these terms the same implicit algorithm can be
+used.  In addition, there are source terms in the pressure
+equation. In non-conservative form these can be written as the linear
+system of equations
+
+.. math::
+
+  \frac{d}{dt}
+  \left[
+    \begin{matrix}
+    P_{xx} \\
+    P_{xy} \\
+    P_{xz} \\
+    P_{yy} \\
+    P_{yz} \\
+    P_{zz}
+    \end{matrix}
+  \right]
+  =
+  \frac{q}{m}\pmatrix{0&2\,B_{z}&-2\,B_{y}&0&0&0\cr -B_{z}&0&B_{x}&B_{z}&-B_{y}&
+  0\cr B_{y}&-B_{x}&0&0&B_{z}&-B_{y}\cr 0&-2\,B_{z}&0&0&2\,B_{x}&0\cr 
+  0&B_{y}&-B_{z}&-B_{x}&0&B_{x}\cr 0&0&2\,B_{y}&0&-2\,B_{x}&0\cr }
+  \left[
+    \begin{matrix}
+    P_{xx} \\
+    P_{xy} \\
+    P_{xz} \\
+    P_{yy} \\
+    P_{yz} \\
+    P_{zz}
+    \end{matrix}
+  \right].
+
+This system can be updated using a similar time-centered implicit
+method as use for the currents and the electric field. Note that
+unlike the sources for the currents and the electric field, the
+pressure source terms are uncoupled from the other fluid and
+electromagnetic terms.
