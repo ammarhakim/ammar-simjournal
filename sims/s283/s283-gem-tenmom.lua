@@ -21,7 +21,7 @@ ionMass = 1.0
 elcMass = ionMass/25
 lightSpeed = 1.0
 epsilon0 = 1.0
-mgnErrorSpeedFactor = 0.0
+mgnErrorSpeedFactor = 1.0
 elcCollisionFreq = 1.0
 
 Lx = 50.0
