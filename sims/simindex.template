@@ -602,3 +602,5 @@ program for that simulation.
     - EM pulse in box (see s57). This is to test flux and electric field relations.
   * - ${mdl("s285")}
     - EM pulse in box (see s57 and s284). With in-plane electric field.
+  * - ${mdl("s286")}
+    - Ten-moment doubly periodic Harris sheet simulation to compare with PSC. On :math:`250x125` grid.
