@@ -603,4 +603,6 @@ program for that simulation.
   * - ${mdl("s285")}
     - EM pulse in box (see s57 and s284). With in-plane electric field.
   * - ${mdl("s286")}
-    - Ten-moment doubly periodic Harris sheet simulation to compare with PSC. On :math:`250x125` grid.
+    - Ten-moment doubly periodic Harris sheet simulation to compare with PSC. On :math:`250\times 125` grid.
+  * - ${mdl("s287")}
+    - Same as s286, except on a :math:`1000\times 500` grid.
