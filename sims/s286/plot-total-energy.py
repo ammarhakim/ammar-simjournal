@@ -4,7 +4,7 @@ import tables
 
 Lx = 50.0
 Ly = 25.0
-nFrame = 60
+nFrame = 20
 elcEnergy = numpy.zeros((nFrame+1,), numpy.float)
 ionEnergy = numpy.zeros((nFrame+1,), numpy.float)
 emEnergy = numpy.zeros((nFrame+1,), numpy.float)
