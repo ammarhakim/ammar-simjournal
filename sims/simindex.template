@@ -606,3 +606,9 @@ program for that simulation.
     - Ten-moment doubly periodic Harris sheet simulation to compare with PSC. On :math:`250\times 125` grid.
   * - ${mdl("s287")}
     - Same as s286, except on a :math:`1000\times 500` grid.
+  * - ${mdl("s288")}
+    - FDTD Maxwell solver, in preparation for FD/FV two-fluid scheme. (See s63).
+  * - ${mdl("s289")}
+    - A plamsa in a box, perturbed with a EM pulse. Another attempt to nail down div(E) problems.
+  * - ${mdl("s290")}
+    - Same as s286, except on a :math:`500\times 250` grid.
