@@ -614,3 +614,5 @@ program for that simulation.
     - Same as s286, except on a :math:`500\times 250` grid.
   * - ${mdl("s291")}
     - EM pulse in box (see s284). Using dimensional splitting.
+  * - ${mdl("s292")}
+    - Same as s286, except using dimensional splitting.
