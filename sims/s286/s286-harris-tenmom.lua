@@ -238,60 +238,19 @@ ionLaxSlvr = Updater.WavePropagation2D {
 ionLaxSlvr:setIn( {ionFluid} )
 ionLaxSlvr:setOut( {ionFluidNew} )
 
--- Lorentz force on electrons
-elcFluidSrc = PointSource.TenMomentFluid {
-   -- takes electron fluid and EM fields
-   inpComponents = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 20, 21, 22, 23, 24, 25},
-   -- sets electron fluid source
-   outComponents = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
-
-   -- species charge and mass
-   charge = elcCharge,
-   mass = elcMass,
-}
--- Lorentz force on ions
-ionFluidSrc = PointSource.TenMomentFluid {
-   -- takes ion fluid EM fields
-   inpComponents = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25},
-   -- sets ion fluid source
-   outComponents = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19},
-
-   -- species charge and mass
-   charge = ionCharge,
-   mass = ionMass,
-}
--- electron current contribution to fields
-elcCurrent = PointSource.Current {
-   -- takes electron momentum
-   inpComponents = {1, 2, 3},
-   -- sets current contribution to dE/dt equations
-   outComponents = {20, 21, 22},
-
-   -- species charge and mass
-   charge = elcCharge,
-   mass = elcMass,
-   -- premittivity of free space
-   epsilon0 = epsilon0,
-}
--- ion current contribution to fields
-ionCurrent = PointSource.Current {
-   -- takes ion momentum
-   inpComponents = {11, 12, 13},
-   -- sets current contribution to dE/dt equations
-   outComponents = {20, 21, 22},
-
-   -- species charge and mass
-   charge = ionCharge,
-   mass = ionMass,
-   -- premittivity of free space
-   epsilon0 = epsilon0,
-}
-
 -- updater to solve ODEs for source-term splitting scheme
-sourceSlvr = Updater.GridOdePointIntegrator2D {
+sourceSlvr = Updater.ImplicitTenMomentSrc2D {
    onGrid = grid,
-   -- terms to include in integration step
-   terms = {elcFluidSrc, ionFluidSrc, elcCurrent, ionCurrent},
+   -- number of fluids
+   numFluids = 2,
+   -- species charge
+   charge = {elcCharge, ionCharge},
+   -- species mass
+   mass = {elcMass, ionMass},
+   -- premittivity of free space
+   epsilon0 = epsilon0,
+   -- linear solver to use: one of partialPivLu or colPivHouseholderQr
+   linearSolver = "partialPivLu",
 }
 
 -- Collisional source updaters
@@ -351,9 +310,9 @@ function applyBc(fld, t)
    fld:sync()
 end
 
-function updateSource(inpQ, inpElc, inpIon, tCurr, tEnd)
+function updateSource(inpElc, inpIon, inpEm, tCurr, tEnd)
    -- EM sources
-   sourceSlvr:setOut( {inpQ} )
+   sourceSlvr:setOut( {inpElc, inpIon, inpEm} )
    sourceSlvr:setCurrTime(tCurr)
    sourceSlvr:advance(tEnd)
 
@@ -377,7 +336,7 @@ function solveTwoFluidSystem(tCurr, t)
    local dthalf = 0.5*(t-tCurr)
 
    -- update source term
-   updateSource(q, elcFluid, ionFluid, tCurr, tCurr+dthalf)
+   updateSource(elcFluid, ionFluid, emField, tCurr, tCurr+dthalf)
    applyBc(q)
 
    -- advance electrons
@@ -398,7 +357,7 @@ function solveTwoFluidSystem(tCurr, t)
    end
 
    -- update source terms
-   updateSource(qNew, elcFluidNew, ionFluidNew, tCurr, tCurr+dthalf)
+   updateSource(elcFluidNew, ionFluidNew, emFieldNew, tCurr, tCurr+dthalf)
    applyBc(qNew)
 
    return status, dtSuggested
@@ -409,7 +368,7 @@ function solveTwoFluidLaxSystem(tCurr, t)
    local dthalf = 0.5*(t-tCurr)
 
    -- update source term
-   updateSource(q, elcFluid, ionFluid, tCurr, tCurr+dthalf)
+   updateSource(elcFluid, ionFluid, emField, tCurr, tCurr+dthalf)
    applyBc(q)
 
    -- advance electrons
@@ -430,7 +389,7 @@ function solveTwoFluidLaxSystem(tCurr, t)
    end
 
    -- update source terms
-   updateSource(qNew, elcFluidNew, ionFluidNew, tCurr, tCurr+dthalf)
+   updateSource(elcFluidNew, ionFluidNew, emFieldNew, tCurr, tCurr+dthalf)
    applyBc(qNew)
 
    return status, dtSuggested
