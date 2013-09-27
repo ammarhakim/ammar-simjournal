@@ -616,3 +616,7 @@ program for that simulation.
     - EM pulse in box (see s284). Using dimensional splitting.
   * - ${mdl("s292")}
     - Same as s286, except using dimensional splitting.
+  * - ${mdl("s293")}
+    - Same as s286, except using explicit RK4 source update (this just for comparsion with s286).
+  * - ${mdl("s294")}
+    - Same as s292, except on a :math:`500\times 250` grid.
