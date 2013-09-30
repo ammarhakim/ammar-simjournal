@@ -17,7 +17,7 @@ elcMass = ionMass/25
 ionCycl = ionCharge*B0/ionMass
 
 start = 0
-end  = 60
+end  = 80
 nFrame = end-start+1
 tm = zeros((nFrame,), float)
 flx = zeros((nFrame,), float)
