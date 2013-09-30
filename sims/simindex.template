@@ -620,3 +620,5 @@ program for that simulation.
     - Same as s286, except using explicit RK4 source update (this just for comparsion with s286).
   * - ${mdl("s294")}
     - Same as s292, except on a :math:`500\times 250` grid.
+  * - ${mdl("s295")}
+    - Same as s292, except on a :math:`500\times 250` grid and :math:`100\times 50` domain.
