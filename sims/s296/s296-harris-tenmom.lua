@@ -290,6 +290,18 @@ ionLaxSlvr = Updater.WavePropagation2D {
 ionLaxSlvr:setIn( {ionFluid} )
 ionLaxSlvr:setOut( {ionFluidNew} )
 
+maxSlvr = Updater.WavePropagation2D {
+   onGrid = grid,
+   equation = maxwellEqn,
+   -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
+   limiter = "monotonized-centered",
+   cfl = cfl,
+   cflm = 1.1*cfl,
+}
+-- set input/output arrays (these do not change so set it once)
+maxSlvrDir:setIn( {emField} )
+maxSlvrDir:setOut( {emFieldNew} )
+
 -- updater to solve ODEs for source-term splitting scheme
 sourceSlvr = Updater.ImplicitTenMomentSrc2D {
    onGrid = grid,
