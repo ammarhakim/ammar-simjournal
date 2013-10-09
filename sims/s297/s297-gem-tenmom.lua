@@ -24,13 +24,13 @@ epsilon0 = 1.0
 mgnErrorSpeedFactor = 1.0
 elcCollisionFreq = 1.0
 
-Lx = 100.0
-Ly = 50.0
+Lx = 50.0
+Ly = 25.0
 B0 = 1/15.0
 n0 = 1.0
 nb = 0.3*n0
 lambda = math.sqrt(10/12)
-cfl = 0.75
+cfl = 0.15
 bGuideFactor = 0.0
 wci = ionCharge*B0/ionMass -- ion cyclotron frequency
 elcPlasmaFreq = math.sqrt(n0*elcCharge^2/(epsilon0*elcMass)) -- plasma frequency
@@ -43,11 +43,10 @@ NY = 500
 
 -- computational domain
 grid = Grid.RectCart2D {
-   lower = {0.0, 0.0},
-   upper = {Lx, Ly},
+   lower = {-Lx/2, -Ly/2},
+   upper = {Lx/2, Ly/2},
    cells = {NX, NY},
    decomposition = decomp,
-   periodicDirs = {0, 1}
 }
 
 -- solution
@@ -100,13 +99,11 @@ byAlias = qNew:alias(24, 25)
 function initElc(x,y,z)
    local me = elcMass
    local qe = elcCharge
-   local Lx4 = Lx/4
-   local Ly4 = Ly/4
 
-   local numDens = n0*(1/math.cosh((y-Ly4)/lambda))^2 + n0*(1/math.cosh((y-3*Ly4)/lambda))^2 + nb
+  local numDens = n0*(1/math.cosh(y/lambda))^2 + nb
 
    -- electron momentum is computed from plasma current that supports field
-   local ezmom = -B0*(1/lambda)*(1/math.cosh((y-Ly4)/lambda)^2 - 1/math.cosh((y-3*Ly4)/lambda)^2)*(me/qe)
+   local ezmom = -B0*(1/lambda)*(1/math.cosh(y/lambda))^2*(me/qe)
    local rhoe = numDens*me
    local pre = numDens*B0^2/12.0
    local pzz = pre + ezmom*ezmom/rhoe
@@ -119,10 +116,8 @@ elcFluid:set(initElc)
 function initIon(x,y,z)
    local mi = ionMass
    local qi = ionCharge
-   local Lx4 = Lx/4
-   local Ly4 = Ly/4
 
-   local numDens = n0*(1/math.cosh((y-Ly4)/lambda))^2 + n0*(1/math.cosh((y-3*Ly4)/lambda))^2 + nb
+   local numDens = n0*(1/math.cosh(y/lambda))^2 + nb
    local rhoi = numDens*mi
    local pre = numDens*B0^2/12.0
    local pri = 5*pre
@@ -136,21 +131,12 @@ function initEmField(x,y,z)
    local psi0 = 0.1*B0
    local pi = Lucee.Pi
    local twopi = 2*pi
-   local Lx4 = Lx/4
-   local Ly4 = Ly/4
-   local sin, cos = math.sin, math.cos
 
    -- unperturbed field has only Bx component
-   local Bx = B0*(-1+math.tanh((y-Ly4)/lambda)-math.tanh((y-3*Ly4)/lambda))
-   local dBx1 = -psi0*(pi/Ly)*cos(2*pi*(x-Lx4)/Lx)*sin(pi*(y-Ly4)/Ly)
-   local dBy1 = psi0*(2*pi/Lx)*sin(2*pi*(x-Lx4)/Lx)*cos(pi*(y-Ly4)/Ly)
-   
-   local dBx2 = -psi0*(pi/Ly)*cos(2*pi*(x+Lx4)/Lx)*sin(pi*(y+Ly4)/Ly)
-   local dBy2 = psi0*(2*pi/Lx)*sin(2*pi*(x+Lx4)/Lx)*cos(pi*(y+Ly4)/Ly)
-   
+   local Bx = B0*math.tanh(y/lambda)
    -- add perturbation so net field is divergence free
-   local Bx = Bx+dBx1+dBx2
-   local By = dBy1+dBy2
+   local Bx = Bx - psi0*(pi/Ly)*math.cos(twopi*x/Lx)*math.sin(pi*y/Ly)
+   local By = psi0*(twopi/Lx)*math.sin(twopi*x/Lx)*math.cos(pi*y/Ly)
 
    return 0.0, 0.0, 0.0, Bx, By, 0.0, 0.0, 0.0
 end
@@ -327,10 +313,55 @@ ionCollSrcSlvr = Updater.TenMomentLocalCollisionlessHeatFlux2D {
    averageWaveNumber = 1/elcSkinDepth,
 }
 
+-- boundary applicator objects for fluids and fields
+bcElcCopy = BoundaryCondition.Copy { components = {0, 4} }
+bcElcWall = BoundaryCondition.ZeroNormal { components = {1, 2, 3} }
+bcIonCopy = BoundaryCondition.Copy { components = {5, 9} }
+bcIonWall = BoundaryCondition.ZeroNormal { components = {6, 7, 8} }
+bcElcFld = BoundaryCondition.ZeroTangent { components = {10, 11, 12} }
+bcMgnFld = BoundaryCondition.ZeroNormal { components = {13, 14, 15} }
+bcPot = BoundaryCondition.Copy { components = {16, 17} }
+
+-- top and bottom BC updater
+bcBottom = Updater.Bc2D {
+   onGrid = grid,
+   -- boundary conditions to apply
+   boundaryConditions = {
+      bcElcCopy, bcElcWall, 
+      bcIonCopy, bcIonWall,
+      bcElcFld, bcMgnFld, bcPot
+   },
+   -- direction to apply
+   dir = 1,
+   -- edge to apply on
+   edge = "lower",
+}
+bcBottom:setOut( {qNew} )
+
+bcTop = Updater.Bc2D {
+   onGrid = grid,
+   -- boundary conditions to apply
+   boundaryConditions = {
+      bcElcCopy, bcElcWall, 
+      bcIonCopy, bcIonWall,
+      bcElcFld, bcMgnFld, bcPot
+   },
+   -- direction to apply
+   dir = 1,
+   -- edge to apply on
+   edge = "upper",
+}
+bcTop:setOut( {qNew} )
+
 -- function to apply boundary conditions
 function applyBc(fld, t)
-   -- sync ghost cells (this automatically applies periodic BCs as
-   -- grid object has explicit specification of periodic directions)
+   -- in X
+   fld:applyCopyBc(0, "lower")
+   fld:applyCopyBc(0, "upper")
+   -- in Y
+   fld:applyCopyBc(1, "lower")
+   fld:applyCopyBc(1, "upper")
+   -- sync ghost cells
    fld:sync()
 end
 
@@ -528,9 +559,9 @@ writeFrame(0, 0.0)
 dtSuggested = 1.0 -- initial time-step to use (this will be discarded and adjusted to CFL value)
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 200.0/wci
+tEnd = 60.0/wci
 
-nFrames = 100
+nFrames = 60
 tFrame = (tEnd-tStart)/nFrames -- time between frames
 
 tCurr = tStart
