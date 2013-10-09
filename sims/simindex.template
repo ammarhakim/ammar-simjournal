@@ -624,3 +624,5 @@ program for that simulation.
     - Same as s292, except on a :math:`500\times 250` grid and :math:`100\times 50` domain.
   * - ${mdl("s296")}
     - Same as s295, except on a :math:`1000\times 500` grid and :math:`100\times 50` domain.
+  * - ${mdl("s297")}
+    - Same as s282 (open domain reconnection), except using a dimensional splitting.
