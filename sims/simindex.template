@@ -628,3 +628,5 @@ program for that simulation.
     - Same as s282 (open domain reconnection), except using a dimensional splitting.
   * - ${mdl("s298")}
     - Same as s296 (double periodic), except with collisional relaxation (elcCollisionFreq 1.0).
+  * - ${mdl("s299")}
+    - Same as s296 (double periodic), except on :math:`2000\times 1000`.
