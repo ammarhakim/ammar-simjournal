@@ -630,3 +630,5 @@ program for that simulation.
     - Same as s296 (double periodic), except with collisional relaxation (elcCollisionFreq 1.0).
   * - ${mdl("s299")}
     - Same as s296 (double periodic), except on :math:`2000\times 1000`.
+  * - ${mdl("s300")}
+    - Same as s296 (double periodic), except with CFL of 0.95.
