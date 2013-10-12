@@ -632,3 +632,5 @@ program for that simulation.
     - Same as s296 (double periodic), except on :math:`2000\times 1000`.
   * - ${mdl("s300")}
     - Same as s296 (double periodic), except with CFL of 0.95.
+  * - ${mdl("s301")}
+    - Doubly periodic reconnection with 5-moment model. :math:`1000\times 500` grid.
