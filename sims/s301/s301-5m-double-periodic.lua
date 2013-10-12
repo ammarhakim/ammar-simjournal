@@ -31,7 +31,7 @@ B0 = 1/15.0
 n0 = 1.0
 nb = 0.3*n0
 lambda = math.sqrt(10/12)
-cfl = 0.9
+cfl = 0.2
 bGuideFactor = 0.0
 wci = ionCharge*B0/ionMass -- ion cyclotron frequency
 elcPlasmaFreq = math.sqrt(n0*elcCharge^2/(epsilon0*elcMass)) -- plasma frequency
@@ -39,8 +39,8 @@ elcSkinDepth = lightSpeed/elcPlasmaFreq
 
 nSpecies = 2
 
-NX = 1000
-NY = 500
+NX = 100
+NY = 50
 
 -- computational domain
 grid = Grid.RectCart2D {
@@ -112,11 +112,14 @@ function init(x,y,z)
    local Lx4 = Lx/4
    local Ly4 = Ly/4
 
+   local sin, cos = math.sin, math.cos
+
    local numDens = n0*(1/math.cosh((y-Ly4)/lambda))^2 + n0*(1/math.cosh((y-3*Ly4)/lambda))^2 + nb
 
    -- electron momentum is computed from plasma current that supports field
    local ezmom = -B0*(1/lambda)*(1/math.cosh((y-Ly4)/lambda)^2 - 1/math.cosh((y-3*Ly4)/lambda)^2)*(me/qe)
    local rhoe = numDens*me
+   local rhoi = numDens*mi
    local pre = numDens*B0^2/12.0
    local pri = 5*pre
 
@@ -445,9 +448,9 @@ writeFrame(0, 0.0)
 dtSuggested = 1.0 -- initial time-step to use (this will be discarded and adjusted to CFL value)
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 60.0/wci
+tEnd = 100.0/wci
 
-nFrames = 60
+nFrames = 20
 tFrame = (tEnd-tStart)/nFrames -- time between frames
 
 tCurr = tStart
