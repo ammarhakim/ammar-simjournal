@@ -39,8 +39,8 @@ elcSkinDepth = lightSpeed/elcPlasmaFreq
 
 nSpecies = 2
 
-NX = 100
-NY = 50
+NX = 1000
+NY = 500
 
 -- computational domain
 grid = Grid.RectCart2D {
@@ -509,9 +509,9 @@ writeFrame(0, 0.0)
 dtSuggested = 1.0 -- initial time-step to use (this will be discarded and adjusted to CFL value)
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 100.0/wci
+tEnd = 200.0/wci
 
-nFrames = 20
+nFrames = 100
 tFrame = (tEnd-tStart)/nFrames -- time between frames
 
 tCurr = tStart
