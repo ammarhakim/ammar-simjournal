@@ -334,6 +334,10 @@ function applyBc(fld, t)
    fld:sync()
 end
 
+-- apply BCs to initial conditions
+applyBc(q)
+applyBc(qNew)
+
 function updateSource(inpElc, inpIon, inpEm, tCurr, tEnd)
    -- EM sources
    sourceSlvr:setOut( {inpElc, inpIon, inpEm} )
@@ -376,10 +380,6 @@ function updateFluidsAndField(tCurr, t)
 
    return myStatus, myDtSuggested
 end
-
--- apply BCs to initial conditions
-applyBc(q)
-applyBc(qNew)
 
 -- function to take one time-step
 function solveTwoFluidSystem(tCurr, t)
