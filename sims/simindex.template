@@ -639,4 +639,6 @@ program for that simulation.
   * - ${mdl("s303")}
     - Same as s302, except on :math:`2000\times 1000`.
   * - ${mdl("s304")}
-    - Two-fluid 5-moment GEM challenge with zero guide field, :math:`512x256` domain, dimensional splitting
+    - Two-fluid 5-moment GEM challenge with zero guide field, :math:`512x256` grid, dimensional splitting
+  * - ${mdl("s305")}
+    - Same as s304, except on double the domain and :math:`1024x512` grid.
