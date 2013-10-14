@@ -637,4 +637,6 @@ program for that simulation.
   * - ${mdl("s302")}
     - Doubly periodic reconnection with 5-moment model. :math:`1000\times 500` grid, on :math`200\times 100` grid.
   * - ${mdl("s303")}
-    - Sam as s302, except on :math:`2000\times 1000`.
+    - Same as s302, except on :math:`2000\times 1000`.
+  * - ${mdl("s304")}
+    - Two-fluid 5-moment GEM challenge with zero guide field, :math:`512x256` domain, dimensional splitting
