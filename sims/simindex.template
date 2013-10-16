@@ -645,4 +645,4 @@ program for that simulation.
   * - ${mdl("s306")}
     - Same as s304, except :math:`1024x512` grid.
   * - ${mdl("s307")}
-    - Same as s296 (double periodic 10M), except using etaJ term.
+    - Same as s296 (double periodic 10M), except using etaJ term and on :math:`500\times 250` grid.
