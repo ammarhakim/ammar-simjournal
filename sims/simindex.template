@@ -648,3 +648,5 @@ program for that simulation.
     - Same as s296 (double periodic 10M), except using :math:`\eta J` term and on :math:`500\times 250` grid.
   * - ${mdl("s308")}
     - Same as s296 (double periodic 10M), except using a perturbation of 0.5.
+  * - ${mdl("s309")}
+    - Same as 301 (double periodic 5M), except enforcing quasi-neutrality
