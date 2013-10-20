@@ -17,7 +17,7 @@ elcMass = ionMass/25
 ionCycl = ionCharge*B0/ionMass
 
 start = 0
-end  = 70
+end  = 35
 nFrame = end-start+1
 tm = zeros((nFrame,), float)
 flx = zeros((nFrame,), float)
@@ -25,7 +25,7 @@ flx = zeros((nFrame,), float)
 count = 0
 for i in range(start, end+1):
     print ("Working on %d ..." % i)
-    fh = tables.openFile("s295-harris-tenmom_q_%d.h5" % i)
+    fh = tables.openFile("s307-harris-tenmom_q_%d.h5" % i)
     q = fh.root.StructGridField
     nx, ny = q.shape[0], q.shape[1]
     YI = ny/4
@@ -70,7 +70,7 @@ title('$\psi$')
 xlabel('Time')
 ylabel('$\psi$')
 
-fp = open("s295-byFlux.txt", "w")
+fp = open("s307-byFlux.txt", "w")
 for i in range(flx.shape[0]):
     fp.writelines("%g %g\n" % (ionCycl*tm[i], flx[i]))
 fp.close()
