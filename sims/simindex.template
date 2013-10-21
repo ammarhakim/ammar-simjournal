@@ -650,3 +650,5 @@ program for that simulation.
     - Same as s296 (double periodic 10M), except using a perturbation of 0.5.
   * - ${mdl("s309")}
     - Same as 301 (double periodic 5M), except enforcing quasi-neutrality
+  * - ${mdl("s310")}
+    - Same as 309, with div(E) also enforced using hyperbolic cleaning.
