@@ -540,6 +540,8 @@ end
 function writeFrame(frame, tCurr)
    qNew:write(string.format("q_%d.h5", frame), tCurr )
    byFlux:write( string.format("byFlux_%d.h5", frame) )
+   xpointEz:write(string.format("xpointEz_%d.h5", frame) )
+   xpointNe:write(string.format("xpointNe_%d.h5", frame) )
 end
 
 -- compute diagnostics and write out initial conditions
