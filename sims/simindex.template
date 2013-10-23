@@ -652,3 +652,5 @@ program for that simulation.
     - Same as 301 (double periodic 5M), except enforcing quasi-neutrality
   * - ${mdl("s310")}
     - Same as 309, with div(E) also enforced using hyperbolic cleaning.
+  * - ${mdl("s311")}
+    - Same as 304, shorter wih more output and odd number of cells
