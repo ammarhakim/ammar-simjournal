@@ -88,6 +88,8 @@ emFieldNew = qNew:alias(10, 18)
 byAlias = qNew:alias(14, 15)
 ezAlias = qNew:alias(12, 13)
 neAlias = qNew:alias(0, 1)
+uzeAlias = qNew:alias(3, 4)
+uziAlias = qNew:alias(8, 9)
 
 -- function to apply initial conditions
 function init(x,y,z)
@@ -472,9 +474,29 @@ xpointNeRec = Updater.RecordFieldInCell2D {
 xpointNeRec:setIn( {neAlias} )
 xpointNeRec:setOut( {xpointNe} )
 
+-- dynvector to store electron uz at X-point
+xpointUze = DataStruct.DynVector { numComponents = 1 }
+xpointUzeRec = Updater.RecordFieldInCell2D {
+   onGrid = grid,
+   -- index of cell to record
+   cellIndex = {(NX-1)/2, (NY-1)/2},
+}
+xpointUzeRec:setIn( {uzeAlias} )
+xpointUzeRec:setOut( {xpointUze} )
+
+-- dynvector to store ion uz at X-point
+xpointUzi = DataStruct.DynVector { numComponents = 1 }
+xpointUziRec = Updater.RecordFieldInCell2D {
+   onGrid = grid,
+   -- index of cell to record
+   cellIndex = {(NX-1)/2, (NY-1)/2},
+}
+xpointUziRec:setIn( {uziAlias} )
+xpointUziRec:setOut( {xpointUzi} )
+
 -- compute diagnostic
 function calcDiagnostics(tCurr, t)
-   for i,diag in ipairs({byFluxCalc, xpointEzRec, xpointNeRec}) do
+   for i,diag in ipairs({byFluxCalc, xpointEzRec, xpointNeRec, xpointUzeRec, xpointUziRec}) do
       diag:setCurrTime(tCurr)
       diag:advance(t)
    end
@@ -542,6 +564,8 @@ function writeFrame(frame, tCurr)
    byFlux:write( string.format("byFlux_%d.h5", frame) )
    xpointEz:write(string.format("xpointEz_%d.h5", frame) )
    xpointNe:write(string.format("xpointNe_%d.h5", frame) )
+   xpointUze:write(string.format("xpointUze_%d.h5", frame) )
+   xpointUzi:write(string.format("xpointUzi_%d.h5", frame) )
 end
 
 -- compute diagnostics and write out initial conditions
