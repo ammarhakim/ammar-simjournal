@@ -656,3 +656,5 @@ program for that simulation.
     - Same as 304, shorter wih more output and odd number of cells
   * - ${mdl("s312")}
     - Same as 311, except with Ey initialized to equilibrium value.
+  * - ${mdl("s313")}
+    - Same as 312, except with :math:`1601\times 801` mesh.
