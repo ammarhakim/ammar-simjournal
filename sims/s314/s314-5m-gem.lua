@@ -576,9 +576,9 @@ writeFrame(0, 0.0)
 dtSuggested = 1.0 -- initial time-step to use (this will be discarded and adjusted to CFL value)
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 20.0/wci
+tEnd = 30.0/wci
 
-nFrames = 100
+nFrames = 150
 tFrame = (tEnd-tStart)/nFrames -- time between frames
 
 tCurr = tStart
