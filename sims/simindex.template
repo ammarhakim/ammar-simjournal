@@ -661,4 +661,6 @@ program for that simulation.
   * - ${mdl("s314")}
     - Same as s311, except both electrons and ions carry current, on a :math:`1001\times 501` grid.
   * - ${mdl("s315")}
-    - Same as s296, except both electrons and ions carry current, and using different perturbation.
+    - Same as s296 (double tearing), except both electrons and ions carry current, and using different perturbation.
+  * - ${mdl("s315")}
+    - Same as s315, except using :math:`k=1/\delta_i`.
