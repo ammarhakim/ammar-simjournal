@@ -31,14 +31,26 @@ B0 = 1/15.0
 n0 = 1.0
 nb = 0.3*n0
 lambda = math.sqrt(10/12)
-cfl = 0.15
+cfl = 0.9
 bGuideFactor = 0.0
 wci = ionCharge*B0/ionMass -- ion cyclotron frequency
 
 nSpecies = 2
 
-NX = 1000
-NY = 500
+NX = 1001
+NY = 501
+
+-- A generic function to run an updater.
+function runUpdater(updater, currTime, timeStep, inpFlds, outFlds)
+   updater:setCurrTime(currTime)
+   if inpFlds then
+      updater:setIn(inpFlds)
+   end
+   if outFlds then
+      updater:setOut(outFlds)
+   end
+   return updater:advance(currTime+timeStep)
+end
 
 -- computational domain
 grid = Grid.RectCart2D {
@@ -51,24 +63,30 @@ grid = Grid.RectCart2D {
 -- solution
 q = DataStruct.Field2D {
    onGrid = grid,
-   numComponents = 18+6,
+   numComponents = 18,
+   ghost = {2, 2},
+}
+-- solution after X update
+qX = DataStruct.Field2D {
+   onGrid = grid,
+   numComponents = 28,
    ghost = {2, 2},
 }
 qDup = DataStruct.Field2D {
    onGrid = grid,
-   numComponents = 18+6,
+   numComponents = 18,
    ghost = {2, 2},
 }
 -- updated solution
 qNew = DataStruct.Field2D {
    onGrid = grid,
-   numComponents = 18+6,
+   numComponents = 18,
    ghost = {2, 2},
 }
 -- create duplicate copy in case we need to take step again
 qNewDup = DataStruct.Field2D {
    onGrid = grid,
-   numComponents = 18+6,
+   numComponents = 18,
    ghost = {2, 2},
 }
 
@@ -81,11 +99,26 @@ elcFluidNew = qNew:alias(0, 5)
 ionFluidNew = qNew:alias(5, 10)
 emFieldNew = qNew:alias(10, 18)
 
--- alias for By
-byAlias = qNew:alias(14, 15)
+-- create aliases to various sub-system
+elcFluid = q:alias(0, 5)
+ionFluid = q:alias(5, 10)
+emField = q:alias(10, 18)
 
--- starting index for static EM field
-sebs = 5*2+8
+elcFluidX = qX:alias(0, 5)
+ionFluidX = qX:alias(5, 10)
+emFieldX = qX:alias(10, 18)
+
+elcFluidNew = qNew:alias(0, 5)
+ionFluidNew = qNew:alias(5, 10)
+emFieldNew = qNew:alias(10, 18)
+
+-- alias for various fields for diagnostics
+byAlias = qNew:alias(14, 15)
+ezAlias = qNew:alias(12, 13)
+neAlias = qNew:alias(0, 1)
+uzeAlias = qNew:alias(3, 4)
+niAlias = qNew:alias(5, 6)
+uziAlias = qNew:alias(8, 9)
 
 -- function to apply initial conditions
 function init(x,y,z)
@@ -108,34 +141,25 @@ function init(x,y,z)
    local numDens = n0*(1/math.cosh(y/lambda))^2 + nb
 
    -- electron momentum is computed from plasma current that supports field
-   local ezmom = -B0*(1/lambda)*(1/math.cosh(y/lambda))^2*(me/qe)
+   local ezmom = -(1.0/6.0)*B0*(1/lambda)*(1/math.cosh(y/lambda))^2*(me/qe)
    -- mass density is background plus Harris sheet profile
    local rhoe = numDens*me
    local pre = numDens*B0^2/12.0
    -- electron total energy is thermal plus kinetic
    local ere = pre/gasGamma1 + 0.5*ezmom*ezmom/rhoe
 
+   local izmom = -(5.0/6.0)*B0*(1/lambda)*(1/math.cosh(y/lambda))^2*(mi/qi)
    -- mass density is background plus Harris sheet profile
    local rhoi = numDens*mi
    local pri = 5*pre
    -- ion total energy is thermal: ions do not carry any current
-   local eri = pri/gasGamma1
+   local eri = pri/gasGamma1 + 0.5*izmom*izmom/rhoi
 
-   return rhoe, 0.0, 0.0, ezmom, ere, rhoi, 0.0, 0.0, 0.0, eri, 0.0, 0.0, 0.0, Bx, By, 0.0, 0.0, 0.0
+   return rhoe, 0.0, 0.0, ezmom, ere, rhoi, 0.0, 0.0, izmom, eri, 0.0, 0.0, 0.0, Bx, By, 0.0, 0.0, 0.0
 end
 
-qTwoFluids = q:alias(0, 5*nSpecies+8)
 -- set initial conditions for fields and fluids
-qTwoFluids:set(init)
-
--- alias to static magnetic field
-staticEB = q:alias(sebs, sebs+6)
-function initStaticEB(x,y,z)
-   local Bz = bGuideFactor*B0
-
-   return 0.0, 0.0, 0.0, 0.0, 0.0, Bz
-end
-staticEB:set(initStaticEB)
+q:set(init)
 
 -- get ghost cells correct
 q:sync()
@@ -173,32 +197,116 @@ maxwellEqn = HyperEquation.PhMaxwell {
 }
 
 -- updater for electron equations
-elcEulerSlvr = Updater.WavePropagation2D {
+elcFluidSlvrDir0 = Updater.WavePropagation2D {
    onGrid = grid,
    equation = elcEulerEqn,
    -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
    limiter = "monotonized-centered",
    cfl = cfl,
    cflm = 1.1*cfl,
+   updateDirections = {0} -- directions to update
 }
 -- set input/output arrays (these do not change so set it once)
-elcEulerSlvr:setIn( {elcFluid} )
-elcEulerSlvr:setOut( {elcFluidNew} )
+elcFluidSlvrDir0:setIn( {elcFluid} )
+elcFluidSlvrDir0:setOut( {elcFluidX} )
 
 -- updater for ion equations
-ionEulerSlvr = Updater.WavePropagation2D {
+ionFluidSlvrDir0 = Updater.WavePropagation2D {
    onGrid = grid,
    equation = ionEulerEqn,
    -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
    limiter = "monotonized-centered",
    cfl = cfl,
    cflm = 1.1*cfl,
+   updateDirections = {0} -- directions to update
 }
 -- set input/output arrays (these do not change so set it once)
-ionEulerSlvr:setIn( {ionFluid} )
-ionEulerSlvr:setOut( {ionFluidNew} )
+ionFluidSlvrDir0:setIn( {ionFluid} )
+ionFluidSlvrDir0:setOut( {ionFluidX} )
 
 -- updater for Maxwell equations
+maxSlvrDir0 = Updater.WavePropagation2D {
+   onGrid = grid,
+   equation = maxwellEqn,
+   -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
+   limiter = "monotonized-centered",
+   cfl = cfl,
+   cflm = 1.1*cfl,
+   updateDirections = {0} -- directions to update
+}
+-- set input/output arrays (these do not change so set it once)
+maxSlvrDir0:setIn( {emField} )
+maxSlvrDir0:setOut( {emFieldX} )
+
+-- updater for electron equations
+elcFluidSlvrDir1 = Updater.WavePropagation2D {
+   onGrid = grid,
+   equation = elcEulerEqn,
+   -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
+   limiter = "monotonized-centered",
+   cfl = cfl,
+   cflm = 1.1*cfl,
+   updateDirections = {1} -- directions to update
+}
+-- set input/output arrays (these do not change so set it once)
+elcFluidSlvrDir1:setIn( {elcFluidX} )
+elcFluidSlvrDir1:setOut( {elcFluidNew} )
+
+-- updater for ion equations
+ionFluidSlvrDir1 = Updater.WavePropagation2D {
+   onGrid = grid,
+   equation = ionEulerEqn,
+   -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
+   limiter = "monotonized-centered",
+   cfl = cfl,
+   cflm = 1.1*cfl,
+   updateDirections = {1} -- directions to update
+}
+-- set input/output arrays (these do not change so set it once)
+ionFluidSlvrDir1:setIn( {ionFluidX} )
+ionFluidSlvrDir1:setOut( {ionFluidNew} )
+
+-- updater for Maxwell equations
+maxSlvrDir1 = Updater.WavePropagation2D {
+   onGrid = grid,
+   equation = maxwellEqn,
+   -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
+   limiter = "monotonized-centered",
+   cfl = cfl,
+   cflm = 1.1*cfl,
+   updateDirections = {1} -- directions to update
+}
+-- set input/output arrays (these do not change so set it once)
+maxSlvrDir1:setIn( {emFieldX} )
+maxSlvrDir1:setOut( {emFieldNew} )
+
+-- (Lax equation solver are used to fix negative pressure/density)
+-- updater for electron equations
+elcLaxSlvr = Updater.WavePropagation2D {
+   onGrid = grid,
+   equation = elcEulerLaxEqn,
+   -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
+   limiter = "zero",
+   cfl = cfl,
+   cflm = 1.1*cfl,
+}
+-- set input/output arrays (these do not change so set it once)
+elcLaxSlvr:setIn( {elcFluid} )
+elcLaxSlvr:setOut( {elcFluidNew} )
+
+-- updater for ion equations
+ionLaxSlvr = Updater.WavePropagation2D {
+   onGrid = grid,
+   equation = ionEulerLaxEqn,
+   -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
+   limiter = "zero",
+   cfl = cfl,
+   cflm = 1.1*cfl,
+}
+-- set input/output arrays (these do not change so set it once)
+ionLaxSlvr:setIn( {ionFluid} )
+ionLaxSlvr:setOut( {ionFluidNew} )
+
 maxSlvr = Updater.WavePropagation2D {
    onGrid = grid,
    equation = maxwellEqn,
@@ -211,35 +319,8 @@ maxSlvr = Updater.WavePropagation2D {
 maxSlvr:setIn( {emField} )
 maxSlvr:setOut( {emFieldNew} )
 
--- (Lax equation solver are used to fix negative pressure/density)
--- updater for electron equations
-elcEulerLaxSlvr = Updater.WavePropagation2D {
-   onGrid = grid,
-   equation = elcEulerLaxEqn,
-   -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
-   limiter = "zero",
-   cfl = cfl,
-   cflm = 1.1*cfl,
-}
--- set input/output arrays (these do not change so set it once)
-elcEulerLaxSlvr:setIn( {elcFluid} )
-elcEulerLaxSlvr:setOut( {elcFluidNew} )
-
--- updater for ion equations
-ionEulerLaxSlvr = Updater.WavePropagation2D {
-   onGrid = grid,
-   equation = ionEulerLaxEqn,
-   -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
-   limiter = "zero",
-   cfl = cfl,
-   cflm = 1.1*cfl,
-}
--- set input/output arrays (these do not change so set it once)
-ionEulerLaxSlvr:setIn( {ionFluid} )
-ionEulerLaxSlvr:setOut( {ionFluidNew} )
-
 -- updater for two-fluid sources
-sourceSlvrImpl = Updater.ImplicitFiveMomentSrc2D {
+sourceSlvr = Updater.ImplicitFiveMomentSrc2D {
    -- grid on which to run updater
    onGrid = grid,
    -- number of fluids
@@ -253,48 +334,8 @@ sourceSlvrImpl = Updater.ImplicitFiveMomentSrc2D {
    -- linear solver to use: one of partialPivLu or colPivHouseholderQr
    linearSolver = "partialPivLu",
    -- has static magnetic field
-   hasStaticField = true,
+   hasStaticField = false,
 }
-
--- boundary applicator objects for fluids and fields
-bcElcCopy = BoundaryCondition.Copy { components = {0, 4} }
-bcElcWall = BoundaryCondition.ZeroNormal { components = {1, 2, 3} }
-bcIonCopy = BoundaryCondition.Copy { components = {5, 9} }
-bcIonWall = BoundaryCondition.ZeroNormal { components = {6, 7, 8} }
-bcElcFld = BoundaryCondition.ZeroTangent { components = {10, 11, 12} }
-bcMgnFld = BoundaryCondition.ZeroNormal { components = {13, 14, 15} }
-bcPot = BoundaryCondition.Copy { components = {16, 17} }
-
--- top and bottom BC updater
-bcBottom = Updater.Bc2D {
-   onGrid = grid,
-   -- boundary conditions to apply
-   boundaryConditions = {
-      bcElcCopy, bcElcWall, 
-      bcIonCopy, bcIonWall,
-      bcElcFld, bcMgnFld, bcPot
-   },
-   -- direction to apply
-   dir = 1,
-   -- edge to apply on
-   edge = "lower",
-}
-bcBottom:setOut( {qNew} )
-
-bcTop = Updater.Bc2D {
-   onGrid = grid,
-   -- boundary conditions to apply
-   boundaryConditions = {
-      bcElcCopy, bcElcWall, 
-      bcIonCopy, bcIonWall,
-      bcElcFld, bcMgnFld, bcPot
-   },
-   -- direction to apply
-   dir = 1,
-   -- edge to apply on
-   edge = "upper",
-}
-bcTop:setOut( {qNew} )
 
 -- function to apply boundary conditions
 function applyBc(fld, t)
@@ -308,41 +349,55 @@ function applyBc(fld, t)
    fld:sync()
 end
 
--- function to update source terms
-function calcSourceImpl(elcIn, ionIn, emIn, tCurr, t)
-   sourceSlvrImpl:setIn( {staticEB} )
-   sourceSlvrImpl:setOut( {elcIn, ionIn, emIn} )
-   sourceSlvrImpl:setCurrTime(tCurr)
-   sourceSlvrImpl:advance(t)
+-- apply BCs to initial conditions
+applyBc(q)
+applyBc(qNew)
+
+function updateSource(inpElc, inpIon, inpEm, tCurr, tEnd)
+   sourceSlvr:setOut( {inpElc, inpIon, inpEm} )
+   sourceSlvr:setCurrTime(tCurr)
+   sourceSlvr:advance(tEnd)
+end
+
+-- function to update the fluid and field using dimensional splitting
+function updateFluidsAndField(tCurr, t)
+   local myStatus = true
+   local myDtSuggested = 1e3*math.abs(t-tCurr)
+   -- X-direction updates
+   for i,slvr in ipairs({elcFluidSlvrDir0, ionFluidSlvrDir0, maxSlvrDir0}) do
+      slvr:setCurrTime(tCurr)
+      local status, dtSuggested = slvr:advance(t)
+      myStatus = status and myStatus
+      myDtSuggested = math.min(myDtSuggested, dtSuggested)
+   end
+
+   -- apply BCs to intermediate update after X sweep
+   applyBc(qX)
+
+   -- Y-direction updates
+   for i,slvr in ipairs({elcFluidSlvrDir1, ionFluidSlvrDir1, maxSlvrDir1}) do
+      slvr:setCurrTime(tCurr)
+      local status, dtSuggested = slvr:advance(t)
+      myStatus = status and myStatus
+      myDtSuggested = math.min(myDtSuggested, dtSuggested)
+   end
+
+   return myStatus, myDtSuggested
 end
 
 -- function to take one time-step
 function solveTwoFluidSystem(tCurr, t)
    local dthalf = 0.5*(t-tCurr)
 
-   -- update source terms
-   calcSourceImpl(elcFluid, ionFluid, emField, tCurr, tCurr+dthalf)
+   -- update source term
+   updateSource(elcFluid, ionFluid, emField, tCurr, tCurr+dthalf)
    applyBc(q)
 
-   -- advance electrons
-   elcEulerSlvr:setCurrTime(tCurr)
-   local elcStatus, elcDtSuggested = elcEulerSlvr:advance(t)
-   -- advance ions
-   ionEulerSlvr:setCurrTime(tCurr)
-   local ionStatus, ionDtSuggested = ionEulerSlvr:advance(t)
-   -- advance fields
-   maxSlvr:setCurrTime(tCurr)
-   local maxStatus, maxDtSuggested = maxSlvr:advance(t)
-
-   -- check if any updater failed
-   local status = false
-   local dtSuggested = math.min(elcDtSuggested, ionDtSuggested, maxDtSuggested)
-   if (elcStatus and ionStatus and maxStatus) then
-      status = true
-   end
+   -- update fluids and fields
+   local status, dtSuggested = updateFluidsAndField(tCurr, t)
 
    -- update source terms
-   calcSourceImpl(elcFluidNew, ionFluidNew, emFieldNew, tCurr, tCurr+dthalf)
+   updateSource(elcFluidNew, ionFluidNew, emFieldNew, tCurr, tCurr+dthalf)
    applyBc(qNew)
 
    return status, dtSuggested
@@ -352,16 +407,16 @@ end
 function solveTwoFluidLaxSystem(tCurr, t)
    local dthalf = 0.5*(t-tCurr)
 
-   -- update source terms
-   calcSourceImpl(elcFluid, ionFluid, emField, tCurr, tCurr+dthalf)
+   -- update source term
+   updateSource(elcFluid, ionFluid, emField, tCurr, tCurr+dthalf)
    applyBc(q)
 
    -- advance electrons
-   elcEulerLaxSlvr:setCurrTime(tCurr)
-   local elcStatus, elcDtSuggested = elcEulerLaxSlvr:advance(t)
+   elcLaxSlvr:setCurrTime(tCurr)
+   local elcStatus, elcDtSuggested = elcLaxSlvr:advance(t)
    -- advance ions
-   ionEulerLaxSlvr:setCurrTime(tCurr)
-   local ionStatus, ionDtSuggested = ionEulerLaxSlvr:advance(t)
+   ionLaxSlvr:setCurrTime(tCurr)
+   local ionStatus, ionDtSuggested = ionLaxSlvr:advance(t)
    -- advance fields
    maxSlvr:setCurrTime(tCurr)
    local maxStatus, maxDtSuggested = maxSlvr:advance(t)
@@ -374,7 +429,7 @@ function solveTwoFluidLaxSystem(tCurr, t)
    end
 
    -- update source terms
-   calcSourceImpl(elcFluidNew, ionFluidNew, emFieldNew, tCurr, tCurr+dthalf)
+   updateSource(elcFluidNew, ionFluidNew, emFieldNew, tCurr, tCurr+dthalf)
    applyBc(qNew)
 
    return status, dtSuggested
@@ -382,12 +437,18 @@ end
 
 -- dynvector to store integrated flux
 byFlux = DataStruct.DynVector { numComponents = 1 }
+-- dynvectors stuff at X-point
+xpointNe = DataStruct.DynVector { numComponents = 1 }
+xpointUze = DataStruct.DynVector { numComponents = 1 }
+xpointNi = DataStruct.DynVector { numComponents = 1 }
+xpointUzi = DataStruct.DynVector { numComponents = 1 }
+xpointEz = DataStruct.DynVector { numComponents = 1 }
 
--- updater for Maxwell equations
+-- updater to compute reconnected flux
 byFluxCalc = Updater.IntegrateFieldAlongLine2D {
    onGrid = grid,
    -- start cell
-   startCell = {0, NY/2},
+   startCell = {0, (NY-1)/2},
    -- direction to integrate in
    dir = 0,
    -- number of cells to integrate
@@ -397,13 +458,22 @@ byFluxCalc = Updater.IntegrateFieldAlongLine2D {
 		  return math.abs(by)
 	       end,
 }
-byFluxCalc:setIn( {byAlias} )
-byFluxCalc:setOut( {byFlux} )
+-- updater to record stuff at X-point
+xpointRec = Updater.RecordFieldInCell2D {
+   onGrid = grid,
+   -- index of cell to record
+   cellIndex = {(NX-1)/2, (NY-1)/2},
+}
 
 -- compute diagnostic
 function calcDiagnostics(tCurr, t)
-   byFluxCalc:setCurrTime(tCurr)
-   byFluxCalc:advance(t)
+   local dt = t-tCurr
+   runUpdater(byFluxCalc, tCurr, dt, {byAlias}, {byFlux})
+   runUpdater(xpointRec, tCurr, dt, {ezAlias}, {xpointEz})
+   runUpdater(xpointRec, tCurr, dt, {neAlias}, {xpointNe})
+   runUpdater(xpointRec, tCurr, dt, {uzeAlias}, {xpointUze})
+   runUpdater(xpointRec, tCurr, dt, {niAlias}, {xpointNi})
+   runUpdater(xpointRec, tCurr, dt, {uziAlias}, {xpointUzi})
 end
 
 -- advance solution from tStart to tEnd, using optimal time-steps.
@@ -415,17 +485,14 @@ function advanceFrame(tStart, tEnd, initDt)
    local tfStatus, tfDtSuggested
    local useLaxSolver = false
    while true do
-      -- copy n case we need to take this step again
       qDup:copy(q)
       qNewDup:copy(qNew)
 
-      -- if needed adjust dt to hit tEnd exactly
-      if (tCurr+myDt > tEnd) then
+      if (tCurr+myDt > tEnd) then -- hit tEnd exactly
 	 myDt = tEnd-tCurr
       end
 
       Lucee.logInfo (string.format(" Taking step %d at time %g with dt %g", step, tCurr, myDt))
-      -- advance fluids and fields
       if (useLaxSolver) then
 	 -- (call Lax solver if positivity violated)
 	 tfStatus, tfDtSuggested = solveTwoFluidLaxSystem(tCurr, tCurr+myDt)
@@ -435,34 +502,28 @@ function advanceFrame(tStart, tEnd, initDt)
       end
 
       if (tfStatus == false) then
-	 -- time-step too large
-	 Lucee.logInfo (string.format(" ** Time step %g too large! Will retake with dt %g", myDt, dtSuggested))
+	 Lucee.logInfo (string.format(" ** Time step %g too large! Will retake with dt %g", myDt, tfDtSuggested))
 	 myDt = tfDtSuggested
 	 qNew:copy(qNewDup)
 	 q:copy(qDup)
       elseif ((elcEulerEqn:checkInvariantDomain(elcFluidNew) == false)
 	   or (ionEulerEqn:checkInvariantDomain(ionFluidNew) == false)) then
-	 -- negative density/pressure occured
 	 Lucee.logInfo (string.format("** Negative pressure or density at %g! Will retake step with Lax fluxes", tCurr+myDt))
 	 q:copy(qDup)
 	 qNew:copy(qNewDup)
 	 useLaxSolver = true
       else
-	 -- check if a nan occured
 	 if (qNew:hasNan()) then
 	    Lucee.logInfo (string.format(" ** Nan occured at %g! Stopping simulation", tCurr))
 	    break
 	 end
 
-	 -- compute diagnostics
 	 calcDiagnostics(tCurr, tCurr+myDt)
-	 -- copy updated solution back
 	 q:copy(qNew)
 
 	 myDt = tfDtSuggested
 	 tCurr = tCurr + myDt
 	 step = step + 1
-	 -- check if done
 	 if (tCurr >= tEnd) then
 	    break
 	 end
@@ -473,9 +534,13 @@ function advanceFrame(tStart, tEnd, initDt)
 end
 
 function writeFrame(frame, tCurr)
-   -- write out data
    qNew:write(string.format("q_%d.h5", frame), tCurr )
    byFlux:write( string.format("byFlux_%d.h5", frame) )
+   xpointEz:write(string.format("xpointEz_%d.h5", frame) )
+   xpointNe:write(string.format("xpointNe_%d.h5", frame) )
+   xpointUze:write(string.format("xpointUze_%d.h5", frame) )
+   xpointNi:write(string.format("xpointNi_%d.h5", frame) )
+   xpointUzi:write(string.format("xpointUzi_%d.h5", frame) )
 end
 
 -- compute diagnostics and write out initial conditions
@@ -485,9 +550,9 @@ writeFrame(0, 0.0)
 dtSuggested = 1.0 -- initial time-step to use (this will be discarded and adjusted to CFL value)
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 60.0/wci
+tEnd = 120.0/wci
 
-nFrames = 60
+nFrames = 120
 tFrame = (tEnd-tStart)/nFrames -- time between frames
 
 tCurr = tStart
