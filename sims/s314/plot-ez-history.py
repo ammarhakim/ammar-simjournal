@@ -94,7 +94,7 @@ uze = zMomE/rhoE
 uzi = zMomI/rhoI
 
 dt = T[1]-T[0]
-EzFilter = lowPass(Ez, dt, 1.0)
+EzFilter = lowPass(Ez, dt, 4.0)
 
 figure(1)
 plot(T, Ez, '-k')
@@ -151,10 +151,10 @@ ylabel('Uze-Uzi')
 savefig('s314-uDiff-measured-vs-integrated.png')
 
 figure(6)
-# attempt to do the reverse
+# compute an estimate of numerical diffusion
 TDiff, EzDiff = diffU(T, uze, elcMass, -elcCharge)
-plot(TDiff, EzDiff, 'k-', label='Inferred')
-plot(T, Ez, 'r-', label='Measured')
+plot(TDiff[:-1000], EzDiff[:-1000], 'k-', label='Inferred')
+plot(T[:-1000], Ez[:-1000], 'r-', label='Measured')
 legend(loc='best')
 title('EzDiff and Ez')
 
