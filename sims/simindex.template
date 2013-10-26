@@ -666,3 +666,5 @@ program for that simulation.
     - Same as s315, except using :math:`k=1/\delta_i`.
   * - ${mdl("s317")}
     - Same as s314, except fewer output files, and run longer
+  * - ${mdl("s318")}
+    - Same s297 (open domain reconnection, 10M), except electrons and ions carry current
