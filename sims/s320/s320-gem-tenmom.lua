@@ -1,17 +1,5 @@
 -- Program to solve Two-Fluid equations
 
---[[
-
-According to Daughton et. al. 2006 PoP paper one has
- 
-rhoi/L = 1.0
-mi/me = 25
-Ti/Te = 5
-wpe/wce = 3
-nb/n0 = 0.3
-
---]]
-
 -- decomposition object to use
 decomp = DecompRegionCalc2D.CartGeneral {}
 
