@@ -36,8 +36,8 @@ elcSkinDepth = lightSpeed/elcPlasmaFreq
 
 nSpecies = 2
 
-NX = 101
-NY = 51
+NX = 1001
+NY = 501
 
 -- A generic function to run an updater.
 function runUpdater(updater, currTime, timeStep, inpFlds, outFlds)
