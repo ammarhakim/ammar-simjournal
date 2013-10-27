@@ -592,11 +592,11 @@ function writeFrame(frame, tCurr)
    -- write out data
    qNew:write(string.format("q_%d.h5", frame), tCurr )
    byFlux:write( string.format("byFlux_%d.h5", frame) )
-   ezAlias:write( string.format("xpointEz_%d.h5", frame) )
-   neAlias:write( string.format("xpointNe_%d.h5", frame) )
-   uzeAlias:write( string.format("xpointUze_%d.h5", frame) )
-   niAlias:write( string.format("xpointNi_%d.h5", frame) )
-   uziAlias:write( string.format("xpointUzi_%d.h5", frame) )
+   xpointEz:write( string.format("xpointEz_%d.h5", frame) )
+   xpointNe:write( string.format("xpointNe_%d.h5", frame) )
+   xpointUze:write( string.format("xpointUze_%d.h5", frame) )
+   xpointNi:write( string.format("xpointNi_%d.h5", frame) )
+   xpointUzi:write( string.format("xpointUzi_%d.h5", frame) )
 end
 
 -- compute diagnostics and write out initial conditions
