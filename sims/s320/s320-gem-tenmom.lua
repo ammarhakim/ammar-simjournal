@@ -36,8 +36,8 @@ elcSkinDepth = lightSpeed/elcPlasmaFreq
 
 nSpecies = 2
 
-NX = 1001
-NY = 501
+NX = 101
+NY = 51
 
 -- A generic function to run an updater.
 function runUpdater(updater, currTime, timeStep, inpFlds, outFlds)
@@ -116,7 +116,7 @@ function initElc(x,y,z)
    local me = elcMass
    local qe = elcCharge
 
-   local numDens = n0*(1/math.cosh(y/lambda))^2 + 0.2*n0*me
+   local numDens = n0*(1/math.cosh(y/lambda))^2 + 0.2*n0
 
    -- electron momentum is computed from plasma current that supports field
    local ezmom = -(1.0/6.0)*B0*(1/lambda)*(1/math.cosh(y/lambda))^2*(me/qe)
@@ -133,8 +133,9 @@ function initIon(x,y,z)
    local mi = ionMass
    local qi = ionCharge
 
+   local numDens = n0*(1/math.cosh(y/lambda))^2 + 0.2*n0
+
    local izmom = -(5.0/6.0)*B0*(1/lambda)*(1/math.cosh(y/lambda))^2*(mi/qi)
-   local numDens = n0*(1/math.cosh(y/lambda))^2 + 0.2*n0*mi
    local rhoi = numDens*mi
    local pri = 5*numDens*B0^2/12.0
    local pzz = pri + izmom*izmom/rhoi
@@ -535,6 +536,7 @@ function advanceFrame(tStart, tEnd, initDt)
    local step = 1
    local tCurr = tStart
    local myDt = initDt
+   local nanOccured = false
    local tfStatus, tfDtSuggested
    local useLaxSolver = false
    while true do
@@ -569,6 +571,7 @@ function advanceFrame(tStart, tEnd, initDt)
       else
 	 if (qNew:hasNan()) then
 	    Lucee.logInfo (string.format(" ** Nan occured at %g! Stopping simulation", tCurr))
+	    nanOccured = true
 	    break
 	 end
 
@@ -585,7 +588,7 @@ function advanceFrame(tStart, tEnd, initDt)
       end
    end
    
-   return tfDtSuggested
+   return tfDtSuggested, nanOccured
 end
 
 function writeFrame(frame, tCurr)
@@ -606,9 +609,9 @@ writeFrame(0, 0.0)
 dtSuggested = 1.0 -- initial time-step to use (this will be discarded and adjusted to CFL value)
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 120.0/wci
+tEnd = 40.0/wci
 
-nFrames = 120
+nFrames = 40
 tFrame = (tEnd-tStart)/nFrames -- time between frames
 
 tCurr = tStart
@@ -616,9 +619,13 @@ tCurr = tStart
 for frame = 1, nFrames do
    Lucee.logInfo (string.format("-- Advancing solution from %g to %g", tCurr, tCurr+tFrame))
    -- advance solution between frames
-   dtSuggested = advanceFrame(tCurr, tCurr+tFrame, dtSuggested)
+   dtSuggested, nanOccured = advanceFrame(tCurr, tCurr+tFrame, dtSuggested)
    -- write out data
    writeFrame(frame, tCurr+tFrame)
    tCurr = tCurr+tFrame
    Lucee.logInfo ("")
+   if (nanOccured) then
+      -- abort if nan occured
+      break
+   end
 end
