@@ -674,3 +674,5 @@ program for that simulation.
     - Standard GEM reconnection, with 10M model and periodic in X and walls in Y
   * - ${mdl("s321")}
     - Same as s320, except with wave number of ionSkinDepth.
+  * - ${mdl("s322")}
+    - Same as s316, except using :math:`1002\times 502` mesh.
