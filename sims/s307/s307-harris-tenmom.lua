@@ -330,7 +330,7 @@ ionCollSrcSlvr = Updater.TenMomentLocalCollisionlessHeatFlux2D {
 -- momentum relaxation from inter-species collisions
 elcIonMomRelax = Updater.TwoFluidMomentumRelaxation2D {
    onGrid = grid,
-   electronIonCollisionFrequency = wci/10.0,
+   electronIonCollisionFrequency = wci/100.0,
 }
 
 -- function to apply boundary conditions

@@ -511,7 +511,7 @@ dtSuggested = 1.0 -- initial time-step to use (this will be discarded and adjust
 tStart = 0.0
 tEnd = 200.0/wci
 
-nFrames = 100
+nFrames = 50
 tFrame = (tEnd-tStart)/nFrames -- time between frames
 
 tCurr = tStart
