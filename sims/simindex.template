@@ -671,4 +671,6 @@ program for that simulation.
   * - ${mdl("s319")}
     - Same as s280 (open domain reconnection, 5M), dimensional splitting, both electrons and ions carry current.
   * - ${mdl("s320")}
-    - Standard GEM reconnection, with 10M model and periodic in X and walls in Y.
+    - Standard GEM reconnection, with 10M model and periodic in X and walls in Y
+  * - ${mdl("s321")}
+    - Same as s320, except with wave number of ionSkinDepth.

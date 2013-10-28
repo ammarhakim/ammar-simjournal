@@ -315,11 +315,11 @@ sourceSlvr = Updater.ImplicitTenMomentSrc2D {
 -- Collisional source updaters
 elcCollSrcSlvr = Updater.TenMomentLocalCollisionlessHeatFlux2D {
    onGrid = grid,
-   averageWaveNumber = 1/elcSkinDepth,
+   averageWaveNumber = 1/ionSkinDepth,
 }
 ionCollSrcSlvr = Updater.TenMomentLocalCollisionlessHeatFlux2D {
    onGrid = grid,
-   averageWaveNumber = 1/elcSkinDepth,
+   averageWaveNumber = 1/ionSkinDepth,
 }
 
 -- boundary applicator objects for fluids and fields
