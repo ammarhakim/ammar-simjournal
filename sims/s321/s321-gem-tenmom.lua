@@ -22,7 +22,7 @@ wci = ionCharge*B0/ionMass -- ion cyclotron frequency
 elcPlasmaFreq = math.sqrt(n0*elcCharge^2/(epsilon0*elcMass)) -- plasma frequency
 elcSkinDepth = lightSpeed/elcPlasmaFreq
 
-ioncPlasmaFreq = math.sqrt(n0*ionCharge^2/(epsilon0*ionMass)) -- plasma frequency
+ionPlasmaFreq = math.sqrt(n0*ionCharge^2/(epsilon0*ionMass)) -- plasma frequency
 ionSkinDepth = lightSpeed/ionPlasmaFreq
 
 nSpecies = 2
