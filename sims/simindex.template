@@ -676,3 +676,5 @@ program for that simulation.
     - Same as s320, except with wave number of ionSkinDepth.
   * - ${mdl("s322")}
     - Same as s316, except using :math:`1002\times 502` mesh.
+  * - ${mdl("s323")}
+    - Same as s316, using no ion relaxation.
