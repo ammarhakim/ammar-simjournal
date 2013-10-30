@@ -678,3 +678,7 @@ program for that simulation.
     - Same as s316, except using :math:`1002\times 502` mesh.
   * - ${mdl("s323")}
     - Same as s316, using no ion relaxation.
+  * - ${mdl("s324")}
+    - Same as s316, with new equilibrium for double tearing (:math:`k=1/\delta_i`)
+  * - ${mdl("s325")}
+    - Same as s324, expect with :math:`k=1/\delta_e`
