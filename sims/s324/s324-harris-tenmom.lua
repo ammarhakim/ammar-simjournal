@@ -28,10 +28,9 @@ Lx = 100.0
 Ly = 50.0
 B0 = 1/15.0
 n0 = 1.0
-nb = 0.3*n0
-lambda = math.sqrt(10/12)
+nb = 0.2*n0
+lambda = 1.0
 cfl = 0.9
-bGuideFactor = 0.0
 wci = ionCharge*B0/ionMass -- ion cyclotron frequency
 elcPlasmaFreq = math.sqrt(n0*elcCharge^2/(epsilon0*elcMass)) -- plasma frequency
 elcSkinDepth = lightSpeed/elcPlasmaFreq
@@ -140,7 +139,7 @@ end
 ionFluid:set(initIon)
 
 function initEmField(x,y,z)
-   local psi0 = 0.1*B0
+   local psi0 = 0.06*B0
    local pi = Lucee.Pi
    local twopi = 2*pi
    local Lx4 = Lx/4
