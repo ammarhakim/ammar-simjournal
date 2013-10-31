@@ -130,22 +130,22 @@ q:sync()
 qNew:copy(q)
 
 -- define various equations to solve
-elcEulerEqn = HyperEquation.IsoThermalEuler {
+elcEulerEqn = HyperEquation.IsothermalEuler {
    -- thermal velocity
    thermalVelocity = math.sqrt(Te/elcMass),
 }
-ionEulerEqn = HyperEquation.IsoThermalEuler {
+ionEulerEqn = HyperEquation.IsothermalEuler {
    -- thermal velocity
    thermalVelocity = math.sqrt(Ti/ionMass),
 }
 -- (Lax equations are used to fix negative pressure/density)
-elcEulerLaxEqn = HyperEquation.IsoThermalEuler {
+elcEulerLaxEqn = HyperEquation.IsothermalEuler {
    -- thermal velocity
    thermalVelocity = math.sqrt(Te/elcMass),
    -- use Lax fluxes
    numericalFlux = "lax",   
 }
-ionEulerLaxEqn = HyperEquation.IsoThermalEuler {
+ionEulerLaxEqn = HyperEquation.IsothermalEuler {
    -- thermal velocity
    thermalVelocity = math.sqrt(Ti/ionMass),
    -- use Lax fluxes
