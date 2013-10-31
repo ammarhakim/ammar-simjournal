@@ -682,3 +682,5 @@ program for that simulation.
     - Same as s316, with new equilibrium for double tearing (:math:`k=1/\delta_i`)
   * - ${mdl("s325")}
     - Same as s324, expect with :math:`k=1/\delta_e`
+  * - ${mdl("s326")}
+    - Two-fluid, isothermal standard GEM reconnection.
