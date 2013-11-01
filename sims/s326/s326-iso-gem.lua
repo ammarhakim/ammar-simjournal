@@ -380,8 +380,10 @@ function updateFluidsAndField(tCurr, t)
 
    if ((elcEulerEqn:checkInvariantDomain(elcFluidX) == false)
     or (ionEulerEqn:checkInvariantDomain(ionFluidX) == false)) then
-      -- if positivity violated, return immediatelty
-      return false, myDtSuggested
+      -- if positivity violated, return immediatelty: this appears
+      -- totally crazy. Why are we returning 'true' when the invariant
+      -- domains are violated?
+      return true, myDtSuggested 
    end
 
    -- apply BCs to intermediate update after X sweep
