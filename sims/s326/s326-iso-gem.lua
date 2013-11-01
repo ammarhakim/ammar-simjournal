@@ -10,7 +10,6 @@ Standard GEM challenge problem.
 decomp = DecompRegionCalc2D.CartGeneral {}
 
 -- global parameters
-gasGamma = 5./3.
 elcCharge = -1.0
 ionCharge = 1.0
 ionMass = 1.0
@@ -100,7 +99,6 @@ function init(x,y,z)
    local mi = ionMass
    local qe = elcCharge
    local qi = ionCharge
-   local gasGamma1 = gasGamma-1
    local psi0 = 0.1*B0
 
    local pi = Lucee.Pi
@@ -376,6 +374,12 @@ function updateFluidsAndField(tCurr, t)
       myDtSuggested = math.min(myDtSuggested, dtSuggested)
    end
 
+   if ((elcEulerEqn:checkInvariantDomain(elcFluidX) == false)
+    or (ionEulerEqn:checkInvariantDomain(ionFluidX) == false)) then
+      -- if positivity violated, return immediatelty
+      return false, myDtSuggested
+   end
+
    -- apply BCs to intermediate update after X sweep
    applyBc(qX)
 
@@ -401,9 +405,11 @@ function solveTwoFluidSystem(tCurr, t)
    -- update fluids and fields
    local status, dtSuggested = updateFluidsAndField(tCurr, t)
 
-   -- update source terms
-   updateSource(elcFluidNew, ionFluidNew, emFieldNew, tCurr, tCurr+dthalf)
-   applyBc(qNew)
+   if (status) then
+      -- update source terms
+      updateSource(elcFluidNew, ionFluidNew, emFieldNew, tCurr, tCurr+dthalf)
+      applyBc(qNew)
+   end
 
    return status, dtSuggested
 end
