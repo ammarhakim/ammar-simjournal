@@ -31,8 +31,12 @@ Ti = 5*Te -- ion temperature
 
 nSpecies = 2
 
-NX = 1001
-NY = 501
+NX = 501
+NY = 251
+
+tStart = 0.0 -- start time
+tEnd = 40.0/wci -- end time
+nFrames = 40 -- number of frames
 
 -- computational domain
 grid = Grid.RectCart2D {
@@ -365,7 +369,7 @@ end
 -- function to update the fluid and field using dimensional splitting
 function updateFluidsAndField(tCurr, t)
    local myStatus = true
-   local myDtSuggested = 1e3*math.abs(t-tCurr)
+   local myDtSuggested = 1e6*math.abs(t-tCurr)
    -- X-direction updates
    for i,slvr in ipairs({elcFluidSlvrDir0, ionFluidSlvrDir0, maxSlvrDir0}) do
       slvr:setCurrTime(tCurr)
@@ -512,64 +516,7 @@ function calcDiagnostics(tCurr, t)
    end
 end
 
--- advance solution from tStart to tEnd, using optimal time-steps.
-function advanceFrame(tStart, tEnd, initDt)
-
-   local step = 1
-   local tCurr = tStart
-   local myDt = initDt
-   local tfStatus, tfDtSuggested
-   local useLaxSolver = false
-   while true do
-      qDup:copy(q)
-      qNewDup:copy(qNew)
-
-      if (tCurr+myDt > tEnd) then -- hit tEnd exactly
-	 myDt = tEnd-tCurr
-      end
-
-      Lucee.logInfo (string.format(" Taking step %d at time %g with dt %g", step, tCurr, myDt))
-      if (useLaxSolver) then
-	 -- (call Lax solver if positivity violated)
-	 tfStatus, tfDtSuggested = solveTwoFluidLaxSystem(tCurr, tCurr+myDt)
-	 useLaxSolver = false
-      else
-	 tfStatus, tfDtSuggested = solveTwoFluidSystem(tCurr, tCurr+myDt)
-      end
-
-      if (tfStatus == false) then
-	 Lucee.logInfo (string.format(" ** Time step %g too large! Will retake with dt %g", myDt, tfDtSuggested))
-	 myDt = tfDtSuggested
-	 qNew:copy(qNewDup)
-	 q:copy(qDup)
-      elseif ((elcEulerEqn:checkInvariantDomain(elcFluidNew) == false)
-	   or (ionEulerEqn:checkInvariantDomain(ionFluidNew) == false)) then
-	 Lucee.logInfo (string.format("** Negative density at %g! Will retake step with Lax fluxes", tCurr+myDt))
-	 q:copy(qDup)
-	 qNew:copy(qNewDup)
-	 useLaxSolver = true
-      else
-	 if (qNew:hasNan()) then
-	    Lucee.logInfo (string.format(" ** Nan occured at %g! Stopping simulation", tCurr))
-	    break
-	 end
-
-	 calcDiagnostics(tCurr, tCurr+myDt)
-	 q:copy(qNew)
-
-	 myDt = tfDtSuggested
-	 tCurr = tCurr + myDt
-	 step = step + 1
-	 if (tCurr >= tEnd) then
-	    break
-	 end
-      end
-   end
-   
-   return tfDtSuggested
-end
-
-function writeFrame(frame, tCurr)
+function writeFields(frame, tCurr)
    qNew:write(string.format("q_%d.h5", frame), tCurr )
    byFlux:write( string.format("byFlux_%d.h5", frame) )
    xpointEz:write(string.format("xpointEz_%d.h5", frame) )
@@ -578,26 +525,96 @@ function writeFrame(frame, tCurr)
    xpointUzi:write(string.format("xpointUzi_%d.h5", frame) )
 end
 
--- compute diagnostics and write out initial conditions
-calcDiagnostics(0.0, 0.0)
-writeFrame(0, 0.0)
-
-dtSuggested = 1.0 -- initial time-step to use (this will be discarded and adjusted to CFL value)
--- parameters to control time-stepping
-tStart = 0.0
-tEnd = 40.0/wci
-
-nFrames = 40
-tFrame = (tEnd-tStart)/nFrames -- time between frames
-
-tCurr = tStart
--- main loop
-for frame = 1, nFrames do
-   Lucee.logInfo (string.format("-- Advancing solution from %g to %g", tCurr, tCurr+tFrame))
-   -- advance solution between frames
-   dtSuggested = advanceFrame(tCurr, tCurr+tFrame, dtSuggested)
-   -- write out data
-   writeFrame(frame, tCurr+tFrame)
-   tCurr = tCurr+tFrame
-   Lucee.logInfo ("")
+-- check if to trigger data output
+function triggerTurnstile(gate, t)
+   if (t >= gate.trigger) then
+      gate.trigger = gate.trigger + gate.increment
+      gate.open = true
+   else
+      gate.open = false
+   end
+   return gate
 end
+
+-- advance solution from tStart to tEnd, using optimal time-steps.
+function runSimulation(tStart, tEnd, nFrames, initDt)
+
+   local frame = 1
+   local tFrame = (tEnd-tStart)/nFrames
+   local myGate = { trigger = tFrame, open = false, increment = tFrame }
+   local step = 1
+   local tCurr = tStart
+   local myDt = initDt
+   local status, dtSuggested
+   local useLaxSolver = false
+   while true do
+      qDup:copy(q)
+      qNewDup:copy(qNew)
+
+      if (tCurr+myDt > tEnd) then
+	 myDt = tEnd-tCurr
+      end
+
+      Lucee.logInfo (string.format(" Taking step %d at time %g with dt %g", step, tCurr, myDt))
+      -- advance fluids and fields
+      if (useLaxSolver) then
+	 -- (call Lax solver if positivity violated)
+	 status, dtSuggested = solveTwoFluidLaxSystem(tCurr, tCurr+myDt)
+	 useLaxSolver = false
+      else
+	 status, dtSuggested = solveTwoFluidSystem(tCurr, tCurr+myDt)
+      end
+
+      if (status == false) then
+	 -- time-step too large
+	 Lucee.logInfo (string.format(" ** Time step %g too large! Will retake with dt %g", myDt, dtSuggested))
+	 myDt = dtSuggested
+	 qNew:copy(qNewDup)
+	 q:copy(qDup)
+      elseif ((elcEulerEqn:checkInvariantDomain(elcFluidNew) == false)
+	   or (ionEulerEqn:checkInvariantDomain(ionFluidNew) == false)) then
+	 -- negative density/pressure occured
+	 Lucee.logInfo (string.format("** Negative pressure or density at %g! Will retake step with Lax fluxes", tCurr+myDt))
+	 q:copy(qDup)
+	 qNew:copy(qNewDup)
+	 useLaxSolver = true
+      else
+	 -- check if a nan occured
+	 if (qNew:hasNan()) then
+	    Lucee.logInfo (string.format(" ** Nan occured at %g! Stopping simulation", tCurr))
+	    break
+	 end
+	 -- compute diagnostics
+	 calcDiagnostics(tCurr, tCurr+myDt)
+	 -- copy updated solution back
+	 q:copy(qNew)
+
+	 myGate = triggerTurnstile(myGate, tCurr+myDt)
+	 if (myGate.open) then
+	    -- write out data
+	    Lucee.logInfo (string.format("Writing data at time %g ...\n", tCurr+myDt))
+	    writeFields(frame, tCurr+myDt)
+	    frame = frame + 1
+	    step = 0
+	 end
+
+	 tCurr = tCurr + myDt
+	 step = step + 1
+	 -- check if done
+	 if (tCurr >= tEnd) then
+	    break
+	 end
+      end
+   end
+   
+   return dtSuggested
+end
+
+-- write initial conditions
+writeFields(0, 0.0)
+
+-- write initial condition
+writeFields(0, 0.0)
+-- run simulation
+dtSuggested = 1.0 -- initial time-step, will be adjusted
+runSimulation(tStart, tEnd, nFrames, dtSuggested)
