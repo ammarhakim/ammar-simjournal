@@ -684,3 +684,5 @@ program for that simulation.
     - Same as s324, expect with :math:`k=1/\delta_e`
   * - ${mdl("s326")}
     - Two-fluid, isothermal standard GEM reconnection.
+  * - ${mdl("s327")}
+    - 10-moment with anisotropic heat relaxation closure.

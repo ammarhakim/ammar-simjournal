@@ -70,6 +70,25 @@ diffSolver = Updater.HyperDiffusion1D {
    cfl = cfl,
 }
 
+-- total enstrophy diagnostic
+totalEnstrophy = DataStruct.DynVector {
+   -- number of components in diagnostic
+   numComponents = 1,
+}
+
+-- updater to compute total energy
+enstrophyCalc = Updater.TotalEnstrophy1D {
+   onGrid = grid,
+   -- basis functions to use
+   basis = basis,
+}
+-- set input/output (this never changes, so it once)
+enstrophyCalc:setIn( {q} )
+enstrophyCalc:setOut( {totalEnstrophy} )
+
+-- compute initial enstrophy of system
+enstrophyCalc:advance(0)
+
 -- apply boundary conditions
 function applyBc(fld)
    fld:applyPeriodicBc(0)
@@ -87,6 +106,11 @@ function solveDiffusion(curr, dt, qIn, qOut)
    diffSolver:setIn( {qIn} )
    diffSolver:setOut( {qOut} )
    return diffSolver:advance(curr+dt)
+end
+
+function calcDiagnostics(curr, dt)
+   enstrophyCalc:setCurrTime(curr)
+   enstrophyCalc:advance(curr+dt)
 end
 
 -- function to take a time-step using SSP-RK3 time-stepping scheme
@@ -142,6 +166,9 @@ function advanceFrame(tStart, tEnd, initDt)
 	 qNew:copy(qNewDup)
 	 myDt = dtSuggested
       else
+	 -- compute diagnostics
+	 calcDiagnostics(tCurr, myDt)
+
 	 tCurr = tCurr + myDt
 	 myDt = dtSuggested
 	 step = step + 1
@@ -158,6 +185,7 @@ end
 -- write data to H5 file
 function writeFields(frame)
    q:write( string.format("q_%d.h5", frame) )
+   totalEnstrophy:write( string.format("totalEnstrophy_%d.h5", frame) )
 end
 
 -- parameters to control time-stepping
