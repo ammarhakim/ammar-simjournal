@@ -686,3 +686,5 @@ program for that simulation.
     - Two-fluid, isothermal standard GEM reconnection.
   * - ${mdl("s327")}
     - 10-moment with anisotropic heat relaxation closure.
+  * - ${mdl("s328")}
+    - Diffusion with Local DG scheme, same parameters as s245.
