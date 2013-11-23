@@ -4,7 +4,7 @@
 polyOrder = 1
 
 -- cfl number to use
-cfl = 0.2/(2*polyOrder+1)
+cfl = 0.2
 
 -- number of cells
 NX, NY = 64, 1
@@ -95,6 +95,7 @@ initField = Updater.EvalOnNodes2D {
 initField:setOut( {q} )
 -- initialize
 initField:advance(0.0) -- time is irrelevant
+q:write("q_0.h5")
 
 -- define equation to solve
 advectionEqn = HyperEquation.Advection {
@@ -148,6 +149,30 @@ divSlvr = Updater.NodalDgHyper2D {
    cfl = cfl,
 }
 
+-- total enstrophy diagnostic
+totalEnstrophy = DataStruct.DynVector {
+   -- number of components in diagnostic
+   numComponents = 1,
+}
+
+-- updater to compute total energy
+enstrophyCalc = Updater.TotalEnstrophy {
+   onGrid = grid,
+   -- basis functions to use
+   basis = basis,
+}
+-- set input/output (this never changes, so it once)
+enstrophyCalc:setIn( {q} )
+enstrophyCalc:setOut( {totalEnstrophy} )
+
+-- compute initial enstrophy of system
+enstrophyCalc:advance(0)
+
+function calcDiagnostics(curr, dt)
+   enstrophyCalc:setCurrTime(curr)
+   enstrophyCalc:advance(curr+dt)
+end
+
 -- apply boundary conditions
 function applyBc(fld)
    fld:applyPeriodicBc(0)
@@ -156,9 +181,6 @@ end
 
 applyBc(q)
 qNew:copy(q)
-
--- write initial conditions
-q:write("q_0.h5")
 
 -- solve advection equation
 function solveAdvection(curr, dt, qIn, qOut)
@@ -211,7 +233,7 @@ function rk3(tCurr, myDt)
    q1:accumulate(myDt, qDiv)
 
    if (myStatus == false or myDiffStatus == false) then
-      return myStatus, math.min(myDtSuggested, myDiffDtSuggested)
+      return false, math.min(myDtSuggested, myDiffDtSuggested)
    end
 
    applyBc(q1)
@@ -224,7 +246,7 @@ function rk3(tCurr, myDt)
    qNew:accumulate(myDt, qDiv)
 
    if (myStatus == false or myDiffStatus == false) then
-      return myStatus, math.min(myDtSuggested, myDiffDtSuggested)
+      return false, math.min(myDtSuggested, myDiffDtSuggested)
    end
 
    q1:combine(3.0/4.0, q, 1.0/4.0, qNew)
@@ -238,14 +260,14 @@ function rk3(tCurr, myDt)
    qNew:accumulate(myDt, qDiv)
 
    if (myStatus == false or myDiffStatus == false) then
-      return myStatus, math.min(myDtSuggested, myDiffDtSuggested)
+      return false, math.min(myDtSuggested, myDiffDtSuggested)
    end
 
    q1:combine(1.0/3.0, q, 2.0/3.0, qNew)
    applyBc(q1)
    q:copy(q1)
 
-   return myStatus, math.min(myDtSuggested, myDiffDtSuggested)
+   return true, math.min(myDtSuggested, myDiffDtSuggested)
 end
 
 -- function to advance solution from tStart to tEnd
@@ -257,7 +279,6 @@ function advanceFrame(tStart, tEnd, initDt)
 
    while tCurr<=tEnd do
       qNewDup:copy(qNew)
-
       -- if needed adjust dt to hit tEnd exactly
       if (tCurr+myDt > tEnd) then
 	 myDt = tEnd-tCurr
@@ -272,6 +293,9 @@ function advanceFrame(tStart, tEnd, initDt)
 	 qNew:copy(qNewDup)
 	 myDt = dtSuggested
       else
+	 -- compute diagnostics
+	 calcDiagnostics(tCurr, myDt)
+
 	 tCurr = tCurr + myDt
 	 myDt = dtSuggested
 	 step = step + 1
@@ -288,6 +312,7 @@ end
 -- write data to H5 file
 function writeFields(frame)
    q:write( string.format("q_%d.h5", frame) )
+   totalEnstrophy:write( string.format("totalEnstrophy_%d.h5", frame) )
 end
 
 -- parameters to control time-stepping
