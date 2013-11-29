@@ -40,6 +40,7 @@ pylab.plot(X, exactSol(X, tend), 'r-')
 drawLines(X, q4, '-k')
 #drawLines(X, q0, '-r')
 pylab.axis('tight')
+pylab.title('RDG v/s Exact Solution')
 
 pylab.savefig(baseName+"-cmp.png")
 pylab.show()
