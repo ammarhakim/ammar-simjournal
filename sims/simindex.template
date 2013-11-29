@@ -688,3 +688,5 @@ program for that simulation.
     - 10-moment with anisotropic heat relaxation closure.
   * - ${mdl("s328")}
     - Diffusion with Local DG scheme, same parameters as s245.
+  * - ${mdl("s329")}
+    - Diffusion with modal LDG scheme, same parameters as s245. Run to steady-state with cos(x) source.
