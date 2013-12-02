@@ -4,13 +4,17 @@
 polyOrder = 1
 
 -- cfl number to use
-cfl = 0.25/(2*polyOrder+1)
+cfl = 0.1/(2*polyOrder+1)
+
+LX = 2*Lucee.Pi -- domain length
+NX = 8 -- number of cells
+dx = LX/NX -- cell size
 
 -- grid on which equations are to be solved
 grid = Grid.RectCart1D {
    lower = {0},
-   upper = {2*Lucee.Pi},
-   cells = {8},
+   upper = {LX},
+   cells = {NX},
 }
 
 -- solution
@@ -31,6 +35,12 @@ qNew = DataStruct.Field1D {
    numComponents = polyOrder+1,
    ghost = {2, 2},
 }
+-- heat source
+src = DataStruct.Field1D {
+   onGrid = grid,
+   numComponents = polyOrder+1,
+   ghost = {2, 2},
+}
 
 -- duplicate for use in time-stepping
 qNewDup = qNew:duplicate()
@@ -40,43 +50,64 @@ initField = Updater.ProjectOnBasis1D {
    onGrid = grid,
    numBasis = polyOrder+1,
    project = function (x,y,z,t)
-		return math.sin(x)
-	      end
+		return 0.0
+	     end
 }
 initField:setOut( {q} )
 -- initialize
 initField:advance(0.0) -- time is irrelevant
 
+-- updater to apply initial conditions
+initSrc = Updater.ProjectOnBasis1D {
+   onGrid = grid,
+   numBasis = polyOrder+1,
+   project = function (x,y,z,t)
+		return math.sin(x)
+	      end
+}
+initSrc:setOut( {src} )
+-- initialize
+---initSrc:advance(0.0) -- time is irrelevant
+
+-- function to initialize source with an exact projection
+function initSrcExact(x,y,z)
+   local xj = x
+   local f0 = (math.cos((2*xj-dx)/2.0)-math.cos((2*xj+dx)/2.0))/dx
+   local f1 = ((2*math.sin((2*xj+dx)/2)-dx*math.cos((2*xj+dx)/2)-2*math.sin((2*xj-dx)/2)-dx*math.cos((2*xj-dx)/2))/dx)*3.0/dx
+   return f0, f1
+end
+src:set(initSrcExact)
+src:write("src.h5")
+
 -- updater to solve diffusion equation
-t_diffSolver = Updater.DGDiffusion1D { 
+diffSolver = Updater.DGDiffusion1D { 
    onGrid = grid,
    -- polynomial order
    polyOrder = 1,
    -- scheme
-   scheme = "LDG",
+   scheme = "LDG-L",
    -- diffusion coefficent
    diffusionCoeff = 1.0,
    -- CFL number
    cfl = cfl,
 }
 
-diffSolver = Updater.ModalDg1DLocalDG { 
-   onGrid = grid,
-   -- number of basis functions
-   numBasis = 2,
-   -- type of flux: "left", "right" or "average"
-   fluxPair = "left",
-   -- diffusion coeffcient
-   diffCoef = 1.0,
-   -- CFL number
-   cfl = cfl,
-}
-
--- total enstrophy diagnostic
-totalEnstrophy = DataStruct.DynVector {
+-- L2 norm of solution (energy)
+l2Norm = DataStruct.DynVector {
    -- number of components in diagnostic
    numComponents = 1,
 }
+
+l2NormCalc = Updater.ModalL2Norm {
+   onGrid = grid,
+   -- number of basis function
+   numBasis = polyOrder+1,
+}
+l2NormCalc:setIn( {q} )
+l2NormCalc:setOut( {l2Norm} )
+
+-- compute L2 norm of initial conditions
+l2NormCalc:advance(0.0)
 
 -- apply boundary conditions
 function applyBc(fld)
@@ -94,11 +125,16 @@ function solveDiffusion(curr, dt, qIn, qOut)
    diffSolver:setCurrTime(curr)
    diffSolver:setIn( {qIn} )
    diffSolver:setOut( {qOut} )
-   return diffSolver:advance(curr+dt)
+   local myS, myDt = diffSolver:advance(curr+dt)
+   -- accumulate source
+   qOut:accumulate(dt, src)
+
+   return myS, myDt
 end
 
 function calcDiagnostics(curr, dt)
-
+   l2NormCalc:setCurrTime(curr)
+   l2NormCalc:advance(curr+dt)
 end
 
 -- function to take a time-step using SSP-RK3 time-stepping scheme
@@ -169,12 +205,12 @@ end
 -- write data to H5 file
 function writeFields(frame)
    q:write( string.format("q_%d.h5", frame) )
-   totalEnstrophy:write( string.format("totalEnstrophy_%d.h5", frame) )
+   l2Norm:write( string.format("l2Norm_%d.h5", frame) )
 end
 
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 1.0
+tEnd = 10.0
 dtSuggested = 0.1*tEnd -- initial time-step to use (will be adjusted)
 nFrames = 1
 tFrame = (tEnd-tStart)/nFrames -- time between frames
