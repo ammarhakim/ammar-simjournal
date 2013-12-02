@@ -35,7 +35,7 @@ def calcDeriv(T, val):
         dVal[i] = (val[i+1]-val[i])/(T[i+1]-T[i])
     return tVal, dVal
 
-baseName = "s331-modal-dg-diffuse"
+baseName = "s333-modal-dg-diffuse"
 alpha = 1.0
 tend = 1.0
 
@@ -55,12 +55,7 @@ X = pylab.linspace(lower[0], upper[0], nx+1)
 fh = tables.openFile(baseName+"_q_20.h5")
 q = fh.root.StructGridField
 
-#plotLines(X, q0[:,0], q0[:,1], '-r')
 plotLines(X, q[:,0], q[:,1], '-k')
-
-fh = tables.openFile(baseName+"_src.h5")
-src = fh.root.StructGridField
-plotLines(X, src[:,0], src[:,1], '--og')
 
 def exactSol(X, tend):
     return pylab.exp(-alpha*tend)*numpy.sin(X)
@@ -70,12 +65,12 @@ def exactSolSS(X):
 
 Xhr = pylab.linspace(lower[0], upper[0], 1000)
 qExact = exactSolSS(Xhr)
-pylab.plot(Xhr, qExact, '-m', linewidth=1)
-pylab.title('Steady-state solution for LDG-S scheme')
+#pylab.plot(Xhr, qExact, '-m', linewidth=1)
+pylab.title('Steady-state solution for LDG-L scheme')
 pylab.xlabel('X')
 pylab.ylabel('T')
 pylab.axis('tight')
-pylab.savefig('s331-dg-diffuse.png')
+pylab.savefig('s329-dg-diffuse.png')
 
 pylab.show()
 

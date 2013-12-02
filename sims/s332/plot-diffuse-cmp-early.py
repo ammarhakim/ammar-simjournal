@@ -38,8 +38,8 @@ def calcDeriv(T, val):
 def exactSol(X, tend):
     return pylab.exp(-alpha*tend)*numpy.sin(X)
 
-def exactSolSS(X):
-    return numpy.sin(X)
+def exactSolSS(X, t):
+    return numpy.sin(X)*(1-math.exp(-t))
 
 baseList = ["../s329/s329-modal-dg-diffuse", "../s330/s330-modal-dg-diffuse", 
             "../s331/s331-modal-dg-diffuse", "../s332/s332-modal-dg-diffuse"]
@@ -65,17 +65,18 @@ for baseName in baseList:
     dx = (upper[0]-lower[0])/cells[0]
     X = pylab.linspace(lower[0], upper[0], nx+1)
 
-    fh = tables.openFile(baseName+"_q_20.h5")
+    fh = tables.openFile(baseName+"_q_1.h5")
     q = fh.root.StructGridField
 
     plotLines(X, q[:,0], q[:,1], '-k')
 
     fh = tables.openFile(baseName+"_src.h5")
+    fact = (1-math.exp(-0.5))
     src = fh.root.StructGridField
-    plotLines(X, src[:,0], src[:,1], '--og')
+    plotLines(X, fact*src[:,0], fact*src[:,1], '--og')
 
     Xhr = pylab.linspace(lower[0], upper[0], 1000)
-    qExact = exactSolSS(Xhr)
+    qExact = exactSolSS(Xhr, 0.05)
     pylab.plot(Xhr, qExact, '-m', linewidth=0.5)
     #pylab.title('Steady-state solution for %s scheme' % titleStr[count] )
     #pylab.xlabel('X')
@@ -83,6 +84,6 @@ for baseName in baseList:
     pylab.axis('tight')
     count = count + 1
 
-pylab.savefig('s329-s330-s331-s332-dg-diffuse.png', dpi=300)
+pylab.savefig('s329-s330-s331-s332-dg-diffuse-early.png', dpi=300)
 pylab.show()
 

@@ -694,3 +694,7 @@ program for that simulation.
     - Same as s329, except with LDG-R scheme.
   * - ${mdl("s331")}
     - Same as s329, except with LDG-S scheme.
+  * - ${mdl("s332")}
+    - Same as s329, except with RDG scheme.
+  * - ${mdl("s333")}
+    - LDG-L with zero source.

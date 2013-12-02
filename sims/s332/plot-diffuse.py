@@ -52,7 +52,7 @@ nx = cells[0]
 dx = (upper[0]-lower[0])/cells[0]
 X = pylab.linspace(lower[0], upper[0], nx+1)
 
-fh = tables.openFile(baseName+"_q_1.h5")
+fh = tables.openFile(baseName+"_q_20.h5")
 q = fh.root.StructGridField
 
 #plotLines(X, q0[:,0], q0[:,1], '-r')
