@@ -41,43 +41,19 @@ src = DataStruct.Field1D {
    numComponents = polyOrder+1,
    ghost = {2, 2},
 }
+src:clear(0.0)
 
 -- duplicate for use in time-stepping
 qNewDup = qNew:duplicate()
 
--- updater to apply initial conditions
-initField = Updater.ProjectOnBasis1D {
-   onGrid = grid,
-   numBasis = polyOrder+1,
-   project = function (x,y,z,t)
-		return 0.0
-	     end
-}
-initField:setOut( {q} )
--- initialize
-initField:advance(0.0) -- time is irrelevant
-
--- updater to apply initial conditions
-initSrc = Updater.ProjectOnBasis1D {
-   onGrid = grid,
-   numBasis = polyOrder+1,
-   project = function (x,y,z,t)
-		return math.sin(x)
-	      end
-}
-initSrc:setOut( {src} )
--- initialize
----initSrc:advance(0.0) -- time is irrelevant
-
 -- function to initialize source with an exact projection
-function initSrcExact(x,y,z)
+function initSinExact(x,y,z)
    local xj = x
    local f0 = (math.cos((2*xj-dx)/2.0)-math.cos((2*xj+dx)/2.0))/dx
    local f1 = ((2*math.sin((2*xj+dx)/2)-dx*math.cos((2*xj+dx)/2)-2*math.sin((2*xj-dx)/2)-dx*math.cos((2*xj-dx)/2))/dx)*3.0/dx
    return f0, f1
 end
-src:set(initSrcExact)
-src:write("src.h5")
+q:set(initSinExact)
 
 -- updater to solve diffusion equation
 diffSolver = Updater.DGDiffusion1D { 
@@ -85,7 +61,7 @@ diffSolver = Updater.DGDiffusion1D {
    -- polynomial order
    polyOrder = 1,
    -- scheme
-   scheme = "LDG-S",
+   scheme = "LDG-L",
    -- diffusion coefficent
    diffusionCoeff = 1.0,
    -- CFL number
@@ -210,7 +186,7 @@ end
 
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 10.0
+tEnd = 5.0
 dtSuggested = 0.1*tEnd -- initial time-step to use (will be adjusted)
 nFrames = 20
 tFrame = (tEnd-tStart)/nFrames -- time between frames
