@@ -690,3 +690,7 @@ program for that simulation.
     - Diffusion with Local DG scheme, same parameters as s245.
   * - ${mdl("s329")}
     - Diffusion with modal DG scheme. Run to steady-state with sin(x) source. LDG-L scheme.
+  * - ${mdl("s330")}
+    - Same as s329, except with LDG-R scheme.
+  * - ${mdl("s331")}
+    - Same as s329, except with LDG-S scheme.
