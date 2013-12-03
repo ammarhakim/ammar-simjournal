@@ -7,7 +7,7 @@ polyOrder = 1
 cfl = 0.2
 
 -- number of cells
-NX, NY = 64, 1
+NX, NY = 8, 1
 -- extent of grid
 LX, LY = 2*Lucee.Pi, 1.0
 -- advection speeds

@@ -7,7 +7,7 @@ polyOrder = 1
 cfl = 0.1/(2*polyOrder+1)
 
 LX = 2*Lucee.Pi -- domain length
-NX = 8 -- number of cells
+NX = 16 -- number of cells
 dx = LX/NX -- cell size
 
 -- grid on which equations are to be solved
@@ -41,6 +41,7 @@ src = DataStruct.Field1D {
    numComponents = polyOrder+1,
    ghost = {2, 2},
 }
+src:clear(0.0)
 
 -- exact solution
 qExact = DataStruct.Field1D {
@@ -70,17 +71,14 @@ initField:setOut( {q} )
 initField:advance(0.0) -- time is irrelevant
 
 -- function to initialize source with an exact projection
-function initSrcExact(x,y,z)
+function initSinExact(x,y,z)
    local xj = x
    local f0 = (math.cos((2*xj-dx)/2.0)-math.cos((2*xj+dx)/2.0))/dx
    local f1 = ((2*math.sin((2*xj+dx)/2)-dx*math.cos((2*xj+dx)/2)-2*math.sin((2*xj-dx)/2)-dx*math.cos((2*xj-dx)/2))/dx)*3.0/dx
    return f0, f1
 end
-src:set(initSrcExact)
-src:write("src.h5")
-
--- exact solution is source scaled with time
-qExact:set(initSrcExact)
+q:set(initSinExact)
+qExact:set(initSinExact)
 
 -- updater to solve diffusion equation
 diffSolver = Updater.DGDiffusion1D { 
@@ -88,14 +86,19 @@ diffSolver = Updater.DGDiffusion1D {
    -- polynomial order
    polyOrder = 1,
    -- scheme
-   scheme = "LDG-L",
+   scheme = "RDG",
    -- diffusion coefficent
    diffusionCoeff = 1.0,
    -- CFL number
    cfl = cfl,
 }
 
--- L2 norm of solution (energy)
+-- L2 norm of solution
+solL2Norm = DataStruct.DynVector {
+   -- number of components in diagnostic
+   numComponents = 1,
+}
+-- L2 norm of error
 l2Norm = DataStruct.DynVector {
    -- number of components in diagnostic
    numComponents = 1,
@@ -105,7 +108,13 @@ l2NormCalc = Updater.ModalL2Norm {
    -- number of basis function
    numBasis = polyOrder+1,
 }
-l2NormCalc:setOut( {l2Norm} )
+
+-- compute initial L2 norm of solution
+l2NormCalc:setIn( {q} )
+l2NormCalc:setOut( {solL2Norm} )
+l2NormCalc:setCurrTime(0.0)
+l2NormCalc:advance(0.0)
+solL2Norm:write("solL2Norm.h5")
 
 -- apply boundary conditions
 function applyBc(fld)
@@ -134,10 +143,11 @@ end
 function calcDiagnostics(curr, dt)
    -- compute error
    local tEnd = curr+dt
-   local fact = (1-math.exp(-tEnd))
+   local fact = math.exp(-tEnd)
    qError:combine(1.0, q, -fact, qExact)
 
    l2NormCalc:setIn( {qError} )
+   l2NormCalc:setOut( {l2Norm} )
    l2NormCalc:setCurrTime(curr)
    l2NormCalc:advance(curr+dt)
 end
@@ -215,7 +225,7 @@ end
 
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 10.0
+tEnd = 3.0
 dtSuggested = 0.1*tEnd -- initial time-step to use (will be adjusted)
 nFrames = 20
 tFrame = (tEnd-tStart)/nFrames -- time between frames

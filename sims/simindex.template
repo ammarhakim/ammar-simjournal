@@ -696,3 +696,21 @@ program for that simulation.
     - Same as s329, except with LDG-S scheme.
   * - ${mdl("s332")}
     - Same as s329, except with RDG scheme.
+  * - ${mdl("s333")}
+    - Decaying temperature problem, LDG-L scheme, 8 cells.
+  * - ${mdl("s334")}
+    - Same as s333, except with LDG-R scheme, 8 cells.
+  * - ${mdl("s335")}
+    - Same as s333, except with LDG-S scheme, 8 cells.
+  * - ${mdl("s336")}
+    - Same as s333, except with RDG scheme, 8 cells.
+  * - ${mdl("s337")}
+    - Same as s333 (LDG-L), except 16 cells.
+  * - ${mdl("s338")}
+    - Same as s334 (LDG-R), except 16 cells.
+  * - ${mdl("s339")}
+    - Same as s335 (LDG-S), except 16 cells.
+  * - ${mdl("s340")}
+    - Same as s340 (RDG), except 16 cells.
+
+
