@@ -17,3 +17,17 @@ convergence(dat[:,0], dat[:,1])
 print "polyOrder 1 2D"
 dat = pylab.loadtxt("dg-2d-p1-err.txt")
 convergence(dat[:,0], dat[:,1])
+
+print "polyOrder 1 LDG-L and LDG-R"
+dat = pylab.loadtxt("dg-ldg-p1-err.txt")
+convergence(dat[:,0], dat[:,1])
+
+print "polyOrder 1 LDG-S"
+dat = pylab.loadtxt("dg-ldg-s-p1-err.txt")
+convergence(dat[:,0], dat[:,1])
+
+print "polyOrder 1 RDG"
+dat = pylab.loadtxt("dg-rdg-p1-err.txt")
+convergence(dat[:,0], dat[:,1])
+
+
