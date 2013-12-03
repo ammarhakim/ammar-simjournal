@@ -42,6 +42,18 @@ src = DataStruct.Field1D {
    ghost = {2, 2},
 }
 
+-- exact solution
+qExact = DataStruct.Field1D {
+   onGrid = grid,
+   numComponents = polyOrder+1,
+   ghost = {2, 2},
+}
+qError = DataStruct.Field1D {
+   onGrid = grid,
+   numComponents = polyOrder+1,
+   ghost = {2, 2},
+}
+
 -- duplicate for use in time-stepping
 qNewDup = qNew:duplicate()
 
@@ -57,18 +69,6 @@ initField:setOut( {q} )
 -- initialize
 initField:advance(0.0) -- time is irrelevant
 
--- updater to apply initial conditions
-initSrc = Updater.ProjectOnBasis1D {
-   onGrid = grid,
-   numBasis = polyOrder+1,
-   project = function (x,y,z,t)
-		return math.sin(x)
-	      end
-}
-initSrc:setOut( {src} )
--- initialize
----initSrc:advance(0.0) -- time is irrelevant
-
 -- function to initialize source with an exact projection
 function initSrcExact(x,y,z)
    local xj = x
@@ -78,6 +78,9 @@ function initSrcExact(x,y,z)
 end
 src:set(initSrcExact)
 src:write("src.h5")
+
+-- exact solution is source scaled with time
+qExact:set(initSrcExact)
 
 -- updater to solve diffusion equation
 diffSolver = Updater.DGDiffusion1D { 
@@ -97,17 +100,12 @@ l2Norm = DataStruct.DynVector {
    -- number of components in diagnostic
    numComponents = 1,
 }
-
 l2NormCalc = Updater.ModalL2Norm {
    onGrid = grid,
    -- number of basis function
    numBasis = polyOrder+1,
 }
-l2NormCalc:setIn( {q} )
 l2NormCalc:setOut( {l2Norm} )
-
--- compute L2 norm of initial conditions
-l2NormCalc:advance(0.0)
 
 -- apply boundary conditions
 function applyBc(fld)
@@ -132,7 +130,14 @@ function solveDiffusion(curr, dt, qIn, qOut)
    return myS, myDt
 end
 
+-- compute diagnostics
 function calcDiagnostics(curr, dt)
+   -- compute error
+   local tEnd = curr+dt
+   local fact = (1-math.exp(-tEnd))
+   qError:combine(1.0, q, -fact, qExact)
+
+   l2NormCalc:setIn( {qError} )
    l2NormCalc:setCurrTime(curr)
    l2NormCalc:advance(curr+dt)
 end
