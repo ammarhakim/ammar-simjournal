@@ -3,8 +3,8 @@
 :Completed: 14th June 2013
 :Last Updated:
 
-JE19: Tests for the recovery based DG scheme for diffusion
-==========================================================
+JE19: On diffusion operators with discontinuous Galerkin schemes
+================================================================
 
 .. contents::
 

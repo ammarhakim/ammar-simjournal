@@ -4,7 +4,7 @@
 polyOrder = 1
 
 -- cfl number to use
-cfl = 0.1/(2*polyOrder+1)
+cfl = 0.1/(2*polyOrder+1)/16
 
 LX = 2*Lucee.Pi -- domain length
 NX = 8 -- number of cells
