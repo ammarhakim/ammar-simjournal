@@ -204,7 +204,7 @@ fh = tables.openFile("../s125/s125-double-shear_chi_10.h5")
 q = fh.root.StructGridField
 Xn, Yn, qn = projectOnFinerGrid_f(Xc, Yc, q)
 pylab.subplot(2, 2, 1)
-pylab.title('DG2, 64x64 grid')
+pylab.title('P1, 64x64 grid')
 pylab.pcolormesh(Xn, Yn, pylab.transpose(qn), vmin=-5.0, vmax=5.0)
 pylab.axis('image')
 
@@ -212,7 +212,7 @@ fh = tables.openFile("../s127/s127-double-shear_chi_10.h5")
 q = fh.root.StructGridField
 Xn, Yn, qn = projectOnFinerGrid_f39(Xc, Yc, q)
 pylab.subplot(2, 2, 3)
-pylab.title('DG3, 64x64 grid')
+pylab.title('P2, 64x64 grid')
 pylab.pcolormesh(Xn, Yn, pylab.transpose(qn), vmin=-5.0, vmax=5.0)
 pylab.axis('image')
 
@@ -228,7 +228,7 @@ fh = tables.openFile("../s126/s126-double-shear_chi_10.h5")
 q = fh.root.StructGridField
 Xn, Yn, qn = projectOnFinerGrid_f(Xc, Yc, q)
 pylab.subplot(2, 2, 2)
-pylab.title('DG2, 128x128 grid')
+pylab.title('P1, 128x128 grid')
 pylab.pcolormesh(Xn, Yn, pylab.transpose(qn), vmin=-5.0, vmax=5.0)
 pylab.axis('image')
 
@@ -236,11 +236,12 @@ fh = tables.openFile("s128-double-shear_chi_10.h5")
 q = fh.root.StructGridField
 Xn, Yn, qn = projectOnFinerGrid_f39(Xc, Yc, q)
 pylab.subplot(2, 2, 4)
-pylab.title('DG3, 128x128 grid')
+pylab.title('P2, 128x128 grid')
 pylab.pcolormesh(Xn, Yn, pylab.transpose(qn), vmin=-5.0, vmax=5.0)
 pylab.axis('image')
 
-pylab.savefig('s125to128-double-shear-cmp.png')
+pylab.savefig('s125to128-double-shear-cmp.png', dpi=200)
+#pylab.savefig('s125to128-double-shear-cmp.pdf')
 
 fig = pylab.figure(2)
 tr_125 = pylab.loadtxt('../s125/s125-double-shear_totalEnergy')

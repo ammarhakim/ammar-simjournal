@@ -6,7 +6,7 @@ from matplotlib import rcParams
 import matplotlib.pyplot as plt
 
 # customization for figure
-rcParams['lines.linewidth']            = 1
+rcParams['lines.linewidth']            = 2
 rcParams['font.size']                  = 18
 #rcParams['xtick.major.size']           = 8 # default is 4
 #rcParams['xtick.major.width']          = 3 # default is 0.5
@@ -41,14 +41,12 @@ def exactSol(X, tend):
 def exactSolSS(X):
     return numpy.sin(X)
 
-baseList = ["../s329/s329-modal-dg-diffuse", "../s330/s330-modal-dg-diffuse", 
-            "../s331/s331-modal-dg-diffuse", "../s332/s332-modal-dg-diffuse"]
-titleStr = ["LDG-L", "LDG-R", "LDG-S", "RDG"]
+baseList = ["../s333/s333-modal-dg-diffuse", "../s337/s337-modal-dg-diffuse"]
 count = 0
 
 pylab.figure(1)
 for baseName in baseList:
-    pylab.subplot(2, 2, count+1)
+    pylab.subplot(2, 1, count+1)
 
     alpha = 1.0
     tend = 1.0
@@ -65,24 +63,21 @@ for baseName in baseList:
     dx = (upper[0]-lower[0])/cells[0]
     X = pylab.linspace(lower[0], upper[0], nx+1)
 
-    fh = tables.openFile(baseName+"_q_20.h5")
+    fh = tables.openFile(baseName+"_q_1.h5")
     q = fh.root.StructGridField
 
-    plotLines(X, q[:,0], q[:,1], '-k')
-
-    fh = tables.openFile(baseName+"_src.h5")
-    src = fh.root.StructGridField
-    plotLines(X, src[:,0], src[:,1], '--og')
+    plotLines(X, q[:,0], q[:,1], '-r')
 
     Xhr = pylab.linspace(lower[0], upper[0], 1000)
-    qExact = exactSolSS(Xhr)
-    pylab.plot(Xhr, qExact, '-m', linewidth=0.5)
+    qExact = exactSol(Xhr, 3.0/40.0)
+    pylab.plot(Xhr, qExact, '-m')
     #pylab.title('Steady-state solution for %s scheme' % titleStr[count] )
     #pylab.xlabel('X')
     #pylab.ylabel('T')
     pylab.axis('tight')
     count = count + 1
 
-pylab.savefig('s329-s330-s331-s332-dg-diffuse.pdf')
+pylab.savefig('s333-s334-dg-diffuse.pdf')
 pylab.show()
+
 
