@@ -712,5 +712,13 @@ program for that simulation.
     - Same as s335 (LDG-S), except 16 cells.
   * - ${mdl("s340")}
     - Same as s340 (RDG), except 16 cells.
+  * - ${mdl("s341")}
+    - Same as s333 (LDG-L), except 32 cells.
+  * - ${mdl("s342")}
+    - Same as s334 (LDG-R), except 32 cells.
+  * - ${mdl("s343")}
+    - Same as s335 (LDG-S), except 32 cells.
+  * - ${mdl("s344")}
+    - Same as s340 (RDG), except 32 cells.
 
 
