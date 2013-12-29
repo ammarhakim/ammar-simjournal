@@ -286,6 +286,19 @@ pertHamilCalc = Updater.LinEmGke1DPertHamil {
    mass = 1.0, -- species mass
 }
 
+-- function to compute total linearized Hamiltonian
+function calcHamil(curr, dt, phi1dIn, Apar1dIn, hamilOut)
+   -- calculate 2D fields from 1D fields
+   copyFieldTo2D(curr, dt, phi1dIn, phi2d)
+   copyFieldTo2D(curr, dt, Apar1dIn, Apar2d)
+
+   hamilOut:clear(0.0)
+   -- compute perturbed Hamiltonian
+   runUpdater(pertHamilCalc, curr, dt, {phi2d, Apar2d}, {hamilOut})
+   -- accumulate free-streaming contribution
+   hamilOut:accumulate(1.0, hamilKE)
+end
+
 -- function to apply boundary conditions
 function applyBc(fld)
    fld:applyPeriodicBc(0)
@@ -300,8 +313,10 @@ function writeFields(frame, tm)
    momentum:write( string.format("momentum_%d.h5", frame), tm )
 end
 
--- compute moments of initial conditions
+-- Compute initial set of fields
 calcMoments(0.0, 0.0, distf)
+calcEMField(0.0, 0.0, numDensity, momentum)
+calcHamil(0.0, 0.0, phi1d, Apar1d, hamil)
 
 -- write initial conditions
 writeFields(0, 0.0)

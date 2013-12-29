@@ -63,8 +63,8 @@ f_1(z,p_\parallel,t)` the linearized Vlasov equation is given by
 
 Note that only the zeroth-order Hamiltonian acts on the perturbed
 distribution, while the full linearized Hamiltonian acts on the
-equilibirum distribution. The linearized electromagnetic become:
-Ampere's law
+equilibirum distribution. The linearized electromagnetic field
+equations become: Ampere's law
 
 .. math::
 
