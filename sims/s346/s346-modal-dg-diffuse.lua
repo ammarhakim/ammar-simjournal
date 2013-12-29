@@ -4,10 +4,10 @@
 polyOrder = 1
 
 -- cfl number to use
-cfl = 0.1/(2*polyOrder+1)/16
+cfl = 0.1/(2*polyOrder+1)/64
 
 LX = 2*Lucee.Pi -- domain length
-NX = 8 -- number of cells
+NX = 4 -- number of cells
 dx = LX/NX -- cell size
 
 -- grid on which equations are to be solved
@@ -86,7 +86,7 @@ diffSolver = Updater.DGDiffusion1D {
    -- polynomial order
    polyOrder = 1,
    -- scheme
-   scheme = "LDG-L",
+   scheme = "RDG",
    -- diffusion coefficent
    diffusionCoeff = 1.0,
    -- CFL number

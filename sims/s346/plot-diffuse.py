@@ -41,8 +41,8 @@ def exactSol(X, tend):
 def exactSolSS(X):
     return numpy.sin(X)
 
-baseList = ["../s345/s345-modal-dg-diffuse",
-            "../s333/s333-modal-dg-diffuse", "../s337/s337-modal-dg-diffuse"]
+baseList = ["../s346/s346-modal-dg-diffuse",
+            "../s336/s336-modal-dg-diffuse", "../s340/s340-modal-dg-diffuse"]
 count = 0
 
 fig = pylab.figure(1)
@@ -78,7 +78,7 @@ for baseName in baseList:
     pylab.axis('tight')
     count = count + 1
 
-pylab.savefig('s345-s333-s337-dg-diffuse.pdf')
+pylab.savefig('s346-s336-s340-dg-diffuse.pdf')
 pylab.show()
 
 
