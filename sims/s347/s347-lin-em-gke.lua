@@ -91,8 +91,13 @@ distf1 = DataStruct.Field2D {
    numComponents = basis:numNodes(),
    ghost = {1, 1},
 }
--- to store increment from equilibrium distribution 
-incrEquil = DataStruct.Field2D {
+-- to store increments from Poisson Bracket updaters
+incrDistf1 = DataStruct.Field2D {
+   onGrid = grid,
+   numComponents = basis:numNodes(),
+   ghost = {1, 1},
+}
+incrDistf2 = DataStruct.Field2D {
    onGrid = grid,
    numComponents = basis:numNodes(),
    ghost = {1, 1},
@@ -160,6 +165,8 @@ pbSlvr = Updater.PoissonBracket {
    cfl = cfl,
    -- flux type: one of "upwind" (default) or "central"
    fluxType = "upwind",
+   -- compute only increments
+   onlyIncrement = true,
 }
 
 -- spatial grid
@@ -251,7 +258,6 @@ Apar2d = DataStruct.Field2D {
    writeGhost = {0, 1},
 }
 
-
 -- updater to copy 1D field to 2D field
 copyTo2D = Updater.Copy1DTo2DNodalField {
    onGrid = grid,
@@ -287,7 +293,7 @@ pertHamilCalc = Updater.LinEmGke1DPertHamil {
 }
 
 -- function to compute total linearized Hamiltonian
-function calcHamil(curr, dt, phi1dIn, Apar1dIn, hamilOut)
+function calcHamiltonian(curr, dt, phi1dIn, Apar1dIn, hamilOut)
    -- calculate 2D fields from 1D fields
    copyFieldTo2D(curr, dt, phi1dIn, phi2d)
    copyFieldTo2D(curr, dt, Apar1dIn, Apar2d)
@@ -306,6 +312,103 @@ function applyBc(fld)
    fld:applyCopyBc(1, "upper")
 end
 
+function updateVlasovEqn(curr, dt, H0, Ht, distIn, distOut)
+   -- compute increment from {f1, H0} term
+   local s1, dt1 = runUpdater(pbSlvr, curr, dt, {distIn, H0}, {incrDistf1})
+   -- compute increment from {f0, H0+H1} term
+   local s2, dt2 = runUpdater(pbSlvr, curr, dt, {distfEquil, Ht}, {incrDistf2})
+
+   local dtMin = math.min(dt1, dt2)
+   -- check if either of the steps failed
+   if ((s1 == false) or (s2 == false)) then
+      return false, dtMin
+   end
+
+   -- combine two
+   distOut:combine(1.0, distIn, dt, incrDistf1, dt, incrDistf2)
+   return true, dtMin
+end
+
+-- function to take a time-step using SSP-RK3 time-stepping scheme
+function rk3(tCurr, myDt)
+   local status, dtSuggested
+
+   -- RK stage 1
+   status, dtSuggested = updateVlasovEqn(tCurr, myDt, hamilKE, hamil, distf, distf1)
+   if (status == false) then
+      return status, dtSuggested
+   end
+   applyBc(distf1)
+   -- compute Hamiltonian for use in next stage
+   calcMoments(tCurr, myDt, distf1)
+   calcEMField(tCurr, myDt, numDensity, momentum)
+   calcHamiltonian(tCurr, myDt, phi1d, Apar1d, hamil)
+
+   -- RK stage 2
+   status, dtSuggested = updateVlasovEqn(tCurr, myDt, hamilKE, hamil, distf1, distfNew)
+   if (status == false) then
+      return status, dtSuggested
+   end
+   distf1:combine(3.0/4.0, distf, 1.0/4.0, distfNew)
+   applyBc(distf1)
+   -- compute Hamiltonian for use in next stage
+   calcMoments(tCurr, myDt, distf1)
+   calcEMField(tCurr, myDt, numDensity, momentum)
+   calcHamiltonian(tCurr, myDt, phi1d, Apar1d, hamil)
+
+   -- RK stage 3
+   status, dtSuggested = updateVlasovEqn(tCurr, myDt, hamilKE, hamil, distf1, distfNew)
+   if (status == false) then
+      return status, dtSuggested
+   end
+   distf1:combine(1.0/3.0, distf, 2.0/3.0, distfNew)
+   applyBc(distf1)
+   distf:copy(distf1)
+   -- compute Hamiltonian for use in next time-step
+   calcMoments(tCurr, myDt, distf)
+   calcEMField(tCurr, myDt, numDensity, momentum)
+   calcHamiltonian(tCurr, myDt, phi1d, Apar1d, hamil)
+
+   return status, dtSuggested
+end
+
+-- make a duplicate in case we need it
+distfDup = distf:duplicate()
+
+-- function to advance solution from tStart to tEnd
+function advanceFrame(tStart, tEnd, initDt)
+   local step = 1
+   local tCurr = tStart
+   local myDt = initDt
+   local status, dtSuggested
+
+   while tCurr<=tEnd do
+      distfDup:copy(distf)
+
+      if (tCurr+myDt > tEnd) then
+	 myDt = tEnd-tCurr
+      end
+
+      print (string.format("Taking step %d at time %g with dt %g", step, tCurr, myDt))
+      status, dtSuggested = rk3(tCurr, myDt)
+
+      if (status == false) then
+	 print (string.format("** Time step %g too large! Will retake with dt %g", myDt, dtSuggested))
+	 distf:copy(distfDup)
+	 myDt = dtSuggested
+      else
+	 tCurr = tCurr + myDt
+	 myDt = dtSuggested
+	 step = step + 1
+	 if (tCurr >= tEnd) then
+	    break
+	 end
+      end
+
+   end
+   return dtSuggested
+end
+
 -- write data to H5 files
 function writeFields(frame, tm)
    distf:write( string.format("distf_%d.h5", frame), tm )
@@ -316,7 +419,24 @@ end
 -- Compute initial set of fields
 calcMoments(0.0, 0.0, distf)
 calcEMField(0.0, 0.0, numDensity, momentum)
-calcHamil(0.0, 0.0, phi1d, Apar1d, hamil)
+calcHamiltonian(0.0, 0.0, phi1d, Apar1d, hamil)
 
 -- write initial conditions
 writeFields(0, 0.0)
+
+-- parameters to control time-stepping
+tStart = 0.0
+tEnd = 20.0
+dtSuggested = 0.1*tEnd -- initial time-step to use (will be adjusted)
+nFrames = 20
+tFrame = (tEnd-tStart)/nFrames
+
+tCurr = tStart
+for frame = 1, nFrames do
+
+   Lucee.logInfo (string.format("-- Advancing solution from %g to %g", tCurr, tCurr+tFrame))
+   dtSuggested = advanceFrame(tCurr, tCurr+tFrame, dtSuggested)
+   writeFields(frame, tCurr+tFrame)
+   tCurr = tCurr+tFrame
+   Lucee.logInfo ("")
+end
