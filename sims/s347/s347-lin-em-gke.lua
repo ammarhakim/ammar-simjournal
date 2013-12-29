@@ -389,11 +389,11 @@ function advanceFrame(tStart, tEnd, initDt)
 	 myDt = tEnd-tCurr
       end
 
-      print (string.format("Taking step %d at time %g with dt %g", step, tCurr, myDt))
+      Lucee.logInfo (string.format("Taking step %d at time %g with dt %g", step, tCurr, myDt))
       status, dtSuggested = rk3(tCurr, myDt)
 
       if (status == false) then
-	 print (string.format("** Time step %g too large! Will retake with dt %g", myDt, dtSuggested))
+	 Lucee.logInfo (string.format("** Time step %g too large! Will retake with dt %g", myDt, dtSuggested))
 	 distf:copy(distfDup)
 	 myDt = dtSuggested
       else
@@ -409,11 +409,36 @@ function advanceFrame(tStart, tEnd, initDt)
    return dtSuggested
 end
 
+-- these fields are only for I/O and are not used anywhere else
+phiDG = DataStruct.Field1D {
+   onGrid = grid_1d,
+   numComponents = basis_1d:numNodes(),
+   ghost = {1, 1},
+}
+AparDG = DataStruct.Field1D {
+   onGrid = grid_1d,
+   numComponents = basis_1d:numNodes(),
+   ghost = {1, 1},
+}
+
+-- create updater to initialize chi
+copyCToD = Updater.CopyContToDisCont1D {
+   onGrid = grid_1d,
+   basis = basis_1d,
+}
+
 -- write data to H5 files
 function writeFields(frame, tm)
    distf:write( string.format("distf_%d.h5", frame), tm )
    numDensity:write( string.format("numDensity_%d.h5", frame), tm )
    momentum:write( string.format("momentum_%d.h5", frame), tm )
+
+   -- copy CG to DG fields before writing them out (makes it easier for plotting)
+   runUpdater(copyCToD, 0.0, 0.0, {phi1d}, {phiDG})
+   runUpdater(copyCToD, 0.0, 0.0, {Apar1d}, {AparDG})
+
+   phiDG:write( string.format("phi_%d.h5", frame), tm )
+   AparDG:write( string.format("Apar_%d.h5", frame), tm )
 end
 
 -- Compute initial set of fields
