@@ -583,6 +583,131 @@ program for that simulation.
   * - :doc:`s282 <s282/s282-gem-tenmom>` 
     - Same as s281, except on :math:`1000\times 500` grid.
   * - :doc:`s283 <s283/s283-gem-tenmom>` 
-    - Same as s281, except on :math:`250\times 125` grid and no divergence correction.
+    - Same as s281, except on :math:`250\times 125` grid
   * - :doc:`s284 <s284/s284-pulsebox-wave>` 
     - EM pulse in box (see s57). This is to test flux and electric field relations.
+  * - :doc:`s285 <s285/s285-pulsebox-wave>` 
+    - EM pulse in box (see s57 and s284). With in-plane electric field.
+  * - :doc:`s286 <s286/s286-harris-tenmom>` 
+    - Ten-moment doubly periodic Harris sheet simulation to compare with PSC. On :math:`250\times 125` grid.
+  * - :doc:`s287 <s287/s287-harris-tenmom>` 
+    - Same as s286, except on a :math:`1000\times 500` grid.
+  * - :doc:`s288 <s288/s288-ecell-fdtd>` 
+    - FDTD Maxwell solver, in preparation for FD/FV two-fluid scheme. (See s63).
+  * - :doc:`s289 <s289/s289-pulse-box-5m>` 
+    - A plamsa in a box, perturbed with a EM pulse. Another attempt to nail down div(E) problems.
+  * - :doc:`s290 <s290/s290-harris-tenmom>` 
+    - Same as s286, except on a :math:`500\times 250` grid.
+  * - :doc:`s291 <s291/s291-pulsebox-wave>` 
+    - EM pulse in box (see s284). Using dimensional splitting.
+  * - :doc:`s292 <s292/s292-harris-tenmom>` 
+    - Same as s286, except using dimensional splitting.
+  * - :doc:`s293 <s293/s293-harris-tenmom>` 
+    - Same as s286, except using explicit RK4 source update (this just for comparsion with s286).
+  * - :doc:`s294 <s294/s294-harris-tenmom>` 
+    - Same as s292, except on a :math:`500\times 250` grid.
+  * - :doc:`s295 <s295/s295-harris-tenmom>` 
+    - Same as s292, except on a :math:`500\times 250` grid and :math:`100\times 50` domain.
+  * - :doc:`s296 <s296/s296-harris-tenmom>` 
+    - Same as s295, except on a :math:`1000\times 500` grid and :math:`100\times 50` domain.
+  * - :doc:`s297 <s297/s297-gem-tenmom>` 
+    - Same as s282 (open domain reconnection), except using a dimensional splitting.
+  * - :doc:`s298 <s298/s298-harris-tenmom>` 
+    - Same as s296 (double periodic), except with collisional relaxation (elcCollisionFreq 1.0).
+  * - :doc:`s299 <s299/s299-harris-tenmom>` 
+    - Same as s296 (double periodic), except on :math:`2000\times 1000`.
+  * - :doc:`s300 <s300/s300-harris-tenmom>` 
+    - Same as s296 (double periodic), except with CFL of 0.95.
+  * - :doc:`s301 <s301/s301-5m-double-periodic>` 
+    - Doubly periodic reconnection with 5-moment model. :math:`1000\times 500` grid.
+  * - :doc:`s302 <s302/s302-5m-double-periodic>` 
+    - Doubly periodic reconnection with 5-moment model. :math:`1000\times 500` grid, on :math`200\times 100` grid.
+  * - :doc:`s303 <s303/s303-5m-double-periodic>` 
+    - Same as s302, except on :math:`2000\times 1000`.
+  * - :doc:`s304 <s304/s304-5m-gem>` 
+    - Two-fluid 5-moment GEM challenge with zero guide field, :math:`512x256` grid, dimensional splitting
+  * - :doc:`s305 <s305/s305-5m-gem>` 
+    - Same as s304, except on double the domain and :math:`1024x512` grid.
+  * - :doc:`s306 <s306/s306-5m-gem>` 
+    - Same as s304, except :math:`1024x512` grid.
+  * - :doc:`s307 <s307/s307-harris-tenmom>` 
+    - Same as s296 (double periodic 10M), except using :math:`\eta J` term and on :math:`500\times 250` grid.
+  * - :doc:`s308 <s308/s308-harris-tenmom>` 
+    - Same as s296 (double periodic 10M), except using a perturbation of 0.5.
+  * - :doc:`s309 <s309/s309-5m-double-periodic>` 
+    - Same as 301 (double periodic 5M), except enforcing quasi-neutrality
+  * - :doc:`s310 <s310/s310-5m-double-periodic>` 
+    - Same as 309, with div(E) also enforced using hyperbolic cleaning.
+  * - :doc:`s311 <s311/s311-5m-gem>` 
+    - Same as 304, shorter wih more output and odd number of cells
+  * - :doc:`s312 <s312/s312-5m-gem>` 
+    - Same as 311, except with Ey initialized to equilibrium value.
+  * - :doc:`s313 <s313/s313-5m-gem>` 
+    - Same as 312, except with :math:`1601\times 801` mesh.
+  * - :doc:`s314 <s314/s314-5m-gem>` 
+    - Same as s311, except both electrons and ions carry current, on a :math:`1001\times 501` grid.
+  * - :doc:`s315 <s315/s315-harris-tenmom>` 
+    - Same as s296 (double tearing), except both electrons and ions carry current, and using different perturbation.
+  * - :doc:`s316 <s316/s316-harris-tenmom>` 
+    - Same as s315, except using :math:`k=1/\delta_i`.
+  * - :doc:`s317 <s317/s317-5m-gem>` 
+    - Same as s314, except fewer output files, and run longer
+  * - :doc:`s318 <s318/s318-gem-tenmom>` 
+    - Same s297 (open domain reconnection, 10M), except electrons and ions carry current
+  * - :doc:`s319 <s319/s319-gemguide-5m>` 
+    - Same as s280 (open domain reconnection, 5M), dimensional splitting, both electrons and ions carry current.
+  * - :doc:`s320 <s320/s320-gem-tenmom>` 
+    - Standard GEM reconnection, with 10M model and periodic in X and walls in Y
+  * - :doc:`s321 <s321/s321-gem-tenmom>` 
+    - Same as s320, except with wave number of ionSkinDepth.
+  * - :doc:`s322 <s322/s322-harris-tenmom>` 
+    - Same as s316, except using :math:`1002\times 502` mesh.
+  * - :doc:`s323 <s323/s323-harris-tenmom>` 
+    - Same as s316, using no ion relaxation.
+  * - :doc:`s324 <s324/s324-harris-tenmom>` 
+    - Same as s316, with new equilibrium for double tearing (:math:`k=1/\delta_i`)
+  * - :doc:`s325 <s325/s325-harris-tenmom>` 
+    - Same as s324, expect with :math:`k=1/\delta_e`
+  * - :doc:`s326 <s326/s326-iso-gem>` 
+    - Two-fluid, isothermal standard GEM reconnection.
+  * - :doc:`s327 <s327/s327-gem-tenmom>` 
+    - 10-moment with anisotropic heat relaxation closure.
+  * - :doc:`s328 <s328/s328-lgd-diffuse>` 
+    - Diffusion with Local DG scheme, same parameters as s245.
+  * - :doc:`s329 <s329/s329-modal-dg-diffuse>` 
+    - Diffusion with modal DG scheme. Run to steady-state with sin(x) source. LDG-L scheme.
+  * - :doc:`s330 <s330/s330-modal-dg-diffuse>` 
+    - Same as s329, except with LDG-R scheme.
+  * - :doc:`s331 <s331/s331-modal-dg-diffuse>` 
+    - Same as s329, except with LDG-S scheme.
+  * - :doc:`s332 <s332/s332-modal-dg-diffuse>` 
+    - Same as s329, except with RDG scheme.
+  * - :doc:`s333 <s333/s333-modal-dg-diffuse>` 
+    - Decaying temperature problem, LDG-L scheme, 8 cells.
+  * - :doc:`s334 <s334/s334-modal-dg-diffuse>` 
+    - Same as s333, except with LDG-R scheme, 8 cells.
+  * - :doc:`s335 <s335/s335-modal-dg-diffuse>` 
+    - Same as s333, except with LDG-S scheme, 8 cells.
+  * - :doc:`s336 <s336/s336-modal-dg-diffuse>` 
+    - Same as s333, except with RDG scheme, 8 cells.
+  * - :doc:`s337 <s337/s337-modal-dg-diffuse>` 
+    - Same as s333 (LDG-L), except 16 cells.
+  * - :doc:`s338 <s338/s338-modal-dg-diffuse>` 
+    - Same as s334 (LDG-R), except 16 cells.
+  * - :doc:`s339 <s339/s339-modal-dg-diffuse>` 
+    - Same as s335 (LDG-S), except 16 cells.
+  * - :doc:`s340 <s340/s340-modal-dg-diffuse>` 
+    - Same as s340 (RDG), except 16 cells.
+  * - :doc:`s341 <s341/s341-modal-dg-diffuse>` 
+    - Same as s333 (LDG-L), except 32 cells.
+  * - :doc:`s342 <s342/s342-modal-dg-diffuse>` 
+    - Same as s334 (LDG-R), except 32 cells.
+  * - :doc:`s343 <s343/s343-modal-dg-diffuse>` 
+    - Same as s335 (LDG-S), except 32 cells.
+  * - :doc:`s344 <s344/s344-modal-dg-diffuse>` 
+    - Same as s340 (RDG), except 32 cells.
+  * - :doc:`s345 <s345/s345-modal-dg-diffuse>` 
+    - Same as s333 (LDG-L), except 4 cells. (This is out of whack, but needed for proposal)
+  * - :doc:`s346 <s346/s346-modal-dg-diffuse>` 
+    - Same as s340 (RDG), except 4 cells. (This is out of whack, but needed for proposal)
+

@@ -68,3 +68,4 @@ Gkeyll Simulation Journal
   je/je18/je18-GEM-recon.rst
   je/je19/je19-rdg.rst
   je/je20/je20-vlasov-bounded.rst
+  je/je21/je21-lin-gke-em.rst
