@@ -102,7 +102,7 @@ The EM equations become
 .. math::
 
  k_\perp^2 \phi &= -\int f_1\thinspace dw\\
- (k_\perp-\beta)^2 A_\parallel &= -\beta \int w f_1\thinspace dw.
+ (k_\perp^2-\beta) A_\parallel &= -\beta \int w f_1\thinspace dw.
 
 Note that the normalized system is identical to the one described in
 the appendix of Belli and Hammett 2005 [#belli-hammett-2005]_.

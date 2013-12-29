@@ -724,4 +724,6 @@ program for that simulation.
     - Same as s333 (LDG-L), except 4 cells. (This is out of whack, but needed for proposal)
   * - ${mdl("s346")}
     - Same as s340 (RDG), except 4 cells. (This is out of whack, but needed for proposal)
+  * - ${mdl("s347")}
+    - Linearized EM/GKE solver, polyOrder 1. 
 
