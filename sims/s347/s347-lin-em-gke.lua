@@ -9,9 +9,9 @@ cfl = 0.2
 -- wave-number
 knumber = 0.5
 -- perpendicular wave number
-kperp = 0.1
+kperp = math.sqrt(0.2)
 -- normalized beta (electron plasma is 2*beta*me/me)
-beta = 1.0
+beta = 0.0
 
 -- domain extents
 XL, XU = -Lucee.Pi/knumber, Lucee.Pi/knumber
@@ -305,6 +305,22 @@ function calcHamiltonian(curr, dt, phi1dIn, Apar1dIn, hamilOut)
    hamilOut:accumulate(1.0, hamilKE)
 end
 
+-- dynvector for field energy
+fieldEnergy = DataStruct.DynVector { numComponents = 1, }
+
+-- to compute field energy
+fieldEnergyCalc = Updater.NormGrad1D {
+   -- grid for updater
+   onGrid = grid_1d,
+   -- basis functions to use
+   basis = basis_1d,
+}
+
+-- compute various diagnostics
+function calcDiagnostics(curr, dt)
+   runUpdater(fieldEnergyCalc, curr, dt, {phi1d}, {fieldEnergy})
+end
+
 -- function to apply boundary conditions
 function applyBc(fld)
    fld:applyPeriodicBc(0)
@@ -397,6 +413,8 @@ function advanceFrame(tStart, tEnd, initDt)
 	 distf:copy(distfDup)
 	 myDt = dtSuggested
       else
+	 calcDiagnostics(tCurr, myDt)
+
 	 tCurr = tCurr + myDt
 	 myDt = dtSuggested
 	 step = step + 1
@@ -433,6 +451,8 @@ function writeFields(frame, tm)
    numDensity:write( string.format("numDensity_%d.h5", frame), tm )
    momentum:write( string.format("momentum_%d.h5", frame), tm )
 
+   fieldEnergy:write( string.format("fieldEnergy_%d.h5", frame), tm )
+
    -- copy CG to DG fields before writing them out (makes it easier for plotting)
    runUpdater(copyCToD, 0.0, 0.0, {phi1d}, {phiDG})
    runUpdater(copyCToD, 0.0, 0.0, {Apar1d}, {AparDG})
@@ -445,6 +465,7 @@ end
 calcMoments(0.0, 0.0, distf)
 calcEMField(0.0, 0.0, numDensity, momentum)
 calcHamiltonian(0.0, 0.0, phi1d, Apar1d, hamil)
+calcDiagnostics(0.0, 0.0)
 
 -- write initial conditions
 writeFields(0, 0.0)
@@ -453,7 +474,7 @@ writeFields(0, 0.0)
 tStart = 0.0
 tEnd = 20.0
 dtSuggested = 0.1*tEnd -- initial time-step to use (will be adjusted)
-nFrames = 20
+nFrames = 4
 tFrame = (tEnd-tStart)/nFrames
 
 tCurr = tStart
