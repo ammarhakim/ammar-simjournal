@@ -17,7 +17,7 @@ beta = 0.0
 XL, XU = -Lucee.Pi/knumber, Lucee.Pi/knumber
 VL, VU = -6.0, 6.0
 -- number of cells
-NX, NV = 16, 16
+NX, NV = 16, 32
 
 -- run specified updater
 function runUpdater(updater, currTime, timeStep, inpFlds, outFlds)
@@ -472,7 +472,7 @@ writeFields(0, 0.0)
 
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 20.0
+tEnd = 10.0
 dtSuggested = 0.1*tEnd -- initial time-step to use (will be adjusted)
 nFrames = 4
 tFrame = (tEnd-tStart)/nFrames
