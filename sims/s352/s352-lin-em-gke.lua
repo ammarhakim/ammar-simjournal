@@ -4,12 +4,12 @@
 polyOrder = 1
 
 -- cfl number to use
-cfl = 0.005/(2*polyOrder+1)
+cfl = 0.5/(2*polyOrder+1)
 
 -- wave-number
 knumber = 0.5
 -- perpendicular wave number
-kperp = 0.01
+kperp = 0.5
 -- normalized beta (electron plasma is 2*beta*me/mi)
 beta = 10.0
 
@@ -472,7 +472,7 @@ writeFields(0, 0.0)
 
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 1.0
+tEnd = 8.0
 dtSuggested = 0.1*tEnd -- initial time-step to use (will be adjusted)
 nFrames = 4
 tFrame = (tEnd-tStart)/nFrames

@@ -2,7 +2,7 @@ import numpy
 import pylab
 import math
 
-pylab.rc('text', usetex=True)
+pylab.rc('text', usetex=False)
 
 def areSignDiff(a, b):
     if a>0 and b>0:
