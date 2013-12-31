@@ -94,15 +94,16 @@ Vlasov equation remains unchanged, with the Hamiltonians given by
 
 Note that in this normalization, effectively :math:`k_\perp^2` is
 normalized to :math:`Z_i\rho_i^2` and :math:`\beta \equiv (\beta_e/2)
-m_i/m_e`, where :math:`\beta_e` is the electron plasma-beta. Further,
-the equilibrium distribution is :math:`f_0 = e^{-w^2/2}/\sqrt{2\pi}`.
+m_i/m_e`, where :math:`\beta_e` is the electron plasma-beta. In these
+units, the Alfven speed is :math:`v_A=1/\sqrt{\beta}`. The normalized
+equilibrium distribution is :math:`f_0 = e^{-w^2/2}/\sqrt{2\pi}`.
 
 The EM equations become
 
 .. math::
 
  k_\perp^2 \phi &= -\int f_1\thinspace dw\\
- (k_\perp^2-\beta) A_\parallel &= -\beta \int w f_1\thinspace dw.
+ (k_\perp^2+\beta) A_\parallel &= -\beta \int w f_1\thinspace dw.
 
 Note that the normalized system is identical to the one described in
 the appendix of Belli and Hammett 2005 [#belli-hammett-2005]_.

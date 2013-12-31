@@ -9,7 +9,7 @@ cfl = 0.005/(2*polyOrder+1)
 -- wave-number
 knumber = 0.5
 -- perpendicular wave number
-kperp = 0.01
+kperp = 0.05
 -- normalized beta (electron plasma is 2*beta*me/mi)
 beta = 10.0
 
