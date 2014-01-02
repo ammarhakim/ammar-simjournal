@@ -138,8 +138,8 @@ except using piece-wise second-order polynomials.
   basis functions. Note that the resolution is rather coarse, and the
   discretization errors are particularly noticeable in the damping
   rates. In these simulations :math:`\beta=0.0`, and
-  :math:`k_\perp^2=0.01,\ldots,1.0`. See simulations [:doc:`s247
-  <../../sims/s347/s347-lin-em-gke>`] to [:doc:`s254
+  :math:`k_\perp^2=0.01,\ldots,1.0`. See simulations [:doc:`347
+  <../../sims/s347/s347-lin-em-gke>`] to [:doc:`s354
   <../../sims/s354/s354-lin-em-gke>`] for details.
 
 .. figure:: p2-freq-damp-ion-sound.png
@@ -149,19 +149,64 @@ except using piece-wise second-order polynomials.
   Same as the previous figure, except using piece-wise second order
   polynomial basis functions. The damping rates are much better
   predicted than in the first-order polynomial case, however, the
-  simulations take twice as long. See simulations [:doc:`s255
-  <../../sims/s355/s355-lin-em-gke>`] to [:doc:`s262
+  simulations take twice as long. See simulations [:doc:`s355
+  <../../sims/s355/s355-lin-em-gke>`] to [:doc:`s362
   <../../sims/s362/s362-lin-em-gke>`] for details.
 
-Shear Alfven waves
-------------------
+Shear Kinetic Alfven waves
+--------------------------
 
 In the next set of calculations, we look at the case in which EM terms
-are included, i.e. :math:`\beta>0.0`. For first set of tests I hold
-:math:`k_\perp^2=0.1` and vary beta from :math:`0.1,\ldots,10.0`. For
-all simulations piece-wise second-order basis functions on a grid of
-:math:`16\times 32` were used. The results are shown in the following
-figure.
+are included, i.e. :math:`\beta>0.0`. In this case the system supports
+shear kinetic Alfven waves (KAWs), which asymptote to undamped waves
+as :math:`k_\perp\rightarrow 0`. 
+
+Case when :math:`k_\perp^2=0.1`
++++++++++++++++++++++++++++++++
+
+For first set of tests I hold :math:`k_\perp^2=0.1` and vary
+:math:`beta=0.1,\ldots,10.0`. For all simulations piece-wise
+second-order basis functions on a grid of :math:`16\times 32` were
+used. One of the reasons to use a second-order polynomial basis
+functions is that it delays recurrence issues, rather severe in the
+lower-order basis function case. Eventually, we will implement a
+hyper-collision term to damp out the recurrence, but this has not been
+tested yet.
+
+The results are shown in the following figure.
+
+.. figure:: freq-damp-shear-alf-kp-0p1-beta-scan.png
+  :width: 100%
+  :align: center
+
+  Frequency (magenta, left axis) and damping (green, right axis) for
+  shear kinetic Alfven waves (KAWs). Solid dots are simulation results
+  on a :math:`16\times 32` grid with piece-wise second-order
+  polynomial basis functions. Note that the damping rates do not agree
+  very well for the :math:`\beta=10.0` case. See simulations [:doc:`s363
+  <../../sims/s363/s363-lin-em-gke>`] to [:doc:`s369
+  <../../sims/s369/s369-lin-em-gke>`] for details.
+
+Case when :math:`k_\perp^2=0.05`
++++++++++++++++++++++++++++++++
+
+In this set of tests I hold :math:`k_\perp^2=0.05` and vary
+:math:`beta=0.1,\ldots,10.0`. All other parameters are the same as for
+the :math:`k_\perp^2=0.1` case.
+
+The results are shown in the following figure.
+
+.. figure:: freq-damp-shear-alf-kp-0p1-beta-scan.png
+  :width: 100%
+  :align: center
+
+  Frequency (magenta, left axis) and damping (green, right axis) for
+  shear kinetic Alfven waves (KAWs). Solid dots are simulation results
+  on a :math:`16\times 32` grid with piece-wise second-order
+  polynomial basis functions. Note that the damping rates do not agree
+  very well for the :math:`\beta=10.0` case. See simulations [:doc:`s363
+  <../../sims/s363/s363-lin-em-gke>`] to [:doc:`s369
+  <../../sims/s369/s369-lin-em-gke>`] for details.
 
 -----
 
