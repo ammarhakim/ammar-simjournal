@@ -121,8 +121,12 @@ Electron acoustic waves
 
 We first look at the electrostatic limit, i.e. set :math:`\beta=0`. In
 this limit the system supports electron acoustic waves, which are
-increasingly Landau damped as :math:`k_\perp^2` increases. See the
-plot below.
+increasingly Landau damped as :math:`k_\perp^2` increases. 
+
+The first set of simulations were performed with a piece-wise
+first-order polynomial basis functions on a :math:`16\times 32`
+grid. The second set of simulations were performed on the same grid,
+except using piece-wise second-order polynomials. 
 
 .. figure:: freq-damp-ion-sound.png
   :width: 100%
@@ -130,13 +134,34 @@ plot below.
 
   Frequency (magenta, left axis) and damping (green, right axis) for
   electron acoustic waves. Solid dots are simulation results on a
-  :math:`16\times 32` grid with first-order polynomial basis
-  functions. Note that the resolution is rather coarse, and the
+  :math:`16\times 32` grid with piece-wise first-order polynomial
+  basis functions. Note that the resolution is rather coarse, and the
   discretization errors are particularly noticeable in the damping
   rates. In these simulations :math:`\beta=0.0`, and
   :math:`k_\perp^2=0.01,\ldots,1.0`. See simulations [:doc:`s247
   <../../sims/s347/s347-lin-em-gke>`] to [:doc:`s254
   <../../sims/s354/s354-lin-em-gke>`] for details.
+
+.. figure:: p2-freq-damp-ion-sound.png
+  :width: 100%
+  :align: center
+
+  Same as the previous figure, except using piece-wise second order
+  polynomial basis functions. The damping rates are much better
+  predicted than in the first-order polynomial case, however, the
+  simulations take twice as long. See simulations [:doc:`s255
+  <../../sims/s355/s355-lin-em-gke>`] to [:doc:`s262
+  <../../sims/s362/s362-lin-em-gke>`] for details.
+
+Shear Alfven waves
+------------------
+
+In the next set of calculations, we look at the case in which EM terms
+are included, i.e. :math:`\beta>0.0`. For first set of tests I hold
+:math:`k_\perp^2=0.1` and vary beta from :math:`0.1,\ldots,10.0`. For
+all simulations piece-wise second-order basis functions on a grid of
+:math:`16\times 32` were used. The results are shown in the following
+figure.
 
 -----
 

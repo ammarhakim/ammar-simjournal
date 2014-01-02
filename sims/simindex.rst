@@ -726,4 +726,19 @@ program for that simulation.
     - Same as s347, except :math:`k_\perp^2=0.75`.
   * - :doc:`s354 <s354/s354-lin-em-gke>` 
     - Same as s347, except :math:`k_\perp^2=1.0`.
-
+  * - :doc:`s355 <s355/s355-lin-em-gke>` 
+    - Same as s347, except :math:`k_\perp^2=0.01`, polyOrder 2.
+  * - :doc:`s356 <s356/s356-lin-em-gke>` 
+    - Same as s348, except :math:`k_\perp^2=0.05`, polyOrder 2.
+  * - :doc:`s357 <s357/s357-lin-em-gke>` 
+    - Same as s349, except :math:`k_\perp^2=0.1`, polyOrder 2.
+  * - :doc:`s358 <s358/s358-lin-em-gke>` 
+    - Same as s350, except :math:`k_\perp^2=0.2`, polyOrder 2.
+  * - :doc:`s359 <s359/s359-lin-em-gke>` 
+    - Same as s351, except :math:`k_\perp^2=0.3`, polyOrder 2.
+  * - :doc:`s360 <s360/s360-lin-em-gke>` 
+    - Same as s352, except :math:`k_\perp^2=0.5`, polyOrder 2.
+  * - :doc:`s361 <s361/s361-lin-em-gke>` 
+    - Same as s353, except :math:`k_\perp^2=0.75`, polyOrder 2.
+  * - :doc:`s362 <s362/s362-lin-em-gke>` 
+    - Same as s354, except :math:`k_\perp^2=0.75`, polyOrder 2.
