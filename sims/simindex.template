@@ -756,3 +756,17 @@ program for that simulation.
     - Same as s353, except :math:`k_\perp^2=0.75`, polyOrder 2.
   * - ${mdl("s362")}
     - Same as s354, except :math:`k_\perp^2=0.75`, polyOrder 2.
+  * - ${mdl("s363")}
+    - Same as s357 (:math:`k_\perp^2=0.1`), :math:`\beta=0.1`.
+  * - ${mdl("s364")}
+    - Same as s363, except :math:`\beta=0.5`.
+  * - ${mdl("s365")}
+    - Same as s363, except :math:`\beta=1.0`.
+  * - ${mdl("s366")}
+    - Same as s363, except :math:`\beta=2.5`.
+  * - ${mdl("s367")}
+    - Same as s363, except :math:`\beta=5.0`.
+  * - ${mdl("s368")}
+    - Same as s363, except :math:`\beta=7.5`.
+  * - ${mdl("s369")}
+    - Same as s363, except :math:`\beta=10.0`.
