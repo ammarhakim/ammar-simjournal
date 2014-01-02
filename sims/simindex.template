@@ -740,4 +740,19 @@ program for that simulation.
     - Same as s347, except :math:`k_\perp^2=0.75`.
   * - ${mdl("s354")}
     - Same as s347, except :math:`k_\perp^2=1.0`.
-
+  * - ${mdl("s355")}
+    - Same as s347, except :math:`k_\perp^2=0.01`, polyOrder 2.
+  * - ${mdl("s356")}
+    - Same as s348, except :math:`k_\perp^2=0.05`, polyOrder 2.
+  * - ${mdl("s357")}
+    - Same as s349, except :math:`k_\perp^2=0.1`, polyOrder 2.
+  * - ${mdl("s358")}
+    - Same as s350, except :math:`k_\perp^2=0.2`, polyOrder 2.
+  * - ${mdl("s359")}
+    - Same as s351, except :math:`k_\perp^2=0.3`, polyOrder 2.
+  * - ${mdl("s360")}
+    - Same as s352, except :math:`k_\perp^2=0.5`, polyOrder 2.
+  * - ${mdl("s361")}
+    - Same as s353, except :math:`k_\perp^2=0.75`, polyOrder 2.
+  * - ${mdl("s362")}
+    - Same as s354, except :math:`k_\perp^2=0.75`, polyOrder 2.
