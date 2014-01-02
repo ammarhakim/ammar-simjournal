@@ -4,14 +4,14 @@
 polyOrder = 1
 
 -- cfl number to use
-cfl = 0.5/(2*polyOrder+1)
+cfl = 0.2/(2*polyOrder+1)
 
 -- wave-number
 knumber = 0.5
 -- perpendicular wave number
-kperp = 0.2
+kperp = math.sqrt(0.2)
 -- normalized beta (electron plasma is 2*beta*me/mi)
-beta = 10.0
+beta = 0.0
 
 -- domain extents
 XL, XU = -Lucee.Pi/knumber, Lucee.Pi/knumber
@@ -63,7 +63,6 @@ initDistfEquil = Updater.EvalOnNodes2D {
    shareCommonNodes = false, -- In DG, common nodes are not shared
    -- function to use for initialization
    evaluate = function(x,y,z,t)
-		 local v = y
 		 return maxwellian(x,y)
 	      end
 }
@@ -129,9 +128,9 @@ initHamilKE = Updater.EvalOnNodes2D {
    shareCommonNodes = true,
    -- function to use for initialization
    evaluate = function (x,y,z,t)
-      local v = y
-      return v^2/2
-   end
+		 local v = y
+		 return v^2/2
+	      end
 }
 initHamilKE:setOut( {hamilKE} )
 -- initialize potential
@@ -150,7 +149,7 @@ initDistf = Updater.EvalOnNodes2D {
    shareCommonNodes = false, -- In DG, common nodes are not shared
    -- function to use for initialization
    evaluate = function(x,y,z,t)
-		 return 1e-6*math.cos(knumber*x)*maxwellian(x,y)
+		 return 1e-4*math.cos(knumber*x)*maxwellian(x,y)
 	      end
 }
 initDistf:setOut( {distf} )
@@ -292,6 +291,13 @@ pertHamilCalc = Updater.LinEmGke1DPertHamil {
    mass = 1.0, -- species mass
 }
 
+-- function to apply boundary conditions
+function applyBc(fld)
+   fld:applyPeriodicBc(0)
+   fld:applyCopyBc(1, "lower")
+   fld:applyCopyBc(1, "upper")
+end
+
 -- function to compute total linearized Hamiltonian
 function calcHamiltonian(curr, dt, phi1dIn, Apar1dIn, hamilOut)
    -- calculate 2D fields from 1D fields
@@ -303,6 +309,8 @@ function calcHamiltonian(curr, dt, phi1dIn, Apar1dIn, hamilOut)
    runUpdater(pertHamilCalc, curr, dt, {phi2d, Apar2d}, {hamilOut})
    -- accumulate free-streaming contribution
    hamilOut:accumulate(1.0, hamilKE)
+
+   applyBc(hamilOut)
 end
 
 -- dynvector for field energy
@@ -319,13 +327,6 @@ fieldEnergyCalc = Updater.NormGrad1D {
 -- compute various diagnostics
 function calcDiagnostics(curr, dt)
    runUpdater(fieldEnergyCalc, curr, dt, {phi1d}, {fieldEnergy})
-end
-
--- function to apply boundary conditions
-function applyBc(fld)
-   fld:applyPeriodicBc(0)
-   fld:applyCopyBc(1, "lower")
-   fld:applyCopyBc(1, "upper")
 end
 
 function updateVlasovEqn(curr, dt, H0, Ht, distIn, distOut)
@@ -472,7 +473,7 @@ writeFields(0, 0.0)
 
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 4.0
+tEnd = 10.0
 dtSuggested = 0.1*tEnd -- initial time-step to use (will be adjusted)
 nFrames = 4
 tFrame = (tEnd-tStart)/nFrames

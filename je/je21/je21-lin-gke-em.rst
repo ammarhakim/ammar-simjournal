@@ -6,6 +6,8 @@
 JE21: Testing a solver for linearized electromagnetic GK equations
 ==================================================================
 
+.. contents::
+
 In this note I test a solver for the linearized electromagentic
 gyrokinetic equations. This system is described by the Vlasov equation
 for the electrons
@@ -113,6 +115,28 @@ one acting on the perturbed distribution and the other acting on the
 equilibrium distribution. The perturbed Hamiltonian is computed from
 the EM fields, after they are projected onto continious basis
 functions.
+
+Electron acoustic waves
+-----------------------
+
+We first look at the electrostatic limit, i.e. set :math:`\beta=0`. In
+this limit the system supports electron acoustic waves, which are
+increasingly Landau damped as :math:`k_\perp^2` increases. See the
+plot below.
+
+.. figure:: freq-damp-ion-sound.png
+  :width: 100%
+  :align: center
+
+  Frequency (magenta, left axis) and damping (green, right axis) for
+  electron acoustic waves. Solid dots are simulation results on a
+  :math:`16\times 32` grid with first-order polynomial basis
+  functions. Note that the resolution is rather coarse, and the
+  discretization errors are particularly noticeable in the damping
+  rates. In these simulations :math:`\beta=0.0`, and
+  :math:`k_\perp^2=0.01,\ldots,1.0`. See simulations [:doc:`s247
+  <../../sims/s347/s347-lin-em-gke>`] to [:doc:`s254
+  <../../sims/s354/s354-lin-em-gke>`] for details.
 
 -----
 

@@ -725,19 +725,19 @@ program for that simulation.
   * - ${mdl("s346")}
     - Same as s340 (RDG), except 4 cells. (This is out of whack, but needed for proposal)
   * - ${mdl("s347")}
-    - Linearized EM/GKE solver, polyOrder 1. Normalized :math:`\beta=10.0`, :math:`k_\perp=0.01`.
+    - Linearized EM/GKE solver, polyOrder 1. Normalized :math:`\beta=0.0`, :math:`k_\perp^2=0.01`.
   * - ${mdl("s348")}
-    - Same as s347, except :math:`k_\perp=0.05`.
+    - Same as s347, except :math:`k_\perp^2=0.05`.
   * - ${mdl("s349")}
-    - Same as s347, except :math:`k_\perp=0.1`.
+    - Same as s347, except :math:`k_\perp^2=0.1`.
   * - ${mdl("s350")}
-    - Same as s347, except :math:`k_\perp=0.2`.
+    - Same as s347, except :math:`k_\perp^2=0.2`.
   * - ${mdl("s351")}
-    - Same as s347, except :math:`k_\perp=0.3`.
+    - Same as s347, except :math:`k_\perp^2=0.3`.
   * - ${mdl("s352")}
-    - Same as s347, except :math:`k_\perp=0.5`.
+    - Same as s347, except :math:`k_\perp^2=0.5`.
   * - ${mdl("s353")}
-    - Same as s347, except :math:`k_\perp=0.75`.
+    - Same as s347, except :math:`k_\perp^2=0.75`.
   * - ${mdl("s354")}
-    - Same as s347, except :math:`k_\perp=1.0`.
+    - Same as s347, except :math:`k_\perp^2=1.0`.
 

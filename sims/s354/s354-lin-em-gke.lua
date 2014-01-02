@@ -4,14 +4,14 @@
 polyOrder = 1
 
 -- cfl number to use
-cfl = 0.5/(2*polyOrder+1)
+cfl = 0.2/(2*polyOrder+1)
 
 -- wave-number
 knumber = 0.5
 -- perpendicular wave number
-kperp = 1.0
+kperp = math.sqrt(1.0)
 -- normalized beta (electron plasma is 2*beta*me/mi)
-beta = 10.0
+beta = 0.0
 
 -- domain extents
 XL, XU = -Lucee.Pi/knumber, Lucee.Pi/knumber

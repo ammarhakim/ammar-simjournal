@@ -9,15 +9,15 @@ cfl = 0.2/(2*polyOrder+1)
 -- wave-number
 knumber = 0.5
 -- perpendicular wave number
-kperp = 0.01
+kperp = math.sqrt(0.01)
 -- normalized beta (electron plasma is 2*beta*me/mi)
-beta = 10.0
+beta = 0.0
 
 -- domain extents
 XL, XU = -Lucee.Pi/knumber, Lucee.Pi/knumber
 VL, VU = -6.0, 6.0
 -- number of cells
-NX, NV = 16, 32
+NX, NV = 16, 64
 
 -- run specified updater
 function runUpdater(updater, currTime, timeStep, inpFlds, outFlds)
@@ -472,7 +472,7 @@ writeFields(0, 0.0)
 
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 1.0
+tEnd = 10.0
 dtSuggested = 0.1*tEnd -- initial time-step to use (will be adjusted)
 nFrames = 4
 tFrame = (tEnd-tStart)/nFrames

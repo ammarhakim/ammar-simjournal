@@ -31,7 +31,7 @@ def makePlot(T, fld):
     exArr = numpy.array(extrem)
     exArrMax = exArr[1::2]
     maxVals = numpy.interp(exArrMax, T, fld)
-    for i in range(5,exArrMax.shape[0]):
+    for i in range(exArrMax.shape[0]):
         pylab.semilogy(T[exArrMax[i]], fld[exArrMax[i]], 'ro')
 
     Tmax = T[exArrMax[:]]
@@ -40,7 +40,7 @@ def makePlot(T, fld):
 
 def calcOmegaGamma(T, fld):
     extrem, Tmax, fldMax = makePlot(T, fld)
-    idxMin = extrem[5::2]
+    idxMin = extrem[1::2]
 
     # compute time-period of oscillations
     Tp = []
