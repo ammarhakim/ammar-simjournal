@@ -710,4 +710,20 @@ program for that simulation.
     - Same as s333 (LDG-L), except 4 cells. (This is out of whack, but needed for proposal)
   * - :doc:`s346 <s346/s346-modal-dg-diffuse>` 
     - Same as s340 (RDG), except 4 cells. (This is out of whack, but needed for proposal)
+  * - :doc:`s347 <s347/s347-lin-em-gke>` 
+    - Linearized EM/GKE solver, polyOrder 1. Normalized :math:`\beta=0.0`, :math:`k_\perp^2=0.01`.
+  * - :doc:`s348 <s348/s348-lin-em-gke>` 
+    - Same as s347, except :math:`k_\perp^2=0.05`.
+  * - :doc:`s349 <s349/s349-lin-em-gke>` 
+    - Same as s347, except :math:`k_\perp^2=0.1`.
+  * - :doc:`s350 <s350/s350-lin-em-gke>` 
+    - Same as s347, except :math:`k_\perp^2=0.2`.
+  * - :doc:`s351 <s351/s351-lin-em-gke>` 
+    - Same as s347, except :math:`k_\perp^2=0.3`.
+  * - :doc:`s352 <s352/s352-lin-em-gke>` 
+    - Same as s347, except :math:`k_\perp^2=0.5`.
+  * - :doc:`s353 <s353/s353-lin-em-gke>` 
+    - Same as s347, except :math:`k_\perp^2=0.75`.
+  * - :doc:`s354 <s354/s354-lin-em-gke>` 
+    - Same as s347, except :math:`k_\perp^2=1.0`.
 
