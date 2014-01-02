@@ -24,7 +24,7 @@ freqList = zeros(nPoints);
 dampList = zeros(nPoints);
 approxFreqList = zeros(nPoints);
 
-kPerpRho = sqrt(0.1)
+kPerpRho = sqrt(0.05)
 kPar = 0.5
 # Initial guess for z0 = omega/(k*sqrt(2)*vTe) using approximate expression for wave frequency
 z0 = kPar/sqrt(beta_e_list[0]+kPerpRho**2)
@@ -42,7 +42,7 @@ for index, beta_e in enumerate(beta_e_list):
 #plt.show()
 
 # write to file
-fp = open("KAW-kp-0p1-rates.txt", "w")
+fp = open("KAW-kp-0p05-rates.txt", "w")
 for i in range(nPoints):
     fp.writelines("%g %g %g\n" % (beta_e_list[i], freqList[i], dampList[i]) )
 fp.close()

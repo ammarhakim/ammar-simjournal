@@ -191,22 +191,41 @@ Case when :math:`k_\perp^2=0.05`
 +++++++++++++++++++++++++++++++
 
 In this set of tests I hold :math:`k_\perp^2=0.05` and vary
-:math:`beta=0.1,\ldots,10.0`. All other parameters are the same as for
-the :math:`k_\perp^2=0.1` case.
+:math:`\beta=0.1,\ldots,10.0`. All other parameters are the same as
+for the :math:`k_\perp^2=0.1` case.
 
 The results are shown in the following figure.
 
-.. figure:: freq-damp-shear-alf-kp-0p1-beta-scan.png
+.. figure:: freq-damp-shear-alf-kp-0p05-beta-scan.png
   :width: 100%
   :align: center
 
   Frequency (magenta, left axis) and damping (green, right axis) for
   shear kinetic Alfven waves (KAWs). Solid dots are simulation results
   on a :math:`16\times 32` grid with piece-wise second-order
-  polynomial basis functions. Note that the damping rates do not agree
-  very well for the :math:`\beta=10.0` case. See simulations [:doc:`s363
-  <../../sims/s363/s363-lin-em-gke>`] to [:doc:`s369
-  <../../sims/s369/s369-lin-em-gke>`] for details.
+  polynomial basis functions. See simulations [:doc:`s370
+  <../../sims/s370/s370-lin-em-gke>`] to [:doc:`s370
+  <../../sims/s370/s370-lin-em-gke>`] for details.
+
+Case when :math:`k_\perp^2=0.01`
++++++++++++++++++++++++++++++++
+
+In this set of tests I hold :math:`k_\perp^2=0.01` and vary
+:math:`\beta=0.1,\ldots,10.0`. All other parameters are the same as
+for the :math:`k_\perp^2=0.1` case.
+
+The results are shown in the following figure.
+
+.. figure:: freq-damp-shear-alf-kp-0p01-beta-scan.png
+  :width: 100%
+  :align: center
+
+  Frequency (magenta, left axis) and damping (green, right axis) for
+  shear kinetic Alfven waves (KAWs). Solid dots are simulation results
+  on a :math:`16\times 32` grid with piece-wise second-order
+  polynomial basis functions. See simulations [:doc:`s370
+  <../../sims/s370/s370-lin-em-gke>`] to [:doc:`s370
+  <../../sims/s370/s370-lin-em-gke>`] for details.
 
 -----
 

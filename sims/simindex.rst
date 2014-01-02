@@ -756,3 +756,17 @@ program for that simulation.
     - Same as s363, except :math:`\beta=7.5`.
   * - :doc:`s369 <s369/s369-lin-em-gke>` 
     - Same as s363, except :math:`\beta=10.0`.
+  * - :doc:`s370 <s370/s370-lin-em-gke>` 
+    - Same as s357 (:math:`k_\perp^2=0.05`), :math:`\beta=0.1`.
+  * - :doc:`s371 <s371/s371-lin-em-gke>` 
+    - Same as s370, except :math:`\beta=0.5`.
+  * - :doc:`s372 <s372/s372-lin-em-gke>` 
+    - Same as s370, except :math:`\beta=1.0`.
+  * - :doc:`s373 <s373/s373-lin-em-gke>` 
+    - Same as s370, except :math:`\beta=2.5`.
+  * - :doc:`s374 <s374/s374-lin-em-gke>` 
+    - Same as s370, except :math:`\beta=5.0`.
+  * - :doc:`s375 <s375/s375-lin-em-gke>` 
+    - Same as s370, except :math:`\beta=7.5`.
+  * - :doc:`s376 <s376/s376-lin-em-gke>` 
+    - Same as s370, except :math:`\beta=10.0`.
