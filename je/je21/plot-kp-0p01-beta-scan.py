@@ -22,11 +22,11 @@ rcParams['contour.negative_linestyle'] = 'solid'
 fig, ax1 = subplots()
 
 # plot frequencies
-dat = loadtxt('kp-0p1-beta-scan')
+dat = loadtxt('kp-0p01-beta-scan')
 freq = 2*pi/(2*dat[:,1])
 ax1.plot(dat[:,0], freq/(math.sqrt(2)*1.0*0.5), 'mo', markersize=10)
 ax1.set_xlabel(r'$\beta$')
-datEx = loadtxt('KAW-kp-0p1-rates.txt')
+datEx = loadtxt('KAW-kp-0p01-rates.txt')
 ax1.plot(datEx[:,0], datEx[:,1], 'm-', label='Exact')
 ax1.set_ylabel('Normalized Frequency ($\Omega/\sqrt{2} k_{\parallel}$)', color='m')
 
@@ -34,9 +34,9 @@ ax2 = ax1.twinx()
 ax2.plot(dat[:,0], 0.5*dat[:,2]/(math.sqrt(2)*1.0*0.5), 'go', markersize=10)
 ax2.plot(datEx[:,0], -datEx[:,2], 'g-', label='Exact')
 ax2.set_ylabel('Normalized Damping ($\gamma/\sqrt{2} k_{\parallel}$)', color='g')
-title('$k_\perp^2=0.1$')
+title('$k_\perp^2=0.01$')
 
 pylab.axis('tight')
-savefig('freq-damp-shear-alf-kp-0p1-beta-scan.png', bbox_inches='tight')
+savefig('freq-damp-shear-alf-kp-0p01-beta-scan.png', bbox_inches='tight')
 show()
 close()

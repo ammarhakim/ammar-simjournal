@@ -18,13 +18,13 @@ def derivEps(z,beta_e_val):
     return (4*beta_e_val*z)*(1+z*plasmaDisp(z)) + (2*beta_e_val*z**2-1)*(plasmaDisp(z)+z*derivPlasmaDisp(z))
 
 # Number of points to calculate damping rate at
-nPoints = 1000
-beta_e_list = linspace(0.01, 10, nPoints)
+nPoints = 10000;
+beta_e_list = linspace(0.001, 10, nPoints)
 freqList = zeros(nPoints);
 dampList = zeros(nPoints);
 approxFreqList = zeros(nPoints);
 
-kPerpRho = sqrt(0.1)
+kPerpRho = 0.01
 kPar = 0.5
 # Initial guess for z0 = omega/(k*sqrt(2)*vTe) using approximate expression for wave frequency
 z0 = kPar/sqrt(beta_e_list[0]+kPerpRho**2)
@@ -42,7 +42,7 @@ for index, beta_e in enumerate(beta_e_list):
 #plt.show()
 
 # write to file
-fp = open("KAW-kp-0p1-rates.txt", "w")
+fp = open("KAW-skp-0p01-rates.txt", "w")
 for i in range(nPoints):
     fp.writelines("%g %g %g\n" % (beta_e_list[i], freqList[i], dampList[i]) )
 fp.close()
