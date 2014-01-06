@@ -770,7 +770,6 @@ program for that simulation.
     - Same as s370, except :math:`\beta=7.5`.
   * - :doc:`s376 <s376/s376-lin-em-gke>` 
     - Same as s370, except :math:`\beta=10.0`.
-
   * - :doc:`s377 <s377/s377-lin-em-gke>` 
     - Same as s357 (:math:`k_\perp^2=0.01`), :math:`\beta=0.1`.
   * - :doc:`s378 <s378/s378-lin-em-gke>` 
@@ -785,3 +784,13 @@ program for that simulation.
     - Same as s377, except :math:`\beta=7.5`.
   * - :doc:`s383 <s383/s383-lin-em-gke>` 
     - Same as s377, except :math:`\beta=10.0`.
+  * - :doc:`s384 <s384/s384-lin-em-gke>` 
+    - Fixed :math:`\beta=10.0`, :math:k_\perp^2=10^{-4}`.
+  * - :doc:`s385 <s385/s385-lin-em-gke>` 
+    - Fixed :math:`\beta=10.0`, :math:k_\perp^2=0.75`.
+  * - :doc:`s386 <s386/s386-lin-em-gke>` 
+    - Fixed :math:`\beta=10.0`, :math:k_\perp^2=1.0`.
+  * - :doc:`s387 <s387/s387-nonlin-em-gke>` 
+    - Nonlinear 1D GK/EM, :math:`\beta=10.0`, :math:k_\perp^2=0.05`.
+  * - :doc:`s388 <s388/s388-nonlin-em-gke>` 
+    - Same as s387, except :math:k_\perp^2=0.01`.
