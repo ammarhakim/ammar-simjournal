@@ -32,6 +32,7 @@ where :math:`f(z,p_\parallel,t)` is the electron distribution function
 [#dist-function]_ and the Hamiltonian is given by
 
 .. math::
+  :label: nonlin-H
 
   H = \frac{1}{2m_e}(p_\parallel-q_e A_\parallel)^2 + q_e \phi
 
@@ -122,6 +123,14 @@ one acting on the perturbed distribution and the other acting on the
 equilibrium distribution. The perturbed Hamiltonian is computed from
 the EM fields, after they are projected onto continious basis
 functions.
+
+.. note::
+
+  In the implementation used here, the Hamiltonian is computed by
+  evaluating it at the nodes of the nodal basis functions. This
+  ensures continuity, however, is not an :math:`L_2` fit onto the
+  continuous basis functions. This could results in a small loss in
+  accuracy, although total energy will still be conserved.
 
 Electron acoustic waves
 -----------------------
@@ -256,9 +265,46 @@ time-step allowed by the CFL condition was used.
   significant figures in each case.
 
 Comparison with nonlinear solver
-++++++++++++++++++++++++++++++++
+--------------------------------
 
+In this section, I test a solver for the full nonlinear
+electromagnetic gyrokinetic equations. Only the electron dynamics is
+retained, i.e. the ions are assumed to be stationary. The evolution
+equation is
 
+.. math::
+
+  \frac{\partial f_1}{\partial t} + \{f_1+f_0, H\} = 0
+
+where, now the Hamiltonian is given by :eq:`nonlin-H`. The field
+equations remain unchanged. The current implementation in Gkeyll
+evolves only the perturbed distribution function, however the Poisson
+Bracket operator is now applied to the total distribution and the
+nonlinear Hamiltonian.
+
+The follow table compares the values obtained for the frequencies for
+the :math:`\beta=10.0` case and various values of :math:`k_\perp`.
+
+.. list-table::
+  :header-rows: 1
+  :widths: 10,30,30,30
+   
+  * - :math:`k_\perp^2`
+    - Linear Code
+    - Nonlinear Code
+    - Exact
+  * - :math:`1 \times 10^{-2}`
+    - 0.22465
+    - 0.22468
+    - 0.22466
+  * - :math:`5\times 10^{-2}`
+    - 0.22856
+    - 0.22856
+    - 0.22879
+
+This test shows that both the nonlinear and linear codes give the same
+answer to two significant figures, showing that there is no
+fundamental problem with the DG algorithm for nonlinear EM/GKE.
 
 -----
 
