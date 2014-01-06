@@ -784,7 +784,6 @@ program for that simulation.
     - Same as s370, except :math:`\beta=7.5`.
   * - ${mdl("s376")}
     - Same as s370, except :math:`\beta=10.0`.
-
   * - ${mdl("s377")}
     - Same as s357 (:math:`k_\perp^2=0.01`), :math:`\beta=0.1`.
   * - ${mdl("s378")}
@@ -799,3 +798,13 @@ program for that simulation.
     - Same as s377, except :math:`\beta=7.5`.
   * - ${mdl("s383")}
     - Same as s377, except :math:`\beta=10.0`.
+  * - ${mdl("s384")}
+    - Fixed :math:`\beta=10.0`, :math:k_\perp^2=10^{-4}`.
+  * - ${mdl("s385")}
+    - Fixed :math:`\beta=10.0`, :math:k_\perp^2=0.75`.
+  * - ${mdl("s386")}
+    - Fixed :math:`\beta=10.0`, :math:k_\perp^2=1.0`.
+  * - ${mdl("s387")}
+    - Nonlinear 1D GK/EM, :math:`\beta=10.0`, :math:k_\perp^2=0.05`.
+  * - ${mdl("s388")}
+    - Same as s387, except :math:k_\perp^2=0.01`.

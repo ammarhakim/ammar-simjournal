@@ -8,6 +8,18 @@ JE21: Testing a solver for linearized electromagnetic GK equations
 
 .. contents::
 
+.. warning::
+
+  This note is incomplete.
+
+  - I need to put full dimensional EM equations.
+  - Put dispersion relations and link to Python code.
+  - I may need to redo some plots, as perhaps I have some
+    normalizations confused.
+
+  There is also some notational confusion between
+  :math:`f(z,p_\parallel,t)` and :math:`f(z,v_\parallel,t)`.
+
 In this note I test a solver for the linearized electromagentic
 gyrokinetic equations. This system is described by the Vlasov equation
 for the electrons
@@ -27,11 +39,6 @@ where :math:`A_\parallel` is the parallel magnetic potential and
 :math:`\phi` is the electrostatic potential, :math:`m_e` is the
 electron mass and :math:`q_e = -|e|` is the electron charge. The ions
 are assumed to be stationary.
-
-.. warning::
-
-  Put full EM equations here. Will require some re-wording of the
-  following section.
 
 Normalized linear system
 ------------------------
@@ -95,9 +102,9 @@ Vlasov equation remains unchanged, with the Hamiltonians given by
   H_1 = w A_\parallel - \phi.
 
 Note that in this normalization, effectively :math:`k_\perp^2` is
-normalized to :math:`Z_i\rho_i^2` and :math:`\beta \equiv (\beta_e/2)
+normalized to :math:`Z_i\rho_i^2` and :math:`\hat{\beta} \equiv (\beta_e/2)
 m_i/m_e`, where :math:`\beta_e` is the electron plasma-beta. In these
-units, the Alfven speed is :math:`v_A=1/\sqrt{\beta}`. The normalized
+units, the Alfven speed is :math:`v_A=1/\sqrt{\hat{\beta}}`. The normalized
 equilibrium distribution is :math:`f_0 = e^{-w^2/2}/\sqrt{2\pi}`.
 
 The EM equations become
@@ -105,7 +112,7 @@ The EM equations become
 .. math::
 
  k_\perp^2 \phi &= -\int f_1\thinspace dw\\
- (k_\perp^2+\beta) A_\parallel &= -\beta \int w f_1\thinspace dw.
+ (k_\perp^2+\hat{\beta}) A_\parallel &= -\hat{\beta} \int w f_1\thinspace dw.
 
 Note that the normalized system is identical to the one described in
 the appendix of Belli and Hammett 2005 [#belli-hammett-2005]_.
@@ -119,7 +126,7 @@ functions.
 Electron acoustic waves
 -----------------------
 
-We first look at the electrostatic limit, i.e. set :math:`\beta=0`. In
+We first look at the electrostatic limit, i.e. set :math:`\hat{\beta}=0`. In
 this limit the system supports electron acoustic waves, which are
 increasingly Landau damped as :math:`k_\perp^2` increases. 
 
@@ -137,7 +144,7 @@ except using piece-wise second-order polynomials.
   :math:`16\times 32` grid with piece-wise first-order polynomial
   basis functions. Note that the resolution is rather coarse, and the
   discretization errors are particularly noticeable in the damping
-  rates. In these simulations :math:`\beta=0.0`, and
+  rates. In these simulations :math:`\hat{\beta}=0.0`, and
   :math:`k_\perp^2=0.01,\ldots,1.0`. See simulations [:doc:`347
   <../../sims/s347/s347-lin-em-gke>`] to [:doc:`s354
   <../../sims/s354/s354-lin-em-gke>`] for details.
@@ -157,7 +164,7 @@ Shear Kinetic Alfven waves
 --------------------------
 
 In the next set of calculations, we look at the case in which EM terms
-are included, i.e. :math:`\beta>0.0`. In this case the system supports
+are included, i.e. :math:`\hat{\beta}>0.0`. In this case the system supports
 shear kinetic Alfven waves (KAWs), which asymptote to undamped waves
 as :math:`k_\perp\rightarrow 0`. 
 
@@ -165,7 +172,7 @@ Case when :math:`k_\perp^2=0.1`
 +++++++++++++++++++++++++++++++
 
 For first set of tests I hold :math:`k_\perp^2=0.1` and vary
-:math:`beta=0.1,\ldots,10.0`. For all simulations piece-wise
+:math:`\hat{\beta}=0.1,\ldots,10.0`. For all simulations piece-wise
 second-order basis functions on a grid of :math:`16\times 32` were
 used. One of the reasons to use a second-order polynomial basis
 functions is that it delays recurrence issues, rather severe in the
@@ -183,7 +190,7 @@ The results are shown in the following figure.
   shear kinetic Alfven waves (KAWs). Solid dots are simulation results
   on a :math:`16\times 32` grid with piece-wise second-order
   polynomial basis functions. Note that the damping rates do not agree
-  very well for the :math:`\beta=10.0` case. See simulations [:doc:`s363
+  very well for the :math:`\hat{\beta}=10.0` case. See simulations [:doc:`s363
   <../../sims/s363/s363-lin-em-gke>`] to [:doc:`s369
   <../../sims/s369/s369-lin-em-gke>`] for details.
 
@@ -191,7 +198,7 @@ Case when :math:`k_\perp^2=0.05`
 +++++++++++++++++++++++++++++++
 
 In this set of tests I hold :math:`k_\perp^2=0.05` and vary
-:math:`\beta=0.1,\ldots,10.0`. All other parameters are the same as
+:math:`\hat{\beta}=0.1,\ldots,10.0`. All other parameters are the same as
 for the :math:`k_\perp^2=0.1` case.
 
 The results are shown in the following figure.
@@ -211,7 +218,7 @@ Case when :math:`k_\perp^2=0.01`
 +++++++++++++++++++++++++++++++
 
 In this set of tests I hold :math:`k_\perp^2=0.01` and vary
-:math:`\beta=0.1,\ldots,10.0`. All other parameters are the same as
+:math:`\hat{\beta}=0.1,\ldots,10.0`. All other parameters are the same as
 for the :math:`k_\perp^2=0.1` case.
 
 The results are shown in the following figure.
@@ -226,6 +233,32 @@ The results are shown in the following figure.
   polynomial basis functions. See simulations [:doc:`s370
   <../../sims/s370/s370-lin-em-gke>`] to [:doc:`s370
   <../../sims/s370/s370-lin-em-gke>`] for details.
+
+Case when :math:`\hat{\beta}=10`
++++++++++++++++++++++++++++++++
+
+In the next set of tests :math:`\hat{\beta}=10`, while
+:math:`k_\perp^2=10^{-4},\ldots,1.0`. A grid of :math:`16\times 32`
+cells, with piece-wise second-order polynomial basis functions were
+used. For the case :math:`k_\perp^2=10^{-4}`, a fixed time-step
+:math:`\Delta t = 10^{-3}` was used to avoid continuous adjustments
+from the Poisson Bracket algorithm. For all other tests the largest
+time-step allowed by the CFL condition was used.
+
+.. figure:: freq-damp-shear-alf-beta-10-kp-scan.png
+  :width: 100%
+  :align: center
+
+  Frequency for shear kinetic Alfven waves (KAWs), with fixed
+  :math:`\hat{\beta}=10`. Solid dots are simulation results on a
+  :math:`16\times 32` grid with piece-wise second-order polynomial
+  basis functions. Gkeyll predicts the frequency to at least two
+  significant figures in each case.
+
+Comparison with nonlinear solver
+++++++++++++++++++++++++++++++++
+
+
 
 -----
 
