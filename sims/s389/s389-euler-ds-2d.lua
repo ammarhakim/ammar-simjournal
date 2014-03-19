@@ -6,8 +6,8 @@ log = Lucee.logInfo
 -- physical parameters
 gasGamma = 1.4
 
-Lx = 1.0
-Ly = 1.0
+Lx = 2.0
+Ly = 2.0
 
 -- resolution and time-stepping
 NX = 25
@@ -71,10 +71,10 @@ fluidNew = qNew:alias(0, 5)
 -----------------------
 -- initial conditions
 function init(x,y,z)
+   local rho = 1 + 0.2*math.sin(Pi*(x+y))
    local u = 1.0
    local v = -0.5
    local pr = 1.0
-   local rho = 1 + 0.2*math.sin(Pi*(x+y))
    local Er = 0.5*rho*(u^2+v^2) + pr/(gasGamma-1)
 
    return rho, rho*u, rho*v, 0.0, Er
@@ -115,7 +115,7 @@ fluidSlvrDir0 = Updater.WavePropagation2D {
    equation = eulerEqn,
    -- one of no-limiter, min-mod, superbee, 
    -- van-leer, monotonized-centered, beam-warming
-   limiter = "monotonized-centered",
+   limiter = "no-limiter",
    cfl = cfl,
    cflm = 1.1*cfl,
    updateDirections = {0} -- directions to update
@@ -124,7 +124,7 @@ fluidSlvrDir0 = Updater.WavePropagation2D {
 fluidSlvrDir1 = Updater.WavePropagation2D {
    onGrid = grid,
    equation = eulerEqn,
-   limiter = "monotonized-centered",
+   limiter = "no-limiter",
    cfl = cfl,
    cflm = 1.1*cfl,
    updateDirections = {1}
@@ -154,13 +154,17 @@ fluidLaxSlvrDir1 = Updater.WavePropagation2D {
 function updateFluidsAndField(tCurr, t)
    local myStatus = true
    local myDtSuggested = 1e3*math.abs(t-tCurr)
-   local useLaxSolver = False
+   local useLaxSolver = false
    -- X-direction updates
    for i,slvr in ipairs({fluidSlvrDir0}) do
       slvr:setCurrTime(tCurr)
       local status, dtSuggested = slvr:advance(t)
       myStatus = status and myStatus
       myDtSuggested = math.min(myDtSuggested, dtSuggested)
+   end
+
+   if (myStatus == false) then
+      return myStatus, myDtSuggested, useLaxSolver
    end
 
    if (eulerEqn:checkInvariantDomain(fluidX) == false) then
@@ -351,8 +355,6 @@ end
 ----------------------------
 -- setup initial condition
 q:set(init)
-q:sync()
-qNew:copy(q)
 
 -- set input/output arrays for various solvers
 fluidSlvrDir0:setIn( {fluid} )
@@ -369,7 +371,7 @@ fluidLaxSlvrDir1:setOut( {fluidNew} )
 
 -- apply BCs on initial conditions
 applyBc(q, 0.0, 0.0)
-applyBc(qNew, 0.0, 0.0)
+qNew:copy(q)
 
 -- write initial conditions
 calcDiagnostics(0.0, 0.0)
