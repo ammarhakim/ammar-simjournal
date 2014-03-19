@@ -808,3 +808,5 @@ program for that simulation.
     - Nonlinear 1D GK/EM, :math:`\beta=10.0`, :math:k_\perp^2=0.05`.
   * - ${mdl("s388")}
     - Same as s387, except :math:k_\perp^2=0.01`.
+  * - ${mdl("s389")}
+    - 2D Euler, equation smooth periodic problem on :math:`25\times 25` grid.
