@@ -816,3 +816,19 @@ program for that simulation.
     - Same as s389, except :math:`100\times 100` grid.
   * - ${mdl("s392")}
     - Same as s389, except :math:`200\times 200` grid.
+  * - ${mdl("s393")}
+    - Pulse in a box, to test energy conservation of Euler with solid walls.
+  * - ${mdl("s394")}
+    - 2D Riemann problem for Euler, Case 3 in Liska and Wendroff
+  * - ${mdl("s395")}
+    - 2D Riemann problem for Euler, Case 4 in Liska and Wendroff
+  * - ${mdl("s396")}
+    - 2D Riemann problem for Euler, Case 6 in Liska and Wendroff
+  * - ${mdl("s397")}
+    - 2D Riemann problem for Euler, Case 12 in Liska and Wendroff
+  * - ${mdl("s398")}
+    - 2D Riemann problem for Euler, Case 15 in Liska and Wendroff
+  * - ${mdl("s399")}
+    - 2D Riemann problem for Euler, Case 17 in Liska and Wendroff
+
+
