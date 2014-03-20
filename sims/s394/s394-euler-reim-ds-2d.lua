@@ -4,16 +4,16 @@ log = Lucee.logInfo
 -- physical parameters
 gasGamma = 1.4
 
-Lx = 2.0
-Ly = 2.0
+Lx = 1.0
+Ly = 1.0
 
 -- resolution and time-stepping
-NX = 25
-NY = 25
-cfl = 0.9/8.0
+NX = 400
+NY = 400
+cfl = 0.9
 tStart = 0.0
-tEnd = 4.0
-nFrames = 1
+tEnd = 0.3
+nFrames = 5
 
 ------------------------------------------------
 -- COMPUTATIONAL DOMAIN, DATA STRUCTURE, ETC. --
@@ -26,7 +26,7 @@ grid = Grid.RectCart2D {
    upper = {Lx, Ly},
    cells = {NX, NY},
    decomposition = decomp,
-   periodicDirs = {0, 1},
+   periodicDirs = {},
 }
 
 -- solution
@@ -69,13 +69,31 @@ fluidNew = qNew:alias(0, 5)
 -----------------------
 -- initial conditions
 function init(x,y,z)
-   local rho = 1 + 0.2*math.sin(Lucee.Pi*(x+y))
-   local u = 1.0
-   local v = -0.5
-   local pr = 1.0
-   local Er = 0.5*rho*(u^2+v^2) + pr/(gasGamma-1)
+   -- Case 3 from Liska and Wendroff 2003 (see Table 4.3)
+   -- these tables store pressure, rho, u and v
+   local upLeft = {0.3, 0.5323, 1.206, 0.0}
+   local upRight = {1.5, 1.5, 0.0, 0.0}
+   local loLeft = {0.029, 0.138, 1.206, 1.206}
+   local loRight = {0.3, 0.5323, 0.0, 1.206}
 
-   return rho, rho*u, rho*v, 0.0, Er
+   local rho, u, v, pr
+   if (y>0.5) then
+      -- upper half
+      if (x<0.5) then
+	 pr, rho, u, v = upLeft[1], upLeft[2], upLeft[3], upLeft[4]
+      else
+	 pr, rho, u, v = upRight[1], upRight[2], upRight[3], upRight[4]
+      end
+   else
+      -- lower half
+      if (x<0.5) then
+	 pr, rho, u, v = loLeft[1], loLeft[2], loLeft[3], loLeft[4]
+      else
+	 pr, rho, u, v = loRight[1], loRight[2], loRight[3], loRight[4]
+      end
+   end
+   
+   return rho, rho*u, rho*v, 0.0, 0.5*rho*(u^2+v^2) + pr/(gasGamma-1)
 end
 
 ------------------------
@@ -90,6 +108,10 @@ function applyBc(fld, tCurr, myDt)
       bc:setOut( {fld} )
       bc:advance(tCurr+myDt)
    end
+   fld:applyCopyBc(0, "lower")
+   fld:applyCopyBc(1, "lower")
+   fld:applyCopyBc(0, "upper")
+   fld:applyCopyBc(1, "upper")
    -- sync ghost cells
    fld:sync()
 end
@@ -113,7 +135,7 @@ fluidSlvrDir0 = Updater.WavePropagation2D {
    equation = eulerEqn,
    -- one of no-limiter, min-mod, superbee, 
    -- van-leer, monotonized-centered, beam-warming
-   limiter = "no-limiter",
+   limiter = "monotonized-centered",
    cfl = cfl,
    cflm = 1.1*cfl,
    updateDirections = {0} -- directions to update
@@ -122,7 +144,7 @@ fluidSlvrDir0 = Updater.WavePropagation2D {
 fluidSlvrDir1 = Updater.WavePropagation2D {
    onGrid = grid,
    equation = eulerEqn,
-   limiter = "no-limiter",
+   limiter = "monotonized-centered",
    cfl = cfl,
    cflm = 1.1*cfl,
    updateDirections = {1}
