@@ -8,9 +8,9 @@ Lx = 2.0
 Ly = 2.0
 
 -- resolution and time-stepping
-NX = 25
-NY = 25
-cfl = 0.9/8.0
+NX = 200
+NY = 200
+cfl = 0.9
 tStart = 0.0
 tEnd = 4.0
 nFrames = 1

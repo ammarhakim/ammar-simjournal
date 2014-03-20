@@ -794,3 +794,11 @@ program for that simulation.
     - Nonlinear 1D GK/EM, :math:`\beta=10.0`, :math:k_\perp^2=0.05`.
   * - :doc:`s388 <s388/s388-nonlin-em-gke>` 
     - Same as s387, except :math:k_\perp^2=0.01`.
+  * - :doc:`s389 <s389/s389-euler-ds-2d>` 
+    - 2D Euler, equation smooth periodic problem on :math:`25\times 25` grid.
+  * - :doc:`s390 <s390/s390-euler-ds-2d>` 
+    - Same as s389, except :math:`50\times 50` grid.
+  * - :doc:`s391 <s391/s391-euler-ds-2d>` 
+    - Same as s389, except :math:`100\times 100` grid.
+  * - :doc:`s392 <s392/s392-euler-ds-2d>` 
+    - Same as s389, except :math:`200\times 200` grid.

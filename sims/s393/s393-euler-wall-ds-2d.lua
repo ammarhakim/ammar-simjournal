@@ -4,16 +4,16 @@ log = Lucee.logInfo
 -- physical parameters
 gasGamma = 1.4
 
-Lx = 2.0
-Ly = 2.0
+Lx = 1.0
+Ly = 1.0
 
 -- resolution and time-stepping
-NX = 25
-NY = 25
-cfl = 0.9/8.0
+NX = 32
+NY = 32
+cfl = 0.9
 tStart = 0.0
-tEnd = 4.0
-nFrames = 1
+tEnd = 10.0
+nFrames = 10
 
 ------------------------------------------------
 -- COMPUTATIONAL DOMAIN, DATA STRUCTURE, ETC. --
@@ -26,7 +26,7 @@ grid = Grid.RectCart2D {
    upper = {Lx, Ly},
    cells = {NX, NY},
    decomposition = decomp,
-   periodicDirs = {0, 1},
+   periodicDirs = {},
 }
 
 -- solution
@@ -69,13 +69,11 @@ fluidNew = qNew:alias(0, 5)
 -----------------------
 -- initial conditions
 function init(x,y,z)
-   local rho = 1 + 0.2*math.sin(Lucee.Pi*(x+y))
-   local u = 1.0
-   local v = -0.5
-   local pr = 1.0
-   local Er = 0.5*rho*(u^2+v^2) + pr/(gasGamma-1)
-
-   return rho, rho*u, rho*v, 0.0, Er
+   local rho = 1.0
+   local xc, yc = 0.5, 0.5
+   local beta = 50.0
+   local pr = 1.0 + 1e-1*math.exp(-beta*((x-xc)^2+(y-yc)^2))
+   return rho, 0.0, 0.0, 0.0, pr/(gasGamma-1)
 end
 
 ------------------------
@@ -83,9 +81,34 @@ end
 ------------------------
 -- boundary applicator objects for fluids and fields
 
+bcFluidCopy = BoundaryCondition.Copy { components = {0, 4} }
+bcFluidWall = BoundaryCondition.ZeroNormal { components = {1, 2, 3} }
+
+-- create boundary condition object
+function createBc(myDir, myEdge)
+   local bc = Updater.Bc2D {
+      onGrid = grid,
+      -- boundary conditions to apply
+      boundaryConditions = {
+	 bcFluidCopy, bcFluidWall,
+      },
+      -- direction to apply
+      dir = myDir,
+      -- edge to apply on
+      edge = myEdge,
+   }
+   return bc
+end
+
+-- create updaters to apply boundary conditions
+bcLeft = createBc(0, "lower")
+bcRight = createBc(0, "upper")
+bcBottom = createBc(1, "lower")
+bcTop = createBc(1, "upper")
+
 -- function to apply boundary conditions to specified field
 function applyBc(fld, tCurr, myDt)
-   local bcList = {}
+   local bcList = {bcLeft, bcRight, bcTop, bcBottom}
    for i,bc in ipairs(bcList) do
       bc:setOut( {fld} )
       bc:advance(tCurr+myDt)
@@ -113,7 +136,7 @@ fluidSlvrDir0 = Updater.WavePropagation2D {
    equation = eulerEqn,
    -- one of no-limiter, min-mod, superbee, 
    -- van-leer, monotonized-centered, beam-warming
-   limiter = "no-limiter",
+   limiter = "monotonized-centered",
    cfl = cfl,
    cflm = 1.1*cfl,
    updateDirections = {0} -- directions to update
@@ -122,7 +145,7 @@ fluidSlvrDir0 = Updater.WavePropagation2D {
 fluidSlvrDir1 = Updater.WavePropagation2D {
    onGrid = grid,
    equation = eulerEqn,
-   limiter = "no-limiter",
+   limiter = "monotonized-centered",
    cfl = cfl,
    cflm = 1.1*cfl,
    updateDirections = {1}
