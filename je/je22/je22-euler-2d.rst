@@ -166,10 +166,73 @@ algorithm somewhat.
 2D Riemann problems
 -------------------
 
-In this section, a set of 2D problems are simulated. The
+In this section, a set of 2D problems are simulated. The parameters
+are taken from Table 4.3 in [Liska2003]_, using the same labels to
+identify the simulations. The problems are solved on a square with
+unit side, initially divided into four quadrants, filled with fluid
+with uniform state in a quadrant. The jumps across the fluid
+quantities across quadrants cause a complex set of waves consisting of
+shocks, rarefactions and contact slips.
 
+There is no exact solution to these problems, and so an "eye-ball
+metric" is used to study the quality of the solution by comparing with
+figures in [Liska2003]_. In each case, it is found that the results
+produced by Gkeyll are almost identical to the results published in
+[Liska2003]_. Note that they only show solutions for Case 3, 12
+and 15. I have included plots from all tests here for
+reference. Details for each simulation (initial conditions, etc.)  are
+available by clicking on the link to the Lua script in the figure
+caption.
 
-References
+.. figure:: s394-pr-dens-flow.png
+  :width: 100%
+  :align: center
+
+  Results of 2D Riemann problem from Case 3. Pressure is displayed in
+  color and density contours are superimposed. For detail see
+  [:doc:`s394 <../../sims/s394/s394-euler-reim-ds-2d>`].
+
+.. figure:: s395-pr-dens-flow.png
+  :width: 100%
+  :align: center
+
+  Results of 2D Riemann problem from Case 4. Pressure is displayed in
+  color and density contours are superimposed. For detail see
+  [:doc:`s395 <../../sims/s395/s395-euler-reim-ds-2d>`].
+
+.. figure:: s396-pr-dens-flow.png
+  :width: 100%
+  :align: center
+
+  Results of 2D Riemann problem from Case 6. Pressure is displayed in
+  color and density contours are superimposed. For detail see
+  [:doc:`s396 <../../sims/s396/s396-euler-reim-ds-2d>`].
+
+.. figure:: s397-pr-dens-flow.png
+  :width: 100%
+  :align: center
+
+  Results of 2D Riemann problem from Case 12. Pressure is displayed in
+  color and density contours are superimposed. For detail see
+  [:doc:`s397 <../../sims/s397/s397-euler-reim-ds-2d>`].
+
+.. figure:: s398-pr-dens-flow.png
+  :width: 100%
+  :align: center
+
+  Results of 2D Riemann problem from Case 15. Pressure is displayed in
+  color and density contours are superimposed. For detail see
+  [:doc:`s398 <../../sims/s398/s398-euler-reim-ds-2d>`].
+
+.. figure:: s399-pr-dens-flow.png
+  :width: 100%
+  :align: center
+
+  Results of 2D Riemann problem from Case 17. Pressure is displayed in
+  color and density contours are superimposed. For detail see
+  [:doc:`s399 <../../sims/s399/s399-euler-reim-ds-2d>`].
+
+REFERENCES
 ----------
 
 .. [LeVeque2002] Randall J. LeVeque, *Finite Volume Methods For

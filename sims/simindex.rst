@@ -802,3 +802,19 @@ program for that simulation.
     - Same as s389, except :math:`100\times 100` grid.
   * - :doc:`s392 <s392/s392-euler-ds-2d>` 
     - Same as s389, except :math:`200\times 200` grid.
+  * - :doc:`s393 <s393/s393-euler-wall-ds-2d>` 
+    - Pulse in a box, to test energy conservation of Euler with solid walls.
+  * - :doc:`s394 <s394/s394-euler-reim-ds-2d>` 
+    - 2D Riemann problem for Euler, Case 3 in Liska and Wendroff
+  * - :doc:`s395 <s395/s395-euler-reim-ds-2d>` 
+    - 2D Riemann problem for Euler, Case 4 in Liska and Wendroff
+  * - :doc:`s396 <s396/s396-euler-reim-ds-2d>` 
+    - 2D Riemann problem for Euler, Case 6 in Liska and Wendroff
+  * - :doc:`s397 <s397/s397-euler-reim-ds-2d>` 
+    - 2D Riemann problem for Euler, Case 12 in Liska and Wendroff
+  * - :doc:`s398 <s398/s398-euler-reim-ds-2d>` 
+    - 2D Riemann problem for Euler, Case 15 in Liska and Wendroff
+  * - :doc:`s399 <s399/s399-euler-reim-ds-2d>` 
+    - 2D Riemann problem for Euler, Case 17 in Liska and Wendroff
+
+
