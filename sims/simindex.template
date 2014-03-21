@@ -830,5 +830,9 @@ program for that simulation.
     - 2D Riemann problem for Euler, Case 15 in Liska and Wendroff
   * - ${mdl("s399")}
     - 2D Riemann problem for Euler, Case 17 in Liska and Wendroff
+  * - ${mdl("s400")}
+    - Noh problem, on :math:`200\times 200` grid.
+  * - ${mdl("s401")}
+    - Noh problem, on :math:`400\times 400` grid.
 
 
