@@ -816,5 +816,9 @@ program for that simulation.
     - 2D Riemann problem for Euler, Case 15 in Liska and Wendroff
   * - :doc:`s399 <s399/s399-euler-reim-ds-2d>` 
     - 2D Riemann problem for Euler, Case 17 in Liska and Wendroff
+  * - :doc:`s400 <s400/s400-euler-noh-ds-2d>` 
+    - Noh problem, on :math:`200\times 200` grid.
+  * - :doc:`s401 <s401/s401-euler-noh-ds-2d>` 
+    - Noh problem, on :math:`400\times 400` grid.
 
 
