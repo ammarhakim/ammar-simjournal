@@ -2,15 +2,15 @@
 log = Lucee.logInfo
 
 -- physical parameters
-gasGamma = 1.4
+gasGamma = 5.0/3.0
 
 Lx = 1.0
 Ly = 1.0
 
 -- resolution and time-stepping
-NX = 100
-NY = 100
-cfl = 0.4
+NX = 200
+NY = 200
+cfl = 0.9
 tStart = 0.0
 tEnd = 2.0
 nFrames = 5
@@ -143,7 +143,7 @@ bcTop = createFlowBc(1, "upper")
 
 -- function to apply boundary conditions to specified field
 function applyBc(fld, tCurr, myDt)
-   local bcList = {bcLeft, bcBottom, bcRight, bcLeft}
+   local bcList = {bcLeft, bcRight, bcTop, bcBottom}
    for i,bc in ipairs(bcList) do
       bc:setOut( {fld} )
       bc:advance(tCurr+myDt)
@@ -264,6 +264,7 @@ end
 function updateFluidsAndFieldLax(tCurr, t)
    local myStatus = true
    local myDtSuggested = 1e3*math.abs(t-tCurr)
+   -- X-direction updates
    for i,slvr in ipairs({fluidLaxSlvrDir0}) do
       slvr:setCurrTime(tCurr)
       local status, dtSuggested = slvr:advance(t)
@@ -356,7 +357,8 @@ function runSimulation(tStart, tEnd, nFrames, initDt)
         useLaxSolver = false
       else
         log (string.format(" Taking step %5d at time %6g with dt %g", step, tCurr, myDt))
-        status, dtSuggested, useLaxSolver = solveTwoFluidSystem(tCurr, tCurr+myDt)
+        --status, dtSuggested, useLaxSolver = solveTwoFluidSystem(tCurr, tCurr+myDt)
+	status, dtSuggested = solveTwoFluidLaxSystem(tCurr, tCurr+myDt)
       end
 
       if (status == false) then
@@ -368,8 +370,8 @@ function runSimulation(tStart, tEnd, nFrames, initDt)
       elseif (useLaxSolver == true) then
         -- negative density/pressure occured
         log (string.format(" ** Negative pressure or density at %8g! Will retake step with Lax fluxes", tCurr+myDt))
-        q:copy(qDup)
         qNew:copy(qNewDup)
+        q:copy(qDup)
       else
         -- check if a nan occured
         if (qNew:hasNan()) then
