@@ -237,12 +237,12 @@ Noh Problem
 
 This problem is simulated on a domain :math:`(x,y)\in
 [0,1]\times[0,1]`, with the initial density set to 1, and pressure set
-to zero (:math:`1\times^{-6}` to avoid numerical problems). The
+to zero (:math:`1\times 10^{-6}` to avoid numerical problems). The
 initial velocity is directed at the origin and is constant with
 magnitude 1. The solution is an infinite strength circularly symmetric
 shock reflecting from the origin. Behind the shock (inside the circle)
 the density is 16, the velocity is 0 and the pressure is 16/3. The
-shock speed is :math:`1/3` and ahead of the shock, the density is
+shock speed is :math:`1/3`, and ahead of the shock, the density is
 :math:`1+t/\sqrt{x^2+y^2}`, while velocity and pressure remain as set
 initially. The problem is simulated by using wall boundary conditions
 on the left and bottom boundaries, while on the top and right
@@ -265,11 +265,12 @@ in [Liska2003]_.
   Left panel shows color plot of density, with superimposed density
   contours (from 2.5 to 4.0 in step of 0..25, and 14.0 to 17.0 in step
   of 0.2) for Noh problem on a :math:`400\times 400` grid. See
-  [:doc:`s401 <../../sims/s401/s393-euler-noh-ds-2d>`]. The right
+  [:doc:`s401 <../../sims/s401/s401-euler-noh-ds-2d>`]. The right
   panel shows lineouts of the density (blue lines) along several
   radial lines drawn from the origin. Solid red line is the exact
   solution. Gkeyll is robustly able to handle this difficult problem,
-  with only a small dip in the density close to the origin.
+  with only a small (incorrect) dip in the density close to the
+  origin.
 
 REFERENCES
 ----------
