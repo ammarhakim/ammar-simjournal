@@ -74,7 +74,7 @@ function init(x,y,z)
    local rhoTop = 2.0
    local rhoBot = 1.0
    local pr0 = 0.01
-   local pert = 1e-2
+   local pert = 0.01
    local rho, pr
    
    -- interface location
@@ -116,7 +116,7 @@ function createWallBc(myDir, myEdge)
    return bc
 end
 
--- walls on all sides
+-- walls
 bcLeft = createWallBc(0, "lower")
 bcRight = createWallBc(0, "upper")
 bcBottom = createWallBc(1, "lower")
