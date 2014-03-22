@@ -3,14 +3,14 @@ log = Lucee.logInfo
 
 -- physical parameters
 gasGamma = 1.4
-gravity = 0.0 -- gravitational force
+gravity = 0.1 -- acceleration due to gravity
 
 Lx = 1.0/6.0
 Ly = 1.0
 
 -- resolution and time-stepping
-NX = 30
-NY = 60
+NX = 100
+NY = 400
 cfl = 0.9
 tStart = 0.0
 tEnd = 8.5
@@ -70,14 +70,15 @@ fluidNew = qNew:alias(0, 5)
 -----------------------
 -- initial conditions
 function init(x,y,z)
-   -- Noh problem
+   -- RT instability
    local rhoTop = 2.0
    local rhoBot = 1.0
    local pr0 = 0.01
+   local pert = 1e-2
    local rho, pr
    
    -- interface location
-   local yloc = 0.5 + 0.1*math.cos(6*Lucee.Pi*x)
+   local yloc = 0.5 + pert*math.cos(6*Lucee.Pi*x)
    if (y>yloc) then
       -- in heavier fluid
       rho = rhoTop
@@ -186,16 +187,30 @@ fluidLaxSlvrDir1 = Updater.WavePropagation2D {
    updateDirections = {1}
 }
 
+-- gravitational source
+gravitySrc = PointSource.FieldFunction {
+   -- takes fluid variables [rho, rho*v]
+   inpComponents = {0, 2},
+   -- contributes to [rho*v, Er]
+   outComponents = {2, 4},
+   -- source term to apply
+   source = function (x,y,z,t, rho,rhov)
+	       return -gravity*rho, -gravity*rhov
+	    end,
+}
+-- updater to add gravitational force to fluid
+gravitySrcSlvr = Updater.GridOdePointIntegrator2D {
+   onGrid = grid,
+   -- terms to include in integration step
+   terms = {gravitySrc},
+}
+
 -- function to update source terms
 function updateSource(qIn, tCurr, t)
-   local myDt = t-tCurr
-   -- get alias to density, momentum and energy
-   local rhoAlias = qIn:alias(0,1)
-   local momAlias = qIn:alias(2,3) -- y-component of momentum
-   local eneAlias = qIn:alias(4,5)
-   -- source is -rho*g and contributes to momentum and energy
-   --eneAlias:accumulate(-myDt*gravity, momAlias)
-   momAlias:accumulate(-myDt*gravity, rhoAlias)
+   -- gravity source
+   gravitySrcSlvr:setOut( {qIn} )
+   gravitySrcSlvr:setCurrTime(tCurr)
+   gravitySrcSlvr:advance(t)
 end
 
 -- function to update the fluid and field using dimensional splitting
@@ -365,8 +380,7 @@ function runSimulation(tStart, tEnd, nFrames, initDt)
         useLaxSolver = false
       else
         log (string.format(" Taking step %5d at time %6g with dt %g", step, tCurr, myDt))
-        --status, dtSuggested, useLaxSolver = solveTwoFluidSystem(tCurr, tCurr+myDt)
-	status, dtSuggested = solveTwoFluidLaxSystem(tCurr, tCurr+myDt)
+        status, dtSuggested, useLaxSolver = solveTwoFluidSystem(tCurr, tCurr+myDt)
       end
 
       if (status == false) then
