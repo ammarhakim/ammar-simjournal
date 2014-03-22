@@ -272,6 +272,37 @@ in [Liska2003]_.
   with only a small (incorrect) dip in the density close to the
   origin.
 
+Rayleigh-Taylor instability
+---------------------------
+
+For this problem, a heavier fluid (with density 2) is placed on top of
+a lighter fluid (with density 1). Gravitational acceleration
+:math:`g=0.1` acts in the downward direction. The interface between
+the fluids is :math:`y=1/2 + 0.01\cos(6\pi x)`, i.e. a slightly
+perturbed line around :math:`y=1/2`. The domain is
+:math:`(x,y)\in[0,1/6]\times[0,1]`, and the simulation is run on a
+:math:`100\times 400` grid to :math:`t=8.5`. The initial pressure is
+in hydrostatic equilibrium. [Liska2003]_ states that the "Around the
+interface the initial conditions are smoothed out." This has not been
+done here.
+
+This configuration is highly unstable, and typical "mushroom head"
+structures form rapidly, with the interface between the heavy and
+light fluid breaking up. Gkeyll results compare very well with results
+published in [Liska2003]_. Note that I have displayed the results
+differently, with the mushroom in the center of the domain.
+
+.. figure:: s402-rt.png
+  :width: 100%
+  :align: center
+
+  Left panel shows color plot of density and right panel shows the
+  :math:`\rho=1.5` contour, displaying the interface between the
+  fluids. The simulation is only performed on the left of the domain,
+  and results reflected about :math:`x=1/6` for plotting. See
+  [:doc:`s402 <../../sims/s402/s402-euler-rt-ds-2d>`] for details.
+
+
 REFERENCES
 ----------
 
