@@ -49,7 +49,7 @@ only the 2D scheme is tested here.
 Smooth periodic problem
 -----------------------
 
-To check convergence, an exact smooth travelling wave solution
+To check convergence, an exact smooth traveling wave solution
 
 .. math::
 
@@ -357,8 +357,31 @@ YX update in the next time-step. This did have a small effect,
 however, the asymmetries are still visible. I also smoothed the
 interface between the gases, and although this does change the result
 slightly, it does not remove the asymmetries. The jet flow is highly
-unstable as it is buffeted from waves refecting from the walls, making
+unstable as it is buffeted from waves reflecting from the walls, making
 the flow sensitive to the discretization details.
+
+Explosion problem
+-----------------
+
+In this problem a bubble of high density and pressure
+(:math:`\rho_i=1.0`, :math:`p=1.0` and radius :math:`0.4`) is placed
+in a background gas with density :math:`\rho_0 = 0.125` and pressure
+:math:`\p_0 = 0.1`. The explosion sets up a complex shock and two
+contact waves. One of the contact surfaces is highly unstable and
+breaks up into a complex set of vortices. See figure below, which
+compares well with the solution presented in [Liska2003]_ with the PPM
+method. Note that the interface was smoothed by using a 3-point (in
+each direction) Gaussian quadrature to initialize the simulation.
+
+.. figure:: s407-pr-dens.png
+  :width: 100%
+  :align: center
+
+  Pressure from explosion problem [:doc:`s407
+  <../../sims/s407/s407-euler-explode-ds-2d>`], with density contours
+  superimposed (27 contours from 0.08 to 0.21). The results compare
+  well with those obtained by the PPM scheme, and presented in
+  [Liska2003]_.
 
 Conclusions
 -----------

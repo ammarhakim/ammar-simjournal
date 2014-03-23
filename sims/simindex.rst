@@ -828,5 +828,9 @@ program for that simulation.
     - Implosion problem, Euler equations, run to :math:`t=0.045`.
   * - :doc:`s405 <s405/s405-euler-implode-ds-2d>` 
     - Implosion problem, Euler equations, XY-XY updates
+  * - :doc:`s406 <s406/s406-euler-implode-us-2d>` 
+    - Implosion problem, dimensionally unsplit scheme.
+  * - :doc:`s407 <s407/s407-euler-explode-ds-2d>` 
+    - Explosion problem, Euler equations.
 
 
