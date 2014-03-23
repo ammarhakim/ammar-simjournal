@@ -834,5 +834,17 @@ program for that simulation.
     - Noh problem, on :math:`200\times 200` grid.
   * - ${mdl("s401")}
     - Noh problem, on :math:`400\times 400` grid.
+  * - ${mdl("s402")}
+    - Rayleigh-Taylor instability for Euler equation
+  * - ${mdl("s403")}
+    - Implosion problem, Euler equations, XY-YX updates
+  * - ${mdl("s404")}
+    - Implosion problem, Euler equations, run to :math:`t=0.045`.
+  * - ${mdl("s405")}
+    - Implosion problem, Euler equations, XY-XY updates
+  * - ${mdl("s406")}
+    - Implosion problem, dimensionally unsplit scheme.
+  * - ${mdl("s407")}
+    - Explosion problem, Euler equations.
 
 
