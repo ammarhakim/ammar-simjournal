@@ -282,7 +282,7 @@ the fluids is :math:`y=1/2 + 0.01\cos(6\pi x)`, i.e. a slightly
 perturbed line around :math:`y=1/2`. The domain is
 :math:`(x,y)\in[0,1/6]\times[0,1]`, and the simulation is run on a
 :math:`100\times 400` grid to :math:`t=8.5`. The initial pressure is
-in hydrostatic equilibrium. [Liska2003]_ states that the "Around the
+in hydrostatic equilibrium. [Liska2003]_ states that "Around the
 interface the initial conditions are smoothed out." This has not been
 done here.
 
@@ -302,8 +302,82 @@ differently, with the mushroom in the center of the domain.
   and results reflected about :math:`x=1/6` for plotting. See
   [:doc:`s402 <../../sims/s402/s402-euler-rt-ds-2d>`] for details.
 
+Implosion problem
+-----------------
 
-REFERENCES
+In this problem, a gas is placed inside a smaller square, placed
+inside a bigger square. The smaller square is centered about the
+origin, but rotated by :math:`\pi/4`. The size of the domain is
+:math:`(x,y)\in (-0.3,0.3)\times (-0.3,0.3)`, with the smaller box
+with corners at :math:`(0.15,0)` and :math:`(0.0,0.15)`. Inside the
+smaller box, we have :math:`\rho=0.125` and :math:`p=0.14`, while
+outside :math:`\rho=1.0` and :math:`p=1.0`. The problem is simulated
+only in the upper right quadrant on a :math:`400\times 400` grid, with
+wall boundaries on all four sides.
+
+In the figure below, the pressure and density early in time are
+shown. This compares very well with Figure 4.6 of [Liska2003]_. Notice
+the small asymmetries, which eventually grow, specially around the
+origin late in time.
+
+.. figure:: s404-pr-dens.png
+  :width: 100%
+  :align: center
+
+  Pressure from implosion problem [:doc:`s404
+  <../../sims/s404/s404-euler-implode-ds-2d>`], with density contours
+  superimposed (36 contours from 0.125 to 1). The plot shows the inner
+  :math:`(0,0.22)\times(0,0.22)` box of the larger
+  :math:`(0,0.3)\times(0,0.32)`. The results compare very well with
+  [Liska2003]_, however, even at this early stage some asymmetries
+  (about the :math:`x=y` line) are visible.
+
+The figure below shows the solution late at in time
+(:math:`t=2.5`). Note the complex flow pattern. Also, there are
+significant asymmetries, specially close to the origin. These
+asymmetries are probably due to the dimensional splitting. In
+particular, note that the "jet" in the WENO5 and CLAW schemes in
+Figure 4.7 of [Liska2003]_ has bent downwards.
+
+.. figure:: s405-pr-dens.png
+  :width: 100%
+  :align: center
+
+  Pressure from implosion problem [:doc:`s405
+  <../../sims/s405/s405-euler-implode-ds-2d>`], with density contours
+  superimposed (31 contours from 0.35 to 1). Note the asymmetries
+  about the :math:`x=y` line, specially close to the origin. The
+  mushroom cloud like jet, which should be directed diagonally, has
+  bent downwards. This asymmetry is likely due to two causes:
+  dimensional splitting, and initial conditions.
+
+In an effort to understand the cause of these asymmetries, I
+implemented a scheme in which the XY in one time step is followed by a
+YX update in the next time-step. This did have a small effect,
+however, the asymmetries are still visible. I also smoothed the
+interface between the gases, and although this does change the result
+slightly, it does not remove the asymmetries. The jet flow is highly
+unstable as it is buffeted from waves refecting from the walls, making
+the flow sensitive to the discretization details.
+
+Conclusions
+-----------
+
+Through a comprehensive series of tests, I have shown that the 2D
+Euler solver in Gkeyll (in particular the `WavePropagationUpdater`)
+works well. The issue of asymmetries in the implosion problem is not
+completely resolved, however, initial results show that an unsplit
+scheme (with transverse correction to allow a larger stable time-step)
+will fix this.
+
+I should also point out that [Liska2003]_ (and others) seem not aware
+of the simple trick to fixing positivity violations in FV schemes. In
+fact, every problem that "fail" in [Liska2003]_ can be successful
+simulated by just switching to Lax fluxes and first-order for a small
+number of problematic steps. In this regard, Gkeyll algorithms are
+very robust, working even when some other algorithms "fail".
+
+References
 ----------
 
 .. [LeVeque2002] Randall J. LeVeque, *Finite Volume Methods For

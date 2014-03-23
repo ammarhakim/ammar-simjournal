@@ -820,5 +820,13 @@ program for that simulation.
     - Noh problem, on :math:`200\times 200` grid.
   * - :doc:`s401 <s401/s401-euler-noh-ds-2d>` 
     - Noh problem, on :math:`400\times 400` grid.
+  * - :doc:`s402 <s402/s402-euler-rt-ds-2d>` 
+    - Rayleigh-Taylor instability for Euler equation
+  * - :doc:`s403 <s403/s403-euler-implode-ds-2d>` 
+    - Implosion problem, Euler equations, XY-YX updates
+  * - :doc:`s404 <s404/s404-euler-implode-ds-2d>` 
+    - Implosion problem, Euler equations, run to :math:`t=0.045`.
+  * - :doc:`s405 <s405/s405-euler-implode-ds-2d>` 
+    - Implosion problem, Euler equations, XY-XY updates
 
 
