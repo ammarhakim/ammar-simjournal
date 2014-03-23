@@ -15,6 +15,10 @@ tStart = 0.0
 tEnd = 3.2
 nFrames = 10
 
+-- grid spacing (for use in finding out location of point)
+dx = Lx/NX
+dy = Ly/NY
+
 ------------------------------------------------
 -- COMPUTATIONAL DOMAIN, DATA STRUCTURE, ETC. --
 ------------------------------------------------
@@ -67,19 +71,36 @@ fluidNew = qNew:alias(0, 5)
 -----------------------
 -- INITIAL CONDITION --
 -----------------------
--- initial conditions
-function init(x,y,z)
+function getRhoPr(x, y)
    -- Explosion problem (Liska and Wendroff, Section 4.8)
    local rhoi, pri = 1.0, 1.0
    local rho0, pr0 = 0.125, 0.1
-   local rho, pr = 0.0, 0.0
+   local rho, pr
    
    if (math.sqrt(x^2+y^2) < 0.4) then
       rho, pr = rhoi, pri
    else
       rho, pr = rho0, pr0
    end
+   return rho, pr
+end
 
+-- initial conditions
+function init(xc,yc,zc)
+   -- use Gaussian quadrature to determine values in cell
+   local ords = {0, math.sqrt(3./5), -math.sqrt(3./5)}
+   local wgts = {8./9, 5./9, 5./9}
+
+   local rho, pr = 0.0, 0.0
+   for i = 1,3 do
+      for j = 1,3 do
+	 local xp = xc + ords[i]*dx/2
+	 local yp = yc + ords[j]*dy/2
+	 local myRho, myPr = getRhoPr(xp,yp)
+	 rho = rho + wgts[i]*wgts[j]*myRho*0.25
+	 pr = pr + wgts[i]*wgts[j]*myPr*0.25
+      end
+   end
    return rho, 0.0, 0.0, 0.0, pr/(gasGamma-1)
 end
 
