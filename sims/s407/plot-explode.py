@@ -48,7 +48,7 @@ v = q[:,:,2]/rho
 pr = (q[:,:,4] - 0.5*rho*(u**2+v**2))*(gasGamma-1)
 
 # plot it
-pcolormesh(XXe, YYe, transpose(pr))
+pcolormesh(XXe, YYe, transpose(pr), vmin=0.06, vmax=0.12)
 colorbar()
 
 rhoMin = 0.08
