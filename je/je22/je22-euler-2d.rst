@@ -1,6 +1,6 @@
 :Author: Ammar Hakim
 :Date: 19th March 2014
-:Completed: 
+:Completed: 23rd March 2014
 :Last Updated:
 
 JE22: Benchmarking dimensionally split finite-volume scheme for 2D Euler equations
@@ -366,12 +366,12 @@ Explosion problem
 In this problem a bubble of high density and pressure
 (:math:`\rho_i=1.0`, :math:`p=1.0` and radius :math:`0.4`) is placed
 in a background gas with density :math:`\rho_0 = 0.125` and pressure
-:math:`\p_0 = 0.1`. The explosion sets up a complex shock and two
+:math:`p_0 = 0.1`. The explosion sets up an inward shock and two
 contact waves. One of the contact surfaces is highly unstable and
 breaks up into a complex set of vortices. See figure below, which
 compares well with the solution presented in [Liska2003]_ with the PPM
 method. Note that the interface was smoothed by using a 3-point (in
-each direction) Gaussian quadrature to initialize the simulation.
+each direction) Gaussian quadrature while initializing the simulation.
 
 .. figure:: s407-pr-dens.png
   :width: 100%
@@ -390,15 +390,15 @@ Through a comprehensive series of tests, I have shown that the 2D
 Euler solver in Gkeyll (in particular the `WavePropagationUpdater`)
 works well. The issue of asymmetries in the implosion problem is not
 completely resolved, however, initial results show that an unsplit
-scheme (with transverse correction to allow a larger stable time-step)
-will fix this.
+scheme (with transverse correction to allow a larger stable
+time-step), and more careful initial condition, may fix this.
 
 I should also point out that [Liska2003]_ (and others) seem not aware
 of the simple trick to fixing positivity violations in FV schemes. In
-fact, every problem that "fail" in [Liska2003]_ can be successful
+fact, every problem that fails in [Liska2003]_ can be successful
 simulated by just switching to Lax fluxes and first-order for a small
 number of problematic steps. In this regard, Gkeyll algorithms are
-very robust, working even when some other algorithms "fail".
+very robust, working even when some other algorithms fail.
 
 References
 ----------
