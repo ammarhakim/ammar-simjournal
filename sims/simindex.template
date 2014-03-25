@@ -852,5 +852,7 @@ program for that simulation.
     - Same as s408, except :math:`75\times 75\times 50` grid.
   * - ${mdl("s410")}
     - Same as s408, except :math:`150\times 150\times 100` grid.
+  * - ${mdl("s411")}
+    - Same as s408, except done in axisymmetric geometry, for comparison with s408 etc.
 
 
