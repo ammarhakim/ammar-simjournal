@@ -832,5 +832,13 @@ program for that simulation.
     - Implosion problem, dimensionally unsplit scheme.
   * - :doc:`s407 <s407/s407-euler-explode-ds-2d>` 
     - Explosion problem, Euler equations.
+  * - :doc:`s408 <s408/s408-riemann-euler-3d>` 
+    - Spherical Riemann problem, 3D Euler equations on :math:`37\times 37\times 25` grid.
+  * - :doc:`s409 <s409/s409-riemann-euler-3d>` 
+    - Same as s408, except :math:`75\times 75\times 50` grid.
+  * - :doc:`s410 <s410/s410-riemann-euler-3d>` 
+    - Same as s408, except :math:`150\times 150\times 100` grid.
+  * - :doc:`s411 <s411/s411-riemann-euler-rz>` 
+    - Same as s408, except done in axisymmetric geometry, for comparison with s408 etc.
 
 
