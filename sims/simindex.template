@@ -850,5 +850,7 @@ program for that simulation.
     - Spherical Riemann problem, 3D Euler equations on :math:`37\times 37\times 25` grid.
   * - ${mdl("s409")}
     - Same as s408, except :math:`75\times 75\times 50` grid.
+  * - ${mdl("s410")}
+    - Same as s408, except :math:`150\times 150\times 100` grid.
 
 
