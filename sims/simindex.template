@@ -846,5 +846,9 @@ program for that simulation.
     - Implosion problem, dimensionally unsplit scheme.
   * - ${mdl("s407")}
     - Explosion problem, Euler equations.
+  * - ${mdl("s408")}
+    - Spherical Riemann problem, 3D Euler equations on :math:`37\times 37\times 25` grid.
+  * - ${mdl("s409")}
+    - Same as s408, except :math:`75\times 75\times 50` grid.
 
 
