@@ -9,13 +9,13 @@ Ly = 100.0 --- this is arbitrary (theta direction)
 Lz = 1.0
 
 -- resolution and time-stepping
-NX = 150
+NX = 600
 NY = 1
-NZ = 100
+NZ = 400
 cfl = 0.9
 tStart = 0.0
 tEnd = 0.7
-nFrames = 2
+nFrames = 10
 
 ------------------------------------------------
 -- COMPUTATIONAL DOMAIN, DATA STRUCTURE, ETC. --

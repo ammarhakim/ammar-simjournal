@@ -70,3 +70,4 @@ Gkeyll Simulation Journal
   je/je20/je20-vlasov-bounded.rst
   je/je21/je21-lin-gke-em.rst
   je/je22/je22-euler-2d.rst
+  je/je23/je23-euler-3d.rst
