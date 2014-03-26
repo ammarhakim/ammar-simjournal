@@ -70,6 +70,26 @@ shows the results, which compare well with those published in
   <../../sims/s411/s411-riemann-euler-rz>`] grid. Even on the coarse
   mesh, the qualitative features of this complex flow are captured.
 
+In the figure below lineouts of pressure in the XY plane at
+:math:`z=0.4` are shown for each of the grid resolutions. For
+comparison, the solution from the high resolution 2D axisymmetric
+simulation are also shown. The figure shows that even with coarse
+resolution the solver gives qualitatively correct results, and that
+the axisymmetry in the 3D simulation is well maintained.
+
+.. figure:: euler-spherical-riemann-lineout.png
+  :width: 100%
+  :align: center
+
+  Lineouts of pressure in various directions in the XY plane at
+  :math:`z=0.4` are shown for :math:`37\times 37\times 25` (top left),
+  :math:`75\times 75\times 50` (top right) and :math:`150\times
+  150\times 300` (bottom left) grid. For comparison, the solution from
+  the high resolution 2D axisymmetric simulation are also shown (black
+  line). The figure shows that even with coarse resolution the solver
+  gives qualitatively correct results, and that the axisymmetry in the
+  3D simulation is well maintained.
+
 
 On solving axisymmetric Euler equations
 ---------------------------------------
