@@ -26,7 +26,7 @@ decomp = DecompRegionCalc3D.CartGeneral {}
 grid = Grid.RectCart3D {
    lower = {0.0, 0.0, 0.0},
    upper = {Lx, Ly, Lz},
-   cells = {NX, NY, NX},
+   cells = {NX, NY, NZ},
    decomposition = decomp,
    periodicDirs = {},
 }
