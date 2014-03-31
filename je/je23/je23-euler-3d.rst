@@ -149,8 +149,41 @@ implements an unsplit (with transverse terms) algorithm.
 On solving axisymmetric Euler equations
 ---------------------------------------
 
-Something.
+In axisymmetric systems, the most convenient way to solve the Euler
+(or other) equations is to use :math:`(r,\theta,z)` coordinates,
+setting :math:`\partial/\partial\theta = 0`. The gradient and
+divergence operators now include metric terms, which means that one
+needs to develop special solvers. However, one can use a trick to
+expand the derivatives, and move algebraic terms to the right hand
+side, obtaining a system which is identical the Cartesian system,
+except with source terms. This procedure is adpoted in Gkeyll. This
+allows reuse of the same solvers, but with "axisymmetric" source terms
+and obtain a solver for axisymmetric Euler equations. These sources
+are
 
+.. math::
+
+    -\frac{1}{r}
+    \left[
+    \begin{matrix}
+      \rho u \\
+      \rho u^2 - \rho v^2 \\
+      2\rho u v \\
+      \rho u w \\
+      - u (E+p)
+    \end{matrix}
+  \right]
+
+where we now interpret :math:`u` as the radial velocity, :math:`v` as
+the azimuthal velocity (in the :math:`\theta` direction), and :math:`w`
+as the axial velocity.
+
+Conclusions
+-----------
+
+Basic tests of 3D Euler dimensionally split algorithm show that the
+Gkeyll solvers are working correctly. Issues of plotting remain, but
+these have nothing to do with the solver itself.
 
 References
 ----------
