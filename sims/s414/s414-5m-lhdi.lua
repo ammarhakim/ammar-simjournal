@@ -14,23 +14,23 @@ gasGamma = 5./3.
 elcCharge = -1.0
 ionCharge = 1.0
 ionMass = 1.0
-elcMass = ionMass/25.0
 lightSpeed = 1.0
 epsilon0 = 1.0
 mu0 = 1.0
 mgnErrorSpeedFactor = 1.0
 
--- these are fixed by normalization (ion inertial length)
+-- fixed by normalization (ion inertial length)
 n0 = 1.0
-plasmaBeta = 1.0
+plasmaBeta = 1.0 -- for Harris sheet
 
--- parameters
-tau = 5.0 -- Te/Ti
+-- parameters (as Yoon specified them)
+M = 25.0 -- ionMass/elcMass
+tau = 0.2 -- Te/Ti
 R = 100.0 -- \omega_{pe} / \omega_{ce}
 vIon_vAlf = 1.0 -- ion fluid speed in terms of Alfven velocity
 
 -- computed parameters
-M = ionMass/elcMass -- this is specified above
+elcMass = ionMass/M
 B0 = math.sqrt(n0*elcMass/(epsilon0*R))
 vAlf = B0/math.sqrt(mu0*n0*ionMass)
 omegaLH = B0*math.sqrt(ionCharge*math.abs(elcCharge)/(ionMass*elcMass))
@@ -39,24 +39,24 @@ Te = tau*Ti
 vTe = math.sqrt(Te/elcMass)
 vTi = math.sqrt(Ti/ionMass)
 vIon = vIon_vAlf*vAlf
-vElc = -vIon*(Te/Ti)
+vElc = -vIon*tau
 L = B0/(mu0*ionCharge*n0*(vIon-vElc))
 
--- cross check plasma beta
+-- cross check parameters
 betaCheck = n0*(Te+Ti)/(B0^2/(2*mu0))
-LCheck = 2*Ti*math.sqrt(n0*ionMass)/(ionCharge*B0*B0*vIon_vAlf);
+LCheck = 2*Ti*math.sqrt(n0*ionMass)/(ionCharge*B0*B0*vIon_vAlf)
 
--- resolution and time-stepping
-
--- domain size is based on current sheet
+-- domain size is based on current sheet thickness
 Lx = 40*L
 Ly = 20*L
 
-NX = 100
-NY = 50
+-- resolution and time-stepping
+NX = 200
+NY = 100
+
 cfl = 0.9
 tStart = 0.0
-tEnd = 40/omegaLH
+tEnd = 10/omegaLH
 nFrames = 4
 
 log(string.format("M = %g", M))
@@ -70,6 +70,7 @@ log(string.format("Lx = %g, Ly = %g", Lx, Ly))
 log(string.format("L/dx = %g", L/(Lx/NX)))
 log(string.format("LCheck = %g", LCheck))
 log(string.format("plasmaBeta = %g", betaCheck))
+log(string.format("tEnd = %g", tEnd))
 
 ------------------------------------------------
 -- COMPUTATIONAL DOMAIN, DATA STRUCTURE, ETC. --
@@ -133,10 +134,14 @@ emFieldNew = qNew:alias(10, 18)
 -----------------------
 -- initial conditions
 function init(x,y,z)
+   -- The setup is same as in Yoon's paper (see reference on top of
+   -- script). The current sheet thickness can not be specified
+   -- explicity, but is computed from equilibrium.
 
+   local pert = 0.1
    local Bz = B0*math.tanh(y/L)
    local sechy = 1/math.cosh(y/L)
-   local n = n0*(sechy^2 + 0.1)
+   local n = n0*(sechy^2 + 0.2)
 
    local rhoe = n*elcMass
    local xmome = rhoe*vElc
