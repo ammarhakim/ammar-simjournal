@@ -51,13 +51,13 @@ Lx = 40*L
 Ly = 20*L
 
 -- resolution and time-stepping
-NX = 200
-NY = 100
+NX = 100
+NY = 50
 
 cfl = 0.9
 tStart = 0.0
-tEnd = 10/omegaLH
-nFrames = 4
+tEnd = 150/omegaLH
+nFrames = 25
 
 log(string.format("M = %g", M))
 log(string.format("B0 = %g", B0))
@@ -138,9 +138,10 @@ function init(x,y,z)
    -- script). The current sheet thickness can not be specified
    -- explicity, but is computed from equilibrium.
 
-   local pert = 0.1
+   local pert = 1.0
    local Bz = B0*math.tanh(y/L)
-   local sechy = 1/math.cosh(y/L)
+   local ypert = y + pert*math.sin(2*Pi*x/Lx)
+   local sechy = 1/math.cosh(ypert/L)
    local n = n0*(sechy^2 + 0.2)
 
    local rhoe = n*elcMass
