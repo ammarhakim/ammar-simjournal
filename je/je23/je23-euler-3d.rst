@@ -1,6 +1,6 @@
 :Author: Ammar Hakim
 :Date: 25th March 2014
-:Completed: 
+:Completed: 31sth March 2014
 :Last Updated:
 
 JE23: Benchmarking a finite-volume scheme for 3D Euler equations
