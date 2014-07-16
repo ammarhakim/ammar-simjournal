@@ -6,7 +6,7 @@ from matplotlib import rcParams
 import matplotlib.pyplot as plt
 
 # customization for figure
-rcParams['lines.linewidth']            = 1
+rcParams['lines.linewidth']            = 2
 rcParams['font.size']                  = 18
 #rcParams['xtick.major.size']           = 8 # default is 4
 #rcParams['xtick.major.width']          = 3 # default is 0.5
@@ -72,15 +72,21 @@ for baseName in baseList:
 
     fh = tables.openFile(baseName+"_src.h5")
     src = fh.root.StructGridField
-    plotLines(X, src[:,0], src[:,1], '--og')
+    plotLines(X, src[:,0], src[:,1], '-r')
 
     Xhr = pylab.linspace(lower[0], upper[0], 1000)
     qExact = exactSolSS(Xhr)
-    pylab.plot(Xhr, qExact, '-m', linewidth=0.5)
+    pylab.plot(Xhr, qExact, '-b', linewidth=1.0)
+
     #pylab.title('Steady-state solution for %s scheme' % titleStr[count] )
     #pylab.xlabel('X')
     #pylab.ylabel('T')
     pylab.axis('tight')
+
+    # rest axis
+    pylab.gca().set_xlim([0.58871, 2.57581])
+    pylab.gca().set_ylim([0.5, 1.15])
+
     count = count + 1
 
 pylab.savefig('s329-s330-s331-s332-dg-diffuse.pdf')

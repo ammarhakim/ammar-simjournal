@@ -19,13 +19,13 @@ epsilon0 = 1.0
 mu0 = 1.0
 mgnErrorSpeedFactor = 1.0
 
--- fixed by normalization (ion inertial length)
+-- peak number density
 n0 = 1.0
 plasmaBeta = 1.0 -- for Harris sheet
 
--- parameters (as Yoon specified them)
+-- parameters (as Yoon specifies them)
 M = 25.0 -- ionMass/elcMass
-tau = 0.2 -- Te/Ti
+tau = 0.1 -- Te/Ti
 R = 100.0 -- \omega_{pe} / \omega_{ce}
 vIon_vAlf = 1.0 -- ion fluid speed in terms of Alfven velocity
 
@@ -47,8 +47,8 @@ betaCheck = n0*(Te+Ti)/(B0^2/(2*mu0))
 LCheck = 2*Ti*math.sqrt(n0*ionMass)/(ionCharge*B0*B0*vIon_vAlf)
 
 -- domain size is based on current sheet thickness
-Lx = 40*L
-Ly = 20*L
+Lx = 20*L
+Ly = 10*L
 
 -- resolution and time-stepping
 NX = 100
@@ -56,8 +56,8 @@ NY = 50
 
 cfl = 0.9
 tStart = 0.0
-tEnd = 150/omegaLH
-nFrames = 25
+tEnd = 40/omegaLH
+nFrames = 4
 
 log(string.format("M = %g", M))
 log(string.format("B0 = %g", B0))
@@ -138,11 +138,11 @@ function init(x,y,z)
    -- script). The current sheet thickness can not be specified
    -- explicity, but is computed from equilibrium.
 
-   local pert = 1.0
+   local kx = 2*Pi/Lx
    local Bz = B0*math.tanh(y/L)
-   local ypert = y + pert*math.sin(2*Pi*x/Lx)
-   local sechy = 1/math.cosh(ypert/L)
-   local n = n0*(sechy^2 + 0.2)
+   local sechy = 1/math.cosh(y/L)
+   local nb = 1.e-3*n0
+   local n = n0*sechy^2 + nb
 
    local rhoe = n*elcMass
    local xmome = rhoe*vElc

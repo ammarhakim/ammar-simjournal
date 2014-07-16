@@ -44,7 +44,7 @@ xlabel('Time')
 ylabel('RMS Error')
 legend(loc='best')
 
-savefig('s337-s338-s339-s340-rel-rms-err.png')
+savefig('s337-s338-s339-s340-rel-rms-err.pdf')
 
 show()
 
