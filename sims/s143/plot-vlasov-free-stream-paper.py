@@ -8,14 +8,14 @@ import matplotlib.pyplot as plt
 
 # customization for figure
 #rcParams['lines.linewidth']            = 2
-rcParams['font.size']                  = 18
+rcParams['font.size']                  = 24 # 18
 rcParams['xtick.major.size']           = 8 # default is 4
 rcParams['xtick.major.width']          = 3 # default is 0.5
 rcParams['ytick.major.size']           = 8 # default is 4
 rcParams['ytick.major.width']          = 3 # default is 0.5
 rcParams['figure.facecolor']           = 'white'
-rcParams['figure.subplot.bottom']      = 0.125
-rcParams['figure.subplot.right']       = 0.85 # keep labels/ticks of colobar in figure
+#rcParams['figure.subplot.bottom']      = 0.125
+#rcParams['figure.subplot.right']       = 0.85 # keep labels/ticks of colobar in figure
 rcParams['image.interpolation']        = 'none'
 rcParams['image.origin']               = 'lower'
 rcParams['contour.negative_linestyle'] = 'solid'
@@ -26,6 +26,7 @@ rcParams['savefig.bbox']               = 'tight'
 # http://matplotlib.org/users/usetex.html
 # Example: xlabel(r'$t \cdot l / V_{A,bc}$')
 rcParams['mathtext.default'] = 'regular' # match the font used for regular text
+
 
 def projectOnFinerGrid_f(Xc, Yc, q):
     dx = Xc[1]-Xc[0]
@@ -108,7 +109,7 @@ def plotLines(X, fld):
 
 xlo, xup = 0.0, 2*math.pi
 ylo, yup = -6, 6
-nx, ny = 32, 16
+nx, ny = 64, 64
 
 X = pylab.linspace(0, 2*math.pi, nx+1)
 Y = pylab.linspace(-6, 6, ny+1)
@@ -119,43 +120,19 @@ dy = (yup-ylo)/ny
 Xc = pylab.linspace(xlo+0.5*dx, xup-0.5*dx, nx)
 Yc = pylab.linspace(ylo+0.5*dy, yup-0.5*dy, ny)
 
-tEnd = 20.0
+tEnd = 10.0
 nFrame = 4
 
 T = pylab.linspace(0, tEnd, nFrame+1)
 
-def makeNdPlot(dat, ndLabel, tmLabel):
-    pylab.plot(numDenHist[:,0], numDenHist[:,1], 'k-')
-    # exact solution at selected points
-    Tex = numDenHist[:,0]
-    nEx = numDenHist[0,1]*pylab.exp(-0.5*Tex**2)
-    pylab.plot(Tex, nEx, 'r-')
-    pylab.gca().set_ylim([-1.,1])
-    if tmLabel:
-        pylab.xlabel('Time [s]')
-    if ndLabel:
-        pylab.ylabel('Number Density')
-
 fig = pylab.figure(3)
-fig.subplots_adjust(hspace=0.25)
-fig.subplots_adjust(wspace=0.35)
-
-numDenHist = pylab.loadtxt("../s144/s144-vlasov-free-stream_numDensInCell")
-pylab.subplot(2,2,1)
-makeNdPlot(numDenHist, True, False)
-
-numDenHist = pylab.loadtxt("../s145/s145-vlasov-free-stream_numDensInCell")
-pylab.subplot(2,2,2)
-makeNdPlot(numDenHist, False, False)
-
-numDenHist = pylab.loadtxt("../s146/s146-vlasov-free-stream_numDensInCell")
-pylab.subplot(2,2,3)
-makeNdPlot(numDenHist, True, True)
-
-numDenHist = pylab.loadtxt("s147-vlasov-free-stream_numDensInCell")
-pylab.subplot(2,2,4)
-makeNdPlot(numDenHist, False, True)
-
-pylab.savefig('s14_4567_-vlasov-free-stream_numDensInCell.png')
-pylab.savefig('s14_4567_-vlasov-free-stream_numDensInCell.pdf')
+numDenHist = pylab.loadtxt("s143-vlasov-free-stream_numDensInCell")
+pylab.plot(numDenHist[:,0], numDenHist[:,1], 'k-')
+# exact solution at selected points
+Tex = pylab.linspace(0, tEnd, 20)
+nEx = numDenHist[0,1]*pylab.exp(-0.5*Tex**2)
+pylab.plot(Tex, nEx, 'ro')
+pylab.xlabel('Time [s]')
+pylab.ylabel('Number Density')
+pylab.savefig('s143-vlasov-free-stream_numDensInCell.pdf')
 pylab.close()

@@ -200,6 +200,13 @@ equations. The results are shown below.
 Case 4: :math:`q_i/m_i = 1000`
 ------------------------------
 
+.. note::
+
+  The claim below that "the limiting time-step for stability is due to
+  the plasma frequency" is no longer true in the latest version of
+  Gkeyll, which implements a locally implicit scheme. A CFL of 1.0 can
+  be used, leading to a 10X speedup in the simulation.
+
 In this simulation 5000 grid points were used to solve the
 equations. With this charge to mass ratio the limiting time-step for
 stability is due to the plasma frequency. The CFL number needs to be
