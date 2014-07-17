@@ -13,8 +13,8 @@ uIn = 8.0*csIn -- supersonic inflow
 erIn = 0.5*rhoIn*uIn^2 + prIn/(gasGamma-1)
 
 -- resolution and time-stepping
-NX = 200
-NY = 100
+NX = 400
+NY = 200
 cfl = 0.9
 tStart = 0.0
 tEnd = 5*2.0/uIn

@@ -864,5 +864,7 @@ program for that simulation.
     - 2D Euler equations with embedded boundary: flow in nozzle
   * - ${mdl("s416")}
     - 2D Euler equations with embedded boundary: flow over wedge
+  * - ${mdl("s417")}
+    - 2D Euler equations with embedded boundary: Prandtl-Meyer flow (expansion fan flow)
 
 
