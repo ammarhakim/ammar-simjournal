@@ -3,8 +3,8 @@
 :Completed: 
 :Last Updated:
 
-JE24: Tests for embedded boundary Euler solver
-==============================================
+JE24: Tests for stair-stepped boundary Euler solver
+===================================================
 
 .. contents::
 
@@ -61,7 +61,7 @@ subtraction as follows
 
   d_U(x,y) &= \max(d_A(x,y), d_B(x,y)) \qquad &\mathrm{union} \\
   d_I(x,y) &= \min(d_A(x,y), d_B(x,y)) \qquad &\mathrm{intersection} \\
-  d_S(x,y) &= \min(d_A(x,y), -d_B(x,y)) \qquad &\mathrm{substraction}.
+  d_S(x,y) &= \min(d_A(x,y), -d_B(x,y)) \qquad &\mathrm{subtraction}.
 
 In three dimensions several other operations are possible: rotation of
 a 2D shape about some axis, extrusion of a 2D shape along a curve,
@@ -81,20 +81,27 @@ particular direction and then the update in that direction is
 performed. For unsplit algorithms, embedded BCs require more
 complicated data-structures.
 
-Note of numerical fluxes
+Note on numerical fluxes
 ------------------------
 
 In most of these simulations, I need to use HLLE fluxes (enabled using
 numericalFlux = "lax" and useIntermediateWave = true in
-HyperEquation.Euler block). The Roe fluxes causes severe problems,
-including carbuncle problem and launch of spurious shocks from
-stair-stepped cells. It appears that the numerical diffusion added by
-the HLLE flux effectively acts to "smooth out" the jagged
-representation of the boundary, allowing one to obtain reasonable
-results. However, as is obvious (and shown below) if the flow is very
-sensitive to the stuff happening at the boundary, then stair-stepped
-meshes are not a good idea, and one will need to use a body-fitted
-(structured or unstructured) mesh.
+HyperEquation.Euler constructor). The Roe fluxes causes severe
+problems, including carbuncle problem and launch of spurious shocks
+from stair-stepped cells. 
+
+It appears that the numerical diffusion added by the HLLE flux
+effectively acts to "smooth out" the jagged representation of the
+boundary (effectively creating a numerical boundary layer), allowing
+one to obtain reasonable results. However, as is obvious (and shown
+below) if the flow is very sensitive to the flow along the boundary,
+then stair-stepped meshes are not a good idea, and one will need to
+use a body-fitted (structured or unstructured) mesh.
+
+One should also keep in mind that using HLLE (or any diffusive flux)
+with the WavePropagationUpdater is not usually a good idea: the
+solution quality is very sensitive to the numerical flux, and best
+results are usually obtained when using Roe fluxes.
 
 Supersonic flow over wedge
 --------------------------
@@ -138,8 +145,8 @@ As seen in the above figure, the shock angle is poorly predicted. The
 reason for this are (a) the stair-stepped boundary causes the shock to
 detach from the tip of the wedge, opening up the shock angle somewhat,
 and (b) the use of a diffusive flux means that the effective wedge
-angle is larger, as the numerical diffusion "smears out" the
-boundary.
+angle is larger, as the numerical diffusion "smears out" the boundary
+forming a numerical boundary layer over the surface.
 
 A vertical lineout of the density and pressure at :math:`x=0.9` are
 shown in the following figure.
@@ -157,7 +164,25 @@ shown in the following figure.
   here Gkeyll over-predicts the jump across the shock, and also
   over-predicts the shock angle. It should be noted that the jump
   across the shock is very sensitive to the wedge angle, and hence a
-  small (even two degree) error can cause this level of discrepancy.
+  small (even two degree) error can cause this level of
+  discrepancy.
+
+Conclusions
+-----------
+
+I have performed basic tests of the stair-stepped boundaries in
+Gkeyll. The key conclusion is that although stair-stepped boundaries
+are easy to setup, the results are not very satisfactory for some
+problems. For shock problems, in which shock angles, jump conditions
+sensitively depend on geometry, a better boundary representation
+should be used. However, the solutions give a qualitative indication
+of the flow features.
+
+For magnetosphere problems the shock properties depend on magnetic
+field structure rather than the geometry of the planet/moon
+surface. Hence, the impact of the physical boundary will be likely
+weak.
+
 
 References
 ----------

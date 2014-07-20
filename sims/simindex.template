@@ -865,6 +865,9 @@ program for that simulation.
   * - ${mdl("s416")}
     - 2D Euler equations with embedded boundary: flow over wedge
   * - ${mdl("s417")}
-    - 2D Euler equations with embedded boundary: Prandtl-Meyer flow (expansion fan flow)
+    - Same as s416, except on :math:`400\times 200` grid.
+  * - ${mdl("s418")}
+    - Flow over 30 degree wedge formation of Mach stem.
+
 
 
