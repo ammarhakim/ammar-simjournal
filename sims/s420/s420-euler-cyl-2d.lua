@@ -6,11 +6,11 @@ log = Lucee.logInfo
 gasGamma = 1.4
 
 -- resolution and time-stepping
-NX = 450
+NX = 300
 NY = 300
 cfl = 0.9
 tStart = 0.0
-tEnd = 0.2
+tEnd = 0.25
 nFrames = 10
 
 ------------------------------------------------
@@ -20,8 +20,8 @@ nFrames = 10
 decomp = DecompRegionCalc2D.CartGeneral {}
 -- computational domain
 grid = Grid.RectCart2D {
-   lower = {0.0, 0.0},
-   upper = {3.0, 2.0},
+   lower = {-0.5, -0.5},
+   upper = {0.5, 0.5},
    cells = {NX, NY},
    decomposition = decomp,
    periodicDirs = {},
@@ -62,11 +62,8 @@ fluid = q:alias(0, 5)
 fluidX = qX:alias(0, 5)
 fluidNew = qNew:alias(0, 5)
 
-function wedge(x, y, x0, y0, angle)
-   return (
-      x>x0 and (y<y0+(x-x0)*math.tan(0.5*angle)) and (y>y0-(x-x0)*math.tan(0.5*angle))
-   ) and true or false
-   
+function circle(x, y, x0, y0, rad)
+   return (x-x0)^2+(y-y0)^2<rad^2
 end
 
 -- in/out field representing embedded object
@@ -79,7 +76,7 @@ inOut:set(
    function (x,y,z)
       local xc, yc = 0.0, 0.0
       local rad = 0.5
-      return  wedge(x,y, 0.5, 0.0, 60*Lucee.Pi/180) and -1.0 or 1.0
+      return  circle(x,y, 0.0, 0.0, 0.15) and -1.0 or 1.0
    end
 )
 inOut:sync()
@@ -91,9 +88,9 @@ inOut:write("inOut.h5")
 -----------------------
 -- initial conditions
 function init(x,y,z)
-   -- Mach 10 shock
-   local rho, u, pr = 8.0, 8.25, 116.5
-   if (x>0.5) then
+   -- Mach 2 shock
+   local rho, u, pr =  2.66666666*1.4, 1.25,  4.5*1.0
+   if (x>-0.3) then
       rho, u, pr = 1.4, 0.0, 1.0
    end
    return rho, rho*u, 0, 0, pr/(gasGamma-1) + 0.5*rho*u*u
@@ -163,6 +160,8 @@ end
 -- regular Euler equations
 eulerEqn = HyperEquation.Euler {
    gasGamma = gasGamma,
+   numericalFlux = "lax",
+   useIntermediateWave = true,
 }
 -- (Lax equations are used to fix negative pressure/density)
 eulerLaxEqn = HyperEquation.Euler {

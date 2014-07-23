@@ -851,6 +851,13 @@ program for that simulation.
   * - :doc:`s416 <s416/s416-euler-wedge-2d>` 
     - 2D Euler equations with embedded boundary: flow over wedge
   * - :doc:`s417 <s417/s417-euler-wedge-2d>` 
-    - 2D Euler equations with embedded boundary: Prandtl-Meyer flow (expansion fan flow)
+    - Same as s416, except on :math:`400\times 200` grid.
+  * - :doc:`s418 <s418/s418-euler-wedge-2d>` 
+    - Mach 10 shock over 30 degree wedge formation of Mach stem.
+  * - :doc:`s419 <s419/s419-euler-wedge-2d>` 
+    - Same as s418, Roe fluxes.
+  * - :doc:`s420 <s420/s420-euler-cyl-2d>` 
+    - Mach 2 shock interacting with a cylinder.
+
 
 

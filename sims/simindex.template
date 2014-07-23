@@ -867,7 +867,17 @@ program for that simulation.
   * - ${mdl("s417")}
     - Same as s416, except on :math:`400\times 200` grid.
   * - ${mdl("s418")}
-    - Flow over 30 degree wedge formation of Mach stem.
+    - Mach 10 shock over 30 degree wedge formation of Mach stem.
+  * - ${mdl("s419")}
+    - Same as s418, Roe fluxes.
+  * - ${mdl("s420")}
+    - Mach 2 shock interacting with a cylinder.
+  * - ${mdl("s421")}
+    - Same as s420, except using Roe-flux.
+  * - ${mdl("s422")}
+    - Mach 3 interaction with two cylinders.
+  * - ${mdl("s423")}
+    - Supersonic (Mach 5) flow over an ellipsiod. Axisymmetric case.
 
 
 

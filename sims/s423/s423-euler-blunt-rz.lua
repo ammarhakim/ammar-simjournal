@@ -1,57 +1,68 @@
--- Script to do Euler equations with embedded boundary
 
 log = Lucee.logInfo
 
 -- physical parameters
 gasGamma = 1.4
 
+Lx = 1.0
+Ly = 100.0 --- this is arbitrary (theta direction)
+Lz = 2.0
+
+-- inflow conditions
+rhoIn = 1.0
+prIn = 1.0
+csIn = math.sqrt(gasGamma*prIn/rhoIn)
+uIn = 5.0*csIn -- supersonic inflow
+erIn = 0.5*rhoIn*uIn^2 + prIn/(gasGamma-1)
+
 -- resolution and time-stepping
-NX = 450
-NY = 300
+NX = 100
+NY = 1
+NZ = 200
 cfl = 0.9
 tStart = 0.0
-tEnd = 0.2
+tEnd = 5*2.0/uIn
 nFrames = 10
 
 ------------------------------------------------
 -- COMPUTATIONAL DOMAIN, DATA STRUCTURE, ETC. --
 ------------------------------------------------
 -- decomposition object
-decomp = DecompRegionCalc2D.CartGeneral {}
+decomp = DecompRegionCalc3D.CartGeneral {}
 -- computational domain
-grid = Grid.RectCart2D {
-   lower = {0.0, 0.0},
-   upper = {3.0, 2.0},
-   cells = {NX, NY},
+grid = Grid.RectCart3D {
+   lower = {0.0, 0.0, 0.0},
+   upper = {Lx, Ly, Lz},
+   cells = {NX, NY, NX},
    decomposition = decomp,
    periodicDirs = {},
 }
 
 -- solution
-q = DataStruct.Field2D {
+q = DataStruct.Field3D {
    onGrid = grid,
    numComponents = 5,
    ghost = {2, 2},
 }
 -- solution after update along X (ds algorithm)
-qX = DataStruct.Field2D {
+qX = DataStruct.Field3D {
    onGrid = grid,
    numComponents = 5,
    ghost = {2, 2},
 }
 -- final updated solution
-qNew = DataStruct.Field2D {
+qNew = DataStruct.Field3D {
    onGrid = grid,
    numComponents = 5,
    ghost = {2, 2},
 }
 -- duplicate copy in case we need to take the step again
-qDup = DataStruct.Field2D {
+qDup = DataStruct.Field3D {
    onGrid = grid,
    numComponents = 5,
    ghost = {2, 2},
 }
-qNewDup = DataStruct.Field2D {
+qNewDup = DataStruct.Field3D {
    onGrid = grid,
    numComponents = 5,
    ghost = {2, 2},
@@ -62,26 +73,13 @@ fluid = q:alias(0, 5)
 fluidX = qX:alias(0, 5)
 fluidNew = qNew:alias(0, 5)
 
-function wedge(x, y, x0, y0, angle)
-   return (
-      x>x0 and (y<y0+(x-x0)*math.tan(0.5*angle)) and (y>y0-(x-x0)*math.tan(0.5*angle))
-   ) and true or false
-   
-end
-
 -- in/out field representing embedded object
-inOut = DataStruct.Field2D {
+inOut = DataStruct.Field3D {
    onGrid = grid,
    numComponents = 1,
    ghost = {2, 2},
 }
-inOut:set(
-   function (x,y,z)
-      local xc, yc = 0.0, 0.0
-      local rad = 0.5
-      return  wedge(x,y, 0.5, 0.0, 60*Lucee.Pi/180) and -1.0 or 1.0
-   end
-)
+inOut:clear(1.0)
 inOut:sync()
 -- write field
 inOut:write("inOut.h5")
@@ -89,14 +87,10 @@ inOut:write("inOut.h5")
 -----------------------
 -- INITIAL CONDITION --
 -----------------------
+
 -- initial conditions
-function init(x,y,z)
-   -- Mach 10 shock
-   local rho, u, pr = 8.0, 8.25, 116.5
-   if (x>0.5) then
-      rho, u, pr = 1.4, 0.0, 1.0
-   end
-   return rho, rho*u, 0, 0, pr/(gasGamma-1) + 0.5*rho*u*u
+function init(r,theta,z)
+   return 1e-2*rhoIn, 0.0, 0.0, 0.0, 1e-2*prIn/(gasGamma-1)
 end
 
 ------------------------
@@ -104,32 +98,11 @@ end
 ------------------------
 -- boundary applicator objects for fluids and fields
 
--- wall BC
 bcFluidCopy = BoundaryCondition.Copy { components = {0, 4} }
 bcFluidWall = BoundaryCondition.ZeroNormal { components = {1, 2, 3} }
 
--- set lower and upper boundaries to walls
-bcLowerWallUpdater = Updater.Bc2D {
-   onGrid = grid,
-   -- boundary conditions to apply
-   boundaryConditions = {bcFluidWall, bcFluidCopy},
-   -- direction to apply
-   dir = 1,
-   -- edge to apply on
-   edge = "lower",
-}
-bcUpperWallUpdater = Updater.Bc2D {
-   onGrid = grid,
-   -- boundary conditions to apply
-   boundaryConditions = {bcFluidWall, bcFluidCopy},
-   -- direction to apply
-   dir = 1,
-   -- edge to apply on
-   edge = "upper",
-}
-
 -- updater for embedded BC (solid wall)
-embeddedBcUpdater = Updater.StairSteppedBc2D {
+embeddedBcUpdater = Updater.StairSteppedBc3D {
    onGrid = grid,
    -- boundary conditions to apply
    boundaryConditions = {bcFluidCopy, bcFluidWall},
@@ -137,16 +110,32 @@ embeddedBcUpdater = Updater.StairSteppedBc2D {
    inOutField = inOut,
 }
 
+-- axis BCs
+bcAxis = BoundaryCondition.Copy { 
+   components = {0, 1, 2, 3, 4},
+   fact = {1, -1, -1, 1, 1},
+}
+bcAxisCalc = Updater.Bc3D {
+   onGrid = grid,
+   -- boundary conditions to apply
+   boundaryConditions = { bcAxis },
+   -- direction to apply
+   dir = 0,
+   -- edge to apply on
+   edge = "lower",
+}
+
 -- function to apply boundary conditions to specified field
 function applyBc(fld, tCurr, myDt, dir)
-   local bcList = {bcLowerWallUpdater, bcUpperWallUpdater}
+   local bcList = {bcAxisCalc}
    for i,bc in ipairs(bcList) do
       bc:setOut( {fld} )
       bc:advance(tCurr+myDt)
    end
-
+   -- open BCs on right
    fld:applyCopyBc(0, "upper")
-   fld:applyCopyBc(0, "lower")
+   -- (no need for any BCs in Y direction)
+   fld:applyCopyBc(2, "lower")
 
    -- apply BCs on embedded boundary
    embeddedBcUpdater:setDir(dir)
@@ -171,7 +160,7 @@ eulerLaxEqn = HyperEquation.Euler {
 }
 
 -- ds solvers for regular Euler equations along X
-fluidSlvrDir0 = Updater.WavePropagation2D {
+fluidSlvrDir0 = Updater.WavePropagation3D {
    onGrid = grid,
    equation = eulerEqn,
    -- one of no-limiter, min-mod, superbee, 
@@ -179,45 +168,58 @@ fluidSlvrDir0 = Updater.WavePropagation2D {
    limiter = "monotonized-centered",
    cfl = cfl,
    cflm = 1.1*cfl,
-   updateDirections = {0},
-   hasStairSteppedBoundary = true, -- we are solving with embedded boundary
-   inOutField = inOut,
+   updateDirections = {0} -- directions to update
 }
--- ds solvers for regular Euler equations along Y
-fluidSlvrDir1 = Updater.WavePropagation2D {
+-- ds solvers for regular Euler equations along Z
+fluidSlvrDir2 = Updater.WavePropagation3D {
    onGrid = grid,
    equation = eulerEqn,
    limiter = "monotonized-centered",
    cfl = cfl,
    cflm = 1.1*cfl,
-   updateDirections = {1},
-   hasStairSteppedBoundary = true, -- we are solving with embedded boundary
-   inOutField = inOut,
+   updateDirections = {2}
 }
 
 -- ds solvers for Lax Euler equations along X
-fluidLaxSlvrDir0 = Updater.WavePropagation2D {
+fluidLaxSlvrDir0 = Updater.WavePropagation3D {
    onGrid = grid,
    equation = eulerLaxEqn,
    limiter = "zero",
    cfl = cfl,
    cflm = 1.1*cfl,
-   updateDirections = {0},
-   hasStairSteppedBoundary = true, -- we are solving with embedded boundary
-   inOutField = inOut,
+   updateDirections = {0}
+}
+-- ds solvers for Lax Euler equations along Z
+fluidLaxSlvrDir2 = Updater.WavePropagation3D {
+   onGrid = grid,
+   equation = eulerLaxEqn,
+   limiter = "zero",
+   cfl = cfl,
+   cflm = 1.1*cfl,
+   updateDirections = {2}
 }
 
--- ds solvers for Lax Euler equations along Y
-fluidLaxSlvrDir1 = Updater.WavePropagation2D {
-   onGrid = grid,
-   equation = eulerLaxEqn,
-   limiter = "zero",
-   cfl = cfl,
-   cflm = 1.1*cfl,
-   updateDirections = {1},
-   hasStairSteppedBoundary = true, -- we are solving with embedded boundary
-   inOutField = inOut,
+-- gravitational source
+axisSrc = PointSource.EulerAxisymmetric {
+   -- takes and returns fluid variables
+   inpComponents = {0, 1, 2, 3, 4},
+   outComponents = {0, 1, 2, 3, 4},
+   gasGamma = gasGamma,
 }
+-- updater to add gravitational force to fluid
+axisSrcSlvr = Updater.GridOdePointIntegrator3D {
+   onGrid = grid,
+   -- terms to include in integration step
+   terms = {axisSrc},
+}
+
+-- function to update source terms
+function updateSource(qIn, tCurr, t)
+   -- gravity source
+   axisSrcSlvr:setOut( {qIn} )
+   axisSrcSlvr:setCurrTime(tCurr)
+   axisSrcSlvr:advance(t)
+end
 
 -- function to update the fluid and field using dimensional splitting
 function updateFluidsAndField(tCurr, t)
@@ -225,7 +227,6 @@ function updateFluidsAndField(tCurr, t)
    local myDtSuggested = 1e3*math.abs(t-tCurr)
    local useLaxSolver = false
 
-   -- apply BCs in X before doing X-sweep
    applyBc(q, tCurr, t-tCurr, 0)
 
    -- X-direction updates
@@ -248,11 +249,13 @@ function updateFluidsAndField(tCurr, t)
       return myStatus, myDtSuggested, useLaxSolver
    end
 
-   -- apply BCs in Y before doing Y-sweep
+   -- apply BCs to intermediate update after X sweep
    applyBc(qX, tCurr, t-tCurr, 1)
 
-   -- Y-direction updates
-   for i,slvr in ipairs({fluidSlvrDir1}) do
+   -- for axisymmetric problems, there is no Y update
+
+   -- Z-direction updates
+   for i,slvr in ipairs({fluidSlvrDir2}) do
       slvr:setCurrTime(tCurr)
       local status, dtSuggested = slvr:advance(t)
       myStatus = status and myStatus
@@ -270,8 +273,16 @@ end
 function solveTwoFluidSystem(tCurr, t)
    local dthalf = 0.5*(t-tCurr)
 
+   -- update source terms
+   updateSource(q, tCurr, tCurr+dthalf)
+   applyBc(q, tCurr, t-tCurr, 0)
+
    -- update fluids and fields
    local status, dtSuggested, useLaxSolver = updateFluidsAndField(tCurr, t)
+
+   -- update source terms
+   updateSource(qNew, tCurr, tCurr+dthalf)
+   applyBc(qNew, tCurr, t-tCurr, 0)
 
    return status, dtSuggested,useLaxSolver
 end
@@ -280,22 +291,20 @@ end
 function updateFluidsAndFieldLax(tCurr, t)
    local myStatus = true
    local myDtSuggested = 1e3*math.abs(t-tCurr)
-
-   -- apply BCs in X before doing X-sweep
-   applyBc(q, tCurr, t-tCurr, 0)
-
+   -- X-direction updates
    for i,slvr in ipairs({fluidLaxSlvrDir0}) do
       slvr:setCurrTime(tCurr)
       local status, dtSuggested = slvr:advance(t)
       myStatus = status and myStatus
       myDtSuggested = math.min(myDtSuggested, dtSuggested)
    end
- 
-   -- apply BCs in Y before doing Y-sweep
-   applyBc(qX, tCurr, t-tCurr, 1)
 
-   -- Y-direction updates
-   for i,slvr in ipairs({fluidLaxSlvrDir1}) do
+   applyBc(qX, tCurr, t-tCurr)
+
+   -- for axisymmetric problems, there is no Y update
+
+   -- Z-direction updates
+   for i,slvr in ipairs({fluidLaxSlvrDir2}) do
       slvr:setCurrTime(tCurr)
       local status, dtSuggested = slvr:advance(t)
       myStatus = status and myStatus
@@ -307,8 +316,18 @@ end
 
 -- function to take one time-step with Lax Euler solver
 function solveTwoFluidLaxSystem(tCurr, t)
+   local dthalf = 0.5*(t-tCurr)
+
+   -- update source terms
+   updateSource(q, tCurr, tCurr+dthalf)
+   applyBc(q, tCurr, t-tCurr)
+
    -- update fluids and fields
    local status, dtSuggested = updateFluidsAndFieldLax(tCurr, t)
+
+   -- update source terms
+   updateSource(qNew, tCurr, tCurr+dthalf)
+   applyBc(qNew, tCurr, t-tCurr)
 
    return status, dtSuggested
 end
@@ -375,8 +394,8 @@ function runSimulation(tStart, tEnd, nFrames, initDt)
       elseif (useLaxSolver == true) then
         -- negative density/pressure occured
         log (string.format(" ** Negative pressure or density at %8g! Will retake step with Lax fluxes", tCurr+myDt))
-        q:copy(qDup)
         qNew:copy(qNewDup)
+        q:copy(qDup)
       else
         -- check if a nan occured
         if (qNew:hasNan()) then
@@ -420,25 +439,30 @@ end
 q:set(init)
 
 -- set input/output arrays for various solvers
+
+-- Regular Euler solvers
 fluidSlvrDir0:setIn( {fluid} )
 fluidSlvrDir0:setOut( {fluidX} )
 
-fluidSlvrDir1:setIn( {fluidX} )
-fluidSlvrDir1:setOut( {fluidNew} )
+fluidSlvrDir2:setIn( {fluidX} )
+fluidSlvrDir2:setOut( {fluidNew} )
 
+-- Lax Euler solvers
 fluidLaxSlvrDir0:setIn( {fluid} )
 fluidLaxSlvrDir0:setOut( {fluidX} )
 
-fluidLaxSlvrDir1:setIn( {fluidX} )
-fluidLaxSlvrDir1:setOut( {fluidNew} )
+fluidLaxSlvrDir2:setIn( {fluidX} )
+fluidLaxSlvrDir2:setOut( {fluidNew} )
 
 -- apply BCs on initial conditions
-applyBc(q, 0.0, 0.0, 0)
+applyBc(q, 0.0, 0.0)
 qNew:copy(q)
 
 -- write initial conditions
 calcDiagnostics(0.0, 0.0)
 writeFields(0, 0.0)
 
-initDt = 100.0
+initDt = 1.0
 runSimulation(tStart, tEnd, nFrames, initDt)
+
+
