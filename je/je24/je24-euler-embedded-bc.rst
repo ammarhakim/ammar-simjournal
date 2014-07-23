@@ -116,14 +116,14 @@ The wedge has a half-angle of :math:`15` degrees, and a free-stream
 Mach 8 flow (with :math:`\rho_1=1` and :math:`p_1=1`) is
 imposed. Standard shock theory shows (see `this online calculator
 <http://www.dept.aoe.vt.edu/~devenpor/aoe3114/calc.html>`_, for
-example) that an attached oblique shock should form, with shock angle
-of about :math:`20.9^o`, with the density and pressure behind the
-shock given by :math:`\rho_2/\rho_1 = 3.71` and
-:math:`p_2/p_1=9.30`. The Mach number just behind the shock should be
-:math:`4.75`. (Subscript 1 is used for free-stream values, and 2 for
-just behind the shock). Two grid resolutions, :math:`100\times 200`
-and :math:`200\times 400` are used. Results are shown the following
-figure.
+example, or the book [#anderson-mcf]_) that an attached oblique shock
+should form, with shock angle of about :math:`20.9^o`, with the
+density and pressure behind the shock given by :math:`\rho_2/\rho_1 =
+3.71` and :math:`p_2/p_1=9.30`. The Mach number just behind the shock
+should be :math:`4.75`. (Subscript 1 is used for free-stream values,
+and 2 for just behind the shock). Two grid resolutions,
+:math:`100\times 200` and :math:`200\times 400` are used. Results are
+shown the following figure.
 
 .. figure:: s416-417-wedge-cmp.png
   :width: 100%
@@ -167,6 +167,116 @@ shown in the following figure.
   small (even two degree) error can cause this level of
   discrepancy.
 
+Double Mach reflection
+----------------------
+
+In this problem, a Mach 10 shock reflects off a 30 degree ramp,
+forming a complex Mach stem that separates the fluid into several
+regions with different flow properties. This problem has been
+extensively studied in the literature.
+
+Unlike the previous problem, the shock is created using an initial
+state, with :math:`\rho=8, u = 8.25, p=116.5` for :math:`x<0.5` and
+:math:`\rho=1.4, u = 0, p=1.0` for :math:`x>0.5`. The domain is
+:math:`3\times 2` and a grid of :math:`450\times 300` is used. The
+wedge tip is at :math:`x=0`. The density at :math:`t=0.2` is shown
+below.
+
+.. figure:: s418-euler-wedge-2d_q_10_rho.png
+  :width: 100%
+  :align: center
+
+  Density for double Mach reflection problem at :math:`t=0.2`. A Mach
+  10 shock interacts with a 30 degree wedge, forming a curved shock
+  and a complex triple Mach stem. This simulation uses a HLLE
+  flux. Compared to published results, the Gkeyll results with
+  stair-stepped boundaries look correct. However, notice the formation
+  of a spurious boundary layer due to the numerical diffusion from the
+  HLLE flux. See [:doc:`s418 <../../sims/s418/s418-euler-wedge-2d>`]
+  for input file.
+
+Notice that the solution using the HLLE flux is rather diffusive and
+shows the formation of a spurious boundary layer. The simulation was
+repeated using Roe flux, which is less diffusive, and compared with
+the results obtained from the HLLE flux. The results are shown below.
+
+.. figure:: s418-419-euler-wedgecmp.png
+  :width: 100%
+  :align: center
+
+  Density (left column) and pressure (right column) for double Mach
+  reflection problem at :math:`t=0.2`. The upper row results were
+  obtained using a Roe flux [:doc:`s419
+  <../../sims/s419/s419-euler-wedge-2d>`] and the lower row, with HLLE
+  flux [:doc:`s418 <../../sims/s418/s418-euler-wedge-2d>`]. The Roe
+  flux results are sharper, resolving the Mach stem better, and do not
+  have the spurious boundary layer on the wedge surface. However, the
+  use of a stair-stepped boundary launches a series of spurious
+  oblique shocks in the Roe flux simulation.
+
+Although the Roe flux solution is sharper, resolving the Mach stem
+better, spurious oblique shocks are launched from the stair-stepped
+wedge surface. In contrast, the HLLE solution does not show these
+spurious shocks, however, the results are more diffuse and a numerical
+boundary layer is formed.
+
+Shock interaction with cylinder
+-------------------------------
+
+In this problem I study the interaction of a Mach 2 shock with a
+cylinder of radius :math:`0.15`. The shock starts at :math:`x=-0.3`,
+with pre-shock values of :math:`\rho=1.4, p=1.0`. The shock interacts
+with the cylinder, creating a Mach stem, separating the flow into
+three regions. The problem has been studied by Berger
+et. al. [#berger-2003]_ using a cut-cell approach.
+
+The density and pressure at :math:`t=0.25` from a :math:`300\times
+300` simulation are shown below.
+
+.. figure:: s420-density-pressure.png
+  :width: 100%
+  :align: center
+
+  Density (left) and pressure (right) from a Mach 2 shock interaction
+  with a circular cylinder at :math:`t=0.25` on a :math:`300\times
+  300` grid. See [:doc:`s420 <../../sims/s420/s420-euler-cyl-2d>`] for
+  details. A triple Mach stem is formed, dividing the fluid into three
+  distinct regions. The results are visually very similar to the ones
+  presented by Berger et. al. [#berger-2003]_, who solved the problem
+  using a cut-cell approach.
+
+The results shown above compare very well with those presented by
+Berger et. al. [#berger-2003]_. Note that this case is in contrast to
+the previous two problems, in which the solution quality was
+relatively poor. The reason for this is that once the shock stands-off
+from the cylindrical surface, the stair-stepped boundary influences
+the rest of the flow only weakly.
+
+To test the algorithm on a more complex geometry, the interaction of a
+Mach 3 shock with two cylinders is studied. The pressure at
+:math:`t=0.096` and :math:`t=0.16` are shown below. The results are in
+excellent agreement with those presented in [#berger-2003]_.
+
+.. figure:: s422-pressure.png
+  :width: 100%
+  :align: center
+
+  Density from a Mach 3 shock interaction with two circular cylinders
+  centered at :math:`(0.4,0.35)` and :math:`(0.5,0.75)` on a
+  :math:`300\times 300` grid. See [:doc:`s422
+  <../../sims/s422/s422-euler-cyl-2d>`] for details.The results are in
+  excellent agreement with those presented by Berger
+  et. al. [#berger-2003]_, who solved the problem using a cut-cell
+  approach.
+
+Supersonic flow over blunt body
+-------------------------------
+
+In this problem I study zero angle-of-attach supersonic flow over a
+ellipsiod with circular cross-section. This allows one to treat the
+problem using a 2D axisymmetric solver. For note on the axisymmetric
+solver see [:doc:`JE23 <../je/je/je23-euler-3d`].
+
 Conclusions
 -----------
 
@@ -188,3 +298,8 @@ References
 ----------
 
 .. [#anderson-mcf] John D. Anderson, Jr. "Modern Compressible Flow".
+
+.. [#berger-2003] M. J. Berger, C. Helzel and R. J. LeVeque "H-box
+   methods for the approximation of one-dimensional conservation laws
+   on irregular grids", *SIAM J. Numer. Anal.*, **41** (2003), pp
+   893-918.
