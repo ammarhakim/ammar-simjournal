@@ -877,7 +877,9 @@ program for that simulation.
   * - ${mdl("s422")}
     - Mach 3 interaction with two cylinders.
   * - ${mdl("s423")}
-    - Supersonic (Mach 5) flow over an ellipsiod. Axisymmetric case.
+    - Supersonic (Mach 2) flow over an ellipsoid. Axisymmetric case.
+  * - ${mdl("s424")}
+    - Supersonic (Mach 2) flow over an ellipsoid.
 
 
 

@@ -5,7 +5,7 @@ log = Lucee.logInfo
 gasGamma = 1.4
 
 Lx = 1.0
-Ly = 1.0 --- this is arbitrary (theta direction)
+Ly = 1.0
 Lz = 2.0
 
 -- inflow conditions
@@ -16,9 +16,9 @@ uIn = 2.0*csIn -- supersonic inflow
 erIn = 0.5*rhoIn*uIn^2 + prIn/(gasGamma-1)
 
 -- resolution and time-stepping
-NX = 100
-NY = 1
-NZ = 200
+NX = 50
+NY = 50
+NZ = 100
 cfl = 0.9
 tStart = 0.0
 tEnd = 5*2.0/uIn
@@ -73,72 +73,7 @@ fluid = q:alias(0, 5)
 fluidX = qX:alias(0, 5)
 fluidNew = qNew:alias(0, 5)
 
--- shape library
-
--- ellipse
-Ellipse = { a = 1.0, b = 1.0 }
-function Ellipse:isInside(x,y)
-   return x^2/self.a^2+y^2/self.b^2 < 1
-end
-function Ellipse:new(o)
-   o = o or {}
-   setmetatable(o, self)
-   self.__index = self
-   return o
-end
-
--- Box
-Box = { extents = {1.0, 1.0} }
-function Box:isInside(x,y)
-   return (math.abs(x) < 0.5*self.extents[1]) and (math.abs(y) < 0.5*self.extents[2])
-end
-function Box:new(o)
-   o = o or {}
-   setmetatable(o, self)
-   self.__index = self
-   return o
-end
-
--- union adds two shapes together
-Union = { a = nil, b = nil }
-function Union:isInside(x,y)
-   return self.a:isInside(x,y) or self.b:isInside(x,y)
-end
-function Union:new(o)
-   o = o or {}
-   setmetatable(o, self)
-   self.__index = self
-   return o
-end
-
--- intersect 
-Intersect = { a = nil, b = nil }
-function Intersect:isInside(x,y)
-   return self.a:isInside(x,y) and self.b:isInside(x,y)
-end
-function Intersect:new(o)
-   o = o or {}
-   setmetatable(o, self)
-   self.__index = self
-   return o
-end
-
--- shift object to new origin
-Shift = { a = nil, x0 = 0.0, y0 = 0.0 }
-function Shift:isInside(x,y)
-   return self.a:isInside(x-self.x0, y-self.y0)
-end
-function Shift:new(o)
-   o = o or {}
-   setmetatable(o, self)
-   self.__index = self
-   return o
-end
-
-shape = Shift:new {
-   a = Ellipse:new { a = 0.25, b = 0.5 },
-   x0 = 0.0, y0 = Lz/2.0,
-}
+-- shapes
 
 -- Elipsoid
 Ellipsoid = { a = 1.0, b = 1.0, c = 1.0 }
@@ -152,6 +87,23 @@ function Ellipsoid:new(o)
    return o
 end
 
+-- shift object to new origin
+Shift = { a = nil, x0 = 0.0, y0 = 0.0, z0 = 0.0 }
+function Shift:isInside(x,y,z)
+   return self.a:isInside(x-self.x0, y-self.y0, z-self.z0)
+end
+function Shift:new(o)
+   o = o or {}
+   setmetatable(o, self)
+   self.__index = self
+   return o
+end
+
+shape = Shift:new {
+   a = Ellipsoid:new { a = 0.25, b = 0.25, c = 0.5 },
+      x0 = 0.0, y0 = 0.0, z0 = Lz/2.0,
+}
+
 -- in/out field representing embedded object
 inOut = DataStruct.Field3D {
    onGrid = grid,
@@ -160,7 +112,7 @@ inOut = DataStruct.Field3D {
 }
 inOut:set(
    function (x,y,z)
-      return shape:isInside(x,z) and -1 or 1
+      return shape:isInside(x,y,z) and -1 or 1
    end
 )
 inOut:sync()
@@ -172,7 +124,7 @@ inOut:write("inOut.h5")
 -----------------------
 
 -- initial conditions
-function init(r,theta,z)
+function init(x,y,z)
    return 1e-2*rhoIn, 0.0, 0.0, 0.0, 1e-2*prIn/(gasGamma-1)
 end
 
@@ -198,6 +150,26 @@ bcInflowUpdater = Updater.Bc3D {
 bcFluidCopy = BoundaryCondition.Copy { components = {0, 4} }
 bcFluidWall = BoundaryCondition.ZeroNormal { components = {1, 2, 3} }
 
+-- create boundary condition object to apply wall BCs
+function createWallBc(myDir, myEdge)
+   local bc = Updater.Bc3D {
+      onGrid = grid,
+      -- boundary conditions to apply
+      boundaryConditions = {
+	 bcFluidCopy, bcFluidWall,
+      },
+      -- direction to apply
+      dir = myDir,
+      -- edge to apply on
+      edge = myEdge,
+   }
+   return bc
+end
+
+-- walls
+bc_X0 = createWallBc(0, "lower")
+bc_Y0 = createWallBc(1, "lower")
+
 -- updater for embedded BC (solid wall)
 embeddedBcUpdater = Updater.StairSteppedBc3D {
    onGrid = grid,
@@ -207,32 +179,17 @@ embeddedBcUpdater = Updater.StairSteppedBc3D {
    inOutField = inOut,
 }
 
--- axis BCs
-bcAxis = BoundaryCondition.Copy { 
-   components = {0, 1, 2, 3, 4},
-   fact = {1, -1, -1, 1, 1},
-}
-bcAxisCalc = Updater.Bc3D {
-   onGrid = grid,
-   -- boundary conditions to apply
-   boundaryConditions = { bcAxis },
-   -- direction to apply
-   dir = 0,
-   -- edge to apply on
-   edge = "lower",
-}
-
 -- function to apply boundary conditions to specified field
 function applyBc(fld, tCurr, myDt, dir)
-   local bcList = {bcInflowUpdater, bcAxisCalc}
+   local bcList = {bc_X0, bc_Y0, bcInflowUpdater}
    for i,bc in ipairs(bcList) do
       bc:setOut( {fld} )
       bc:advance(tCurr+myDt)
    end
-   -- open BCs on right
-   fld:applyCopyBc(0, "upper")
-   -- (no need for any BCs in Y direction)
+   -- open BCs elsewhere
    fld:applyCopyBc(2, "lower")
+   fld:applyCopyBc(0, "upper")
+   fld:applyCopyBc(1, "upper")
 
    -- apply BCs on embedded boundary
    embeddedBcUpdater:setDir(dir)
@@ -271,6 +228,17 @@ fluidSlvrDir0 = Updater.WavePropagation3D {
    hasStairSteppedBoundary = true, -- we are solving with embedded boundary
    inOutField = inOut,
 }
+-- ds solvers for regular Euler equations along Y
+fluidSlvrDir1 = Updater.WavePropagation3D {
+   onGrid = grid,
+   equation = eulerEqn,
+   limiter = "monotonized-centered",
+   cfl = cfl,
+   cflm = 1.1*cfl,
+   updateDirections = {1},
+   hasStairSteppedBoundary = true, -- we are solving with embedded boundary
+   inOutField = inOut,
+}
 -- ds solvers for regular Euler equations along Z
 fluidSlvrDir2 = Updater.WavePropagation3D {
    onGrid = grid,
@@ -294,6 +262,17 @@ fluidLaxSlvrDir0 = Updater.WavePropagation3D {
    hasStairSteppedBoundary = true, -- we are solving with embedded boundary
    inOutField = inOut,
 }
+-- ds solvers for Lax Euler equations along Y
+fluidLaxSlvrDir1 = Updater.WavePropagation3D {
+   onGrid = grid,
+   equation = eulerLaxEqn,
+   limiter = "zero",
+   cfl = cfl,
+   cflm = 1.1*cfl,
+   updateDirections = {1},
+   hasStairSteppedBoundary = true, -- we are solving with embedded boundary
+   inOutField = inOut,
+}
 -- ds solvers for Lax Euler equations along Z
 fluidLaxSlvrDir2 = Updater.WavePropagation3D {
    onGrid = grid,
@@ -306,26 +285,9 @@ fluidLaxSlvrDir2 = Updater.WavePropagation3D {
    inOutField = inOut,
 }
 
--- gravitational source
-axisSrc = PointSource.EulerAxisymmetric {
-   -- takes and returns fluid variables
-   inpComponents = {0, 1, 2, 3, 4},
-   outComponents = {0, 1, 2, 3, 4},
-   gasGamma = gasGamma,
-}
--- updater to add gravitational force to fluid
-axisSrcSlvr = Updater.GridOdePointIntegrator3D {
-   onGrid = grid,
-   -- terms to include in integration step
-   terms = {axisSrc},
-}
-
 -- function to update source terms
 function updateSource(qIn, tCurr, t)
-   -- gravity source
-   axisSrcSlvr:setOut( {qIn} )
-   axisSrcSlvr:setCurrTime(tCurr)
-   axisSrcSlvr:advance(t)
+   -- do nothing
 end
 
 -- function to update the fluid and field using dimensional splitting
@@ -334,6 +296,7 @@ function updateFluidsAndField(tCurr, t)
    local myDtSuggested = 1e3*math.abs(t-tCurr)
    local useLaxSolver = false
 
+   -- apply BCs to intermediate update after X sweep
    applyBc(q, tCurr, t-tCurr, 0)
 
    -- X-direction updates
@@ -357,9 +320,26 @@ function updateFluidsAndField(tCurr, t)
    end
 
    -- apply BCs to intermediate update after X sweep
-   applyBc(qX, tCurr, t-tCurr, 2)
+   applyBc(qX, tCurr, t-tCurr, 1)
 
-   -- for axisymmetric problems, there is no Y update
+   -- Y-direction updates
+   for i,slvr in ipairs({fluidSlvrDir1}) do
+      slvr:setCurrTime(tCurr)
+      local status, dtSuggested = slvr:advance(t)
+      myStatus = status and myStatus
+      myDtSuggested = math.min(myDtSuggested, dtSuggested)
+   end
+
+   if (eulerEqn:checkInvariantDomain(fluid) == false) then
+       useLaxSolver = true
+   end
+
+   if ((myStatus == false) or (useLaxSolver == true)) then
+      return myStatus, myDtSuggested, useLaxSolver
+   end
+
+   -- apply BCs to intermediate update after Y sweep
+   applyBc(q, tCurr, t-tCurr, 2)
 
    -- Z-direction updates
    for i,slvr in ipairs({fluidSlvrDir2}) do
@@ -380,16 +360,8 @@ end
 function solveTwoFluidSystem(tCurr, t)
    local dthalf = 0.5*(t-tCurr)
 
-   -- update source terms
-   updateSource(q, tCurr, tCurr+dthalf)
-   applyBc(q, tCurr, t-tCurr, 0)
-
    -- update fluids and fields
    local status, dtSuggested, useLaxSolver = updateFluidsAndField(tCurr, t)
-
-   -- update source terms
-   updateSource(qNew, tCurr, tCurr+dthalf)
-   applyBc(qNew, tCurr, t-tCurr, 0)
 
    return status, dtSuggested,useLaxSolver
 end
@@ -398,6 +370,9 @@ end
 function updateFluidsAndFieldLax(tCurr, t)
    local myStatus = true
    local myDtSuggested = 1e3*math.abs(t-tCurr)
+
+   applyBc(qX, tCurr, t-tCurr, 0)
+
    -- X-direction updates
    for i,slvr in ipairs({fluidLaxSlvrDir0}) do
       slvr:setCurrTime(tCurr)
@@ -406,9 +381,17 @@ function updateFluidsAndFieldLax(tCurr, t)
       myDtSuggested = math.min(myDtSuggested, dtSuggested)
    end
 
-   applyBc(qX, tCurr, t-tCurr)
+   applyBc(qX, tCurr, t-tCurr, 1)
 
-   -- for axisymmetric problems, there is no Y update
+   -- Y-direction updates
+   for i,slvr in ipairs({fluidLaxSlvrDir1}) do
+      slvr:setCurrTime(tCurr)
+      local status, dtSuggested = slvr:advance(t)
+      myStatus = status and myStatus
+      myDtSuggested = math.min(myDtSuggested, dtSuggested)
+   end
+
+   applyBc(q, tCurr, t-tCurr, 2)
 
    -- Z-direction updates
    for i,slvr in ipairs({fluidLaxSlvrDir2}) do
@@ -425,16 +408,8 @@ end
 function solveTwoFluidLaxSystem(tCurr, t)
    local dthalf = 0.5*(t-tCurr)
 
-   -- update source terms
-   updateSource(q, tCurr, tCurr+dthalf)
-   applyBc(q, tCurr, t-tCurr)
-
    -- update fluids and fields
    local status, dtSuggested = updateFluidsAndFieldLax(tCurr, t)
-
-   -- update source terms
-   updateSource(qNew, tCurr, tCurr+dthalf)
-   applyBc(qNew, tCurr, t-tCurr)
 
    return status, dtSuggested
 end
@@ -551,18 +526,24 @@ q:set(init)
 fluidSlvrDir0:setIn( {fluid} )
 fluidSlvrDir0:setOut( {fluidX} )
 
-fluidSlvrDir2:setIn( {fluidX} )
+fluidSlvrDir1:setIn( {fluidX} )
+fluidSlvrDir1:setOut( {fluid} )
+
+fluidSlvrDir2:setIn( {fluid} )
 fluidSlvrDir2:setOut( {fluidNew} )
 
 -- Lax Euler solvers
 fluidLaxSlvrDir0:setIn( {fluid} )
 fluidLaxSlvrDir0:setOut( {fluidX} )
 
-fluidLaxSlvrDir2:setIn( {fluidX} )
+fluidLaxSlvrDir1:setIn( {fluidX} )
+fluidLaxSlvrDir1:setOut( {fluid} )
+
+fluidLaxSlvrDir2:setIn( {fluid} )
 fluidLaxSlvrDir2:setOut( {fluidNew} )
 
 -- apply BCs on initial conditions
-applyBc(q, 0.0, 0.0)
+applyBc(q, 0.0, 0.0, 0)
 qNew:copy(q)
 
 -- write initial conditions
