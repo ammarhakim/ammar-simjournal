@@ -275,15 +275,16 @@ Supersonic flow over blunt body
 In this problem I study supersonic flow over a ellipsiod with circular
 cross-section. This allows one to treat the problem using a 2D
 axi/symmetric solver. For note on the axisymmetric solver see
-[:doc:`JE23 <../je/je/je23-euler-3d`]. The ellipsoid is given by
+[:doc:`JE23 <../je/je23/je23-euler-3d>`]. The ellipsoid is given by
 
 .. math::
 
   \frac{x^2}{a^2} + \frac{y^2}{b^2} + \frac{z^2}{c^2} = 1
 
 with :math:`a=b=1/4` and :math:`c=1/2`. The free-stream flow is Mach 2
-with :math:`\rho=1` and :math:`p=1`. The domain is :math:`(r,z)\in
-[0,1]\times[0,2]` and grid :math:`100\times 200`.
+directed in the negative :math:`Z` direction, with :math:`\rho=1` and
+:math:`p=1`. The domain is :math:`(r,z)\in [0,1]\times[0,2]` and grid
+:math:`100\times 200`.
 
 Density and pressure near steady-state are shown below. A detached bow
 shock forms on the object. The flow in the downstream side seems not
@@ -353,13 +354,13 @@ of the flow features.
 
 For some problems, in particular shock interaction with embedded
 objects, in which the shock standoff distance is significant, the use
-of stair-stepped boundaries gives results comparable to cut-cell
-conformal boundary methods.
+of stair-stepped boundaries gives high-quality results comparable to
+cut-cell conformal boundary methods.
 
 For magnetosphere problems the shock properties depend on magnetic
 field structure rather than the geometry of the planet/moon
-surface. Hence, the impact of the physical boundary will be likely
-weak.
+surface. Hence, the impact of the stair-stepped boundary will be likely
+weak. However, this remains to be verified.
 
 
 References

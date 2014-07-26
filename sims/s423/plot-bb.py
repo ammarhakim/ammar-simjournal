@@ -78,7 +78,7 @@ xlabel('R')
 ylabel('Z')
 axis('image')
 colorbar_adj(im)
-savefig('s423-euler-blunt-rz_dp.png', dpi=300)
+savefig('s423-euler-blunt-rz_dp.png', dpi=200, bbox_inches='tight')
 show()
 
 
