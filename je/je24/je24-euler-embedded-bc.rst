@@ -272,10 +272,73 @@ excellent agreement with those presented in [#berger-2003]_.
 Supersonic flow over blunt body
 -------------------------------
 
-In this problem I study zero angle-of-attach supersonic flow over a
-ellipsiod with circular cross-section. This allows one to treat the
-problem using a 2D axisymmetric solver. For note on the axisymmetric
-solver see [:doc:`JE23 <../je/je/je23-euler-3d`].
+In this problem I study supersonic flow over a ellipsiod with circular
+cross-section. This allows one to treat the problem using a 2D
+axi/symmetric solver. For note on the axisymmetric solver see
+[:doc:`JE23 <../je/je/je23-euler-3d`]. The ellipsoid is given by
+
+.. math::
+
+  \frac{x^2}{a^2} + \frac{y^2}{b^2} + \frac{z^2}{c^2} = 1
+
+with :math:`a=b=1/4` and :math:`c=1/2`. The free-stream flow is Mach 2
+with :math:`\rho=1` and :math:`p=1`. The domain is :math:`(r,z)\in
+[0,1]\times[0,2]` and grid :math:`100\times 200`.
+
+Density and pressure near steady-state are shown below. A detached bow
+shock forms on the object. The flow in the downstream side seems not
+to be in steady-state, however.
+
+.. figure:: s423-euler-blunt-rz_dp.png
+  :width: 100%
+  :align: center
+
+  Density and superimposed pressure contours for Mach 2 flow over an
+  ellipsoid with circular cross section. An axisymmetric solver was
+  used to solve the Euler equations. See [:doc:`s423
+  <../../sims/s423/s423-euler-blunt-rz>`] for details. A detached bow
+  shock forms over the nose of the ellipsoid.
+
+The same problem was setup using a full 3D solver. This allows testing
+of the 3D solver by comparing to axisymmetric results.
+
+Two different resolutions were used: :math:`50\times 50\times 100` and
+:math:`100\times 100\times 200`. Symmetry boundary conditions were
+used at :math:`X=0` and :math:`Y=0`. Flow conditions were identical to
+the axisymmetric problem described above.
+
+The following figure shows the density and pressure contours from the
+:math:`100\times 100\times 200` simulation. These compare very well
+with the axisymmetric result shown above, giving some confidence that
+the 3D code is working correctly.
+
+.. figure:: s425-rho-pr-3d.png
+  :width: 100%
+  :align: center
+
+  Density and superimposed pressure contours in the :math:`X-Z` plane
+  for Mach 2 flow over an ellipsoid with circular cross section. An 3D
+  solver was used to solve the Euler equations. See [:doc:`s425
+  <../../sims/s425/s425-super-euler-3d>`] for details. The 3D results
+  compare very well with the 2D axisymmetric results shown above,
+  giving some confidence that the 3D code is working correctly.
+
+A more quantitative comparison between the 3D and 2D axisymmetric
+results can be obtained by computing radial lineouts from the 3D
+results and comparing it with the 2D results. This is shown in the
+figure below.
+
+.. figure:: s425-lineout-cmp.png
+  :width: 100%
+  :align: center
+
+  Scatter plot of density (blue lines) from 3D simulation, compared to
+  2D axisymmetric results (black line), computed at
+  :math:`Z=1.25`. The 3D and 2D axisymmetric results compare reasonably
+  well, except for a small shift. (These could just be a plotting
+  issue or a small difference in which in/out fields are evaluated in
+  2D v/s 3D).
+
 
 Conclusions
 -----------
@@ -287,6 +350,11 @@ problems. For shock problems, in which shock angles, jump conditions
 sensitively depend on geometry, a better boundary representation
 should be used. However, the solutions give a qualitative indication
 of the flow features.
+
+For some problems, in particular shock interaction with embedded
+objects, in which the shock standoff distance is significant, the use
+of stair-stepped boundaries gives results comparable to cut-cell
+conformal boundary methods.
 
 For magnetosphere problems the shock properties depend on magnetic
 field structure rather than the geometry of the planet/moon
