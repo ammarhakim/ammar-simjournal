@@ -1,6 +1,6 @@
 :Author: Ammar Hakim
 :Date: July 15th 2014
-:Completed: 
+:Completed: July 26th 2014
 :Last Updated:
 
 JE24: Tests for stair-stepped boundary Euler solver
