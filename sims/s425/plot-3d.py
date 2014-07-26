@@ -80,6 +80,6 @@ ylabel('Z')
 axis('image')
 colorbar_adj(im)
 
-savefig('s425-rho-pr-3d.png', dpi=300, bbox_inches='tight')
+savefig('s425-rho-pr-3d.png', dpi=200, bbox_inches='tight')
 
 show()
