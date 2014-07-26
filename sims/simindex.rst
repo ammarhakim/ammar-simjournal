@@ -858,6 +858,14 @@ program for that simulation.
     - Same as s418, Roe fluxes.
   * - :doc:`s420 <s420/s420-euler-cyl-2d>` 
     - Mach 2 shock interacting with a cylinder.
+  * - :doc:`s421 <s421/s421-euler-cyl-2d>` 
+    - Same as s420, except using Roe-flux.
+  * - :doc:`s422 <s422/s422-euler-cyl-2d>` 
+    - Mach 3 interaction with two cylinders.
+  * - :doc:`s423 <s423/s423-euler-blunt-rz>` 
+    - Supersonic (Mach 2) flow over an ellipsoid. Axisymmetric case.
+  * - :doc:`s424 <s424/s424-super-euler-3d>` 
+    - Supersonic (Mach 2) flow over an ellipsoid.
 
 
 
