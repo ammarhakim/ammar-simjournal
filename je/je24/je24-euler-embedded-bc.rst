@@ -275,7 +275,7 @@ Supersonic flow over blunt body
 In this problem I study supersonic flow over a ellipsiod with circular
 cross-section. This allows one to treat the problem using a 2D
 axi/symmetric solver. For note on the axisymmetric solver see
-[:doc:`JE23 <../je/je23/je23-euler-3d>`]. The ellipsoid is given by
+:doc:`JE23 <../je23/je23-euler-3d>`. The ellipsoid is given by
 
 .. math::
 
