@@ -72,3 +72,4 @@ Gkeyll Simulation Journal
   je/je22/je22-euler-2d.rst
   je/je23/je23-euler-3d.rst
   je/je24/je24-euler-embedded-bc.rst
+  je/je25/je25-three-wave-bra-bba.rst

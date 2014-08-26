@@ -880,6 +880,8 @@ program for that simulation.
     - Supersonic (Mach 2) flow over an ellipsoid. Axisymmetric case.
   * - ${mdl("s424")}
     - Supersonic (Mach 2) flow over an ellipsoid.
+  * - ${mdl("s425")}
+    - Samw as s424, except on higher resolution grid.
 
 
 
