@@ -1,0 +1,12 @@
+
+Az(x,y) := L*B0*log( cosh(y/L) + eps*cos(x/L) );
+
+Bx : diff(Az(x,y), y);
+
+By : -diff(Az(x,y), x);
+
+Jz : diff(By,x) - diff(Bx,y);
+
+Jz;
+
+
