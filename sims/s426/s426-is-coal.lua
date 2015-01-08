@@ -14,7 +14,7 @@ mu0 = 1.0
 lightSpeed = 1/math.sqrt(epsilon0*mu0)
 mgnErrorSpeedFactor = 1.0
 
-n0 = 1.0 -- initial number density
+n0 = 1.0
 wpe = math.sqrt(n0*elcCharge^2/(epsilon0*elcMass))
 wpi = math.sqrt(n0*ionCharge^2/(epsilon0*ionMass))
 di = lightSpeed/wpi
@@ -28,6 +28,8 @@ TiOverTe = 1.0
 nbOverN0 = 0.2
 pert = 0.1
 islandWidth = 0.4
+vte = lightSpeed*0.35
+T0 = vte^2*elcMass/2
 
 B0 = Valf*math.sqrt(mu0*n0*ionMass)
 OmegaCe0 = elcCharge*B0/elcMass
@@ -47,6 +49,7 @@ log(string.format("wpe/OmegaCe=%g", -wpe/OmegaCe0))
 log(string.format("Lx=%gdi", Lx/di))
 log(string.format("plasmaBeta=%g", plasmaBeta))
 log(string.format("Valf/c=%g", Valf/lightSpeed))
+log(string.format("Vthe/c=%g", math.sqrt(2*T0/elcMass)/lightSpeed))
 log(string.format("tEnd=%g,  nFrames=%d",tEnd,nFrames))
 
 ------------------------------------------------
