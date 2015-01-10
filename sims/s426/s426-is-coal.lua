@@ -1,4 +1,4 @@
--- GEM-challenge problem
+-- Island coalescence problem
 
 Pi = Lucee.Pi
 log = Lucee.logInfo
