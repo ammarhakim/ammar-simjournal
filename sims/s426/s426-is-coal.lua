@@ -37,12 +37,12 @@ OmegaCi0 = ionCharge*B0/ionMass
 psi0 = pert*B0
 
 -- resolution and time-stepping
-NX = 129
-NY = 65 
-cfl = 0.45
+NX = 640
+NY = 320
+cfl = 0.9
 tStart = 0.0
 tEnd = 2.5*Lx/Valf
-nFrames = 10
+nFrames = 50
 
 log(string.format("di=%g", di))
 log(string.format("wpe/OmegaCe=%g", -wpe/OmegaCe0))
