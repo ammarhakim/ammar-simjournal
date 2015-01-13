@@ -31,10 +31,10 @@ psi0 = pert*B0
 -- resolution and time-stepping
 NX = 640
 NY = 320
-cfl = 0.45
+cfl = 0.9
 tStart = 0.0
 tEnd = 2.5*Lx/Valf
-nFrames = 150
+nFrames = 50
 
 log(string.format("elcMass/ionMass=1/%g",ionMass/elcMass))
 log(string.format("Lx=%gdi=%gde", Lx,Lx*math.sqrt(ionMass/elcMass)))
