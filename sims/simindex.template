@@ -883,7 +883,9 @@ program for that simulation.
   * - ${mdl("s425")}
     - Same as s424, except on higher resolution grid.
   * - ${mdl("s426")}
-    - Island coalescence problem with 5-moment equations. See Karimaadi Phys. Rev. Letters, 107. 2011
+    - Island coalescence problem with 5-moment equations. See Karimaadi Phys. Rev. Letters, 107. 2011. :math:`640\times 320`
+  * - ${mdl("s427")}
+    - Same as s426, except :math:`1280\times 640` grid
 
 
 
