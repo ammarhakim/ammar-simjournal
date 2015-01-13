@@ -1,4 +1,4 @@
--- GEM-challenge problem
+-- Island coalescence problem
 
 Pi = Lucee.Pi
 log = Lucee.logInfo
@@ -7,24 +7,32 @@ log = Lucee.logInfo
 gasGamma = 5./3.
 elcCharge = -1.0
 ionCharge = 1.0
-ionMass = 25.0
-elcMass = 1.0
-lightSpeed = 1.0
+ionMass = 1.0
+elcMass = ionMass/25
 epsilon0 = 1.0
+mu0 = 1.0
+lightSpeed = 1/math.sqrt(epsilon0*mu0)
 mgnErrorSpeedFactor = 1.0
 
-lambda = 5.0*math.sqrt(ionMass)
+n0 = 1.0
+wpe = math.sqrt(n0*elcCharge^2/(epsilon0*elcMass))
+wpi = math.sqrt(n0*ionCharge^2/(epsilon0*ionMass))
+di = lightSpeed/wpi
+
+lambda = 5.0*di
 Lx = 4*Pi*lambda
 Ly = Lx/2
-n0 = 1.0
 Valf = 0.1
 plasmaBeta = 1.0
 TiOverTe = 1.0
 nbOverN0 = 0.2
 pert = 0.1
 islandWidth = 0.4
+vte = lightSpeed*0.35
+T0 = vte^2*elcMass/2
 
-B0 = Valf*math.sqrt(n0*ionMass)
+B0 = Valf*math.sqrt(mu0*n0*ionMass)
+OmegaCe0 = elcCharge*B0/elcMass
 OmegaCi0 = ionCharge*B0/ionMass
 psi0 = pert*B0
 
@@ -36,17 +44,13 @@ tStart = 0.0
 tEnd = 2.5*Lx/Valf
 nFrames = 50
 
-log(string.format("elcMass/ionMass=1/%g",ionMass/elcMass))
-log(string.format("Lx=%gdi=%gde", Lx,Lx*math.sqrt(ionMass/elcMass)))
+log(string.format("di=%g", di))
+log(string.format("wpe/OmegaCe=%g", -wpe/OmegaCe0))
+log(string.format("Lx=%gdi", Lx/di))
 log(string.format("plasmaBeta=%g", plasmaBeta))
-log(string.format("Valf/c=%g", Valf))
-log(string.format("lambda/di=%g", lambda))
-log(string.format("TiOverTe=%g", TiOverTe))
-log(string.format("nbOverN0=%g", nbOverN0))
-log(string.format("pert=%g", pert))
+log(string.format("Valf/c=%g", Valf/lightSpeed))
+log(string.format("Vthe/c=%g", math.sqrt(2*T0/elcMass)/lightSpeed))
 log(string.format("tEnd=%g,  nFrames=%d",tEnd,nFrames))
-log(string.format("NX=%d,dx=%gdi=%gde,cfl=%g\n", NX,Lx/NX,Lx/NX*math.sqrt(ionMass/elcMass),cfl))
-
 
 ------------------------------------------------
 -- COMPUTATIONAL DOMAIN, DATA STRUCTURE, ETC. --
