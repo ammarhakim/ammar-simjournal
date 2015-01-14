@@ -42,6 +42,11 @@ q27 = fh.root.StructGridField
 X27, Y27 = getMeshGrid(fh.root.StructGrid)
 mkFig(X27, Y27, q27[:,:,3], 's427-Jze-cmp.png')
 
-show()
+# read time for diagnostics
+tm = fh.root.timeData._v_attrs.vsTime
+Valf = 0.1
+Lx = 4*pi*5.0
+tmAlf = tm/(Lx/Valf)
+print ("Time for plots ", tmAlf)
 
 
