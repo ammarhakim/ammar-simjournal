@@ -886,6 +886,7 @@ program for that simulation.
     - Island coalescence problem with 5-moment equations. See Karimaadi Phys. Rev. Letters, 107. 2011. :math:`640\times 320`
   * - ${mdl("s427")}
     - Same as s426, except :math:`1280\times 640` grid
-
+  * - ${mdl("s428")}
+    - Same as s426, except for :math:`\lambda = 10 d_i`
 
 
