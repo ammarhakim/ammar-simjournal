@@ -890,4 +890,6 @@ program for that simulation.
     - Same as s426, except for :math:`\lambda = 10 d_i`
   * - ${mdl("s429")}
     - Same as s426, except for :math:`\lambda = 25 d_i`
+  * - ${mdl("s430")}
+    - Same as s426, except for :math:`\lambda = 15 d_i`
 
