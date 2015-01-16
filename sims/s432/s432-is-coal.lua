@@ -19,7 +19,7 @@ wpe = math.sqrt(n0*elcCharge^2/(epsilon0*elcMass))
 wpi = math.sqrt(n0*ionCharge^2/(epsilon0*ionMass))
 di = lightSpeed/wpi
 
-lambda = 50.0*di
+lambda = 100.0*di
 Lx = 4*Pi*lambda
 Ly = Lx/2
 Valf = 0.1
@@ -37,8 +37,8 @@ OmegaCi0 = ionCharge*B0/ionMass
 psi0 = pert*B0
 
 -- resolution and time-stepping
-NX = 6400
-NY = 3200
+NX = 12800
+NY = 6400
 cfl = 0.9
 tStart = 0.0
 tEnd = 2.5*Lx/Valf
