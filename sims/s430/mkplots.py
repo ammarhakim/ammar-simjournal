@@ -16,7 +16,7 @@ def getMeshGrid(grid):
 def mkFig(fh, XX, YY, dat, nm):
     tm = fh.root.timeData._v_attrs.vsTime
     Valf = 0.1
-    Lx = 4*pi*25.0
+    Lx = 4*pi*15.0
     tmAlf = tm/(Lx/Valf)
     
     f = figure(1)
