@@ -896,4 +896,6 @@ program for that simulation.
     - Same as s426, except for :math:`\lambda = 50 d_i`.
   * - ${mdl("s432")}
     - Same as s426, except for :math:`\lambda = 100 d_i`.
+  * - ${mdl("s433")}
+    - Island coalescence problem with 10-moment equations. (See s426)
 
