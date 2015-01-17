@@ -41,8 +41,8 @@ OmegaCi0 = ionCharge*B0/ionMass
 psi0 = pert*B0
 
 -- resolution and time-stepping
-NX = 120 --640
-NY = 60 --320
+NX = 640
+NY = 320
 cfl = 0.9
 tStart = 0.0
 tEnd = 2.5*Lx/Valf
