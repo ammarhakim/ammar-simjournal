@@ -4,7 +4,6 @@ Pi = Lucee.Pi
 log = Lucee.logInfo
 
 -- physical parameters
-gasGamma = 5./3.
 elcCharge = -1.0
 ionCharge = 1.0
 ionMass = 1.0
@@ -17,7 +16,12 @@ mgnErrorSpeedFactor = 1.0
 n0 = 1.0
 wpe = math.sqrt(n0*elcCharge^2/(epsilon0*elcMass))
 wpi = math.sqrt(n0*ionCharge^2/(epsilon0*ionMass))
+de = lightSpeed/wpe
 di = lightSpeed/wpi
+
+-- average wave number for pressure damping
+elcCollAverageWaveNumber = 1/de
+ionCollAverageWaveNumber = 1/de
 
 lambda = 5.0*di
 Lx = 4*Pi*lambda
@@ -37,8 +41,8 @@ OmegaCi0 = ionCharge*B0/ionMass
 psi0 = pert*B0
 
 -- resolution and time-stepping
-NX = 640
-NY = 320
+NX = 120 --640
+NY = 60 --320
 cfl = 0.9
 tStart = 0.0
 tEnd = 2.5*Lx/Valf
@@ -112,7 +116,7 @@ emFieldNew = qNew:alias(20, 28)
 -----------------------
 -- INITIAL CONDITION --
 -----------------------
--- initial conditions [[STILL NEED TO FIX]]
+-- initial conditions
 function init(x,y,z)
    local tanh = math.tanh
    local cosh = math.cosh
@@ -124,7 +128,6 @@ function init(x,y,z)
    local mi = ionMass
    local qe = elcCharge
    local qi = ionCharge
-   local g1 = gasGamma-1.0
    local ep = islandWidth
    local beta = plasmaBeta
    local l = lambda
@@ -155,13 +158,15 @@ function init(x,y,z)
 
    local rhoe = me*n
    local momze = (me/qe)*Jze
-   local ee = n*Te/g1 + 0.5*momze*momze/rhoe
+   local pe = n*Te
+   local pezz =  n*Te + momze*momze/rhoe
    
    local rhoi = mi*n
    local momzi = (mi/qi)*Jzi
-   local ei = n*Ti/g1 + 0.5*momzi*momzi/rhoi
+   local pi = n*Ti
+   local pizz =  n*Te + momzi*momzi/rhoi
 
-   return rhoe, 0.0, 0.0, momze, ee, rhoi, 0.0, 0.0, momzi, ei, 0.0, 0.0, 0.0, Bx, By, Bz, 0.0, 0.0
+   return rhoe, 0.0, 0.0, momze, pe, 0.0, 0.0, pe, 0.0, pezz, rhoi, 0.0, 0.0, momzi, pi, 0.0, 0.0, pi, 0.0, pizz, 0.0, 0.0, 0.0, Bx, By, Bz, 0.0, 0.0
 end
 
 ------------------------
