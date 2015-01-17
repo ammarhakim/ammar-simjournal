@@ -887,9 +887,15 @@ program for that simulation.
   * - ${mdl("s427")}
     - Same as s426, except :math:`1280\times 640` grid
   * - ${mdl("s428")}
-    - Same as s426, except for :math:`\lambda = 10 d_i`
+    - Same as s426, except for :math:`\lambda = 10 d_i`.
   * - ${mdl("s429")}
-    - Same as s426, except for :math:`\lambda = 25 d_i`
+    - Same as s426, except for :math:`\lambda = 25 d_i`.
   * - ${mdl("s430")}
-    - Same as s426, except for :math:`\lambda = 15 d_i`
+    - Same as s426, except for :math:`\lambda = 15 d_i`.
+  * - ${mdl("s431")}
+    - Same as s426, except for :math:`\lambda = 50 d_i`.
+  * - ${mdl("s432")}
+    - Same as s426, except for :math:`\lambda = 100 d_i`.
+  * - ${mdl("s433")}
+    - Island coalescence problem with 10-moment equations. (See s426)
 
