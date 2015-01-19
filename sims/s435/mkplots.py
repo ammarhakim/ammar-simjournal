@@ -1,6 +1,7 @@
 from pylab import *
 import tables
 
+
 def getMeshGrid(grid):
     xl, yl = grid._v_attrs.vsLowerBounds
     xu, yu = grid._v_attrs.vsUpperBounds
@@ -15,7 +16,7 @@ def getMeshGrid(grid):
 def mkFig(fh, XX, YY, dat, nm):
     tm = fh.root.timeData._v_attrs.vsTime
     Valf = 0.1
-    Lx = 4*pi*5.0
+    Lx = 4*pi*10.0
     tmAlf = tm/(Lx/Valf)
     
     f = figure(1)
@@ -27,10 +28,20 @@ def mkFig(fh, XX, YY, dat, nm):
     savefig(nm)
     close()
 
-for i in range(36,51):
-    print ("Working on %d .." % i)
-    fh = tables.openFile("../s433/s433-is-coal_q_%d.h5" % i)
-    q = fh.root.StructGridField
-    X, Y = getMeshGrid(fh.root.StructGrid)
-    mkFig(fh, X, Y, q[:,:,3], 's433-Jze-%05d.png' % i)
-    fh.close()
+from optparse import OptionParser
+# set command line options
+parser = OptionParser()
+parser.add_option('-p', '--plot', action = 'store',
+                  dest = 'fileName',
+                  help = 'Hdf5 file to plot')
+(options, args) = parser.parse_args()
+
+fn = options.fileName
+
+fh = tables.openFile(fn)
+q = fh.root.StructGridField
+X, Y = getMeshGrid(fh.root.StructGrid)
+mkFig(fh, X, Y, q[:,:,3], "%s.png" % fn[:-3])
+
+
+
