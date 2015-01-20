@@ -902,4 +902,6 @@ program for that simulation.
     - Same as s433, except :math:`1280\times 640` grid.
   * - ${mdl("s435")}
     - Same as s433, except :math:`\lambda = 10 d_i`.
+  * - ${mdl("s436")}
+    - Same as s433, except :math:`\lambda = 25 d_i`.
 
