@@ -15,7 +15,7 @@ def getMeshGrid(grid):
 def mkFig(fh, XX, YY, dat, nm):
     tm = fh.root.timeData._v_attrs.vsTime
     Valf = 0.1
-    Lx = 4*pi*25.0
+    Lx = 4*pi*15.0
     tmAlf = tm/(Lx/Valf)
     
     f = figure(1)
@@ -27,10 +27,10 @@ def mkFig(fh, XX, YY, dat, nm):
     savefig(nm)
     close()
 
-for i in range(31,35):
+for i in range(0,33):
     print ("Working on %d .." % i)
-    fh = tables.openFile("../s436/s436-is-coal_q_%d.h5" % i)
+    fh = tables.openFile("../s437/s437-is-coal_q_%d.h5" % i)
     q = fh.root.StructGridField
     X, Y = getMeshGrid(fh.root.StructGrid)
-    mkFig(fh, X, Y, q[:,:,3], 's436-Jze-%05d.png' % i)
+    mkFig(fh, X, Y, q[:,:,3], 's437-Jze-%05d.png' % i)
     fh.close()
