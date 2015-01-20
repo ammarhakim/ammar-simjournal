@@ -164,7 +164,7 @@ function init(x,y,z)
    local rhoi = mi*n
    local momzi = (mi/qi)*Jzi
    local pi = n*Ti
-   local pizz =  n*Te + momzi*momzi/rhoi
+   local pizz =  n*Ti + momzi*momzi/rhoi
 
    return rhoe, 0.0, 0.0, momze, pe, 0.0, 0.0, pe, 0.0, pezz, rhoi, 0.0, 0.0, momzi, pi, 0.0, 0.0, pi, 0.0, pizz, 0.0, 0.0, 0.0, Bx, By, Bz, 0.0, 0.0
 end
