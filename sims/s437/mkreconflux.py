@@ -12,25 +12,31 @@ def getMeshGrid(grid):
 
     return meshgrid(X, Y)
 
-def mkFig(fh, XX, YY, dat, nm):
+def calcReconFlux(fh, XX, YY, Bx):
     tm = fh.root.timeData._v_attrs.vsTime
     Valf = 0.1
     Lx = 4*pi*15.0
-    tmAlf = tm/(Lx/Valf)
+    tmAlf = tm/(Lx/Valf)    
+    nx, ny = Bx.shape[0], Bx.shape[1]
+    dy = 0.5*Lx/ny
+    Byflux = dy*sum(abs(Bx[nx/2,:]))
+    return tmAlf, Byflux
     
-    f = figure(1)
-    pcolormesh(XX, YY, dat.transpose())
-    axis('image')
-    colorbar()
-    title("T = %.4g" % tmAlf)
-    
-    savefig(nm)
-    close()
 
-for i in range(33,51):
+tmPoints = []
+reconFlux = []
+for i in range(0,51):
     print ("Working on %d .." % i)
     fh = tables.openFile("../s437/s437-is-coal_q_%d.h5" % i)
-    q = fh.root.StructGridField
+    Bx = fh.root.StructGridField[:,:,23]
     X, Y = getMeshGrid(fh.root.StructGrid)
-    mkFig(fh, X, Y, q[:,:,3], 's437-Jze-%05d.png' % i)
+    t, recon = calcReconFlux(fh, X, Y, Bx)
+    tmPoints.append(t)
+    reconFlux.append(recon)
     fh.close()
+
+plot(tmPoints, reconFlux)
+savefig("s437-reconFlux.png")
+array(tmPoints).tofile("s437-recon-tmPoints", " ")
+array(reconFlux).tofile("s437-recon-reconFlux", " ")
+show()
