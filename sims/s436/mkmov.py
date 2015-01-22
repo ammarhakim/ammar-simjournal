@@ -27,7 +27,7 @@ def mkFig(fh, XX, YY, dat, nm):
     savefig(nm)
     close()
 
-for i in range(31,35):
+for i in range(35,51):
     print ("Working on %d .." % i)
     fh = tables.openFile("../s436/s436-is-coal_q_%d.h5" % i)
     q = fh.root.StructGridField
