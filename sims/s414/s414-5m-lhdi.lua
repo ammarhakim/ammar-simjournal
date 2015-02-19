@@ -26,7 +26,7 @@ plasmaBeta = 1.0 -- for Harris sheet
 -- parameters (as Yoon specifies them)
 M = 25.0 -- ionMass/elcMass
 tau = 0.1 -- Te/Ti
-R = 100.0 -- \omega_{pe} / \omega_{ce}
+R = 100.0 -- \omega_{pe}^2 / \omega_{ce}^2
 vIon_vAlf = 1.0 -- ion fluid speed in terms of Alfven velocity
 
 -- computed parameters
@@ -48,16 +48,16 @@ LCheck = 2*Ti*math.sqrt(n0*ionMass)/(ionCharge*B0*B0*vIon_vAlf)
 
 -- domain size is based on current sheet thickness
 Lx = 20*L
-Ly = 10*L
+Ly = 20*L
 
 -- resolution and time-stepping
 NX = 100
-NY = 50
+NY = 100
 
 cfl = 0.9
 tStart = 0.0
-tEnd = 40/omegaLH
-nFrames = 4
+tEnd = 100/omegaLH
+nFrames = 10
 
 log(string.format("M = %g", M))
 log(string.format("B0 = %g", B0))
@@ -139,8 +139,11 @@ function init(x,y,z)
    -- explicity, but is computed from equilibrium.
 
    local kx = 2*Pi/Lx
-   local Bz = B0*math.tanh(y/L)
-   local sechy = 1/math.cosh(y/L)
+   local ky = 2*Pi/Ly
+   local ypert = 0.0 --0.01*Ly*math.sin(kx*x)
+   --local Bz = B0*math.tanh((y+ypert)/L)
+   local Bz = B0*math.tanh((y+ypert)/L)*(1+ 0.05*math.random())
+   local sechy = 1/math.cosh((y+ypert)/L)
    local nb = 1.e-3*n0
    local n = n0*sechy^2 + nb
 
@@ -175,9 +178,9 @@ function createBc(myDir, myEdge)
       onGrid = grid,
       -- boundary conditions to apply
       boundaryConditions = {
-   bcElcCopy, bcElcWall, 
-   bcIonCopy, bcIonWall,
-   bcElcFld, bcMgnFld, bcPot,
+	 bcElcCopy, bcElcWall, 
+	 bcIonCopy, bcIonWall,
+	 bcElcFld, bcMgnFld, bcPot,
       },
       -- direction to apply
       dir = myDir,
