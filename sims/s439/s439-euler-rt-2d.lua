@@ -3,7 +3,7 @@ log = Lucee.logInfo
 
 -- physical parameters
 gasGamma = 1.4
-gravity = 0.2 -- m^2/s
+gravity = 0.1 -- m^2/s
 
 -- domain size
 XL = -0.25
