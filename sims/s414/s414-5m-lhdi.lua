@@ -144,7 +144,7 @@ function init(x,y,z)
    --local Bz = B0*math.tanh((y+ypert)/L)
    local Bz = B0*math.tanh((y+ypert)/L)*(1+ 0.05*math.random())
    local sechy = 1/math.cosh((y+ypert)/L)
-   local nb = 1.e-3*n0
+   local nb = 0.02*n0 --1.e-3*n0
    local n = n0*sechy^2 + nb
 
    local rhoe = n*elcMass
