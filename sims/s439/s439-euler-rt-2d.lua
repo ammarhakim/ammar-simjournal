@@ -83,7 +83,7 @@ function init(x,y,z)
    end
    local pr = 2.5-rho*gravity*y
    local A = 0.01
-   local uy = A*(1+math.cos(2*pi*x/Lx))*(1+math.cos(2*pi/Ly))/4
+   local uy = A*(1+math.cos(2*pi*x/Lx))*(1+math.cos(2*pi*y/Ly))/4
 
    return rho, 0.0, rho*uy, 0.0, pr/(gasGamma-1) + 0.5*rho*uy^2
 end
