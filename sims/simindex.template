@@ -914,3 +914,5 @@ program for that simulation.
     - Same as s438, except with random noise perturbation
   * - ${mdl("s441")}
     - Same as s440, except on a :math:`300\times 900` grid.
+  * - ${mdl("s442")}
+    - 3D Euler RT instability (Athena test), :math:`50\times 150\times 50` grid.
