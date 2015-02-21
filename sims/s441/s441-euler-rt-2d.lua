@@ -21,8 +21,8 @@ NX = 300
 NY = 900
 cfl = 0.9
 tStart = 0.0
-tEnd = 12.5
-nFrames = 50
+tEnd = 20.0
+nFrames = 100
 
 ------------------------------------------------
 -- COMPUTATIONAL DOMAIN, DATA STRUCTURE, ETC. --

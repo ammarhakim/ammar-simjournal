@@ -69,7 +69,7 @@ def mkFig(fh, XX, YY, dat, nm):
     savefig(nm, bbox_inches='tight')
     close()
 
-for i in range(0,51):
+for i in range(0,101):
     print ("Working on %d .." % i)
     fh = tables.openFile("s441-euler-rt-2d_q_%d.h5" % i)
     q = fh.root.StructGridField
