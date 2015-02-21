@@ -1,3 +1,5 @@
+-- RT test. See
+-- http://www.astro.virginia.edu/VITA/ATHENA/rt.html
 
 log = Lucee.logInfo
 
