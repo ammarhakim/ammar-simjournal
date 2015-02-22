@@ -153,7 +153,7 @@ fluidSlvrDir0 = Updater.WavePropagation3D {
    equation = eulerEqn,
    -- one of no-limiter, min-mod, superbee, 
    -- van-leer, monotonized-centered, beam-warming
-   limiter = "no-limiter",
+   limiter = "monotonized-centered",
    cfl = cfl,
    cflm = 1.1*cfl,
    updateDirections = {0} -- directions to update
@@ -162,7 +162,7 @@ fluidSlvrDir0 = Updater.WavePropagation3D {
 fluidSlvrDir1 = Updater.WavePropagation3D {
    onGrid = grid,
    equation = eulerEqn,
-   limiter = "no-limiter",
+   limiter = "monotonized-centered",
    cfl = cfl,
    cflm = 1.1*cfl,
    updateDirections = {1}
@@ -171,7 +171,7 @@ fluidSlvrDir1 = Updater.WavePropagation3D {
 fluidSlvrDir2 = Updater.WavePropagation3D {
    onGrid = grid,
    equation = eulerEqn,
-   limiter = "no-limiter",
+   limiter = "monotonized-centered",
    cfl = cfl,
    cflm = 1.1*cfl,
    updateDirections = {2}
