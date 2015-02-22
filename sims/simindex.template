@@ -918,3 +918,5 @@ program for that simulation.
     - 3D Euler RT instability (Athena test), :math:`50\times 150\times 50` grid.
   * - ${mdl("s443")}
     - Same as s443, :math:`100\times 300\times 100` grid
+  * - ${mdl("s443")}
+    - Same as s443, :math:`100\times 300\times 100` grid, with random perturbation
