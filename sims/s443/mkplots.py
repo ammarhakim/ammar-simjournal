@@ -71,9 +71,9 @@ def mkFig(fh, XX, YY, dat, nm):
     savefig(nm, bbox_inches='tight')
     close()
 
-for i in range(30,31):
+for i in range(0,51):
     print ("Working on %d .." % i)
-    fh = tables.openFile("s442-euler-rt-3d_q_%d.h5" % i)
+    fh = tables.openFile("s443-euler-rt-3d_q_%d.h5" % i)
     q = fh.root.StructGridField
     X, Y, Z = getMeshGrid(fh.root.StructGrid)
     tm = fh.root.timeData._v_attrs.vsTime
@@ -100,6 +100,6 @@ for i in range(30,31):
 
     suptitle("T = %.4g" % tm)
     
-    savefig('s442-euler-rt-rho_%05d.png' % i, bbox_inches='tight')
+    savefig('s443-euler-rt-rho_%05d.png' % i, bbox_inches='tight')
     close()
     fh.close()
