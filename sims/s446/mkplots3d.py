@@ -29,6 +29,7 @@ for i in range(0,22):
                                 plane_orientation='z_axes', 
                                 slice_index=nz/2)
     outline()
+    colorbar(orientation='vertical')
     pipeline.iso_surface(rhoSd, contours=[1.5], opacity=0.75)
     roll(0.0)
 
