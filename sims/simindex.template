@@ -922,3 +922,5 @@ program for that simulation.
     - Same as s443, :math:`100\times 300\times 100` grid, with random perturbation
   * - ${mdl("s445")}
     - Same as s444, :math:`200\times 600\times 200` grid
+  * - ${mdl("s446")}
+    - Same as s443, :math:`200\times 600\times 200` grid
