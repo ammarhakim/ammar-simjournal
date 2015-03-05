@@ -464,79 +464,6 @@ end
 ----------------------------
 -- DIAGNOSIS AND DATA I/O --
 ----------------------------
--- dynvector to store integrated flux
-byAlias = qNew:alias(14, 15)
-byFlux = DataStruct.DynVector { numComponents = 1 }
-byFluxCalc = Updater.IntegrateFieldAlongLine2D {
-   onGrid = grid,
-   -- start cell
-   startCell = {0, NY/2},
-   -- direction to integrate in
-   dir = 0,
-   -- number of cells to integrate
-   numCells = NX,
-   -- integrand
-   integrand = function (by)
-		  return math.abs(by)
-	       end,
-}
-byFluxCalc:setIn( {byAlias} )
-byFluxCalc:setOut( {byFlux} )
-
--- dynvector to store Ez at X-point
-ezAlias = qNew:alias(12, 13)
-xpointEz = DataStruct.DynVector { numComponents = 1 }
-xpointEzRec = Updater.RecordFieldInCell2D {
-   onGrid = grid,
-   -- index of cell to record
-   cellIndex = {(NX-1)/2, (NY-1)/2},
-}
-xpointEzRec:setIn( {ezAlias} )
-xpointEzRec:setOut( {xpointEz} )
-
--- dynvector to store number density at X-point
-neAlias = qNew:alias(0, 1)
-xpointNe = DataStruct.DynVector { numComponents = 1 }
-xpointNeRec = Updater.RecordFieldInCell2D {
-   onGrid = grid,
-   -- index of cell to record
-   cellIndex = {(NX-1)/2, (NY-1)/2},
-}
-xpointNeRec:setIn( {neAlias} )
-xpointNeRec:setOut( {xpointNe} )
-
--- dynvector to store electron uz at X-point
-uzeAlias = qNew:alias(3, 4)
-xpointUze = DataStruct.DynVector { numComponents = 1 }
-xpointUzeRec = Updater.RecordFieldInCell2D {
-   onGrid = grid,
-   -- index of cell to record
-   cellIndex = {(NX-1)/2, (NY-1)/2},
-}
-xpointUzeRec:setIn( {uzeAlias} )
-xpointUzeRec:setOut( {xpointUze} )
-
--- dynvector to store ion uz at X-point
-uziAlias = qNew:alias(8, 9)
-xpointUzi = DataStruct.DynVector { numComponents = 1 }
-xpointUziRec = Updater.RecordFieldInCell2D {
-   onGrid = grid,
-   -- index of cell to record
-   cellIndex = {(NX-1)/2, (NY-1)/2},
-}
-xpointUziRec:setIn( {uziAlias} )
-xpointUziRec:setOut( {xpointUzi} )
-
--- dynvector to store ion uz at X-point
-uziAlias = qNew:alias(8, 9)
-xpointUzi = DataStruct.DynVector { numComponents = 1 }
-xpointUziRec = Updater.RecordFieldInCell2D {
-   onGrid = grid,
-   -- index of cell to record
-   cellIndex = {(NX-1)/2, (NY-1)/2},
-}
-xpointUziRec:setIn( {uziAlias} )
-xpointUziRec:setOut( {xpointUzi} )
 
 -- dynvector to store electron fluid energy
 elcEnergy = DataStruct.DynVector { numComponents = 1 }
@@ -576,7 +503,7 @@ emEnergyCalc:setOut( {emEnergy} )
 
 -- compute diagnostic
 function calcDiagnostics(tCurr, myDt)
-   for i,diag in ipairs({byFluxCalc, elcEnergyCalc, ionEnergyCalc, emEnergyCalc}) do
+   for i,diag in ipairs({elcEnergyCalc, ionEnergyCalc, emEnergyCalc}) do
       diag:setCurrTime(tCurr)
       diag:advance(tCurr+myDt)
    end
@@ -585,7 +512,6 @@ end
 -- write data to H5 files
 function writeFields(frame, t)
    qNew:write( string.format("q_%d.h5", frame), t )
-   byFlux:write( string.format("byFlux_%d.h5", frame) )
    elcEnergy:write( string.format("elcEnergy_%d.h5", frame) )
    ionEnergy:write( string.format("ionEnergy_%d.h5", frame) )
    emEnergy:write( string.format("emEnergy_%d.h5", frame) )
