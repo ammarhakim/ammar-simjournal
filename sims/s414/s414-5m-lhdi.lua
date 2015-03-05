@@ -57,7 +57,7 @@ NY = 100
 cfl = 0.9
 tStart = 0.0
 tEnd = 100/omegaLH
-nFrames = 10
+nFrames = 50
 
 log(string.format("M = %g", M))
 log(string.format("B0 = %g", B0))
