@@ -19,7 +19,7 @@ for i in range(0,51):
     figure(1)
     pcolormesh(X, Y, transpose(q[:,:,0]))
     axis('image')
-    savefig('s414-rho_%05d.png' % i)
+    savefig('s414-5m-lhdi-rho_%05d.png' % i)
     close()
     fh.close()
 
