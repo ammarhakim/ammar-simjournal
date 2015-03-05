@@ -51,8 +51,8 @@ Lx = 20*L
 Ly = 20*L
 
 -- resolution and time-stepping
-NX = 100
-NY = 100
+NX = 250
+NY = 250
 
 cfl = 0.9
 tStart = 0.0
