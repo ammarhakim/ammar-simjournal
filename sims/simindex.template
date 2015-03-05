@@ -859,7 +859,7 @@ program for that simulation.
   * - ${mdl("s413")}
     - Same as s412, except on :math:`300\times 200\times 100` grid.
   * - ${mdl("s414")}
-    - Five-moment LHDI simulation. As of now, I do not fully understand the results.
+    - Five-moment LHDI simulation. Random initial perturbation
   * - ${mdl("s415")}
     - 2D Euler equations with embedded boundary: flow in nozzle
   * - ${mdl("s416")}
@@ -924,3 +924,5 @@ program for that simulation.
     - Same as s444, :math:`200\times 600\times 200` grid
   * - ${mdl("s446")}
     - Same as s443, :math:`200\times 600\times 200` grid
+  * - ${mdl("s447")}
+    - Five-moment LHDI simulation. Same as s441, except on a :math:`500\times 500` grid
