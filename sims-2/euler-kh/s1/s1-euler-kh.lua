@@ -17,12 +17,12 @@ Lx = XU-XL
 Ly = YU-YL
 
 -- resolution and time-stepping
-NX = 200
-NY = 200
+NX = 800
+NY = 800
 cfl = 0.9
 tStart = 0.0
-tEnd = 5.0
-nFrames = 50
+tEnd = 10.0
+nFrames = 100
 
 ------------------------------------------------
 -- COMPUTATIONAL DOMAIN, DATA STRUCTURE, ETC. --
