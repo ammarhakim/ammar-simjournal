@@ -40,3 +40,5 @@ program for that simulation.
     - Same as euler-kh/s1, except on a 1000x1000 grid, single mode perturbation
   * - ${mdl("euler-kh/s6")}
     - Same as euler-kh/s5, except on a 600x600 grid, single mode perturbation
+  * - ${mdl("euler-kh/s7")}
+    - Same as euler-kh/s5, except on a 2000x2000 grid, single mode perturbation
