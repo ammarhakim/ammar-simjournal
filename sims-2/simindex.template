@@ -32,3 +32,5 @@ program for that simulation.
     - Kelvin-Helmhotlz instability (ATHENA test) for Euler equations. Random perturbation.
   * - ${mdl("euler-kh/s2")}
     - Same as euler-kh/s1, except on a 400x400 grid
+  * - ${mdl("euler-kh/s3")}
+    - Same as euler-kh/s1, except on a 600x600 grid
