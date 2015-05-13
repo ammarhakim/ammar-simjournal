@@ -48,3 +48,5 @@ program for that simulation.
     - Same as s7, except 20 mode perturbation
   * - ${mdl("s10")}
     - KH with smoothed out profiles. Single mode
+  * - ${mdl("s10")}
+    - Same as s10. 10 modes
