@@ -7,8 +7,8 @@ X = 80.0 -- [m]
 Y = 40.0 -- [m]
 
 -- resolution and time-stepping
-NX = 80
-NY = 40
+NX = 40
+NY = 20
 polyOrder = 1 -- DG polynomial order
 cfl = 0.5/(2*polyOrder+1)
 tStart = 0.0
@@ -199,7 +199,6 @@ end
 ----------------------------
 -- function to advance solution from tStart to tEnd
 function runSimulation(tStart, tEnd, nFrames, initDt)
-
    local frame = 1
    local tFrame = (tEnd-tStart)/nFrames
    local nextIOt = tFrame
@@ -267,9 +266,11 @@ end
 -- RUNNING THE SIMULATION --
 ----------------------------
 
-initField:setOut( {q} )
 -- initialize
+initField:setOut( {q} )
 initField:advance(0.0) -- time is irrelevant
+
+-- initial conditions
 applyBc(q, 0.0, 0.0)
 qNew:copy(q)
 
