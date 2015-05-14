@@ -181,10 +181,21 @@ end
 
 -- dynvector to store EM energy
 emEnergy = DataStruct.DynVector { numComponents = 1 }
+emEnergyCalc = Updater.IntegrateNodalField2D {
+   onGrid = grid,
+   basis = basis,
+   integrand = function (ex, ey, ez, bx, by, bz, e1, e2)
+		  local epsilon0 = Lucee.Epsilon0
+		  local mu0 = Lucee.Mu0
+		  return 0.5*epsilon0*(ex^2+ey^2+ez^2) + 0.5/mu0*(bx^2+by^2+bz^2)
+	       end,
+}
+emEnergyCalc:setIn( {q} )
+emEnergyCalc:setOut( {emEnergy} )
 
 -- compute diagnostic
 function calcDiagnostics(tCurr, myDt)
-   for i,diag in ipairs({}) do
+   for i,diag in ipairs({emEnergyCalc}) do
       diag:setCurrTime(tCurr)
       diag:advance(tCurr+myDt)
    end
@@ -239,10 +250,10 @@ function runSimulation(tStart, tEnd, nFrames, initDt)
 	    qNew:write( string.format("qNew_nan.h5", frame) )
 	    break
 	 end
-	 -- compute diagnostics
-	 calcDiagnostics(tCurr, myDt)
 	 -- copy updated solution back
 	 q:copy(qNew)
+	 -- compute diagnostics
+	 calcDiagnostics(tCurr, myDt)
 	 -- write out data
 	 if (tCurr+myDt > nextIOt or tCurr+myDt >= tEnd) then
 	    log (string.format(" Writing data at time %g (frame %d) ...\n", tCurr+myDt, frame))
