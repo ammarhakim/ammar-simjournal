@@ -81,6 +81,20 @@ maxSlvr = Updater.WavePropagation2D {
 maxSlvr:setIn( {q} )
 maxSlvr:setOut( {qNew} )
 
+-- total energy calculator
+emEnergy = DataStruct.DynVector { numComponents = 1 }
+emEnergyCalc = Updater.IntegrateField2D {
+   onGrid = grid,
+   -- index of cell to record
+   integrand = function (ex, ey, ez, bx, by, bz, e1, e2)
+		  local epsilon0 = Lucee.Epsilon0
+		  local mu0 = Lucee.Mu0
+		  return 0.5*epsilon0*(ex^2+ey^2+ez^2) + 0.5/mu0*(bx^2+by^2+bz^2)
+	       end,
+}
+emEnergyCalc:setIn( {q} )
+emEnergyCalc:setOut( {emEnergy} )
+
 -- boundary condition to apply
 function applyBc(fld)
    fld:sync()
@@ -123,6 +137,8 @@ function advanceFrame(tStart, tEnd, initDt)
 
 	 -- copy updated solution back
 	 q:copy(qNew)
+	 emEnergyCalc:setCurrTime(tCurr)
+	 emEnergyCalc:advance(tCurr+myDt)
 
 	 tCurr = tCurr + myDt
 	 step = step + 1
@@ -151,6 +167,7 @@ for frame = 1, nFrames do
    dtSuggested = advanceFrame(tCurr, tCurr+tFrame, dtSuggested)
    -- write out data
    q:write( string.format("q_%d.h5", frame), tCurr+tFrame )
+   emEnergy:write( string.format("emEnergy_%d.h5", frame) )
    tCurr = tCurr+tFrame
    Lucee.logInfo ("")
 end
