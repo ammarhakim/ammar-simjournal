@@ -28,5 +28,7 @@ program for that simulation.
 
   * - Number
     - Description
+  * - ${mdl("s0")}
+    - FV solver, used for comparison and benchmarking
   * - ${mdl("s1")}
     - DG Maxwell solver, polyOrder=1, Lax fluxes.
