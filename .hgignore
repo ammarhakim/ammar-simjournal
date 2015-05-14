@@ -6,3 +6,10 @@ sims/*/*.log
 sims/*/*.png
 sims/*/*.txt
 sims/*/*.rst
+sims/*/*.mov
+sims-2/*/*/*.h5
+sims-2/*/*/*.log
+sims-2/*/*/*.png
+sims-2/*/*/*.txt
+sims-2/*/*/*.rst
+sims-2/*/*/*.mov

@@ -99,6 +99,10 @@ Backward Raman Amplification
 
 For BRA, the 
 
+.. warning::
+
+  I hope to complete this note in the near future.
+
 References
 ----------
 
