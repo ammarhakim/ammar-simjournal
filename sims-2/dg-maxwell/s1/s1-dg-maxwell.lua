@@ -2,18 +2,22 @@
 
 log = Lucee.logInfo
 
--- domain size
-X = 80.0 -- [m]
-Y = 40.0 -- [m]
+L = 1.0
+X = L -- [m]
+Y = L -- [m]
+kwave = 2
+lwave = 0
+freq = 2*Lucee.Pi/L*math.sqrt(kwave^2+lwave^2)*Lucee.SpeedOfLight
+tperiod = 2*Lucee.Pi/freq
 
 -- resolution and time-stepping
-NX = 40
-NY = 20
-polyOrder = 1 -- DG polynomial order
-cfl = 0.5/(2*polyOrder+1)
+NX = 10
+NY = 2
+polyOrder = 2 -- DG polynomial order
+cfl = 0.45/(2*polyOrder+1)
 tStart = 0.0
-tEnd = 150e-9
-nFrames = 2
+tEnd = tperiod
+nFrames = 1
 
 ------------------------------------------------
 -- COMPUTATIONAL DOMAIN, DATA STRUCTURE, ETC. --
@@ -76,11 +80,17 @@ qNewDup = DataStruct.Field2D {
 -----------------------
 -- initial condition to apply
 function init(x,y,z)
-   local m, n = 8, 4
-   local a = m*Lucee.Pi/X
-   local b = n*Lucee.Pi/Y
-   local Ez = 1.0*math.sin(a*x)*math.sin(b*y)
-   return 0.0, 0.0, Ez, 0.0, 0.0, 0.0, 0.0, 0.0
+   local cos = math.cos
+   local pi = Lucee.Pi
+   local c = Lucee.SpeedOfLight
+   local phi = 2*pi/L*(kwave*x + lwave*y)
+   local E0 = 1.0
+   local Ex, Ey = 0.0, 0.0
+   local Ez = E0*cos(phi)
+   local Bx = E0/c*cos(phi)*2*pi/L*lwave
+   local By = -E0/c*cos(phi)*2*pi/L*kwave
+   local Bz = .0
+   return Ex, Ey, Ez, Bx, By, Bz, 0.0, 0.0
 end
 
 ------------------------
@@ -120,9 +130,9 @@ maxwellEqn = HyperEquation.PhMaxwell {
    -- speed of light
    lightSpeed = Lucee.SpeedOfLight,
    -- factor for electric field correction potential speed
-   elcErrorSpeedFactor = 1.0,
+   elcErrorSpeedFactor = 0.0,
    -- factor for magnetic field correction potential speed
-   mgnErrorSpeedFactor = 1.0,
+   mgnErrorSpeedFactor = 0.0,
    -- numerical flux to use: one of "lax" or "central"
    numericalFlux = "lax",
 }
