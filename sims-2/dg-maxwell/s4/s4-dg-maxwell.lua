@@ -11,9 +11,9 @@ freq = 2*Lucee.Pi/L*math.sqrt(kwave^2+lwave^2)*Lucee.SpeedOfLight
 tperiod = 2*Lucee.Pi/freq
 
 -- resolution and time-stepping
-NX = 40
+NX = 10
 NY = 2
-polyOrder = 1 -- DG polynomial order
+polyOrder = 2 -- DG polynomial order
 cfl = 0.5/(2*polyOrder+1)/4
 tStart = 0.0
 tEnd = tperiod
