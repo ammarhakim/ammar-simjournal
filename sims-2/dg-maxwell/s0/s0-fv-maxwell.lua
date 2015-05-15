@@ -3,7 +3,7 @@
 -- [[Add code to compute field energy]]
 
 -- CFL number
-cfl = 0.9
+cfl = 0.95
 
 L = 1.0
 X = L -- [m]
