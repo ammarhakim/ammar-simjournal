@@ -31,4 +31,15 @@ program for that simulation.
   * - ${mdl("s0")}
     - FV solver, used for comparison and benchmarking
   * - ${mdl("s1")}
-    - DG Maxwell solver, polyOrder=1, Lax fluxes.
+    - DG Maxwell solver, polyOrder=1, Lax fluxes, 40x2 grid
+  * - ${mdl("s2")}
+    - Same as s1, except, 80x4 grid
+  * - ${mdl("s3")}
+    - Same as s1, except, 160x8 grid
+  * - ${mdl("s4")}
+    - DG Maxwell solver, polyOrder=2, Lax fluxes, 40x2 grid
+  * - ${mdl("s5")}
+    - Same as s4, except, 20x4 grid
+  * - ${mdl("s6")}
+    - Same as s4, except, 40x8 grid
+
