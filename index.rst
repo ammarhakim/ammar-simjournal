@@ -20,6 +20,20 @@ SimJournal: Ammar Hakim's Simulation Journal
   use these results in any form whatsoever **without my explicit
   permission**.
 
+.. note::
+
+  Each note below also has links to the Lua script used to run the
+  simulation. Usually, the **links are in figure caption or in
+  tables**. They have (unhelpful at first) names like [:doc:`s5
+  <../../sims/s5/s5-euler-shock-wave>`]. If you want the exact initial
+  conditions, boundary conditions and other simulation details, please
+  click those links and look at the Lua script. The initial conditions
+  are in (obviously named) functions like init(). The script also
+  contains other details like exact setup (resolution, algorithms,
+  limiters, time-steps, etc). My goal is that others can reproduce
+  these results. Hence, there is no "hidden hand-of-god", as one
+  commonly finds in papers, etc.
+
 Below are a list of journal entries, documenting various problems that
 have been attempted with Gkeyll. The eventual goal of Gkeyll is to
 solve the gyrokinetic equations in the edge region of tokamaks,

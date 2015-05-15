@@ -28,6 +28,25 @@ rcParams['contour.negative_linestyle'] = 'solid'
 # Example: xlabel(r'$t \cdot l / V_{A,bc}$')
 rcParams['mathtext.default'] = 'regular' # match the font used for regular text
 
+def colorbar_adj(obj, mode=1, redraw=False, _fig_=None, _ax_=None, aspect=None):
+    '''
+    Add a colorbar adjacent to obj, with a matching height
+    For use of aspect, see http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes.set_aspect ; E.g., to fill the rectangle, try "auto"
+    '''
+    from mpl_toolkits.axes_grid1 import make_axes_locatable
+    if mode == 1:
+        _fig_ = obj.figure; _ax_ = obj.axes
+    elif mode == 2: # assume obj is in the current figure/axis instance
+        _fig_ = plt.gcf(); _ax_ = plt.gca()
+    _divider_ = make_axes_locatable(_ax_)
+    _cax_ = _divider_.append_axes("right", size="5%", pad=0.05)
+    _cbar_ =  _fig_.colorbar(obj, cax=_cax_)
+    if aspect != None:
+        _ax_.set_aspect(aspect)
+    if redraw:
+        _fig_.canvas.draw()
+    return _cbar_
+
 def getRaw(q, component, numEqns, nNodes):
     rawData = numpy.zeros((q.shape[0], q.shape[1], nNodes), numpy.float)
     for n in range(nNodes):
@@ -105,8 +124,9 @@ nx, ny = Xn.shape[0], Yn.shape[0]
 # make plot
 pylab.figure(1)
 
-pylab.pcolormesh(Xn, Yn, pylab.transpose(qn_1))
+im = pylab.pcolormesh(Xn, Yn, pylab.transpose(qn_1))
 pylab.axis('tight')
+colorbar_adj(im)
 pylab.savefig('s1-dg-maxwell-Ez.png')
 
 # compute error
