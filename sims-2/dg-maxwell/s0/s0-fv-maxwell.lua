@@ -3,10 +3,17 @@
 -- [[Add code to compute field energy]]
 
 -- CFL number
-cfl = 0.49
+cfl = 0.9
 
-X = 80.0 -- [m]
-Y = 40.0 -- [m]
+L = 1.0
+X = L -- [m]
+Y = L -- [m]
+kwave = 2
+lwave = 0
+freq = 2*Lucee.Pi/L*math.sqrt(kwave^2+lwave^2)*Lucee.SpeedOfLight
+tperiod = 2*Lucee.Pi/freq
+
+print(freq, tperiod)
 
 -- decomposition object
 decomp = DecompRegionCalc2D.CartGeneral {}
@@ -14,7 +21,7 @@ decomp = DecompRegionCalc2D.CartGeneral {}
 grid = Grid.RectCart2D {
    lower = {0.0, 0.0},
    upper = {X, Y},
-   cells = {160, 80},
+   cells = {100, 1},
    decomposition = decomp,
    periodicDirs = {0, 1},
 }
@@ -43,11 +50,17 @@ eFldAlias = qNew:alias(0, 2) -- [Ex, Ey]
 
 -- initial condition to apply
 function init(x,y,z)
-   local m, n = 8, 4
-   local a = m*Lucee.Pi/X
-   local b = n*Lucee.Pi/Y
-   local Ez = 1.0*math.sin(a*x)*math.sin(b*y)
-   return 0.0, 0.0, Ez, 0.0, 0.0, 0.0, 0.0, 0.0
+   local cos = math.cos
+   local pi = Lucee.Pi
+   local c = Lucee.SpeedOfLight
+   local phi = 2*pi/L*(kwave*x + lwave*y)
+   local E0 = 1.0
+   local Ex, Ey = 0.0, 0.0
+   local Ez = E0*cos(phi)
+   local Bx = E0/c*cos(phi)*2*pi/L*lwave
+   local By = -E0/c*cos(phi)*2*pi/L*kwave
+   local Bz = .0
+   return Ex, Ey, Ez, Bx, By, Bz, 0.0, 0.0
 end
 
 -- apply initial conditions
@@ -155,9 +168,9 @@ end
 dtSuggested = 100.0 -- initial suggested time-step
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 150e-9
+tEnd = tperiod
 
-nFrames = 2
+nFrames = 1
 tFrame = (tEnd-tStart)/nFrames -- time between frames
 
 tCurr = tStart
