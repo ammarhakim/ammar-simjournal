@@ -1,27 +1,34 @@
--- Program to solve Maxwell equations
+-- GEM-challenge problem
 
--- [[Add code to compute field energy]]
-
--- CFL number
-cfl = 0.95
+Pi = Lucee.Pi
+log = Lucee.logInfo
 
 L = 1.0
 X = L -- [m]
 Y = L -- [m]
 kwave = 2
-lwave = 0
+lwave = 1
 freq = 2*Lucee.Pi/L*math.sqrt(kwave^2+lwave^2)*Lucee.SpeedOfLight
 tperiod = 2*Lucee.Pi/freq
 
-print(freq, tperiod)
+-- resolution and time-stepping
+NX = 80
+NY = 2
+cfl = 0.99
+tStart = 0.0
+tEnd = tperiod
+nFrames = 1
 
+------------------------------------------------
+-- COMPUTATIONAL DOMAIN, DATA STRUCTURE, ETC. --
+------------------------------------------------
 -- decomposition object
 decomp = DecompRegionCalc2D.CartGeneral {}
 -- computational domain
 grid = Grid.RectCart2D {
    lower = {0.0, 0.0},
    upper = {X, Y},
-   cells = {100, 1},
+   cells = {NX, NY},
    decomposition = decomp,
    periodicDirs = {0, 1},
 }
@@ -29,26 +36,42 @@ grid = Grid.RectCart2D {
 -- solution
 q = DataStruct.Field2D {
    onGrid = grid,
-   -- [Ex, Ey, Ez, Bx, By, Bz, phi_e, phi_m]
    numComponents = 8,
    ghost = {2, 2},
 }
-
--- updated solution
+-- solution after update along X (ds algorithm)
+qX = DataStruct.Field2D {
+   onGrid = grid,
+   numComponents = 8,
+   ghost = {2, 2},
+}
+-- final updated solution
 qNew = DataStruct.Field2D {
    onGrid = grid,
-   -- [Ex, Ey, Ez, Bx, By, Bz, phi_e, phi_m]
+   numComponents = 8,
+   ghost = {2, 2},
+}
+-- duplicate copy in case we need to take the step again
+qDup = DataStruct.Field2D {
+   onGrid = grid,
+   numComponents = 8,
+   ghost = {2, 2},
+}
+qNewDup = DataStruct.Field2D {
+   onGrid = grid,
    numComponents = 8,
    ghost = {2, 2},
 }
 
--- create duplicate copy in case we need to take step again
-qNewDup = qNew:duplicate()
+-- for convinience below
+emField = q
+emFieldX = qX
+emFieldNew = qNew
 
--- create an alias to in-plane electric field
-eFldAlias = qNew:alias(0, 2) -- [Ex, Ey]
-
--- initial condition to apply
+-----------------------
+-- INITIAL CONDITION --
+-----------------------
+-- initial conditions
 function init(x,y,z)
    local cos = math.cos
    local pi = Lucee.Pi
@@ -63,38 +86,104 @@ function init(x,y,z)
    return Ex, Ey, Ez, Bx, By, Bz, 0.0, 0.0
 end
 
--- apply initial conditions
-q:set(init)
-qNew:copy(q)
+------------------------
+-- Boundary Condition --
+------------------------
+-- boundary applicator objects for fluids and fields
 
--- write initial conditions
-q:write("q_0.h5")
+-- function to apply boundary conditions to specified field
+function applyBc(fld, tCurr, myDt)
+   for i,bc in ipairs({}) do
+      bc:setOut( {fld} )
+      bc:advance(tCurr+myDt)
+   end
+   -- sync ghost cells
+   fld:sync()
+end
 
--- define equation to solve
+----------------------
+-- EQUATION SOLVERS --
+----------------------
 maxwellEqn = HyperEquation.PhMaxwell {
-   -- speed of light
    lightSpeed = Lucee.SpeedOfLight,
-   -- factor for electric field correction potential speed
    elcErrorSpeedFactor = 1.0,
-   -- factor for magnetic field correction potential speed
    mgnErrorSpeedFactor = 1.0,
 }
 
--- updater for Euler equations
-maxSlvr = Updater.WavePropagation2D {
+-- solver for direction 0
+maxSlvrDir0 = Updater.WavePropagation2D {
    onGrid = grid,
    equation = maxwellEqn,
-   -- one of no-limiter, min-mod, superbee, van-leer, monotonized-centered, beam-warming
-   limiter = "no-limiter", 
+   limiter = "no-limiter",
    cfl = cfl,
-   cflm = cfl*1.01
+   cflm = 1.1*cfl,
+   updateDirections = {0}
 }
 
--- set input/output arrays (these do not change so set it once)
-maxSlvr:setIn( {q} )
-maxSlvr:setOut( {qNew} )
+-- solver for direction 1
+maxSlvrDir1 = Updater.WavePropagation2D {
+   onGrid = grid,
+   equation = maxwellEqn,
+   limiter = "no-limiter",
+   cfl = cfl,
+   cflm = 1.1*cfl,
+   updateDirections = {1}
+}
 
--- total energy calculator
+-- function to update the fluid and field using dimensional splitting
+function updateFluidsAndField(tCurr, t)
+   local myStatus = true
+   local myDtSuggested = 1e3*math.abs(t-tCurr)
+   local useLaxSolver = false
+   -- X-direction updates
+   for i,slvr in ipairs({maxSlvrDir0}) do
+      slvr:setCurrTime(tCurr)
+      local status, dtSuggested = slvr:advance(t)
+      myStatus = status and myStatus
+      myDtSuggested = math.min(myDtSuggested, dtSuggested)
+   end
+
+   if ((myStatus == false) or (useLaxSolver == true)) then
+      return myStatus, myDtSuggested, useLaxSolver
+   end
+
+   -- apply BCs to intermediate update after X sweep
+   applyBc(qX, tCurr, t-tCurr)
+
+   -- Y-direction updates
+   for i,slvr in ipairs({maxSlvrDir1}) do
+      slvr:setCurrTime(tCurr)
+      local status, dtSuggested = slvr:advance(t)
+      myStatus = status and myStatus
+      myDtSuggested = math.min(myDtSuggested, dtSuggested)
+   end
+
+   return myStatus, myDtSuggested, useLaxSolver
+end
+
+-- function to take one time-step with Euler solver
+function solveTwoFluidSystem(tCurr, t)
+   local dthalf = 0.5*(t-tCurr)
+
+   -- update source terms
+   --updateSource(elcFluid, ionFluid, emField, tCurr, tCurr+dthalf)
+   applyBc(q, tCurr, t-tCurr)
+
+   -- update fluids and fields
+   local status, dtSuggested, useLaxSolver = updateFluidsAndField(tCurr, t)
+
+   -- update source terms
+   --updateSource(elcFluidNew, ionFluidNew, emFieldNew, tCurr, tCurr+dthalf)
+   applyBc(qNew, tCurr, t-tCurr)
+
+   return status, dtSuggested,useLaxSolver
+end
+
+----------------------------
+-- DIAGNOSIS AND DATA I/O --
+----------------------------
+
+-- dynvector to EM energy
 emEnergy = DataStruct.DynVector { numComponents = 1 }
 emEnergyCalc = Updater.IntegrateField2D {
    onGrid = grid,
@@ -105,22 +194,41 @@ emEnergyCalc = Updater.IntegrateField2D {
 		  return 0.5*epsilon0*(ex^2+ey^2+ez^2) + 0.5/mu0*(bx^2+by^2+bz^2)
 	       end,
 }
-emEnergyCalc:setIn( {q} )
+emEnergyCalc:setIn( {emField} )
 emEnergyCalc:setOut( {emEnergy} )
 
--- boundary condition to apply
-function applyBc(fld)
-   fld:sync()
+-- compute diagnostic
+function calcDiagnostics(tCurr, myDt)
+   for i,diag in ipairs({emEnergyCalc}) do
+      diag:setCurrTime(tCurr)
+      diag:advance(tCurr+myDt)
+   end
 end
 
--- function to advance solution from tStart to tEnd
-function advanceFrame(tStart, tEnd, initDt)
+-- write data to H5 files
+function writeFields(frame, t)
+   qNew:write( string.format("q_%d.h5", frame), t )
+   emEnergy:write( string.format("emEnergy_%d.h5", frame) )
+end
 
+----------------------------
+-- TIME-STEPPING FUNCTION --
+----------------------------
+function runSimulation(tStart, tEnd, nFrames, initDt)
+
+   local frame = 1
+   local tFrame = (tEnd-tStart)/nFrames
+   local nextIOt = tFrame
    local step = 1
    local tCurr = tStart
    local myDt = initDt
+   local status, dtSuggested
+   local useLaxSolver = false
+
+   -- the grand loop 
    while true do
-      -- copy qNew in case we need to take this step again
+      -- copy q and qNew in case we need to take this step again
+      qDup:copy(q)
       qNewDup:copy(qNew)
 
       -- if needed adjust dt to hit tEnd exactly
@@ -128,60 +236,88 @@ function advanceFrame(tStart, tEnd, initDt)
 	 myDt = tEnd-tCurr
       end
 
-      Lucee.logInfo (
-	 string.format("  Taking step %d at time %g with dt %g", 
-		       step, tCurr, myDt))
+      -- advance fluids and fields
+      if (useLaxSolver) then
+	 -- call Lax solver if positivity violated
+	 log (string.format(" Taking step %5d at time %6g with dt %g (using Lax solvers)", step, tCurr, myDt))
+	 status, dtSuggested = solveTwoFluidLaxSystem(tCurr, tCurr+myDt)
+	 useLaxSolver = false
+      else
+	 log (string.format(" Taking step %5d at time %6g with dt %g", step, tCurr, myDt))
+	 status, dtSuggested, useLaxSolver = solveTwoFluidSystem(tCurr, tCurr+myDt)
+      end
 
-      -- set current time
-      maxSlvr:setCurrTime(tCurr)
-      -- advance solution
-      status, dtSuggested = maxSlvr:advance(tCurr+myDt)
-
-      if (dtSuggested < myDt) then
+      if (status == false) then
 	 -- time-step too large
-	 Lucee.logInfo (
-	    string.format("  ** Time step %g too large! Will retake with dt %g", 
-			  myDt, dtSuggested))
+	 log (string.format(" ** Time step %g too large! Will retake with dt %g", myDt, dtSuggested))
 	 myDt = dtSuggested
 	 qNew:copy(qNewDup)
+	 q:copy(qDup)
+      elseif (useLaxSolver == true) then
+	 -- negative density/pressure occured
+	 log (string.format(" ** Negative pressure or density at %8g! Will retake step with Lax fluxes", tCurr+myDt))
+	 q:copy(qDup)
+	 qNew:copy(qNewDup)
       else
-	 -- apply copy BCs on lower and upper edges
-	 applyBc(qNew)
+	 -- check if a nan occured
+	 if (qNew:hasNan()) then
+	    log (string.format(" ** NaN occured at %g! Stopping simulation", tCurr))
+	    break
+	 end
 
+	 -- compute diagnostics
+	 calcDiagnostics(tCurr, myDt)
 	 -- copy updated solution back
 	 q:copy(qNew)
-	 emEnergyCalc:setCurrTime(tCurr)
-	 emEnergyCalc:advance(tCurr+myDt)
-
+	 
+	 -- write out data
+	 if (tCurr+myDt > nextIOt or tCurr+myDt >= tEnd) then
+	    log (string.format(" Writing data at time %g (frame %d) ...\n", tCurr+myDt, frame))
+	    writeFields(frame, tCurr+myDt)
+	    frame = frame + 1
+	    nextIOt = nextIOt + tFrame
+	    step = 0
+	 end
+	 
 	 tCurr = tCurr + myDt
+	 myDt = dtSuggested
 	 step = step + 1
+
 	 -- check if done
 	 if (tCurr >= tEnd) then
 	    break
 	 end
-      end
-   end
-
+      end 
+   end -- end of time-step loop
+   
    return dtSuggested
 end
 
-dtSuggested = 100.0 -- initial suggested time-step
--- parameters to control time-stepping
-tStart = 0.0
-tEnd = tperiod
 
-nFrames = 1
-tFrame = (tEnd-tStart)/nFrames -- time between frames
+----------------------------
+-- RUNNING THE SIMULATION --
+----------------------------
+-- setup initial condition
+q:set(init)
+q:sync()
+qNew:copy(q)
 
-tCurr = tStart
-for frame = 1, nFrames do
-   Lucee.logInfo (string.format("-- Advancing solution from %g to %g", tCurr, tCurr+tFrame))
-   -- advance solution between frames
-   dtSuggested = advanceFrame(tCurr, tCurr+tFrame, dtSuggested)
-   -- write out data
-   q:write( string.format("q_%d.h5", frame), tCurr+tFrame )
-   emEnergy:write( string.format("emEnergy_%d.h5", frame) )
-   tCurr = tCurr+tFrame
-   Lucee.logInfo ("")
-end
+-- set input/output arrays for various solvers
+maxSlvrDir0:setIn( {emField} )
+maxSlvrDir0:setOut( {emFieldX} )
+
+maxSlvrDir1:setIn( {emFieldX} )
+maxSlvrDir1:setOut( {emFieldNew} )
+
+-- apply BCs on initial conditions
+applyBc(q, 0.0, 0.0)
+applyBc(qNew, 0.0, 0.0)
+
+-- write initial conditions
+calcDiagnostics(0.0, 0.0)
+writeFields(0, 0.0)
+
+initDt = 100.0
+runSimulation(tStart, tEnd, nFrames, initDt)
+
 
