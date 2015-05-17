@@ -28,6 +28,25 @@ rcParams['contour.negative_linestyle'] = 'solid'
 # Example: xlabel(r'$t \cdot l / V_{A,bc}$')
 rcParams['mathtext.default'] = 'regular' # match the font used for regular text
 
+def colorbar_adj(obj, mode=1, redraw=False, _fig_=None, _ax_=None, aspect=None):
+    '''
+    Add a colorbar adjacent to obj, with a matching height
+    For use of aspect, see http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes.set_aspect ; E.g., to fill the rectangle, try "auto"
+    '''
+    from mpl_toolkits.axes_grid1 import make_axes_locatable
+    if mode == 1:
+        _fig_ = obj.figure; _ax_ = obj.axes
+    elif mode == 2: # assume obj is in the current figure/axis instance
+        _fig_ = plt.gcf(); _ax_ = plt.gca()
+    _divider_ = make_axes_locatable(_ax_)
+    _cax_ = _divider_.append_axes("right", size="5%", pad=0.05)
+    _cbar_ =  _fig_.colorbar(obj, cax=_cax_)
+    if aspect != None:
+        _ax_.set_aspect(aspect)
+    if redraw:
+        _fig_.canvas.draw()
+    return _cbar_
+
 def getRaw(q, component, numEqns, nNodes):
     rawData = numpy.zeros((q.shape[0], q.shape[1], nNodes), numpy.float)
     for n in range(nNodes):
@@ -92,25 +111,34 @@ Xc = pylab.linspace(lower[0]+0.5*dx, upper[0]-0.5*dx, cells[0])
 Yc = pylab.linspace(lower[1]+0.5*dy, upper[1]-0.5*dy, cells[1])
 
 # get final solution
-q = getRaw(fh.root.StructGridField, 2, 8, 4)
-Xn, Yn, qn_1 = projectOnFinerGrid_f(Xc, Yc, q)
+q1 = getRaw(fh.root.StructGridField, 2, 8, 4)
+Xn, Yn, qn_1 = projectOnFinerGrid_f(Xc, Yc, q1)
 
 # get intial solution
 fh = tables.openFile("s3-dg-maxwell_q_0.h5")
-q = getRaw(fh.root.StructGridField, 2, 8, 4)
-Xn, Yn, qn_0 = projectOnFinerGrid_f(Xc, Yc, q)
+q0 = getRaw(fh.root.StructGridField, 2, 8, 4)
+Xn, Yn, qn_0 = projectOnFinerGrid_f(Xc, Yc, q0)
 
 nx, ny = Xn.shape[0], Yn.shape[0]
 
 # make plot
 pylab.figure(1)
 
-pylab.pcolormesh(Xn, Yn, pylab.transpose(qn_1))
+im = pylab.pcolormesh(Xn, Yn, pylab.transpose(qn_1))
 pylab.axis('tight')
+colorbar_adj(im)
 pylab.savefig('s3-dg-maxwell-Ez.png')
 
+def calcAverage(fld):
+    wt = pylab.array([1.0, 1.0, 1.0, 1.0])
+    return (fld[:,:,0:4]*wt).sum(axis=-1)
+
 # compute error
-err = numpy.abs(qn_1-qn_0).sum()/(nx*ny)
-print math.sqrt(dx*dy), err
+q0avg = calcAverage(q0)
+q1avg = calcAverage(q1)
+vol = dx*dy/4.0
+
+errAvg = vol*numpy.abs(q1avg-q0avg).sum()
+print dx, errAvg
 
 pylab.show()
