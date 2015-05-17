@@ -116,13 +116,13 @@ Xc = pylab.linspace(lower[0]+0.5*dx, upper[0]-0.5*dx, cells[0])
 Yc = pylab.linspace(lower[1]+0.5*dy, upper[1]-0.5*dy, cells[1])
 
 # get final solution
-q = getRaw(fh.root.StructGridField, 2, 8, 8)
-Xn, Yn, qn_1 = projectOnFinerGrid_f(Xc, Yc, q)
+q1 = getRaw(fh.root.StructGridField, 2, 8, 8)
+Xn, Yn, qn_1 = projectOnFinerGrid_f(Xc, Yc, q1)
 
 # get intial solution
 fh = tables.openFile("s4-dg-maxwell_q_0.h5")
-q = getRaw(fh.root.StructGridField, 2, 8, 8)
-Xn, Yn, qn_0 = projectOnFinerGrid_f(Xc, Yc, q)
+q0 = getRaw(fh.root.StructGridField, 2, 8, 8)
+Xn, Yn, qn_0 = projectOnFinerGrid_f(Xc, Yc, q0)
 
 nx, ny = Xn.shape[0], Yn.shape[0]
 
@@ -133,8 +133,18 @@ pylab.pcolormesh(Xn, Yn, pylab.transpose(qn_1))
 pylab.axis('tight')
 pylab.savefig('s4-dg-maxwell-Ez.png')
 
+def calcAverage(fld):
+    d13 = 1.0/3.0
+    d43 = 4.0/3.0
+    wt = pylab.array([-d13, -d13, -d13, -d13, d43, d43, d43, d43])
+    return (fld[:,:,0:8]*wt).sum(axis=-1)
+
 # compute error
-err = numpy.abs(qn_1-qn_0).sum()/(nx*ny)
-print math.sqrt(dx*dy), err
+q0avg = calcAverage(q0)
+q1avg = calcAverage(q1)
+vol = dx*dy/4.0
+
+errAvg = vol*numpy.abs(q1avg-q0avg).sum()
+print dx, errAvg
 
 pylab.show()
