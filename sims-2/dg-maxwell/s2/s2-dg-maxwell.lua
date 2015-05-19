@@ -113,7 +113,7 @@ end
 -- EQUATION SOLVERS --
 ----------------------
 -- updater to apply initial conditions
-initField = Updater.EvalOnNodes2D {
+initField = Updater.ProjectOnNodalBasis2D {
    onGrid = grid,
    -- basis functions to use
    basis = basis,
