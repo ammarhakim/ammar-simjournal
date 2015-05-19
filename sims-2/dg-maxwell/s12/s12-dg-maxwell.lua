@@ -3,11 +3,11 @@
 log = Lucee.logInfo
 
 -- resolution and time-stepping
-NX = 25
-NY = 25
+NX = 12
+NY = 12
 lightSpeed = 1.0
 
-polyOrder = 1 -- DG polynomial order
+polyOrder = 2 -- DG polynomial order
 cfl = 0.5/(2*polyOrder+1)
 tStart = 0.0
 tEnd = 3.0
@@ -107,7 +107,6 @@ function createBc(myDir, myEdge)
       -- edge to apply on
       edge = myEdge,
    }
-   bc:setOut( {qNew} )
    return bc
 end
 

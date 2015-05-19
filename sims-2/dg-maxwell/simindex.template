@@ -52,5 +52,9 @@ program for that simulation.
     - Same as s7, except 16x8 grid
   * - ${mdl("s11")}
     - EM pulse in a box, polyOrder=1.
+  * - ${mdl("s12")}
+    - EM pulse in a box, polyOrder=2.
+  * - ${mdl("s13")}
+    - EM pulse in a box, polyOrder=3, Lagrange tensor elements.
 
 
