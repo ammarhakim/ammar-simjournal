@@ -43,5 +43,12 @@ program for that simulation.
   * - ${mdl("s6")}
     - Same as s4, except, 40x8 grid
   * - ${mdl("s7")}
-    - DG Maxwell solver, polyOrder=3, Lagrange tensor elements, Lax fluxes, 10x2 grid
+    - DG Maxwell solver, polyOrder=3, Lagrange tensor elements, Lax fluxes, 2x1 grid
+  * - ${mdl("s8")}
+    - Same as s7, except 4x2 grid
+  * - ${mdl("s9")}
+    - Same as s7, except 8x4 grid
+  * - ${mdl("s10")}
+    - Same as s7, except 16x8 grid
+
 
