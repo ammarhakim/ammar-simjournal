@@ -50,5 +50,7 @@ program for that simulation.
     - Same as s7, except 8x4 grid
   * - ${mdl("s10")}
     - Same as s7, except 16x8 grid
+  * - ${mdl("s11")}
+    - EM pulse in a box, polyOrder=1.
 
 
