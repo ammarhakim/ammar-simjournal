@@ -3,12 +3,12 @@
 log = Lucee.logInfo
 
 -- resolution and time-stepping
-NX = 25
-NY = 25
+NX = 10
+NY = 10
 lightSpeed = 1.0
 
-polyOrder = 1 -- DG polynomial order
-cfl = 0.5/(2*polyOrder+1)
+polyOrder = 3 -- DG polynomial order
+cfl = 0.45/(2*polyOrder+1)
 tStart = 0.0
 tEnd = 3.0
 nFrames = 2
@@ -27,11 +27,13 @@ grid = Grid.RectCart2D {
 }
 
 -- create FEM nodal basis
-basis = NodalFiniteElement2D.Serendipity {
+basis = NodalFiniteElement2D.LagrangeTensor {
    -- grid on which elements should be constructured
    onGrid = grid,
    -- polynomial order in each cell
    polyOrder = polyOrder,
+   -- location of nodes
+   nodeLocation = "lobatto",
 }
 
 -- number of nodes per cell for DG
@@ -107,7 +109,6 @@ function createBc(myDir, myEdge)
       -- edge to apply on
       edge = myEdge,
    }
-   bc:setOut( {qNew} )
    return bc
 end
 
@@ -153,7 +154,7 @@ maxwellEqn = HyperEquation.PhMaxwell {
    -- factor for magnetic field correction potential speed
    mgnErrorSpeedFactor = 1.0,
    -- numerical flux to use: one of "lax" or "central"
-   numericalFlux = "upwind",
+   numericalFlux = "lax",
 }
 
 -- updater to solve hyperbolic equations
