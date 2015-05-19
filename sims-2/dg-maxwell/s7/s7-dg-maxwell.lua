@@ -11,10 +11,10 @@ freq = 2*Lucee.Pi/L*math.sqrt(kwave^2+lwave^2)*Lucee.SpeedOfLight
 tperiod = 2*Lucee.Pi/freq
 
 -- resolution and time-stepping
-NX = 40
-NY = 2
-polyOrder = 1 -- DG polynomial order
-cfl = 0.5/(2*polyOrder+1)/4
+NX = 2
+NY = 1
+polyOrder = 3 -- DG polynomial order
+cfl = 0.5/(2*polyOrder+1)/8
 tStart = 0.0
 tEnd = tperiod
 nFrames = 1
@@ -34,15 +34,24 @@ grid = Grid.RectCart2D {
 }
 
 -- create FEM nodal basis
-basis = NodalFiniteElement2D.Serendipity {
+basis = NodalFiniteElement2D.LagrangeTensor {
    -- grid on which elements should be constructured
    onGrid = grid,
    -- polynomial order in each cell
    polyOrder = polyOrder,
+   -- location of nodes
+   nodeLocation = "lobatto",
 }
 
 -- number of nodes per cell for DG
 numDgNodesPerCell = basis:numNodes()
+-- write out quadrature weights
+log("[")
+quadWeights = basis:quadWeights()
+for i = 1, #quadWeights do
+   log( string.format("%g,", quadWeights[i]) )
+end
+log("]")
 
 -- solution
 q = DataStruct.Field2D {
