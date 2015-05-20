@@ -19,6 +19,8 @@ html:
 	@echo "Building RST files from Lua scripts ...."
 	cd sims; ${PYTHON} ./code/mkluarst.py; cd ..
 	cd sims; ${PYTHON} ./makesimindex.py; cd ..
+	cd sims-2/dg-maxwell; ${PYTHON} ../../sims/code/mkluarst.py; cd ../..
+	cd sims-2/dg-maxwell; ${PYTHON} ./makesimindex.py; cd ../..
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
