@@ -32,7 +32,7 @@ SimJournal: Ammar Hakim's Simulation Journal
   contains other details like exact setup (resolution, algorithms,
   limiters, time-steps, etc). My goal is that others can reproduce
   these results. Hence, there is no "hidden hand-of-god", as one
-  commonly finds in papers, etc.
+  commonly finds in some papers, etc.
 
 Below are a list of journal entries, documenting various problems that
 have been attempted with Gkeyll. The eventual goal of Gkeyll is to
@@ -87,3 +87,4 @@ Gkeyll Simulation Journal
   je/je23/je23-euler-3d.rst
   je/je24/je24-euler-embedded-bc.rst
   je/je25/je25-three-wave-bra-bba.rst
+  je/je26/je26-dg-maxwell.rst
