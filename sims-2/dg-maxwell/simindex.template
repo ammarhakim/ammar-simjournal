@@ -56,5 +56,19 @@ program for that simulation.
     - EM pulse in a box, polyOrder=2.
   * - ${mdl("s13")}
     - EM pulse in a box, polyOrder=3, Lagrange tensor elements.
+  * - ${mdl("s14")}
+    - EM pulse in a box, FV solver
+  * - ${mdl("s15")}
+    - DG Maxwell solver, polyOrder=1, 20x20 grid, 2D transverse propagation
+  * - ${mdl("s16")}
+    - Same as s15, 40x40 grid.
+  * - ${mdl("s17")}
+    - Same as s15, 80x80 grid.
+  * - ${mdl("s18")}
+    - DG Maxwell solver, polyOrder=2, 10x10 grid, 2D transverse propagation
+  * - ${mdl("s19")}
+    - Same as s18, 20x20 grid.
+  * - ${mdl("s20")}
+    - Same as s18, 40x40 grid.
 
 
