@@ -154,15 +154,3 @@ however, then levels off, probably because the errors are too small to
 measure accurately. Also, note that in general going to higher order
 reduces the error dramatically, even on much coarser meshes.
 
-
-
-
-
-
-
-
-
-
-
-
-
