@@ -154,3 +154,74 @@ however, then levels off, probably because the errors are too small to
 measure accurately. Also, note that in general going to higher order
 reduces the error dramatically, even on much coarser meshes.
 
+Convergence of 2D schemes
++++++++++++++++++++++++++
+
+For this problem I pick :math:`\mathbf{k} = 2\pi(2,2,0)/L`, with
+:math:`L=1`. The simulation is run for one period, i.e. to
+:math:`t=2\pi|\mathbf{k}|c`. The wave propagates diagonally, testing
+propagation of waves transverse to the grid. Equal number of cells are
+used in each direction.
+
+Results are shown below for various polynomial orders and basis
+functions.
+
+.. list-table:: **Serendipity polynomial order 1**
+  :header-rows: 1
+  :widths: 20,40,20,20
+
+  * - Grid size :math:`\Delta x`
+    - Average error
+    - Order
+    - Simulation
+  * - :math:`0.05`
+    - :math:`8.699\times 10^{-2}`
+    - 
+    - :doc:`s15 <../../sims-2/dg-maxwell/s15/s15-dg-maxwell>`
+  * - :math:`0.025`
+    - :math:`9.619\times 10^{-3}`
+    - :math:`3.1`
+    - :doc:`s16 <../../sims-2/dg-maxwell/s16/s16-dg-maxwell>`
+  * - :math:`0.0125`
+    - :math:`1.065\times 10^{-3}`
+    - :math:`3.2`
+    - :doc:`s17 <../../sims-2/dg-maxwell/s17/s17-dg-maxwell>`
+
+
+
+.. list-table:: **Serendipity polynomial order 2**
+  :header-rows: 1
+  :widths: 20,40,20,20
+
+  * - Grid size :math:`\Delta x`
+    - Average error
+    - Order
+    - Simulation
+  * - :math:`0.1`
+    - :math:`2.332\times 10^{-2}`
+    - 
+    - :doc:`s18 <../../sims-2/dg-maxwell/s18/s18-dg-maxwell>`
+  * - :math:`0.05`
+    - :math:`7.359\times 10^{-4}`
+    - :math:`4.95`
+    - :doc:`s19 <../../sims-2/dg-maxwell/s19/s19-dg-maxwell>`
+  * - :math:`0.025`
+    - :math:`3.5146\times 10^{-5}`
+    - :math:`4.4`
+    - :doc:`s20 <../../sims-2/dg-maxwell/s20/s20-dg-maxwell>`
+
+Example solutions with polynomial order 1 on grid :math:`40\times 40`
+and polyorder 2 on grid :math:`20\times 20` are shown below.
+
+.. figure:: s16-s19-dg-maxwell-Ez.png
+  :width: 100%
+  :align: center
+
+  Solution computed with polynomial order 1 on grid :math:`40\times
+  40` grid (left) [:doc:`s16
+  <../../sims-2/dg-maxwell/s16/s16-dg-maxwell>`] and polyorder 2 on
+  grid :math:`20\times 20` (right) [:doc:`s19
+  <../../sims-2/dg-maxwell/s19/s19-dg-maxwell>`]. The piecewise
+  quadratic scheme is more accurate and runs faster than the piecewise
+  linear scheme. This is also evident from the errors shown in the
+  tables above.
