@@ -31,8 +31,20 @@ well as other basis sets in which the number of degrees-of-freedom
 The nodal DG solver works in 1D, 2D and 3D, but only 1D and 2D studies
 are shown below.
 
-Convergence of 1D and 2D scheme
--------------------------------
+.. note::
+
+  **A note on plotting**. The DG scheme yields expansion coefficients
+  in basis functions in each cell. Hence, I project the solution onto
+  a finer mesh before plotting. For a order :math:`p` basis, I project
+  on :math:`p+1` sub-cells (in each direction). Note that this may
+  actually be *under-projection* as perhaps a more accurate picture
+  may be obtained by projecting on :math:`2p+1` sub-cells (in each
+  direction). For this, I would need to extend my plotting script,
+  which I am too lazy to do at present.
+
+
+Problem 1: Exact plane-wave solutions
+-------------------------------------
 
 To test the convergence of the scheme, we can use a general wave
 solution on a periodic domain. Let :math:`\mathbf{k} = 2\pi(k,l,m)/L`
@@ -61,7 +73,7 @@ the selected basis functions. Then, the errors are computed as
   \epsilon = \sum_j \left|\int_{I_j} E_z - E_{z0} \thinspace dx dy \right|
 
 where the sum is performed over all cells. Other norms can also be
-used, and I intedend to do this at some point. For example, the L2
+used, and I intend to do this at some point. For example, the L2
 norm may be a better measure, as it would also account for the
 convergence of higher order moments of the solution.
 
@@ -70,11 +82,10 @@ Convergence of 1D schemes
 +++++++++++++++++++++++++
 
 For this problem I pick :math:`\mathbf{k} = 2\pi(2,0,0)/L`, with
-:math:`L=1`. The simulation is run for one perdiod, i.e. to
+:math:`L=1`. The simulation is run for one period, i.e. to
 :math:`t=2\pi|\mathbf{k}|c`. Physical values of speed of light and
 other physical constants are used. To study spatial convergence, the
-time-step is kept constant, and the number of cells are
-doubled. 
+time-step is kept constant, and the number of cells are doubled.
 
 
 Results are shown below for various polynomial orders and basis
@@ -217,11 +228,76 @@ and polyorder 2 on grid :math:`20\times 20` are shown below.
   :width: 100%
   :align: center
 
-  Solution computed with polynomial order 1 on grid :math:`40\times
-  40` grid (left) [:doc:`s16
+  Solution (:math:`E_z`) computed with polynomial order 1 on grid
+  :math:`40\times 40` grid (left) [:doc:`s16
   <../../sims-2/dg-maxwell/s16/s16-dg-maxwell>`] and polyorder 2 on
   grid :math:`20\times 20` (right) [:doc:`s19
   <../../sims-2/dg-maxwell/s19/s19-dg-maxwell>`]. The piecewise
   quadratic scheme is more accurate and runs faster than the piecewise
   linear scheme. This is also evident from the errors shown in the
   tables above.
+
+Problem 2: Electromagnetic pulse in a box
+-----------------------------------------
+
+In this problem we initialize a Gaussian pulse in a metal box and
+evolve the resulting fields. The electric field is initialized with
+
+.. math::
+
+  E_z = e^{-\beta r^2}
+
+where :math:`r = \sqrt{x^2 + y^2}`, on a square domain :math:`[-1,1]
+\times [-1,1]`, with :math:`\beta = 25`. Piecewise linear serendipity
+element on a :math:`32\times 32` grid, quadratic serendipity elements
+on a :math:`16\times 16` grid and piecewise cubic Lagrange tensor
+elements on a :math:`10\times 10` grid were used. Solutions are shown
+below.
+
+.. figure:: s11-ez.png
+  :width: 100%
+  :align: center
+
+  :math:`E_z` computed with serendipity polynomial order 1 on grid
+  :math:`32\times 32` grid [:doc:`s11
+  <../../sims-2/dg-maxwell/s11/s11-dg-maxwell>`] at :math:`t=1.5`
+  (left) and :math:`t=3.0` (right).
+
+.. figure:: s12-ez.png
+  :width: 100%
+  :align: center
+
+  :math:`E_z` computed with serendipity polynomial order 2 on grid
+  :math:`16\times 16` grid [:doc:`s12
+  <../../sims-2/dg-maxwell/s12/s12-dg-maxwell>`] at :math:`t=1.5`
+  (left) and :math:`t=3.0` (right).
+
+.. figure:: s13-ez.png
+  :width: 100%
+  :align: center
+
+  :math:`E_z` computed with Lagrange tensor polynomial order 3 on grid
+  :math:`10\times 10` grid [:doc:`s13
+  <../../sims-2/dg-maxwell/s13/s13-dg-maxwell>`] at :math:`t=1.5`
+  (left) and :math:`t=3.0` (right).
+
+
+As before, the polynomial order 2 solution on half the number of cells
+in each direction is of comparable quality as the polynomial order 1
+solution, and runs about twice as fast.
+
+Conclusion
+----------
+
+The nodal DG scheme for 1D and 2D Maxwell equations has been
+benchmarked. The scheme also works in 3D, however, I have not yet done
+convergence tests in 3D. The cell averages of the solution converge
+super-linearly. In general, it appears that using a higher-order
+method on a coarser grid yields higher quality solution than low-order
+method on a fine grid. However, this statement is qualitative, and it
+is not clear what is the "ideal" order and resolution. That requires
+further study.
+
+I believe that these initial benchmarks give us enough confidence to
+use the nodal DG updater to evolve the Maxwell equations for the
+Vlasov-Maxwell and multi-fluid systems.
