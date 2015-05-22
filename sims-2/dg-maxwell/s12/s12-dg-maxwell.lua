@@ -3,8 +3,8 @@
 log = Lucee.logInfo
 
 -- resolution and time-stepping
-NX = 12
-NY = 12
+NX = 16
+NY = 16
 lightSpeed = 1.0
 
 polyOrder = 2 -- DG polynomial order
