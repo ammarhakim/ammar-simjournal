@@ -154,7 +154,7 @@ maxwellEqn = HyperEquation.PhMaxwell {
    -- factor for magnetic field correction potential speed
    mgnErrorSpeedFactor = 1.0,
    -- numerical flux to use: one of "lax" or "central"
-   numericalFlux = "lax",
+   numericalFlux = "upwind",
 }
 
 -- updater to solve hyperbolic equations
