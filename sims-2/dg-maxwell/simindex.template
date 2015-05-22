@@ -70,5 +70,7 @@ program for that simulation.
     - Same as s18, 20x20 grid.
   * - ${mdl("s20")}
     - Same as s18, 40x40 grid.
+  * - ${mdl("s21")}
+    - DG Maxwell solver, Lagrange tensor polyOrder=3, 10x10 grid, 2D transverse propagation
 
 
