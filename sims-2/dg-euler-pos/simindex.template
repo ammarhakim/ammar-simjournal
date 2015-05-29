@@ -29,6 +29,8 @@ program for that simulation.
   * - Number
     - Description
   * - ${mdl("s1")}
-    - Near-vaccum shock tube, polyOrder=1
+    - Near-vaccum shock tube, polyOrder=1 (Problem 2 in JE2)
+  * - ${mdl("s2")}
+    - 1D Nog problem, polyOrder=1 (Problem 2 in JE2)
 
 
