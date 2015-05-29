@@ -31,6 +31,8 @@ program for that simulation.
   * - ${mdl("s1")}
     - Near-vaccum shock tube, polyOrder=1 (Problem 2 in JE2)
   * - ${mdl("s2")}
-    - 1D Nog problem, polyOrder=1 (Problem 2 in JE2)
+    - 1D Noh problem, polyOrder=1 (Problem 3 in JE2)
+  * - ${mdl("s2")}
+    - 1D strong shock problem, polyOrder=1 (Problem 5 in JE2)
 
 
