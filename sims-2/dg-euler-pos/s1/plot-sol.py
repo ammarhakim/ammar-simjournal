@@ -9,7 +9,7 @@ from matplotlib import rcParams
 import matplotlib.pyplot as plt
 
 # customization for figure
-rcParams['lines.linewidth']            = 2
+#rcParams['lines.linewidth']            = 2
 rcParams['font.size']                  = 14
 #rcParams['xtick.major.size']           = 8 # default is 4
 #rcParams['xtick.major.width']          = 3 # default is 0.5
