@@ -29,10 +29,10 @@ rcParams['savefig.bbox']               = 'tight'
 # Example: xlabel(r'$t \cdot l / V_{A,bc}$')
 rcParams['mathtext.default'] = 'regular' # match the font used for regular text
 
-gasGamma = 5.0/3.0
+gasGamma = 1.4
 
 # read data
-d = gkedata.GkeData("s2-dg-euler-pos_q_1.h5")
+d = gkedata.GkeData("s4-dg-euler-pos_q_1.h5")
 dgDat = gkedgbasis.GkeDgLobatto1DPolyOrder1Basis(d)
 X, rho = dgDat.project(0)
 X, rhou = dgDat.project(1)
@@ -41,10 +41,10 @@ X, Er = dgDat.project(4)
 u = rhou/rho
 pr = (gasGamma-1)*(Er - 0.5*rho*u*u)
 
-ex_density = pylab.loadtxt("s12-euler-shock-exact-density.txt")
-ex_velocity = pylab.loadtxt("s12-euler-shock-exact-velocity.txt")
-ex_pressure = pylab.loadtxt("s12-euler-shock-exact-pressure.txt")
-ex_ie = pylab.loadtxt("s12-euler-shock-exact-internal-energy.txt")
+ex_density = pylab.loadtxt("s27-euler-shock-exact-density.txt")
+ex_velocity = pylab.loadtxt("s27-euler-shock-exact-velocity.txt")
+ex_pressure = pylab.loadtxt("s27-euler-shock-exact-pressure.txt")
+ex_ie = pylab.loadtxt("s27-euler-shock-exact-internal-energy.txt")
 
 pylab.figure(1)
 pylab.subplot(2, 2, 1)
@@ -71,7 +71,7 @@ pylab.plot(ex_ie[:,0], ex_ie[:,1], 'r-')
 pylab.axis('tight')
 pylab.ylabel("Internal Energy")
 
-pylab.savefig("s2-dg-euler-pos_exact_cmp.png")#, bbox_inches='tight')
+pylab.savefig("s4-dg-euler-pos_exact_cmp.png")#, bbox_inches='tight')
 
 pylab.show()
 
