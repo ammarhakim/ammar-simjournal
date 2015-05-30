@@ -27,12 +27,12 @@ Ly = YU-YL
 tauRT = math.sqrt(Ly/(A*gravity))
 
 -- resolution and time-stepping
-NX = 100
+NX = 10
 NY = NX*6
 
 tStart = 0.0
-tEnd = 3*tauRT
-nFrames = 30
+tEnd = 2*tauRT
+nFrames = 20
 
 -- polynomial order
 polyOrder = 1
@@ -100,8 +100,8 @@ qNewDup = DataStruct.Field2D {
    numComponents = 5*numDgNodesPerCell,
    ghost = {2, 2},
 }
--- gravity source term
-gSrc = DataStruct.Field2D {
+-- to store solution increment
+qIncr = DataStruct.Field2D {
    onGrid = grid,
    numComponents = 5*numDgNodesPerCell,
    ghost = {2, 2},
@@ -130,30 +130,15 @@ end
 ------------------------
 -- boundary applicator objects for fluids and fields
 
--- solid walls at symmetry lines
+-- solid wall BCs ... for density and energy ...
 bcFluidCopy = BoundaryCondition.NodalDgCopy2D { 
    components = {0, 4},
    basis = basis,
 }
+-- ... and momentum
 bcFluidWall = BoundaryCondition.NodalDgZeroNormal2D { 
    components = {1, 2, 3},
    basis = basis,
-}
--- exact solution in outflow region
-bcNohFunc = BoundaryCondition.NodalDgFunction2D {
-   components = {0, 1, 2, 3, 4},
-   basis = basis,
-   bc = function(x,y,z,t)
-	   local rho = 1.0 + t/math.sqrt(x^2+y^2)
-	   local pr = 1e-6
-	   local vrad = -1.0
-	   local cost = x/math.sqrt(x^2+y^2)
-	   local sint = y/math.sqrt(x^2+y^2)
-	   local u = vrad*cost
-	   local v = vrad*sint
-
-	   return rho, rho*u, rho*v, 0.0, 0.5*rho*(u^2+v^2) + pr/(gasGamma-1)
-	end,
 }
 
 -- create boundary condition object to apply wall BCs
@@ -172,14 +157,12 @@ function createWallBc(myDir, myEdge)
    return bc
 end
 
-bcLeft = createWallBc(0, "lower")
-bcRight = createWallBc(0, "upper")
 bcBottom = createWallBc(1, "lower")
 bcTop = createWallBc(1, "upper")
 
 -- function to apply boundary conditions to specified field
 function applyBc(fld, tCurr, myDt)
-   local bcList = {bcLeft, bcRight, bcTop, bcBottom}
+   local bcList = {bcTop, bcBottom}
    for i,bc in ipairs(bcList) do
       bc:setOut( {fld} )
       bc:advance(tCurr+myDt)
@@ -231,6 +214,8 @@ eulerSlvr = Updater.NodalDgHyper2D {
    equation = eulerEqn,
    -- CFL number
    cfl = cfl,
+   -- compute only increment
+   onlyIncrement = true,
 }
 
 -- updaters to fix positivity
@@ -247,35 +232,22 @@ eulerFilter = Updater.NodalPositiveFilter2D {
    operation = "filter"
 }
 
--- gravitational source
-gravitySrc = PointSource.FieldFunction {
-   -- takes fluid variables [rho, rho*v]
-   inpComponents = {0, 2},
-   -- contributes to [rho*v, Er]
-   outComponents = {2, 4},
-   -- source term to apply
-   source = function (x,y,z,t, rho,rhov)
-	       return -gravity*rho, -gravity*rhov
-	    end,
-}
 -- updater to add gravitational force to fluid
-gravitySrcSlvr = Updater.NodalDgSrcIncrement2D {
+gravitySrcSlvr = Updater.NodalDgConstGravitySrc2D {
    onGrid = grid,
    basis = basis,
-   -- terms to include in integration step
-   terms = {gravitySrc},
+   dir = 1,
+   gravity = -gravity -- negative sign as gravity is downwards   
 }
 
--- write initial conditions
-q:write("q_0.h5")
-
 function solveEuler(curr, dt, qIn, qOut)
-   -- solve Euler equation
-   local myStatus, myDtSuggested = runUpdater(eulerSlvr, curr, dt, {qIn}, {qOut})
+   -- solve Euler equation, computing increments   
+   local myStatus, myDtSuggested = runUpdater(eulerSlvr, curr, dt, {qIn}, {qIncr})
    -- compute sources
-   runUpdater(gravitySrcSlvr, curr, dt, {qIn}, {gSrc})
-   -- accumulate increment in source to solution
-   qOut:accumulate(1.0, gSrc)
+   qOut:copy(qIn) -- source updater changes solution in-place
+   runUpdater(gravitySrcSlvr, curr, dt, {}, {qOut})
+   -- accumulate hyperbolic terms
+   qOut:accumulate(dt, qIncr)
    return myStatus, myDtSuggested
 end
 
