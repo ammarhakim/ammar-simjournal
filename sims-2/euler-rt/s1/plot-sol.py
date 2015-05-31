@@ -56,10 +56,14 @@ def plotFrame(f):
     pylab.figure(1)
     pylab.pcolormesh(Xc, Yc, pylab.transpose(rho))
     pylab.axis('image')
+    pylab.gca().set_xticks([])
+    pylab.gca().set_yticks([])
+    pylab.pylab.axis('image')
+    pylab.clim(35000, 65000)
     pylab.title ('t = %g' % gkd.time)
     pylab.savefig('s1-dg-euler-rt_rho_%05d.png' % f, bbox_inches='tight')
     pylab.close()
 
-for i in range(0,21):
+for i in range(0,24):
     print ("Working on frame %d ..." % i)
     plotFrame(i)
