@@ -58,7 +58,7 @@ def plotFrame(f):
     pylab.axis('image')
     pylab.gca().set_xticks([])
     pylab.gca().set_yticks([])
-    pylab.pylab.axis('image')
+    pylab.axis('image')
     pylab.clim(35000, 65000)
     pylab.title ('t = %g' % gkd.time)
     pylab.savefig('s1-dg-euler-rt_rho_%05d.png' % f, bbox_inches='tight')

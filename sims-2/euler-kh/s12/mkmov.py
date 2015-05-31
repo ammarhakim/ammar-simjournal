@@ -27,7 +27,7 @@ def mkFig(fh, XX, YY, dat, nm):
     savefig(nm)
     close()
 
-for i in range(101):
+for i in range(60,201):
     print ("Working on %d .." % i)
     fh = tables.openFile("s12-euler-kh_q_%d.h5" % i)
     q = fh.root.StructGridField
