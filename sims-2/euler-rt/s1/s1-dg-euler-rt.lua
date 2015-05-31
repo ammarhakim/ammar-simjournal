@@ -27,12 +27,12 @@ Ly = YU-YL
 tauRT = math.sqrt(Ly/(A*gravity))
 
 -- resolution and time-stepping
-NX = 10
+NX = 125
 NY = NX*6
 
 tStart = 0.0
-tEnd = 2*tauRT
-nFrames = 20
+tEnd = 2.5*tauRT
+nFrames = 25
 
 -- polynomial order
 polyOrder = 1
