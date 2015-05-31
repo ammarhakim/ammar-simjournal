@@ -27,10 +27,10 @@ def mkFig(fh, XX, YY, dat, nm):
     savefig(nm)
     close()
 
-for i in range(101):
+for i in range(101,201):
     print ("Working on %d .." % i)
-    fh = tables.openFile("s11-euler-kh_q_%d.h5" % i)
+    fh = tables.openFile("s13-euler-kh_q_%d.h5" % i)
     q = fh.root.StructGridField
     X, Y = getMeshGrid(fh.root.StructGrid)
-    mkFig(fh, X, Y, q[:,:,0], 's11-euler-kh_rho_%05d.png' % i)
+    mkFig(fh, X, Y, q[:,:,0], 's13-euler-kh_rho_%05d.png' % i)
     fh.close()

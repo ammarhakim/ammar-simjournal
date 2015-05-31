@@ -50,8 +50,8 @@ def colorbar_adj(obj, mode=1, redraw=False, _fig_=None, _ax_=None, aspect=None):
     return _cbar_
 
 def plotFrame(f):
-    gkd = gkedata.GkeData("s2-dg-euler-rt_q_%d.h5" % f)
-    dgd = gkedgbasis.GkeDgSerendip2DPolyOrder1Basis(gkd)
+    gkd = gkedata.GkeData("s3-dg-euler-rt_q_%d.h5" % f)
+    dgd = gkedgbasis.GkeDgSerendip2DPolyOrder2Basis(gkd)
     Xc, Yc, rho = dgd.project(0)
     pylab.figure(1)
     pylab.pcolormesh(Xc, Yc, pylab.transpose(rho))
@@ -61,9 +61,9 @@ def plotFrame(f):
     pylab.axis('image')
     pylab.clim(35000, 65000)
     pylab.title ('t = %g' % gkd.time)
-    pylab.savefig('s2-dg-euler-rt_rho_%05d.png' % f, bbox_inches='tight')
+    pylab.savefig('s3-dg-euler-rt_rho_%05d.png' % f, bbox_inches='tight')
     pylab.close()
 
-for i in range(0,26):
+for i in range(0,19):
     print ("Working on frame %d ..." % i)
     plotFrame(i)
