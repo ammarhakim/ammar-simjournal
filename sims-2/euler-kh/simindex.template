@@ -18,9 +18,7 @@
 Simulation Index
 ================
 
-Following is a list of simulation numbers with one-line
-descriptions. Click on the simulation number to see the complete Lua
-program for that simulation.
+Euler KH simulations
 
 .. list-table::
   :header-rows: 1
