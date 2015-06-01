@@ -99,6 +99,9 @@ qIncr = DataStruct.Field2D {
 -- INITIAL CONDITION --
 -----------------------
 
+-- Construct a smooth transition using tanh profiles
+-- pr: Right state. pl: Left state. L: Gradient length scale. x0: Location
+--
 function tanhx(pr, pl, L, x0, X)
    local tanh = math.tanh
    return 0.5*pr*(1+tanh(2*(X-x0)/L)) + 0.5*pl*(1-tanh(2*(X-x0)/L))
@@ -135,7 +138,6 @@ end
 -- Boundary Condition --
 ------------------------
 -- boundary applicator objects for fluids and fields
-
 
 -- function to apply boundary conditions to specified field
 function applyBc(fld, tCurr, myDt)
@@ -261,8 +263,6 @@ end
 ----------------------------
 -- DIAGNOSIS AND DATA I/O --
 ----------------------------
-
--- dynvector to store EM energy
 
 -- compute diagnostic
 function calcDiagnostics(tCurr, myDt)
