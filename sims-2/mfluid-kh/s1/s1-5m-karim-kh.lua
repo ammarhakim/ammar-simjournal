@@ -48,8 +48,8 @@ OmegaCe0 = elcCharge*B0/elcMass
 OmegaCi0 = ionCharge*B0/ionMass
 
 -- resolution and time-stepping
-NX = 100
-NY = 200
+NX = 1000
+NY = 2000
 cfl = 0.9
 tStart = 0.0
 tEnd = 500/OmegaCi0
@@ -142,7 +142,7 @@ function init(x,y,z)
    local Bx = 0.0
    local By = B0*sin(theta)
    local Bz = B0*cos(theta)
-   local Ux = 0.15*U0*sin(0.5*y/Lv)*math.exp(-x^2/Lv^2)
+   local Ux = 0.0 -- 0.15*U0*sin(0.5*y/Lv)*math.exp(-x^2/Lv^2)
    local Uy = U0*tanh(x/Lv) + 0.15*U0*sin(0.5*y/Lv)*math.exp(-x^2/Lv^2)
 
    local Ex = -B0*U0*tanh(x/Lv)
