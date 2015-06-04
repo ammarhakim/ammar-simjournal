@@ -25,7 +25,7 @@ grid = Grid.RectCart2D {
 }
 
 -- create FEM nodal basis
-basis = NodalFiniteElement2D.Serendipity {
+basis = NodalFiniteElement2D.LagrangeTensor { -- Serendipity
    -- grid on which elements should be constructured
    onGrid = grid,
    -- polynomial order in each cell
