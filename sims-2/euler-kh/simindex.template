@@ -53,4 +53,4 @@ Euler KH simulations
   * - ${mdl("s13")}
     - Same as s10. 10 modes, but with length-scale 0.01.
   * - ${mdl("s14")}
-    - Same as s13, except using polyOrder=1 DG on 500x500 grid.
+    - KH using using polyOrder=1 DG on 500x500 grid. 1 mode, with length-scale 0.01.
