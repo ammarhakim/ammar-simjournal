@@ -27,6 +27,8 @@ Two-fluid KH instability problem.
   * - Number
     - Description
   * - ${mdl("s1")}
-    - KH problem on 2000x1000 grid, mass ratio 25.
+    - KH problem on 1000x500 grid, mass ratio 25.
+  * - ${mdl("s1")}
+    - Same as s1, except 2000x1000 grid.
 
 
