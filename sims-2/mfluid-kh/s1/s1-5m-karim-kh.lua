@@ -48,8 +48,8 @@ OmegaCe0 = elcCharge*B0/elcMass
 OmegaCi0 = ionCharge*B0/ionMass
 
 -- resolution and time-stepping
-NX = 1000
-NY = 2000
+NX = 500
+NY = 1000
 cfl = 0.9
 tStart = 0.0
 tEnd = 500/OmegaCi0
