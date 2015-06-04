@@ -109,7 +109,7 @@ end
 
 -- initial conditions
 function init(x,y,z)
-   local nmodes = 10
+   local nmodes = 2
    local rho1 = 1.0
    local vx1 = 0.5
 
