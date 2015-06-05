@@ -36,5 +36,7 @@ Two-fluid KH instability problem.
     - Same as s3, except 1000x2000 grid.
   * - ${mdl("s5")}
     - 10-moment KH problem on 500x1000 grid, mass ratio 25.
+  * - ${mdl("s6")}
+    - Same as s5, except on 1000x2000 grid.
 
 
