@@ -447,7 +447,7 @@ function solveTwoFluidSystem(tCurr, t)
    -- suggest using Lax fluxes. This can happen when a NaN has
    -- occured, for example. Hence, status must be and-ed with
    -- useLaxSolver flag)
-   return status and useLaxSolver, dtSuggested, useLaxSolver
+   return status and (not useLaxSolver), dtSuggested, useLaxSolver
 end
 
 -- function to update the fluid and field using dimensional splitting Lax scheme
