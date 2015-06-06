@@ -28,7 +28,7 @@ Two-fluid KH instability problem.
     - Description
   * - ${mdl("s1")}
     - 5-moment KH problem on 500x1000 grid, mass ratio 25.
-  * - ${mdl("s1")}
+  * - ${mdl("s2")}
     - Same as s1, except 1000x2000 grid.
   * - ${mdl("s3")}
     - Same as s1, except with mass ratio of 100.
@@ -38,5 +38,7 @@ Two-fluid KH instability problem.
     - 10-moment KH problem on 500x1000 grid, mass ratio 25.
   * - ${mdl("s6")}
     - Same as s5, except on 1000x2000 grid.
+  * - ${mdl("s7")}
+    - Same as s6, except with ki = 0 (ke = 1/de).
 
 
