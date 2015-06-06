@@ -442,8 +442,12 @@ function solveTwoFluidSystem(tCurr, t)
    -- update source terms
    updateSource(elcFluidNew, ionFluidNew, emFieldNew, tCurr, tCurr+dthalf)
    applyBc(qNew, tCurr, t-tCurr)
-
-   return status, dtSuggested,useLaxSolver
+   
+   -- (We don't want a situation in which status is true, but solver
+   -- suggest using Lax fluxes. This can happen when a NaN has
+   -- occured, for example. Hence, status must be and-ed with
+   -- useLaxSolver flag)
+   return status and useLaxSolver, dtSuggested, useLaxSolver
 end
 
 -- function to update the fluid and field using dimensional splitting Lax scheme

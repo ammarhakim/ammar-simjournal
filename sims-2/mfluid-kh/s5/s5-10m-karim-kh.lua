@@ -399,8 +399,7 @@ function updateFluidsAndField(tCurr, t)
    end
 
    if ((elcEqn:checkInvariantDomain(elcFluidX) == false)
-    or (qX:hasNan())
-    or (ionEqn:checkInvariantDomain(ionFluidX) == false)) then
+    or (qX:hasNan()) or (ionEqn:checkInvariantDomain(ionFluidX) == false)) then
       useLaxSolver = true
    end
 
@@ -420,9 +419,8 @@ function updateFluidsAndField(tCurr, t)
    end
 
    if ((elcEqn:checkInvariantDomain(elcFluidNew) == false)
-    or (qNew:hasNan())
-    or (ionEqn:checkInvariantDomain(ionFluidNew) == false)) then
-       useLaxSolver = true
+    or (qNew:hasNan()) or (ionEqn:checkInvariantDomain(ionFluidNew) == false)) then
+      useLaxSolver = true
    end
 
    return myStatus, myDtSuggested, useLaxSolver
