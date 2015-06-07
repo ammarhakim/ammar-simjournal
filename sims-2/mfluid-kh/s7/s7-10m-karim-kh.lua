@@ -15,7 +15,7 @@ gasGamma = 5./3.
 elcCharge = -1.0
 ionCharge = 1.0
 ionMass = 1.0
-elcMass = ionMass/25
+elcMass = ionMass/100.0
 epsilon0 = 1.0
 mu0 = 1.0
 lightSpeed = 1/math.sqrt(epsilon0*mu0)
@@ -36,7 +36,7 @@ de = lightSpeed/wpe
 
 -- average wave number for pressure damping
 elcCollAverageWaveNumber = 1/de
-ionCollAverageWaveNumber = 0.0
+ionCollAverageWaveNumber = 1/de
 
 B0 = wpe*elcMass/math.abs(elcCharge)/wpe_OmegaCe
 Valf = B0*math.sin(theta)/math.sqrt(mu0*n0*ionMass)
@@ -53,8 +53,8 @@ OmegaCe0 = elcCharge*B0/elcMass
 OmegaCi0 = ionCharge*B0/ionMass
 
 -- resolution and time-stepping
-NX = 1000
-NY = 2000
+NX = 500
+NY = 1000
 cfl = 0.9
 tStart = 0.0
 tEnd = 500/OmegaCi0
@@ -443,11 +443,7 @@ function solveTwoFluidSystem(tCurr, t)
    updateSource(elcFluidNew, ionFluidNew, emFieldNew, tCurr, tCurr+dthalf)
    applyBc(qNew, tCurr, t-tCurr)
    
-   -- (We don't want a situation in which status is true, but solver
-   -- suggest using Lax fluxes. This can happen when a NaN has
-   -- occured, for example. Hence, status must be and-ed with
-   -- useLaxSolver flag)
-   return status and (not useLaxSolver), dtSuggested, useLaxSolver
+   return status, dtSuggested, useLaxSolver
 end
 
 -- function to update the fluid and field using dimensional splitting Lax scheme
