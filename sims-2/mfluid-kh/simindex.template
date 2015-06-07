@@ -39,6 +39,6 @@ Two-fluid KH instability problem.
   * - ${mdl("s6")}
     - Same as s5, except on 1000x2000 grid.
   * - ${mdl("s7")}
-    - Same as s6, except with ki = 0 (ke = 1/de).
+    - Same as s5, except with mass ratio 100
 
 
