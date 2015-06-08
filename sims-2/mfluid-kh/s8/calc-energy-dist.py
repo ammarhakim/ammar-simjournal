@@ -46,6 +46,11 @@ def getEmEnergy(e, q):
 
     return 0.5*(Ex*Ex+Ey*Ey+Ez*Ez) + 0.5*(Bx*Bx+By*By+Bz*Bz)
 
+def writeDat(fName, field):
+    fp = open(fName, "w")
+    savetxt(fp, field)
+    fp.close()
+
 totKe_e = []
 totIe_e = []
 totKe_i = []
@@ -71,4 +76,10 @@ for i in range(0, 101):
     em  = getEmEnergy(tftenmoment.emEx, q)
     totEm.append( dx*dy*sum(em) )
 
-print totKe_e
+# write data to file
+writeDat("s8-10m-karim-kh_totKe_e.txt", totKe_e)
+writeDat("s8-10m-karim-kh_totIe_e.txt", totIe_e)
+writeDat("s8-10m-karim-kh_totKe_i.txt", totKe_i)
+writeDat("s8-10m-karim-kh_totIe_i.txt", totIe_i)
+writeDat("s8-10m-karim-kh_totEm.txt", totEm)
+
