@@ -29,28 +29,6 @@ ionMass = 1.0
 -- permittivity of free space
 epsilon0 = 1.0
 
--- Determine number of global nodes per cell for use in creating CG
--- fields. Note that this looks a bit odd as this not the number of
--- *local* nodes but the number of nodes in each cell to give the
--- correct number of global nodes in fields.
-if (polyOrder == 1) then
-   numCgNodesPerCell = 1
-   numCgNodesPerCell_1d = 1 -- for spatial basis
-elseif (polyOrder == 2) then
-   numCgNodesPerCell = 3
-   numCgNodesPerCell_1d = 2 -- for spatial basis
-end
-
--- Determine number of global nodes per cell for use in creating DG
--- fields.
-if (polyOrder == 1) then
-   numDgNodesPerCell = 4
-   numDgNodesPerCell_1d = 2 -- for spatial basis
-elseif (polyOrder == 2) then
-   numDgNodesPerCell = 8
-   numDgNodesPerCell_1d = 3 -- for spatial basis
-end
-
 -- phase space grid 
 grid = Grid.RectCart2D {
    lower = {XL, VL},
@@ -66,6 +44,27 @@ basis = NodalFiniteElement2D.Serendipity {
    -- number of nodes are 4 and 8.
    polyOrder = polyOrder,
 }
+
+-- spatial grid
+grid_1d = Grid.RectCart1D {
+   lower = {XL},
+   upper = {XU},
+   cells = {NX},
+}
+
+-- spatial FEM nodal basis
+basis_1d = NodalFiniteElement1D.Lobatto {
+   -- grid on which elements should be constructured
+   onGrid = grid_1d,
+   -- polynomial order in each cell. One of 1, or 2. Corresponding
+   -- number of nodes are 2 and 3.
+   polyOrder = polyOrder,
+}
+
+numCgNodesPerCell = basis:numExclusiveNodes()
+numCgNodesPerCell_1d = basis_1d:numExclusiveNodes()
+numDgNodesPerCell = basis:numNodes()
+numDgNodesPerCell_1d = basis_1d:numNodes()
 
 -- distribution function for electrons
 distfElc = DataStruct.Field2D {
@@ -189,22 +188,6 @@ pbSlvr = Updater.PoissonBracket {
    cfl = cfl,
    -- flux type: one of "upwind" (default) or "central"
    fluxType = "upwind",
-}
-
--- spatial grid
-grid_1d = Grid.RectCart1D {
-   lower = {XL},
-   upper = {XU},
-   cells = {NX},
-}
-
--- spatial FEM nodal basis
-basis_1d = NodalFiniteElement1D.Lobatto {
-   -- grid on which elements should be constructured
-   onGrid = grid_1d,
-   -- polynomial order in each cell. One of 1, or 2. Corresponding
-   -- number of nodes are 2 and 3.
-   polyOrder = polyOrder,
 }
 
 -- number density

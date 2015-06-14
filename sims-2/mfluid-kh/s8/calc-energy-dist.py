@@ -33,7 +33,7 @@ def getFluidEnergy(e, q):
     Pzz = e.getPzz(q)
 
     ke = 0.5*rho*(u*u+v*v+w*w)
-    ie = 1.5*(Pxx+Pyy+Pzz)
+    ie = 1.5*(Pxx+Pyy+Pzz)/3.0
     return ke, ie
 
 def getEmEnergy(e, q):
