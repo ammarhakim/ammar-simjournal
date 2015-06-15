@@ -30,3 +30,5 @@ Simulation Index
     - :math:`Te/Ti=9.0`, Mach number 1.5, polyOrder 2 serendipity elements
   * - ${mdl("s2")}
     - :math:`Te/Ti=400.0`
+  * - ${mdl("s3")}
+    - 5-moment version of s1, for comparison.
