@@ -37,7 +37,7 @@ d = gkedata.GkeData("../s1/s1-es-shock_numDensityElc_100.h5")
 dg = gkedgbasis.GkeDgLobatto1DPolyOrder2Basis(d)
 Xc, numElc = dg.project(0)
 
-d = gkedata.GkeData("s3-5m-es-shock_q_100.h5")
+d = gkedata.GkeData("s2-5m-es-shock_q_100.h5")
 fv = gkedgbasis.GkeDgPolyOrder0Basis(d)
 XcFV, numElcFV = fv.project(0)
 XcFV = XcFV/XcFV[-1]*Xc[-1]
@@ -68,7 +68,7 @@ d = gkedata.GkeData("../s1/s1-es-shock_momentumElc_100.h5")
 dg = gkedgbasis.GkeDgLobatto1DPolyOrder2Basis(d)
 Xc, momElc = dg.project(0)
 
-d = gkedata.GkeData("s3-5m-es-shock_q_100.h5")
+d = gkedata.GkeData("s2-5m-es-shock_q_100.h5")
 fv = gkedgbasis.GkeDgPolyOrder0Basis(d)
 XcFV, momElcFV = fv.project(1)
 XcFV = XcFV/XcFV[-1]*Xc[-1]
@@ -100,7 +100,7 @@ dg = gkedgbasis.GkeDgLobatto1DPolyOrder2Basis(d)
 Xc, erElc = dg.project(0)
 erElc = 0.5*erElc
 
-d = gkedata.GkeData("s3-5m-es-shock_q_100.h5")
+d = gkedata.GkeData("s2-5m-es-shock_q_100.h5")
 fv = gkedgbasis.GkeDgPolyOrder0Basis(d)
 XcFV, erElcFV = fv.project(4)
 XcFV = XcFV/XcFV[-1]*Xc[-1]
