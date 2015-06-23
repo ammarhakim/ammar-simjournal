@@ -71,4 +71,3 @@ Maxwell with DG
   * - ${mdl("s21")}
     - DG Maxwell solver, Lagrange tensor polyOrder=3, 10x10 grid, 2D transverse propagation
 
-
