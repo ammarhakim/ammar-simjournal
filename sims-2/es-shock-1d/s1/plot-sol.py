@@ -32,7 +32,7 @@ rcParams['savefig.bbox']               = 'tight'
 # Example: xlabel(r'$t \cdot l / V_{A,bc}$')
 rcParams['mathtext.default'] = 'regular' # match the font used for regular text
 
-for i in range(51):
+for i in range(0,51):
     print "Working on %d ..." % i
     d = gkedata.GkeData("s1-es-shock_distfElc_%d.h5" % i )
     dg1 = gkedgbasis.GkeDgSerendip2DPolyOrder2Basis(d)
