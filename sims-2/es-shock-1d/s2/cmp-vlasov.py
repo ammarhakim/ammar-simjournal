@@ -46,6 +46,7 @@ figure(1)
 plot(Xc, numElc, 'r-')
 plot(XcFV, numElcFV, 'k-')
 title('Electron number density')
+savefig('fluid-kinetic-cmp-elc-numDens.png')
 
 # ion number density
 d = gkedata.GkeData("../s1/s1-es-shock_numDensityIon_100.h5")
@@ -60,6 +61,7 @@ figure(2)
 plot(Xc, numIon, 'r-')
 plot(XcFV, numIonFV, 'k-')
 title('Ion number density')
+savefig('fluid-kinetic-cmp-ion-numDens.png')
 
 ######
 
@@ -77,6 +79,7 @@ figure(3)
 plot(Xc, momElc, 'r-')
 plot(XcFV, momElcFV/0.01, 'k-')
 title('Electron momentum density')
+savefig('fluid-kinetic-cmp-elc-momDens.png')
 
 # ion momentum density
 d = gkedata.GkeData("../s1/s1-es-shock_momentumIon_100.h5")
@@ -91,6 +94,7 @@ figure(4)
 plot(Xc, momIon, 'r-')
 plot(XcFV, momIonFV/0.01, 'k-')
 title('Ion momentum density')
+savefig('fluid-kinetic-cmp-ion-momDens.png')
 
 ######
 
@@ -109,6 +113,7 @@ figure(5)
 plot(Xc, erElc, 'r-')
 plot(XcFV, erElcFV/erElcFV[0]*erElc[0], 'k-')
 title('Electron energy density')
+savefig('fluid-kinetic-cmp-elc-enrDens.png')
 
 # ion momentum density
 d = gkedata.GkeData("../s1/s1-es-shock_ptclEnergyIon_100.h5")
@@ -124,5 +129,6 @@ figure(6)
 plot(Xc, erIon, 'r-')
 plot(XcFV, erIonFV/erIonFV[0]*erIon[0], 'k-')
 title('Ion energy density')
+savefig('fluid-kinetic-cmp-ion-enrDens.png')
 
 show()
