@@ -74,33 +74,37 @@ def getMeshGrid(grid):
     X = linspace(xl+0.5*dx, xu-0.5*dx, nx)
     Y = linspace(yl+0.5*dy, yu-0.5*dy, ny)
 
-    return meshgrid(X, Y)
+    return X, Y
 
-def mkFig(fh, XX, YY, dat, nm, tl):
-    tm = fh.root.timeData._v_attrs.vsTime
-    Valf = 0.1
-    tmAlf = 10*tm/tEnd
-    
-    f = figure(1)
-    im = pcolormesh(XX, YY, dat.transpose())
-    title("%s T = %.4g" % (tl, tmAlf))
-    axis('image')
-    colorbar_adj(im)
-    
-    savefig(nm)
-    close()
+fh = tables.openFile("s1-vapor-box-euler_q_10.h5")
+q = fh.root.StructGridField
+X, Y = getMeshGrid(fh.root.StructGrid)
+nx, ny = q.shape[0], q.shape[1]
 
-for i in range(11):
-    print ("Working on %d .." % i)
-    fh = tables.openFile("s1-vapor-box-euler_q_%d.h5" % i)
-    q = fh.root.StructGridField
-    X, Y = getMeshGrid(fh.root.StructGrid)
+numDensity = q[:,:,0]/mLi
+figure(1)
+plot(X, numDensity[:,ny/2])
+title('Number density [#/m^3]')
+xlabel('X')
+ylabel('Number Density')
+axis('tight')
+savefig('s1-numDensity.png')
 
-    numDensity = q[:,:,0]/mLi
-    mkFig(fh, X, Y, numDensity, 's1-vapor-box-euler_numDensity_%05d.png' % i, "Number Density")
-    temp = pressure(q)/(numDensity*kb)
-    mkFig(fh, X, Y, temp-273.15, 's1-vapor-box-euler_temp_%05d.png' % i, "Temperature [C]")
-    machN = mach(q)
-    mkFig(fh, X, Y, machN, 's1-vapor-box-euler_mach_%05d.png' % i, "Mach Number")
-    
-    fh.close()
+figure(2)
+temp = pressure(q)/(numDensity*kb)
+plot(X, temp[:,ny/2]-273.15)
+title('Temperature [C]')
+xlabel('X')
+ylabel('Temperature')
+axis('tight')
+savefig('s1-temperature.png')
+
+figure(3)
+machN = mach(q)
+plot(X, machN[:,ny/2])
+title('Mach Number')
+xlabel('X')
+ylabel('Mach Number')
+axis('tight')
+savefig('s1-mach.png')
+
