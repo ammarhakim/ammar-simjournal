@@ -7,7 +7,7 @@ log = Lucee.logInfo
 function C2K(Tc) return 273.15+Tc end
 
 -- physical parameters
-gasGamma = 5.0/3.0 -- Should this be 1.4?
+gasGamma = 5.0/3.0
 amu = 1.66053892e-27 -- [kg]
 kb = Lucee.BoltzmannConstant -- [J/K]
 -- Atomic mass of lithum
@@ -18,12 +18,12 @@ atmPress = 101325.0 -- [Pa]
 -- initial vapor density and pressure (some arbitrary value). These
 -- values are used to initialize a uniform vapor inside the box.
 nInit = 4.0e19 -- #/m^3
-Tinit = C2K(800) -- [K]
+Tinit = C2K(300) -- [K]
 pInit = nInit*kb*Tinit -- [Pa]
 
 -- vapor box size
 Lx = 2.0 -- [m]
-Ly = 0.5 -- [m]
+Ly = 0.4 -- [m]
 
 -- Temperature at left and right walls: for now, this is assumed to
 -- vary linearly, and left and right walls are held fixed at these
@@ -32,10 +32,16 @@ TwallLeft = C2K(950) -- [K]
 TwallRight = C2K(300) -- [K]
 
 -- Vapor pressure given local wall temperature [K]. It is valid for
--- liquid Lithium and taken from the website:
--- http://mmrc.caltech.edu/PVD/manuals/Metals%20Vapor%20pressure.pdf
+-- liquid Lithium and taken from P. Browning and P.E. Potter, "AN
+-- ASSESSMENT OF THE EXPERIMENTALLY DETERMINED VAPOUR PRESSURES OF THE
+-- LIQUID ALKALI METALS", in the "Handbook of Thermodynamic and
+-- Transport Properties of Alkali Metals", R.W. Ohse, Ed., 1985.
 function vaporPressure(Twall)
-   return atmPress*math.exp(5.055-8023/Twall)
+   return math.exp(26.89-18880/Twall-0.49412*math.log(Twall))
+end
+
+function vaporDensity(Twall)
+   return vaporPressure(Twall)/(kb*Twall)
 end
 
 -- vapor thermal speed
@@ -54,6 +60,12 @@ log (string.format("Initial mass density [kg/m^3]: %g", nInit*mLi))
 log (string.format("Initial pressure [Pa]: %g", pInit))
 log (string.format("Initial thermal speed of vapor [m/s]: %g", cs0))
 log (string.format("Simulation run to [s]: %g", tEnd))
+log (string.format("Left wall temperature [K]: %g", TwallLeft))
+log (string.format("Right wall temperature [K]: %g", TwallRight))
+log (string.format("Left wall density [#/m^3]: %g", vaporDensity(TwallLeft)))
+log (string.format("Right wall density [#/m^3]: %g", vaporDensity(TwallRight)))
+log (string.format("Left wall vapor temperature [K]: %g", vaporDensity(TwallLeft)))
+log (string.format("Right wall vapor temperature [K]: %g", vaporDensity(TwallRight)))
 log ("\n")
 
 ------------------------------------------------
@@ -87,6 +99,7 @@ qNew = DataStruct.Field2D {
    onGrid = grid,
    numComponents = 5,
    ghost = {2, 2},
+   --writeGhost = {1, 1}
 }
 -- duplicate copy in case we need to take the step again
 qDup = DataStruct.Field2D {
@@ -118,13 +131,30 @@ end
 ------------------------
 -- boundary applicator objects for fluids and fields
 
+-- bcVaporFunc = BoundaryCondition.FieldFunction {
+--    inpComponents = {0, 1, 2},
+--    components = {0, 1, 2, 3, 4},
+--    bc = function(x,y,z,t, rho, rhou, rhov)
+--       local Twall = TwallLeft + x/Lx*(TwallRight-TwallLeft)
+--       local pEq = vaporPressure(Twall)
+--       local nEq = pEq/(kb*Twall)
+--       local rhoEq = nEq*mLi
+--       local uin = rhou/rho
+--       local vin = rhov/rho
+--       return rhoEq, rhoEq*uin, rhoEq*vin, 0.0, pEq/(gasGamma-1)+0.5*rhoEq*(uin^2+vin^2)
+--    end,
+-- }
+
 bcVaporFunc = BoundaryCondition.Function {
    components = {0, 1, 2, 3, 4},
    bc = function(x,y,z,t)
       local Twall = TwallLeft + x/Lx*(TwallRight-TwallLeft)
       local pEq = vaporPressure(Twall)
       local nEq = pEq/(kb*Twall)
-      return nEq*mLi, 0.0, 0.0, 0.0, pEq/(gasGamma-1)
+      local rhoEq = nEq*mLi
+      local uin = 0.0
+      local vin = 0.0
+      return rhoEq, rhoEq*uin, rhoEq*vin, 0.0, pEq/(gasGamma-1)+0.5*rhoEq*(uin^2+vin^2)
    end,
 }
 
@@ -327,7 +357,7 @@ end
 -- write data to H5 files
 function writeFields(frame, t)
    qNew:write( string.format("q_%d.h5", frame), t )
-   fluidEnergy:write( string.format("fluidEnergy_%d.h5", frame) )
+   --fluidEnergy:write( string.format("fluidEnergy_%d.h5", frame) )
 end
 
 ----------------------------

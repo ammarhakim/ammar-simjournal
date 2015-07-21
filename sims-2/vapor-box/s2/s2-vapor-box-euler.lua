@@ -7,7 +7,7 @@ log = Lucee.logInfo
 function C2K(Tc) return 273.15+Tc end
 
 -- physical parameters
-gasGamma = 5.0/3.0 -- Should this be 1.4?
+gasGamma = 5.0/3.0
 amu = 1.66053892e-27 -- [kg]
 kb = Lucee.BoltzmannConstant -- [J/K]
 -- Atomic mass of lithum
@@ -23,7 +23,7 @@ pInit = nInit*kb*Tinit -- [Pa]
 
 -- vapor box size
 Lx = 2.0 -- [m]
-Ly = 0.5 -- [m]
+Ly = 0.4 -- [m]
 
 -- Temperature at left and right walls: for now, this is assumed to
 -- vary linearly, and left and right walls are held fixed at these
@@ -32,10 +32,12 @@ TwallLeft = C2K(950) -- [K]
 TwallRight = C2K(300) -- [K]
 
 -- Vapor pressure given local wall temperature [K]. It is valid for
--- liquid Lithium and taken from the website:
--- http://mmrc.caltech.edu/PVD/manuals/Metals%20Vapor%20pressure.pdf
+-- liquid Lithium and taken from P. Browning and P.E. Potter, "AN
+-- ASSESSMENT OF THE EXPERIMENTALLY DETERMINED VAPOUR PRESSURES OF THE
+-- LIQUID ALKALI METALS", in the "Handbook of Thermodynamic and
+-- Transport Properties of Alkali Metals", R.W. Ohse, Ed., 1985.
 function vaporPressure(Twall)
-   return atmPress*math.exp(5.055-8023/Twall)
+   return math.exp(26.89-18880/Twall-0.49412*math.log(Twall))
 end
 
 -- vapor thermal speed

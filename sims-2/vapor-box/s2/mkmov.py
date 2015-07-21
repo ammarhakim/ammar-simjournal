@@ -97,12 +97,12 @@ for i in range(11):
     X, Y = getMeshGrid(fh.root.StructGrid)
 
     numDensity = q[:,:,0]/mLi
-    mkFig(fh, X, Y, numDensity, 's2-vapor-box-euler-kh_numDensity_%05d.png' % i, "Number Density")
+    mkFig(fh, X, Y, numDensity, 's2-vapor-box-euler_numDensity_%05d.png' % i, "Number Density")
     press = pressure(q)
-    mkFig(fh, X, Y, press, 's2-vapor-box-euler-kh_press_%05d.png' % i, "Pressure [Pa]")
+    mkFig(fh, X, Y, press, 's2-vapor-box-euler_press_%05d.png' % i, "Pressure [Pa]")
     temp = press/(numDensity*kb)
-    mkFig(fh, X, Y, temp-273.15, 's2-vapor-box-euler-kh_temp_%05d.png' % i, "Temperature [C]")
+    mkFig(fh, X, Y, temp-273.15, 's2-vapor-box-euler_temp_%05d.png' % i, "Temperature [C]")
     machN = mach(q)
-    mkFig(fh, X, Y, machN, 's2-vapor-box-euler-kh_mach_%05d.png' % i, "Mach Number")
+    mkFig(fh, X, Y, machN, 's2-vapor-box-euler_mach_%05d.png' % i, "Mach Number")
     
     fh.close()
