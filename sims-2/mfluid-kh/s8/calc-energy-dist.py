@@ -46,6 +46,12 @@ def getEmEnergy(e, q):
 
     return 0.5*(Ex*Ex+Ey*Ey+Ez*Ez) + 0.5*(Bx*Bx+By*By+Bz*Bz)
 
+def getBxByEnergy(e, q):
+    Bx = e.getBx(q)
+    By = e.getBy(q)
+
+    return 0.5*(Bx*Bx+By*By)
+
 def writeDat(fName, field):
     fp = open(fName, "w")
     savetxt(fp, field)
@@ -56,6 +62,7 @@ totIe_e = []
 totKe_i = []
 totIe_i = []
 totEm = []
+totBxBy = []
 
 for i in range(0, 101):
     print "Working on %d ..." % i
@@ -76,10 +83,15 @@ for i in range(0, 101):
     em  = getEmEnergy(tftenmoment.emEx, q)
     totEm.append( dx*dy*sum(em) )
 
+    # inplane B
+    bxby  = getBxByEnergy(tftenmoment.emEx, q)
+    totBxBy.append( dx*dy*sum(bxby) )
+
 # write data to file
 writeDat("s8-10m-karim-kh_totKe_e.txt", totKe_e)
 writeDat("s8-10m-karim-kh_totIe_e.txt", totIe_e)
 writeDat("s8-10m-karim-kh_totKe_i.txt", totKe_i)
 writeDat("s8-10m-karim-kh_totIe_i.txt", totIe_i)
 writeDat("s8-10m-karim-kh_totEm.txt", totEm)
+writeDat("s8-10m-karim-kh_totBxBy.txt", totBxBy)
 
