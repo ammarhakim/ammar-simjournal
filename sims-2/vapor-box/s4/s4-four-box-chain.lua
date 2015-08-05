@@ -18,18 +18,22 @@ atmPress = 101325.0 -- [Pa]
 -- initial vapor density and pressure (some arbitrary value). These
 -- values are used to initialize a uniform vapor inside the box.
 nInit = 4.0e19 -- #/m^3
-Tinit = C2K(300) -- [K]
+Tinit = C2K(800) -- [K]
 pInit = nInit*kb*Tinit -- [Pa]
 
+-- number of sub-boxes
+nBox = 5
+boxSize = 0.4 -- [m]
+baffleSize = 0.1 -- [m]
+holeSize = 0.1 -- [m]
+
 -- vapor box size
-Lx = 2.0 -- [m]
+Lx = nBox*boxSize+(nBox-1)*baffleSize -- [m]
 Ly = 0.4 -- [m]
 
--- Temperature at left and right walls: for now, this is assumed to
--- vary linearly, and left and right walls are held fixed at these
--- temperatures
-TwallLeft = C2K(950) -- [K]
-TwallRight = C2K(300) -- [K]
+-- Temperature of each box in [K]. Each box is held to this constant
+-- temperature
+Tbox = {C2K(950), C2K(787.5), C2K(625), C2K(462.5), C2K(300)}
 
 -- Vapor pressure given local wall temperature [K]. It is valid for
 -- liquid Lithium and taken from P. Browning and P.E. Potter, "AN
@@ -47,10 +51,57 @@ end
 -- vapor thermal speed
 cs0 = math.sqrt(kb*Tinit/mLi) -- [m/2]
 
+-- construct geometry
+function inBox(x, y, xlo, xup)
+   return (x>xlo[1] and x<xup[1] and y>xlo[2] and y<xup[2]) and 1.0 or -1.0
+end
+function union2(a, b)
+   return math.max(a,b)
+end
+function union4(a, b, c, d)
+   return math.max(a,b,c,d)
+end
+
+-- make the nth baffle
+function makeBaffle(x,y,n)
+   local xl = boxSize*n+baffleSize*(n-1)
+   local xu = xl+0.1
+   return union2(
+      inBox(x,y, {xl,0.00}, {xu,0.15}),
+      inBox(x,y, {xl,0.25}, {xu,0.40})
+   )
+end
+
+-- This function defines the geometry of the baffle. This is used to
+-- construct the geometry of domain interior.
+function baffleBoxGeometry(x,y)
+   return union4(
+      makeBaffle(x,y,1), makeBaffle(x,y,2), makeBaffle(x,y,3), makeBaffle(x,y,4)
+   )
+end
+
+bc = function(x,y,z,t)
+   local bs = boxSize+0.5*baffleSize   
+   local bd = boxSize+baffleSize
+   local Twall = 0
+   if x>(bs+3*bd) then
+      Twall = Tbox[5]
+      elseif x>(bs+2*bd) then
+	 Twall = Tbox[4]
+   elseif x>(bs+bd) then
+      Twall = Tbox[3]
+   elseif x>bs then
+      Twall = Tbox[2]
+   else
+      Twall = Tbox[1]
+   end
+   return Twall
+end
+
 -- resolution and time-stepping
-NY = 64
-NX = NY*4
-cfl = 0.9
+NY = 80
+NX = NY*nBox
+cfl = 0.75
 tStart = 0.0
 tEnd = 5*Lx/cs0 -- simulation time measure in thermal transits
 nFrames = 10
@@ -60,12 +111,13 @@ log (string.format("Initial mass density [kg/m^3]: %g", nInit*mLi))
 log (string.format("Initial pressure [Pa]: %g", pInit))
 log (string.format("Initial thermal speed of vapor [m/s]: %g", cs0))
 log (string.format("Simulation run to [s]: %g", tEnd))
-log (string.format("Left wall temperature [K]: %g", TwallLeft))
-log (string.format("Right wall temperature [K]: %g", TwallRight))
-log (string.format("Left wall density [#/m^3]: %g", vaporDensity(TwallLeft)))
-log (string.format("Right wall density [#/m^3]: %g", vaporDensity(TwallRight)))
-log (string.format("Left wall vapor temperature [K]: %g", vaporDensity(TwallLeft)))
-log (string.format("Right wall vapor temperature [K]: %g", vaporDensity(TwallRight)))
+log (string.format("Left box temperature [K]: %g", Tbox[1]))
+log (string.format("Right box temperature [K]: %g", Tbox[2]))
+log (string.format("Left wall density [#/m^3]: %g", vaporDensity(Tbox[1])))
+log (string.format("Right wall density [#/m^3]: %g", vaporDensity(Tbox[2])))
+log (string.format("Left wall vapor temperature [K]: %g", vaporDensity(Tbox[1])))
+log (string.format("Right wall vapor temperature [K]: %g", vaporDensity(Tbox[2])))
+log (string.format("Simulation run to [s]: %g", tEnd))
 log ("\n")
 
 ------------------------------------------------
@@ -112,11 +164,36 @@ qNewDup = DataStruct.Field2D {
    numComponents = 5,
    ghost = {2, 2},
 }
+-- in/out field representing embedded object
+inOut = DataStruct.Field2D {
+   onGrid = grid,
+   numComponents = 1,
+   ghost = {2, 2},
+}
+Twall = DataStruct.Field2D {
+   onGrid = grid,
+   numComponents = 1,
+   ghost = {2, 2},
+}
+Twall:set(bc)
+Twall:write("Twall.h5")
 
 -- aliases to various sub-systems
 fluid = q:alias(0, 5)
 fluidX = qX:alias(0, 5)
 fluidNew = qNew:alias(0, 5)
+
+-- construct object defining the geometry
+inOut:set(
+   function (x,y,z)
+      -- negative sign removes the baffle from the outer rectangle to
+      -- create the domain geometry
+      return -baffleBoxGeometry(x,y)
+   end
+)
+inOut:sync()
+-- write field
+inOut:write("inOut.h5")
 
 -----------------------
 -- INITIAL CONDITION --
@@ -148,7 +225,20 @@ end
 bcVaporFunc = BoundaryCondition.Function {
    components = {0, 1, 2, 3, 4},
    bc = function(x,y,z,t)
-      local Twall = TwallLeft + x/Lx*(TwallRight-TwallLeft)
+      local bs = boxSize+0.5*baffleSize
+      local bd = boxSize+baffleSize
+      local Twall = 0
+      if x>(bs+3*bd) then
+	 Twall = Tbox[5]
+      elseif x>(bs+2*bd) then
+	 Twall = Tbox[4]
+      elseif x>(bs+bd) then
+	 Twall = Tbox[3]
+      elseif x>bs then
+	 Twall = Tbox[2]
+      else
+	 Twall = Tbox[1]
+      end
       local pEq = vaporPressure(Twall)
       local nEq = pEq/(kb*Twall)
       local rhoEq = nEq*mLi
@@ -172,6 +262,15 @@ function createVaporBc(myDir, myEdge)
    return bc
 end
 
+-- updater for embedded BC (vapor BCs)
+embeddedBcUpdater = Updater.StairSteppedBc2D {
+   onGrid = grid,
+   -- boundary conditions to apply
+   boundaryConditions = {bcVaporFunc},
+   -- in/out field
+   inOutField = inOut,
+}
+
 -- create updaters to apply boundary conditions
 bcLeft = createVaporBc(0, "lower")
 bcRight = createVaporBc(0, "upper")
@@ -185,6 +284,12 @@ function applyBc(fld, tCurr, myDt)
       bc:setOut( {fld} )
       bc:advance(tCurr+myDt)
    end
+
+  -- apply BCs on embedded boundary
+   embeddedBcUpdater:setDir(dir)
+   embeddedBcUpdater:setOut( {fld} )
+   embeddedBcUpdater:advance(tCurr+myDt)   
+   
    -- sync ghost cells
    fld:sync()
 end
@@ -195,6 +300,8 @@ end
 -- regular Euler equations
 eulerEqn = HyperEquation.Euler {
    gasGamma = gasGamma,
+   numericalFlux = "lax", -- on of "lax" or "roe"
+   useIntermediateWave = true, -- this only matters is numericalFlux="lax"
 }
 -- (Lax equations are used to fix negative pressure/density)
 eulerLaxEqn = HyperEquation.Euler {
@@ -211,7 +318,9 @@ fluidSlvrDir0 = Updater.WavePropagation2D {
    limiter = "monotonized-centered",
    cfl = cfl,
    cflm = 1.1*cfl,
-   updateDirections = {0} -- directions to update
+   updateDirections = {0}, -- directions to update
+   hasStairSteppedBoundary = true, -- we are solving with embedded boundary
+   inOutField = inOut,   
 }
 -- ds solvers for regular Euler equations along Y
 fluidSlvrDir1 = Updater.WavePropagation2D {
@@ -220,7 +329,9 @@ fluidSlvrDir1 = Updater.WavePropagation2D {
    limiter = "monotonized-centered",
    cfl = cfl,
    cflm = 1.1*cfl,
-   updateDirections = {1}
+   updateDirections = {1},
+   hasStairSteppedBoundary = true, -- we are solving with embedded boundary
+   inOutField = inOut,   
 }
 
 -- ds solvers for Lax Euler equations along X
@@ -230,7 +341,9 @@ fluidLaxSlvrDir0 = Updater.WavePropagation2D {
    limiter = "zero",
    cfl = cfl,
    cflm = 1.1*cfl,
-   updateDirections = {0}
+   updateDirections = {0},
+   hasStairSteppedBoundary = true, -- we are solving with embedded boundary
+   inOutField = inOut,   
 }
 
 -- ds solvers for Lax Euler equations along Y
@@ -240,7 +353,9 @@ fluidLaxSlvrDir1 = Updater.WavePropagation2D {
    limiter = "zero",
    cfl = cfl,
    cflm = 1.1*cfl,
-   updateDirections = {1}
+   updateDirections = {1},
+   hasStairSteppedBoundary = true, -- we are solving with embedded boundary
+   inOutField = inOut,   
 }
 
 -- function to update the fluid and field using dimensional splitting

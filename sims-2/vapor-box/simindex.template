@@ -30,3 +30,7 @@ Vapor box simulations.
     - Linearly varying wall temperature.
   * - ${mdl("s2")}
     - Same as s1, except on 64x256 grid.
+  * - ${mdl("s3")}
+    - Attempt to make a 2-box chain of vapor boxes
+  * - ${mdl("s4")}
+    - Attempt to make a 4-box chain of vapor boxes
