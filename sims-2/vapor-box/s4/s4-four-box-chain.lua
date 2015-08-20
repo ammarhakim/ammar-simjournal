@@ -86,7 +86,7 @@ bc = function(x,y,z,t)
    local Twall = 0
    if x>(bs+3*bd) then
       Twall = Tbox[5]
-      elseif x>(bs+2*bd) then
+   elseif x>(bs+2*bd) then
 	 Twall = Tbox[4]
    elseif x>(bs+bd) then
       Twall = Tbox[3]

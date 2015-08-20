@@ -31,4 +31,8 @@ Simulation Index
   * - ${mdl("s2")}
     - 5-moment version of s1, for comparison.
   * - ${mdl("s3")}
-    - 10-moment version of s1, for comparison.
+    - :math:`Te/Ti=1.0`, Mach number 0.5, polyOrder 2 serendipity elements
+  * - ${mdl("s4")}
+    - :math:`Te/Ti=1.0`, Mach number 3.0, m_i=40, polyOrder 2 serendipity elements
+  * - ${mdl("s5")}
+    - Same as s4, except :math:`Te/Ti=9.0`
