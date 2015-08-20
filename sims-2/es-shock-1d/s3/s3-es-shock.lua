@@ -3,8 +3,8 @@
 log = Lucee.logInfo
 
 -- problem parameters
-Te_Ti = 9.0 -- ratio of electron to ion temperaute
-machNum = 1.5 -- Mach number computed from ion thermal speed
+Te_Ti = 1.0 -- ratio of electron to ion temperaute
+machNum = 0.5 -- Mach number computed from ion thermal speed
 n0 = 1.0 -- initial number density
 
 -- physical parameters

@@ -3,8 +3,8 @@
 log = Lucee.logInfo
 
 -- problem parameters
-Te_Ti = 9.0 -- ratio of electron to ion temperaute
-machNum = 1.5 -- Mach number computed from ion thermal speed
+Te_Ti = 1.0 -- ratio of electron to ion temperaute
+machNum = 3.0 -- Mach number computed from ion thermal speed
 n0 = 1.0 -- initial number density
 
 -- physical parameters
@@ -13,7 +13,7 @@ elcMass = 1.0
 elcCharge = -1.0
 
 ionTemp = elcTemp/Te_Ti
-ionMass = 1836.2
+ionMass = 1836.2*40
 ionCharge = 1.0
 
 -- permittivity of free space

@@ -33,4 +33,4 @@ Vapor box simulations.
   * - ${mdl("s3")}
     - Attempt to make a 2-box chain of vapor boxes
   * - ${mdl("s4")}
-    - Attempt to make a 4-box chain of vapor boxes
+    - Attempt to make a 5-box chain of vapor boxes
