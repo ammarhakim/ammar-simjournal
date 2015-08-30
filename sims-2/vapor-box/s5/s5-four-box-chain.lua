@@ -208,20 +208,6 @@ end
 ------------------------
 -- boundary applicator objects for fluids and fields
 
--- bcVaporFunc = BoundaryCondition.FieldFunction {
---    inpComponents = {0, 1, 2},
---    components = {0, 1, 2, 3, 4},
---    bc = function(x,y,z,t, rho, rhou, rhov)
---       local Twall = TwallLeft + x/Lx*(TwallRight-TwallLeft)
---       local pEq = vaporPressure(Twall)
---       local nEq = pEq/(kb*Twall)
---       local rhoEq = nEq*mLi
---       local uin = rhou/rho
---       local vin = rhov/rho
---       return rhoEq, rhoEq*uin, rhoEq*vin, 0.0, pEq/(gasGamma-1)+0.5*rhoEq*(uin^2+vin^2)
---    end,
--- }
-
 bcVaporFunc = BoundaryCondition.Function {
    components = {0, 1, 2, 3, 4},
    bc = function(x,y,z,t)
@@ -247,8 +233,7 @@ bcVaporFunc = BoundaryCondition.Function {
       return rhoEq, rhoEq*uin, rhoEq*vin, 0.0, pEq/(gasGamma-1)+0.5*rhoEq*(uin^2+vin^2)
    end,
 }
-
--- create boundary condition object to apply exact BCs on right/top edges
+-- create boundary condition object to apply vapor BC
 function createVaporBc(myDir, myEdge)
    local bc = Updater.Bc2D {
       onGrid = grid,
@@ -262,11 +247,14 @@ function createVaporBc(myDir, myEdge)
    return bc
 end
 
+-- We are using solid-wall (reflecting wall) BC for the baffles
+bcFluidCopy = BoundaryCondition.Copy { components = {0, 4} }
+bcFluidWall = BoundaryCondition.ZeroNormal { components = {1, 2, 3} }
 -- updater for embedded BC (vapor BCs)
 embeddedBcUpdater = Updater.StairSteppedBc2D {
    onGrid = grid,
    -- boundary conditions to apply
-   boundaryConditions = {bcVaporFunc},
+   boundaryConditions = {bcFluidCopy, bcFluidWall},
    -- in/out field
    inOutField = inOut,
 }
