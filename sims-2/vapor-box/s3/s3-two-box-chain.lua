@@ -41,7 +41,7 @@ Tbox = {C2K(950), C2K(300)}
 -- LIQUID ALKALI METALS", in the "Handbook of Thermodynamic and
 -- Transport Properties of Alkali Metals", R.W. Ohse, Ed., 1985.
 function vaporPressure(Twall)
-   return math.exp(26.89-18880/Twall-0.49412*math.log(Twall))
+   return math.exp(26.89-18880/Twall-0.4942*math.log(Twall))
 end
 
 function vaporDensity(Twall)
