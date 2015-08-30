@@ -34,6 +34,10 @@ class ExtractFluidVars1D(object):
         uu = numpy.sqrt(self.getU(q)**2 + self.getV(q)**2 + self.getW(q)**2)
         return uu/cs
 
+    def getEnthalphy(self, q):
+        pr = getP(q)
+        return (q[:,self.v['p']])
+
     def getIe(self, q):
         r = self.getRho(q)
         return self.getP(q)/r/(self.g-1)

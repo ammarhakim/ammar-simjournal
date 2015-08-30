@@ -124,7 +124,6 @@ title('Number density [#/m^3]')
 xlabel('X')
 ylabel('Number Density')
 axis('tight')
-print(numDensity[-1,ny/2])
 savefig('s4-four-box-chain-ln-numDensity.png')
 
 figure(6)
@@ -135,3 +134,50 @@ xlabel('X')
 ylabel('Pressure')
 axis('tight')
 savefig('s4-four-box-chain-ln-press.png')
+
+figure(7)
+# plot speeds
+u = euler.fluidEx.getU(q)
+semilogy(X, u[:,ny/2])
+title('X velocity [m/s]')
+xlabel('X')
+ylabel('X-velocity')
+axis('tight')
+savefig('s4-four-box-chain-ln-xvel.png')
+
+figure(8)
+# plot speeds
+u = euler.fluidEx.getU(q)
+plot(X, u[:,ny/2])
+title('X velocity [m/s]')
+xlabel('X')
+ylabel('X-velocity')
+axis('tight')
+savefig('s4-four-box-chain-xvel.png')
+
+
+figure(9)
+# plot enthalphy
+h = (q[:,:,4]+pr)/q[:,:,0]
+plot(X, (h[:,ny/2]-h[0,ny/2])/h[0,ny/2]*100 )
+title('Percent fluctuation in enthalphy along Y=0')
+xlabel('X')
+ylabel('Fluctuation in Specific Enthalphy')
+axis('tight')
+savefig('s4-four-box-chain-enthalphy.png')
+
+figure(10)
+# plot speeds
+v = euler.fluidEx.getV(q)
+plot(X, v[:,ny/2])
+title('Y velocity [m/s]')
+xlabel('X')
+ylabel('Y-velocity')
+axis('tight')
+savefig('s4-four-box-chain-yvel.png')
+
+# print various diagnostics
+print("Number density at x=Right", numDensity[-1,ny/2])
+print("Percent in Enthalpy",  (h[0,ny/2]-h[-1,ny/2])/h[0,ny/2]*100 )
+print("Enthalpy at left. Corresponding max speed",  h[0,ny/2],  sqrt(2*h[0,ny/2]))
+print("Ux=0 and Ux=Right",  u[0,ny/2], u[-1,ny/2] )
