@@ -38,3 +38,5 @@ Vapor box simulations.
     - Same as s4, except the baffles are perfect reflectors
   * - ${mdl("s6")}
     - Same as s4, except 4x resolution
+  * - ${mdl("s7")}
+    - Same as s5, except 4x resolution
