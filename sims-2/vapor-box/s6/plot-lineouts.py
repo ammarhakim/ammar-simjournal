@@ -59,6 +59,9 @@ Tinit = 800+273.14 # K
 cs0 = sqrt(kb*Tinit/mLi)
 tEnd = 5*2.0/cs0
 
+fh = tables.openFile("s6-four-box-chain_inOut.h5")
+maskField = fh.root.StructGridField[:,:,0]
+
 def pressure(q):
     return euler.fluidEx.getP(q)
 
@@ -76,86 +79,129 @@ def getMeshGrid(grid):
 
     return X, Y
 
+def getMaskedDat(pdat):
+    return numpy.ma.masked_where(maskField < 0.0, pdat)
+
 fh = tables.openFile("s6-four-box-chain_q_10.h5")
 q = fh.root.StructGridField
 X, Y = getMeshGrid(fh.root.StructGrid)
 nx, ny = q.shape[0], q.shape[1]
 
-numDensity = q[:,:,0]/mLi
+######
 figure(1)
+numDensity = q[:,:,0]/mLi
+subplot(2,1,1)
 plot(X, numDensity[:,ny/2])
 title('Number density [#/m^3]')
-xlabel('X')
 ylabel('Number Density')
 axis('tight')
+subplot(2,1,2)
+im = pcolormesh(X, Y, getMaskedDat(numDensity).transpose())
+axis('image')
+colorbar(orientation='horizontal')
 savefig('s6-four-box-chain-numDensity.png')
 
+######
 figure(2)
 temp = pressure(q)/(numDensity*kb)
+subplot(2,1,1)
 plot(X, temp[:,ny/2]-273.15)
 title('Temperature [C]')
-xlabel('X')
 ylabel('Temperature')
 axis('tight')
+subplot(2,1,2)
+im = pcolormesh(X, Y, getMaskedDat(temp).transpose())
+axis('image')
+colorbar(orientation='horizontal')
 savefig('s6-four-box-chain-temperature.png')
 
+######
 figure(3)
 machN = mach(q)
+subplot(2,1,1)
 plot(X, machN[:,ny/2])
 title('Mach Number')
-xlabel('X')
 ylabel('Mach Number')
 axis('tight')
+subplot(2,1,2)
+im = pcolormesh(X, Y, getMaskedDat(machN).transpose())
+axis('image')
+colorbar(orientation='horizontal')
 savefig('s6-four-box-chain-mach.png')
 
+######
 figure(4)
+subplot(2,1,1)
 pr = pressure(q)
 plot(X, pr[:,ny/2])
 title('Pressure [Pa]')
-xlabel('X')
 ylabel('Pressure')
 axis('tight')
+subplot(2,1,2)
+im = pcolormesh(X, Y, getMaskedDat(pr).transpose())
+axis('image')
+colorbar(orientation='horizontal')
 savefig('s6-four-box-chain-press.png')
 
+######
 figure(5)
 numDensity = q[:,:,0]/mLi
+subplot(2,1,1)
 semilogy(X, numDensity[:,ny/2])
 title('Number density [#/m^3]')
-xlabel('X')
 ylabel('Number Density')
 axis('tight')
+subplot(2,1,2)
+im = pcolormesh(X, Y, getMaskedDat(numDensity).transpose())
+axis('image')
+colorbar(orientation='horizontal')
+axis('image')
 savefig('s6-four-box-chain-ln-numDensity.png')
 
+######
 figure(6)
+subplot(2,1,1)
 pr = pressure(q)
 semilogy(X, pr[:,ny/2])
 title('Pressure [Pa]')
-xlabel('X')
 ylabel('Pressure')
 axis('tight')
+subplot(2,1,2)
+im = pcolormesh(X, Y, getMaskedDat(pr).transpose())
+axis('image')
+colorbar(orientation='horizontal')
 savefig('s6-four-box-chain-ln-press.png')
 
+######
 figure(7)
-# plot speeds
+subplot(2,1,1)
 u = euler.fluidEx.getU(q)
 semilogy(X, u[:,ny/2])
 title('X velocity [m/s]')
-xlabel('X')
 ylabel('X-velocity')
 axis('tight')
+subplot(2,1,2)
+im = pcolormesh(X, Y, getMaskedDat(u).transpose())
+axis('image')
+colorbar(orientation='horizontal')
 savefig('s6-four-box-chain-ln-xvel.png')
 
+######
 figure(8)
-# plot speeds
+subplot(2,1,1)
 u = euler.fluidEx.getU(q)
 plot(X, u[:,ny/2])
 title('X velocity [m/s]')
-xlabel('X')
 ylabel('X-velocity')
 axis('tight')
+subplot(2,1,2)
+im = pcolormesh(X, Y, getMaskedDat(u).transpose())
+axis('image')
+colorbar(orientation='horizontal')
 savefig('s6-four-box-chain-xvel.png')
 
 
+######
 figure(9)
 # plot enthalphy
 h = (q[:,:,4]+pr)/q[:,:,0]
@@ -166,6 +212,7 @@ ylabel('Fluctuation in Specific Enthalphy')
 axis('tight')
 savefig('s6-four-box-chain-enthalphy.png')
 
+######
 figure(10)
 # plot speeds
 v = euler.fluidEx.getV(q)
