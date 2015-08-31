@@ -1,0 +1,205 @@
+\documentclass{tufte-handout}
+
+%\geometry{showframe}% for debugging purposes -- displays the margins
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{stmaryrd}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{fancyhdr}
+\usepackage[makeroom]{cancel}
+\usepackage{booktabs}
+\usepackage{units}
+\usepackage{fancyvrb}
+\fvset{fontsize=\normalsize}
+
+% \pagestyle{fancyplain}
+
+\DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it}
+
+%% Autoscaled figures
+\newcommand{\incfig}{\centering\includegraphics}
+\setkeys{Gin}{width=0.9\linewidth,keepaspectratio}
+
+%% Commonly used macros
+\newcommand{\eqr}[1]{Eq.\thinspace(#1)}
+\newcommand{\pfrac}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\pfracc}[2]{\frac{\partial^2 #1}{\partial #2^2}}
+\newcommand{\pfraca}[1]{\frac{\partial}{\partial #1}}
+\newcommand{\pfracb}[2]{\partial #1/\partial #2}
+\newcommand{\pfracbb}[2]{\partial^2 #1/\partial #2^2}
+\newcommand{\spfrac}[2]{{\partial_{#1}} {#2}}
+\newcommand{\mvec}[1]{\mathbf{#1}}
+\newcommand{\gvec}[1]{\boldsymbol{#1}}
+\newcommand{\script}[1]{\mathpzc{#1}}
+\newcommand{\eep}{\mvec{e}_\phi}
+\newcommand{\eer}{\mvec{e}_r}
+\newcommand{\eez}{\mvec{e}_z}
+\newcommand{\iprod}[2]{\langle{#1}\rangle_{#2}}
+
+%\newcommand{\gcs}{\nabla_{\mvec{x}}}
+\newcommand{\gcs}{\nabla}
+\newcommand{\gvs}{\nabla_{\mvec{v}}}
+\newcommand{\gps}{\nabla_{\mvec{z}}}
+\newcommand{\dtv}{\thinspace d^3\mvec{v}}
+\newcommand{\dtx}{\thinspace d^3\mvec{x}}
+
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{remark}{Remark}
+
+\newcommand{\nts}[1]{{\color{blue} {#1}}}
+
+%Make the items smaller
+\newcommand{\cramplist}{
+	\setlength{\itemsep}{0in}
+	\setlength{\partopsep}{0in}
+	\setlength{\topsep}{0in}}
+\newcommand{\cramp}{\setlength{\parskip}{.5\parskip}}
+\newcommand{\zapspace}{\topsep=0pt\partopsep=0pt\itemsep=0pt\parskip=0pt}
+
+\title{Premiminary results from fluid simulations of Vapor Box divertor}
+%\author{Ammar H. Hakim}%
+\date{\today}%
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+  \noindent Some \emph{very} preliminary results from invicid Euler
+  simulations of vapor box divertor concept are presented.
+\end{abstract}
+
+\section{Notes on boundary conditions}
+
+At present, the boundary conditions are applied using ``ghost
+cells''. I.e. the vapor quantities in the cell just outside the domain
+are held fixed to the values computed from the evaporation formula
+which depends on the wall temperature\footnote{P. Browning and
+  P.E. Potter, ``AN ASSESSMENT OF THE EXPERIMENTALLY DETERMINED VAPOUR
+  PRESSURES OF THE LIQUID ALKALI METALS'', in the \emph{Handbook of
+    Thermodynamic and Transport Properties of Alkali Metals},
+  R.W. Ohse, Ed., 1985}. In the code, this is implemented as:
+\begin{verbatim}
+function vaporPressure(Twall)
+   return math.exp(26.89-18880/Twall-0.4942*math.log(Twall))
+end
+\end{verbatim}
+Once pressure is determined, the number density is computed assuming
+that the evaporated vapor is at the same temperature as the
+wall\footnote{It is possible that these BCs are not quite correct. We
+  have computed fluxes based on drifting Maxwellians also, but these
+  are harder to implement. Eventually, I plan to use the flux BCs
+  (rather than the current ghost BCs) exclusively.}.
+
+\section{Notes on equations and solver}
+
+We are solving the standard invicid Navier-Stokes equations (Euler
+equations). These are written in conservation law form (in 1D)
+\begin{align}
+  \frac{\partial}{\partial{t}}
+  \left[
+    \begin{matrix}
+      \rho \\
+      \rho u \\
+      \rho v \\
+      \rho w \\
+      E
+    \end{matrix}
+  \right]
+  +
+  \frac{\partial}{\partial{x}}
+  \left[
+    \begin{matrix}
+      \rho u \\
+      \rho u^2 + p \\
+      \rho uv \\
+      \rho uw \\
+      (E+p)u
+    \end{matrix}
+  \right]
+  =
+  0
+\end{align}
+Extension to higher dimensions is obvious. Here
+\begin{align}
+  E = \rho \varepsilon + \frac{1}{2}\rho q^2  
+\end{align}
+is the total energy and $\varepsilon$ is the internal energy of the
+fluid and $q^2=u^2 + v^2 + w^2$. The pressure is given by an equation
+of state (EOS) $p=p(\varepsilon, \rho)$. For an ideal gas the EOS is
+$p = (\gamma-1)\rho \varepsilon$. The specific enthalpy is defined as
+$h = (E+p)/\rho$, and is used in constructing numerical fluxes at cell
+interfaces\footnote{For details on this please see
+  \url{http://ammar-hakim.org/sj/euler-eigensystem.html}}. I am using
+ideal gas EOS for now, but this could be replaced later if
+needed\footnote{If we expect a mixture of atomic/diatomic Lithium we
+  may want to generate EOS tables and use them instead.}.
+
+To solve these equations I am using a robust, second-order,
+shock-capturing finite-volume scheme, which has been benchmarked very
+carefully on dozens of difficult problems.\footnote{See
+  \url{http://ammar-hakim.org/sj/je/je2/je2-euler-shock.html} for 1D
+  shock tests,
+  \url{http://ammar-hakim.org/sj/je/je22/je22-euler-2d.html} for 2D
+  tests and \url{http://ammar-hakim.org/sj/je/je23/je23-euler-3d.html}
+  for 3D tests.}.
+
+
+\section{Chain of two boxes}
+
+To get some insight into the flow I have setup a chain of 2
+boxes. Each box is $0.4\times 0.4$~m and the slot connecting them is
+$10$~cm wide, with a $10$~cm length. The left box walls are held to a
+fixed temperature of $950^o$~C and the right box to $300^o$~C. Note
+that baffles are held to the same temperature as the wall. The
+simulation is run to steady-state. Profiles along the centerline of
+the vapor box are shown below.
+\begin{figure}[h]%
+  \setkeys{Gin}{width=0.3\linewidth,keepaspectratio}
+  \incfig{s3-two-box-chain-mach.png}
+  \incfig{s3-two-box-chain-numDensity.png}
+  \incfig{s3-two-box-chain-temperature.png}
+  \caption{Mach number, number density and temperature along
+    centerline from a two-box chain.}
+\end{figure}
+
+The 2D colorplots of these quantities are shown below
+\begin{figure}[h]%
+  \setkeys{Gin}{width=0.5\linewidth,keepaspectratio}
+  \incfig{s3-two-box-chain_mach_00010.png}
+  \incfig{s3-two-box-chain_numDensity_00010.png}
+  \incfig{s3-two-box-chain_temp_00010.png}
+  \caption{Mach number (top), number density (middle) and temperature
+    (bottom) from a two-box chain simulation.}
+\end{figure}
+
+\section{Chain of five boxes}
+
+I ran a five-box chain simulation to steady state. Each box is
+$0.4\times 0.4$~m and the slot connecting them is $10$~cm wide, with a
+$10$~cm length. Each box walls (including baffles) are held at a fixed
+temperature, as specified in Rob's paper. The simulation is run to
+steady-state. Profiles along the centerline of the vapor box are shown
+below.
+\begin{figure}[h]%
+  \setkeys{Gin}{width=0.3\linewidth,keepaspectratio}
+  \incfig{s4-four-box-chain-mach.png}
+  \incfig{s4-four-box-chain-ln-numDensity.png}
+  \incfig{s4-four-box-chain-ln-press.png}
+  \caption{Mach number, number density and pressure along centerline
+    from a five-box chain.}
+\end{figure}
+
+The 2D colorplots of these quantities are shown below
+\begin{figure}[h]%
+  \incfig{s4-four-box-chain_mach_00010.png}
+  \incfig{s4-four-box-chain_numDensity_00010.png}
+  \incfig{s4-four-box-chain_temp_00010.png}
+  \caption{Mach number (top), number density (middle) and temperature
+    (bottom) from a five-box chain simulation.}
+\end{figure}
+
+\end{document}
