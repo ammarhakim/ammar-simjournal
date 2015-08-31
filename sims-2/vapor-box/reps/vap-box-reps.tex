@@ -88,11 +88,11 @@ function vaporPressure(Twall)
 end
 \end{verbatim}
 Once pressure is determined, the number density is computed assuming
-that the evaporated vapor is at the same temperature as the
-wall\footnote{It is possible that these BCs are not quite correct. We
-  have computed fluxes based on drifting Maxwellians also, but these
-  are harder to implement. Eventually, I plan to use the flux BCs
-  (rather than the current ghost BCs) exclusively.}.
+that the evaporated vapor is at the same temperature as the wall
+% \footnote{It is possible that these BCs are not quite correct. We have
+%   computed fluxes based on drifting Maxwellians also, but these are
+%   harder to implement. Eventually, I plan to use the flux BCs (rather
+%   than the current ghost BCs) exclusively.}.
 
 \section{Notes on equations and solver}
 
@@ -148,59 +148,130 @@ carefully on dozens of difficult problems.\footnote{See
   for 3D tests.}.
 
 
-\section{Chain of two boxes}
+% \section{Chain of two boxes}
 
-To get some insight into the flow I have setup a chain of 2
-boxes. Each box is $0.4\times 0.4$~m and the slot connecting them is
-$10$~cm wide, with a $10$~cm length. The left box walls are held to a
-fixed temperature of $950^o$~C and the right box to $300^o$~C. Note
-that baffles are held to the same temperature as the wall. The
-simulation is run to steady-state. Profiles along the centerline of
-the vapor box are shown below.
-\begin{figure}[h]%
-  \setkeys{Gin}{width=0.3\linewidth,keepaspectratio}
-  \incfig{s3-two-box-chain-mach.png}
-  \incfig{s3-two-box-chain-numDensity.png}
-  \incfig{s3-two-box-chain-temperature.png}
-  \caption{Mach number, number density and temperature along
-    centerline from a two-box chain.}
-\end{figure}
+% To get some insight into the flow I have setup a chain of 2
+% boxes. Each box is $0.4\times 0.4$~m and the slot connecting them is
+% $10$~cm wide, with a $10$~cm length. The left box walls are held to a
+% fixed temperature of $950^o$~C and the right box to $300^o$~C. Note
+% that baffles are held to the same temperature as the wall. The
+% simulation is run to steady-state. Profiles along the centerline of
+% the vapor box are shown below.
+% \begin{figure}[ht]%
+%   \setkeys{Gin}{width=0.3\linewidth,keepaspectratio}
+%   \incfig{s3-two-box-chain-mach.png}
+%   \incfig{s3-two-box-chain-numDensity.png}
+%   \incfig{s3-two-box-chain-temperature.png}
+%   \caption{Mach number, number density and temperature along
+%     centerline from a two-box chain.}
+% \end{figure}
 
-The 2D colorplots of these quantities are shown below
-\begin{figure}[h]%
-  \setkeys{Gin}{width=0.5\linewidth,keepaspectratio}
-  \incfig{s3-two-box-chain_mach_00010.png}
-  \incfig{s3-two-box-chain_numDensity_00010.png}
-  \incfig{s3-two-box-chain_temp_00010.png}
-  \caption{Mach number (top), number density (middle) and temperature
-    (bottom) from a two-box chain simulation.}
-\end{figure}
+% The 2D colorplots of these quantities are shown below
+% \begin{figure}[ht]%
+%   \setkeys{Gin}{width=0.5\linewidth,keepaspectratio}
+%   \incfig{s3-two-box-chain_mach_00010.png}
+%   \incfig{s3-two-box-chain_numDensity_00010.png}
+%   \incfig{s3-two-box-chain_temp_00010.png}
+%   \caption{Mach number (top), number density (middle) and temperature
+%     (bottom) from a two-box chain simulation.}
+% \end{figure}
 
-\section{Chain of five boxes}
+\section{Chain of five boxes: Lithium covered baffles}
 
 I ran a five-box chain simulation to steady state. Each box is
 $0.4\times 0.4$~m and the slot connecting them is $10$~cm wide, with a
 $10$~cm length. Each box walls (including baffles) are held at a fixed
 temperature, as specified in Rob's paper. The simulation is run to
-steady-state. Profiles along the centerline of the vapor box are shown
-below.
-\begin{figure}[h]%
-  \setkeys{Gin}{width=0.3\linewidth,keepaspectratio}
-  \incfig{s6-four-box-chain-mach.png}
+steady-state. Profiles of various quantities are shown below.
+\begin{figure}[ht]%
+  \setkeys{Gin}{width=0.75\linewidth,keepaspectratio}
   \incfig{s6-four-box-chain-ln-numDensity.png}
+  \caption{Number density from a five-box chain, with Lithium
+    covered baffles. See {\tt vapor\-box/s6} for input file.}
+\end{figure}
+\begin{figure}[ht]%
+  \setkeys{Gin}{width=0.75\linewidth,keepaspectratio}
   \incfig{s6-four-box-chain-temperature.png}
-  \caption{Mach number, number density and pressure along centerline
-    from a five-box chain. See {\tt vapor\-box/s6} for input file.}
+  \caption{Temperature from a five-box chain, with Lithium covered
+    baffles. Note the temperature drops below the condensation point,
+    and hence the Lithium would form droplets and even Lithium
+    ``snow''. A true snow-flake divertor! However, the incoming heat
+    flux along the LCFS from the tokamak will probably prevent the
+    temperature dropping so much. It remains to be seen. See {\tt
+      vapor\-box/s6} for input file.}
+\end{figure}
+\begin{figure}[ht]%
+  \setkeys{Gin}{width=0.75\linewidth,keepaspectratio}
+  \incfig{s6-four-box-chain-xvel.png}
+  \caption{X velocity from a five-box chain, with Lithium covered
+    baffles. The flow velocity increases rapidly, however, consistent
+    with flow into vacuum, asymptotes to a maximum value, which can be
+    determined from conservation of enthalpy along streamlines. See
+    {\tt vapor\-box/s6} for input file.}
+\end{figure}
+\begin{figure}[ht]%
+  \setkeys{Gin}{width=0.75\linewidth,keepaspectratio}
+  \incfig{s6-four-box-chain-mach.png}
+  \caption{Mach number from a five-box chain, with Lithium covered
+    baffles. For $x>1$ the Mach number increases linearly (consistent
+    with flow into vacuum) as the temperature drops rapidly, even
+    though the flow velocity reaches a maximum value as shown in the
+    above figure. See {\tt vapor\-box/s6} for input file.}
 \end{figure}
 
-The 2D colorplots of these quantities are shown below
-\begin{figure}[h]%
-  \incfig{s6-four-box-chain_mach_00010.png}
-  \incfig{s6-four-box-chain_numDensity_00010.png}
-  \incfig{s6-four-box-chain_temp_00010.png}
-  \caption{Mach number (top), number density (middle) and temperature
-    (bottom) from a five-box chain simulation. See {\tt vapor\-box/s6}
+\section{Chain of five boxes: Equilibriated (reflecting) baffles}
+
+I ran a five-box chain simulation to steady state. Each box is
+$0.4\times 0.4$~m and the slot connecting them is $10$~cm wide, with a
+$10$~cm length. Each box wall is held at a fixed temperature, as
+specified in Rob's paper. The baffles are assumed to be in equilibrium
+with the vapor impinging on them, and are hence treated as perfect
+reflectors\footnote{The flux in the normal direction on the baffles is
+  set to zero, and the fluid is allowed to slip tangentially,
+  consistent with the invicid approximation.}. The simulation is run to
+steady-state. Profiles of various quantities are shown below.
+
+The key difference between the Lithium covered and equilibrated
+baffles cases is the formation of a standing shock just behind each
+baffle. This happens as the vapor reflects off the wall, increasing
+back-pressure and eventually forming a standing shock a few
+centimeters behind each baffle.
+
+\begin{figure}[ht]%
+  \setkeys{Gin}{width=0.75\linewidth,keepaspectratio}
+  \incfig{s7-four-box-chain-ln-numDensity.png}
+  \caption{Number density from a five-box chain, reflecting baffle
+    case. See {\tt vapor\-box/s7} for input file.}
+\end{figure}
+\begin{figure}[ht]%
+  \setkeys{Gin}{width=0.75\linewidth,keepaspectratio}
+  \incfig{s7-four-box-chain-temperature.png}
+  \caption{Temperature from a five-box chain, reflecting baffle
+    case. Note the temperature drops below the condensation point, and
+    hence the Lithium would form droplets and even Lithium ``snow''. A
+    true snow-flake divertor! However, the incoming heat flux along
+    the LCFS from the tokamak will probably prevent the temperature
+    dropping so much. It remains to be seen. See {\tt vapor\-box/s7}
     for input file.}
 \end{figure}
+\begin{figure}[ht]%
+  \setkeys{Gin}{width=0.75\linewidth,keepaspectratio}
+  \incfig{s7-four-box-chain-xvel.png}
+  \caption{X velocity from a five-box chain, reflecting baffle
+    case. The flow velocity increases rapidly, however, consistent
+    with flow into vacuum, asymptotes to a maximum value, which can be
+    determined from conservation of enthalpy along streamlines. See
+    {\tt vapor\-box/s7} for input file.}
+\end{figure}
+\begin{figure}[ht]%
+  \setkeys{Gin}{width=0.75\linewidth,keepaspectratio}
+  \incfig{s7-four-box-chain-mach.png}
+  \caption{Mach number from a five-box chain, reflecting baffle
+    case. For $x>1$ the Mach number increases linearly (consistent
+    with flow into vacuum) as the temperature drops rapidly, even
+    though the flow velocity reaches a maximum value as shown in the
+    above figure. See {\tt vapor\-box/s7} for input file.}
+\end{figure}
+
 
 \end{document}
