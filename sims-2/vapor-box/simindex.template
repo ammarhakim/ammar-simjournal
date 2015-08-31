@@ -36,4 +36,5 @@ Vapor box simulations.
     - Attempt to make a 5-box chain of vapor boxes
   * - ${mdl("s5")}
     - Same as s4, except the baffles are perfect reflectors
-    
+  * - ${mdl("s6")}
+    - Same as s4, except 4x resolution

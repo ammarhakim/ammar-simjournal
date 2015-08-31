@@ -68,6 +68,7 @@ for i in range(0, 101):
     print "Working on %d ..." % i
     fh = tables.openFile("s8-10m-karim-kh_q_%d.h5" % i)
     dx, dy = getDx(fh.root.StructGrid)
+    q = fh.root.StructGridField
 
     # electrons
     ke, ie  = getFluidEnergy(tftenmoment.elcEx, q)
@@ -75,7 +76,7 @@ for i in range(0, 101):
     totIe_e.append( dx*dy*sum(ie) )
 
     # ions
-    ke, ie  = getFluidEnergy(tftenmoment.IonEx, q)
+    ke, ie  = getFluidEnergy(tftenmoment.ionEx, q)
     totKe_i.append( dx*dy*sum(ke) )
     totIe_i.append( dx*dy*sum(ie) )
 
@@ -87,6 +88,8 @@ for i in range(0, 101):
     bxby  = getBxByEnergy(tftenmoment.emEx, q)
     totBxBy.append( dx*dy*sum(bxby) )
 
+    fh.close()
+
 # write data to file
 writeDat("s8-10m-karim-kh_totKe_e.txt", totKe_e)
 writeDat("s8-10m-karim-kh_totIe_e.txt", totIe_e)
@@ -94,4 +97,3 @@ writeDat("s8-10m-karim-kh_totKe_i.txt", totKe_i)
 writeDat("s8-10m-karim-kh_totIe_i.txt", totIe_i)
 writeDat("s8-10m-karim-kh_totEm.txt", totEm)
 writeDat("s8-10m-karim-kh_totBxBy.txt", totBxBy)
-
