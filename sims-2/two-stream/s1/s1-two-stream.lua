@@ -138,11 +138,11 @@ hamilKE = DataStruct.Field2D {
 
 -- Maxwellian with specified thermal and drift speeds
 function maxwellianDistf(vt, vDrift, x, v)
-   return 1 / math.sqrt( 2 * Lucee.Pi * vt^2 ) * math.exp( -( v - vDrift )^2 / ( 2 * vt^2 ) )
+   return 1/math.sqrt(2*Lucee.Pi*vt^2)*math.exp(-(v-vDrift )^2/(2*vt^2))
 end
 -- Two-stream Maxwellian with specified thermal and drift speeds
 function twoStreamDistf(vt, vDrift, x, v)
-   return 1 / math.sqrt( 8 * Lucee.Pi * vt^2 ) * ( math.exp( -( v - vDrift )^2 / ( 2 * vt^2 )  ) + math.exp( -( v + vDrift )^2 / ( 2 * vt^2 ) ) )
+   return 1/math.sqrt(8*Lucee.Pi*vt^2)*(math.exp(-(v-vDrift )^2/(2*vt^2))+math.exp(-(v+vDrift)^2/(2*vt^2)))
 end
 
 -- updater to initialize ion distribution function

@@ -36,3 +36,10 @@ Simulation Index
     - :math:`Te/Ti=1.0`, Mach number 3.0, m_i=40, polyOrder 2 serendipity elements
   * - ${mdl("s5")}
     - Same as s4, except :math:`Te/Ti=9.0`
+
+Redoing the above in the proper, clean way.
+
+* - Number
+    - Description
+  * - ${mdl("m1")}
+    - :math:`Te/Ti=9.0`, Mach number 1.5, polyOrder 2 serendipity elements

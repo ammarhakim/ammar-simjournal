@@ -18,7 +18,8 @@
 Simulation Index
 ================
 
-Euler RT simulations using the DG scheme.
+Multi-fluid RT simulations. Also includes Euler simulations used as
+benchmarking with other codes and papers.
 
 .. list-table::
   :header-rows: 1
@@ -27,8 +28,5 @@ Euler RT simulations using the DG scheme.
   * - Number
     - Description
   * - ${mdl("s1")}
-    - RT instability, polyOrder=1, 125x750 grid
-  * - ${mdl("s2")}
-    - Same as s1, except on a 50x300 grid
-  * - ${mdl("s3")}
-    - Same as s2, except polyOrder=2
+    - 2D Euler RT instability (Athena test).
+
