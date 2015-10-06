@@ -907,7 +907,7 @@ program for that simulation.
   * - ${mdl("s437")}
     - Same as s433, except :math:`\lambda = 15 d_i`.
   * - ${mdl("s438")}
-    - 2D Euler RT instability (Athena test).
+    - 2D Euler RT instability (Athena test)
   * - ${mdl("s439")}
     - Same as s438, except on a :math:`300\times 900` grid.
   * - ${mdl("s440")}
