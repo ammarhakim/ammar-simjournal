@@ -35,8 +35,8 @@ ionDrift = elcDrift -- no net current
 -- domain size and simulation time
 LX = 200*lambdaD
 tStart = 0.0 -- start time 
-tEnd = 500.0/wpe
-nFrames = 100
+tEnd = 10.0/wpe
+nFrames = 1
 
 -- Resolution, time-stepping etc.
 NX = 100
