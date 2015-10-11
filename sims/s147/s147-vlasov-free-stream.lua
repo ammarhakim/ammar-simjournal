@@ -397,6 +397,7 @@ dtSuggested = 0.1*tEnd -- initial time-step to use (will be adjusted)
 nFrames = 4
 tFrame = (tEnd-tStart)/nFrames
 
+writeFields(0)
 tCurr = tStart
 for frame = 1, nFrames do
 
