@@ -28,5 +28,5 @@ benchmarking with other codes and papers.
   * - Number
     - Description
   * - ${mdl("s1")}
-    - 2D Euler RT instability (Athena test).
+    - 2D Hall-MHD simulation (Huba) with 5-moments.
 
