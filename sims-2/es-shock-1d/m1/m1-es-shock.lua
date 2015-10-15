@@ -239,13 +239,13 @@ initDistfElc = Updater.ProjectOnNodalBasis2D {
    shareCommonNodes = false, -- In DG, common nodes are not shared
    -- function to use for initialization
    evaluate = function(x,v,z,t)
-		 local sloc = 0.5*LX
-		 local fxv = maxwellian(n0, elcDrift, vtElc, v)
-		 if x>sloc then
-		    fxv = maxwellian(n0, -elcDrift, vtElc, v)
-		 end
-		 return fxv
-	      end
+      local sloc = 0.5*LX
+      local fxv = maxwellian(n0, elcDrift, vtElc, v)
+      if x>sloc then
+	 fxv = maxwellian(n0, -elcDrift, vtElc, v)
+      end
+      return fxv
+   end
 }
 
 -- updater to initialize distribution function
@@ -256,13 +256,13 @@ initDistfIon = Updater.ProjectOnNodalBasis2D {
    shareCommonNodes = false, -- In DG, common nodes are not shared
    -- function to use for initialization
    evaluate = function(x,v,z,t)
-		 local sloc = 0.5*LX
-		 local fxv = maxwellian(n0, ionDrift, vtIon, v)
-		 if x>sloc then
-		    fxv = maxwellian(n0, -ionDrift, vtIon, v)
-		 end
-		 return fxv
-	      end
+      local sloc = 0.5*LX
+      local fxv = maxwellian(n0, ionDrift, vtIon, v)
+      if x>sloc then
+	 fxv = maxwellian(n0, -ionDrift, vtIon, v)
+      end
+      return fxv
+   end
 }
 
 -- updater to initialize electron kinetic energy term in Hamiltonian
@@ -577,7 +577,7 @@ function runSimulation(tStart, tEnd, nFrames, initDt)
       distfDupIon:copy(distfIon)
       -- if needed adjust dt to hit tEnd exactly
       if (tCurr+myDt > tEnd) then
-        myDt = tEnd-tCurr
+	 myDt = tEnd-tCurr
       end
 
       -- advance particles and fields
