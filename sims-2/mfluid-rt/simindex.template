@@ -28,5 +28,7 @@ benchmarking with other codes and papers.
   * - Number
     - Description
   * - ${mdl("s1")}
-    - 2D Hall-MHD simulation (Huba) with 5-moments.
+    - 2D Hall-MHD simulation (Huba) with 5-moments. Case I, :math:`100x200` mesh.
+  * - ${mdl("s1")}
+    - 2D Hall-MHD simulation (Huba) with 5-moments. Case I, :math:`375x750` mesh.
 
