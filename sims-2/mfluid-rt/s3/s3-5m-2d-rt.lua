@@ -128,6 +128,13 @@ emFieldNew = qNew:alias(10, 18)
 -----------------------
 -- INITIAL CONDITION --
 -----------------------
+
+-- set random seed based on processor number to avoid imprinting
+-- domain decomp on ICs.
+r = Lucee.getRank()
+math.randomseed(r+os.time())
+math.random()
+
 -- initial conditions
 function init(x,y,z)
    local xloc = 0.5*Lx
