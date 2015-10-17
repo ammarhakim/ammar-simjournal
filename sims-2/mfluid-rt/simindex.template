@@ -18,8 +18,9 @@
 Simulation Index
 ================
 
-Multi-fluid RT simulations. Also includes Euler simulations used as
-benchmarking with other codes and papers.
+Multi-fluid RT simulations.
+
+2D Simulations
 
 .. list-table::
   :header-rows: 1
@@ -33,4 +34,15 @@ benchmarking with other codes and papers.
     - Same as s1, except :math:`375x750` mesh.
   * - ${mdl("s3")}
     - Same as s1, :math:`750x1500` mesh.
+
+3D Simulations
+
+.. list-table::
+  :header-rows: 1
+  :widths: 10,90
+
+  * - Number
+    - Description
+  * - ${mdl("m1")}
+    - 3D Hall-MHD simulation (Huba) with 5-moments. Case I, :math:`100x200x200` mesh.
 
