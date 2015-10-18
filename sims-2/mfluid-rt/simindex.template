@@ -34,6 +34,8 @@ Multi-fluid RT simulations.
     - Same as s1, except :math:`375x750` mesh.
   * - ${mdl("s3")}
     - Same as s1, :math:`750x1500` mesh.
+  * - ${mdl("s4")}
+    - 2D Hall-MHD simulation (Huba) with 5-moments. Case II, :math:`100x200` mesh.
 
 3D Simulations
 
