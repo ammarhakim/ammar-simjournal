@@ -24,7 +24,7 @@ mgnErrorSpeedFactor = 1.0
 -- problem parameters
 n0 = 1.0 -- initial number density
 theta = 2.86*Pi/180 -- inclination angle of field
-plasmaBeta = 0.1 -- plasma beta
+plasmaBeta = 0.6 -- plasma beta
 wpe_OmegaCe = 2.0
 Lvfac = 4 -- Lv = Lvfac*di
 
