@@ -44,5 +44,7 @@ Two-fluid KH instability problem.
     - Same as s7, except on 1000x2000 grid.
   * - ${mdl("s9")}
     - Same as s8, except plasma-beta of 0.6
+  * - ${mdl("s10")}
+    - Same as s8, except plasma-beta of 0.05
 
 
