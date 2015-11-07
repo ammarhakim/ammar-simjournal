@@ -401,6 +401,9 @@ function applyBc(curr, dt, fldElc, fldIon)
       fld:applyCopyBc(0, "lower")
       fld:applyCopyBc(0, "upper")
    end
+   -- sync the distribution function across processors
+   fldElc:sync()
+   fldIon:sync()  
 end
 
 ----------------------------

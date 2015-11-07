@@ -42,5 +42,7 @@ Two-fluid KH instability problem.
     - Same as s5, except with mass ratio 100
   * - ${mdl("s8")}
     - Same as s7, except on 1000x2000 grid.
+  * - ${mdl("s9")}
+    - Same as s8, except plasma-beta of 0.6
 
 
