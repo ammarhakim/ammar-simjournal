@@ -8,6 +8,7 @@ log = Lucee.logInfo
 
 polyOrder = 2 -- polynomial order
 epsilon0 = 1.0 -- permittivity of free space
+m0 = 1.0 -- pemiability of free space
 
 Te_Ti = 9.0 -- ratio of electron to ion temperaute
 machNum = 1.5 -- Mach number computed from ion thermal speed
@@ -262,6 +263,29 @@ vlasovSolverIon = Updater.NodalVlasov1X1V {
    mass = ionMass,
 }
 
+-- Maxwell equation object
+maxwellEqn = HyperEquation.PhMaxwell {
+   -- speed of light
+   lightSpeed = 1/math.sqrt(mu0*epsilon0),
+   -- factor for electric field correction potential speed
+   elcErrorSpeedFactor = 0.0,
+   -- factor for magnetic field correction potential speed
+   mgnErrorSpeedFactor = 0.0,
+   -- numerical flux to use: one of "upwind" or "central"
+   numericalFlux = "upwind",
+}
+
+-- updater to solve Maxwell equations
+maxwellSlvr = Updater.NodalDgHyper1D {
+   onGrid = grid,
+   -- basis functions to use
+   basis = basis,
+   -- equation system to solver
+   equation = maxwellEqn,
+   -- CFL number
+   cfl = cfl,
+}
+
 -- Updater to compute electron number density
 numDensityCalcElc = Updater.DistFuncMomentCalc1D {
    onGrid = phaseGridElc,
@@ -276,19 +300,7 @@ numDensityCalcIon = Updater.DistFuncMomentCalc1D {
    moment = 0, --moment to compute
 }
 
--- updater to compute phi from charge density
-phiFromChargeDensityCalc = Updater.FemPoisson1D {
-   onGrid = confGrid,
-   basis = confBasis,
-   sourceNodesShared = false, -- charge density is discontinous
-   solutionNodesShared = false, -- solution is  discontinous
-   -- left boundary is wall, so fix potential to ground
-   bcLeft = { T = "D", V = 0.0 },
-   -- right boundary is wall, so fix potential to ground
-   bcRight = { T = "D", V = 0.0 },
-}
-
--- Updater to compute electron momentum
+-- Updater to compute momentum
 momentumCalcElc = Updater.DistFuncMomentCalc1D {
    onGrid = phaseGridElc,
    basis2d = phaseBasisElc,
@@ -302,7 +314,7 @@ momentumCalcIon = Updater.DistFuncMomentCalc1D {
    moment = 1,
 }
 
--- Updater to compute electron momentum
+-- Updater to compute energy
 ptclEnergyCalcElc = Updater.DistFuncMomentCalc1D {
    onGrid = phaseGridElc,
    basis2d = phaseBasisElc,
@@ -316,27 +328,13 @@ ptclEnergyCalcIon = Updater.DistFuncMomentCalc1D {
    moment = 2,
 }
 
--- updater to copy potential (1D field) to Hamiltonian (2D) field
--- (used in constructing full Hamiltonian, which also includes the KE
--- part)
-copyTo2DElc = Updater.CopyNodalFields1D_2D {
-   onGrid = phaseGridElc,
-   sourceBasis = confBasis,
-   targetBasis = phaseBasisElc
-}
-copyTo2DIon = Updater.CopyNodalFields1D_2D {
-   onGrid = phaseGridIon,
-   sourceBasis = confBasis,
-   targetBasis = phaseBasisIon
-}
-
 -------------------------
 -- Boundary Conditions --
 -------------------------
 -- boundary applicator objects for fluids and fields
 
--- apply boundary conditions
-function applyBc(curr, dt, fldElc, fldIon)
+-- apply boundary conditions to distribution functions
+function applyPhaseBc(curr, dt, fldElc, fldIon)
    for i,bc in ipairs({}) do
       runUpdater(bc, curr, dt, {}, {fldElc})
    end
@@ -347,31 +345,31 @@ function applyBc(curr, dt, fldElc, fldIon)
    for i,fld in ipairs({fldElc, fldIon}) do
       fld:applyCopyBc(0, "lower")
       fld:applyCopyBc(0, "upper")
+      -- for now I am applying copy BCs also in V-space. This needs to
+      -- change and V-space BCs applied in the Vlasov updater itsef.
+      fld:applyCopyBc(1, "lower")
+      fld:applyCopyBc(1, "upper")      
    end
    -- sync the distribution function across processors
    fldElc:sync()
-   fldIon:sync()  
+   fldIon:sync()
+end
+
+-- apply BCs to EM fields
+function applyPhaseBc(curr, dt, EM)
+   for i,bc in ipairs({}) do
+      runUpdater(bc, curr, dt, {}, {EM})
+   end
+   for i,bc in ipairs({}) do
+      runUpdater(bc, curr, dt, {}, {EM})
+   end
+   -- sync EM fields across processors
+   EM:sync()
 end
 
 ----------------------------
 -- DIAGNOSIS AND DATA I/O --
 ----------------------------
-
-totalPtclElc = DataStruct.DynVector { numComponents = 1, }
-totalPtclIon = DataStruct.DynVector { numComponents = 1, }
-
--- updater compute total number of electrons in domain
-totalPtclCalcElc = Updater.IntegrateNodalField1D {
-   onGrid = confGrid,
-   basis = confBasis,
-   shareCommonNodes = false, -- for DG fields common nodes not shared
-}
--- updater compute total number of ions in domain
-totalPtclCalcIon = Updater.IntegrateNodalField1D {
-   onGrid = confGrid,
-   basis = confBasis,
-   shareCommonNodes = false, -- for DG fields common nodes not shared
-}
 
 ----------------------
 -- SOLVER UTILITIES --
@@ -415,44 +413,21 @@ function calcMoments(curr, dt, distfElcIn, distfIonIn)
    calcPtclEnergy(ptclEnergyCalcIon, curr, dt, distfIonIn, ptclEnergyIon)
 end
 
--- function to copy 1D field to 2D field
-function copyPhi(copier, curr, dt, phi1, phi2)
-   runUpdater(copier, curr, dt, {phi1}, {phi2})
-   phi2:sync()
-end
-
 -- function to update Vlasov equation
-function updateVlasovEqn(pbSlvr, curr, dt, distfIn, hamilIn, distfOut)
-   return runUpdater(pbSlvr, curr, dt, {distfIn, hamilIn}, {distfOut})
+function updateVlasovEqn(vlasovSlvr, curr, dt, distfIn, emIn, distfOut)
+   return runUpdater(vlasovSlvr, curr, dt, {distfIn, emIn}, {distfOut})
 end
 
--- function to compute phi from number density
-function calcPhiFromChargeDensity(curr, dt, distElcIn, distIonIn, phiOut)
-   calcMoments(curr, dt, distElcIn, distIonIn)
-   -- charge density: -rhoc/epsilon0
-   chargeDensity:combine(-ionCharge/epsilon0, numDensityIon, -elcCharge/epsilon0, numDensityElc)
-   return runUpdater(phiFromChargeDensityCalc, curr, dt, {chargeDensity}, {phiOut})
-end
-
--- compute hamiltonian for electrons
-function calcHamiltonianElc(curr, dt, phiIn, hamilOut)
-   hamilOut:clear(0.0)
-   copyPhi(copyTo2DElc, curr, dt, phiIn, hamilOut)
-   hamilOut:scale(elcCharge/elcMass)
-   hamilOut:accumulate(1.0, hamilKeElc)
-end
--- compute hamiltonian for ions
-function calcHamiltonianIon(curr, dt, phiIn, hamilOut)
-   hamilOut:clear(0.0)
-   copyPhi(copyTo2DIon, curr, dt, phiIn, hamilOut)
-   hamilOut:scale(ionCharge/ionMass)
-   hamilOut:accumulate(1.0, hamilKeIon)
+-- solve maxwell equation
+function updateMaxwellEqn(curr, dt, emIn, emOut)
+   maxwellSlvr:setCurrTime(curr)
+   maxwellSlvr:setIn( {emIn} )
+   maxwellSlvr:setOut( {emOut} )
+   return maxwellSlvr:advance(curr+dt)
 end
 
 -- function to compute diagnostics
 function calcDiagnostics(curr, dt)
-   runUpdater(totalPtclCalcElc, curr, dt, {numDensityElc}, {totalPtclElc})
-   runUpdater(totalPtclCalcIon, curr, dt, {numDensityIon}, {totalPtclIon})
 end
 
 ----------------------------
