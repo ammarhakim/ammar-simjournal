@@ -1,4 +1,4 @@
--- Vlasov-Poisson solver in Poisson-Bracket formulation
+-- Vlasov-Maxwell solver 
 
 ----------------------------------
 -- Problem dependent parameters --
@@ -188,35 +188,10 @@ chargeDensity = DataStruct.Field1D {
    ghost = {1, 1},
 }
 
--- field to store potential in 1D
+-- EM field
 phi1d = DataStruct.Field1D {
    onGrid = confGrid,
-   numComponents = confBasis:numNodes(),
-   ghost = {1, 1},
-}
-
--- Electron Hamiltonian
-hamilElc = DataStruct.Field2D {
-   onGrid = phaseGridElc,
-   numComponents = phaseBasisElc:numNodes(),
-   ghost = {1, 1},
-}
--- Ion Hamiltonian
-hamilIon = DataStruct.Field2D {
-   onGrid = phaseGridIon,
-   numComponents = phaseBasisIon:numNodes(),
-   ghost = {1, 1},
-}
-
--- create field to store kinetic energy term in Hamiltonian
-hamilKeElc = DataStruct.Field2D {
-   onGrid = phaseGridElc,
-   numComponents = phaseBasisElc:numNodes(),
-   ghost = {1, 1},
-}
-hamilKeIon = DataStruct.Field2D {
-   onGrid = phaseGridIon,
-   numComponents = phaseBasisIon:numNodes(),
+   numComponents = 8*confBasis:numNodes(),
    ghost = {1, 1},
 }
 
@@ -265,54 +240,26 @@ initDistfIon = Updater.ProjectOnNodalBasis2D {
    end
 }
 
--- updater to initialize electron kinetic energy term in Hamiltonian
-initHamilKeElc = Updater.EvalOnNodes2D {
-   onGrid = phaseGridElc,
-   basis = phaseBasisElc,
-   -- are common nodes shared?
-   shareCommonNodes = false,
-   -- function to use for initialization
-   evaluate = function (x,y,z,t)
-      local v = y
-      return v^2/2
-   end
-}
-
--- updater to initialize ion kinetic energy term in Hamiltonian
-initHamilKeIon = Updater.EvalOnNodes2D {
-   onGrid = phaseGridIon,
-   basis = phaseBasisIon,
-   -- are common nodes shared?
-   shareCommonNodes = false,
-   -- function to use for initialization
-   evaluate = function (x,y,z,t)
-      local v = y
-      return v^2/2
-   end
-}
-
 ----------------------
 -- EQUATION SOLVERS --
 ----------------------
 
 -- Updater for electron Vlasov equation
-vlasovSolverElc = Updater.PoissonBracket {
+vlasovSolverElc = Updater.NodalVlasov1X1V {
    onGrid = phaseGridElc,
-   basis = phaseBasisElc,
+   phaseBasis = phaseBasisElc,
+   confBasis = confBasis,
    cfl = cfl,
-   -- flux type: one of "upwind" (default) or "central"
-   fluxType = "upwind",
-   hamilNodesShared = false, -- Hamiltonian is not continuous
-   zeroFluxDirections = {1},
+   charge = elcCharge,
+   mass = elcMass,
 }
-vlasovSolverIon = Updater.PoissonBracket {
+vlasovSolverIon = Updater.NodalVlasov1X1V {
    onGrid = phaseGridIon,
    basis = phaseBasisIon,
+   confBasis = confBasis,   
    cfl = cfl,
-   -- flux type: one of "upwind" (default) or "central"
-   fluxType = "upwind",
-   hamilNodesShared = false, -- Hamiltonian is not continuous
-   zeroFluxDirections = {1},
+   charge = ionCharge,
+   mass = ionMass,
 }
 
 -- Updater to compute electron number density
