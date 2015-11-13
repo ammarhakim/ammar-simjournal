@@ -182,15 +182,26 @@ ptclEnergyIon = DataStruct.Field1D {
    numComponents = confBasis:numNodes(),
    ghost = {1, 1},
 }
--- charge density
-chargeDensity = DataStruct.Field1D {
-   onGrid = confGrid,
-   numComponents = confBasis:numNodes(),
-   ghost = {1, 1},
-}
 
 -- EM field
-phi1d = DataStruct.Field1D {
+em = DataStruct.Field1D {
+   onGrid = confGrid,
+   numComponents = 8*confBasis:numNodes(),
+   ghost = {1, 1},
+}
+-- for RK time-stepping
+em1 = DataStruct.Field1D {
+   onGrid = confGrid,
+   numComponents = 8*confBasis:numNodes(),
+   ghost = {1, 1},
+}
+emNew = DataStruct.Field1D {
+   onGrid = confGrid,
+   numComponents = 8*confBasis:numNodes(),
+   ghost = {1, 1},
+}
+-- duplicate if need to retake the step
+emDup = DataStruct.Field1D {
    onGrid = confGrid,
    numComponents = 8*confBasis:numNodes(),
    ghost = {1, 1},
