@@ -8,12 +8,12 @@ log = Lucee.logInfo
 
 polyOrder = 2 -- polynomial order
 epsilon0 = 1.0 -- permittivity of free space
-m0 = 1.0 -- pemiability of free space
+mu0 = 1.0 -- pemiability of free space
 
-Te_Ti = 9.0 -- ratio of electron to ion temperaute
+Te_Ti = 9.0 -- ratio of electron to ion temperature
 machNum = 1.5 -- Mach number computed from ion thermal speed
 n0 = 1.0 -- initial number density
-elcTemp = 1.0 -- electron temperature
+elcTemp = 1.0e-4 -- electron temperature
 elcMass = 1.0 -- electron mass
 elcCharge = -1.0 -- electron charge
 
@@ -36,8 +36,8 @@ ionDrift = elcDrift -- no net current
 -- domain size and simulation time
 LX = 200*lambdaD
 tStart = 0.0 -- start time 
-tEnd = 10.0/wpe
-nFrames = 1
+tEnd = 100.0/wpe
+nFrames = 10
 
 -- Resolution, time-stepping etc.
 NX = 100
@@ -106,9 +106,10 @@ phaseBasisIon = NodalFiniteElement2D.Serendipity {
    polyOrder = polyOrder,
 }
 -- configuration-space basis functions (shared by both species)
-confBasis = NodalFiniteElement1D.Lobatto {
+confBasis = NodalFiniteElement1D.LagrangeTensor {
    onGrid = confGrid,
    polyOrder = polyOrder,
+   nodeLocation = "lobatto",
 }
 
 -- distribution function for electrons
@@ -183,6 +184,19 @@ ptclEnergyIon = DataStruct.Field1D {
    ghost = {1, 1},
 }
 
+-- net current
+current = DataStruct.Field1D {
+   onGrid = confGrid,
+   numComponents = confBasis:numNodes(),
+   ghost = {1, 1},
+}
+-- for adding to EM fields (this perhaps is not the best way to do it)
+emSource = DataStruct.Field1D {
+   onGrid = confGrid,
+   numComponents = 8*confBasis:numNodes(),
+   ghost = {1, 1},
+}
+
 -- EM field
 em = DataStruct.Field1D {
    onGrid = confGrid,
@@ -200,12 +214,6 @@ emNew = DataStruct.Field1D {
    numComponents = 8*confBasis:numNodes(),
    ghost = {1, 1},
 }
--- duplicate if need to retake the step
-emDup = DataStruct.Field1D {
-   onGrid = confGrid,
-   numComponents = 8*confBasis:numNodes(),
-   ghost = {1, 1},
-}
 
 --------------------------------
 -- INITIAL CONDITION UPDATERS --
@@ -218,7 +226,7 @@ function maxwellian(n0, vdrift, vt, v)
    return n0/math.sqrt(2*Lucee.Pi*vt^2)*math.exp(-(v-vdrift)^2/(2*vt^2))
 end
 
--- updater to initialize distribution function
+-- updater to initialize electron distribution function
 initDistfElc = Updater.ProjectOnNodalBasis2D {
    onGrid = phaseGridElc,
    basis = phaseBasisElc,
@@ -235,7 +243,7 @@ initDistfElc = Updater.ProjectOnNodalBasis2D {
    end
 }
 
--- updater to initialize distribution function
+-- updater to initialize ion distribution function
 initDistfIon = Updater.ProjectOnNodalBasis2D {
    onGrid = phaseGridIon,
    basis = phaseBasisIon,
@@ -267,7 +275,7 @@ vlasovSolverElc = Updater.NodalVlasov1X1V {
 }
 vlasovSolverIon = Updater.NodalVlasov1X1V {
    onGrid = phaseGridIon,
-   basis = phaseBasisIon,
+   phaseBasis = phaseBasisIon,
    confBasis = confBasis,   
    cfl = cfl,
    charge = ionCharge,
@@ -281,16 +289,16 @@ maxwellEqn = HyperEquation.PhMaxwell {
    -- factor for electric field correction potential speed
    elcErrorSpeedFactor = 0.0,
    -- factor for magnetic field correction potential speed
-   mgnErrorSpeedFactor = 0.0,
+   mgnErrorSpeedFactor = 1.0,
    -- numerical flux to use: one of "upwind" or "central"
    numericalFlux = "upwind",
 }
 
 -- updater to solve Maxwell equations
 maxwellSlvr = Updater.NodalDgHyper1D {
-   onGrid = grid,
+   onGrid = confGrid,
    -- basis functions to use
-   basis = basis,
+   basis = confBasis,
    -- equation system to solver
    equation = maxwellEqn,
    -- CFL number
@@ -339,13 +347,25 @@ ptclEnergyCalcIon = Updater.DistFuncMomentCalc1D {
    moment = 2,
 }
 
+-- This strange looking updater copies the currents into the EM source
+-- field. Perhaps this is not the best way to do things, and one can
+-- imagine a source updater which adds current sources to the dE/dt
+-- Maxwell equation
+copyToEmSource = Updater.CopyNodalFields1D {
+   onGrid = confGrid,
+   sourceBasis = confBasis,
+   targetBasis = confBasis,
+   sourceComponents = {0},
+   targetComponents = {0},
+}
+
 -------------------------
 -- Boundary Conditions --
 -------------------------
 -- boundary applicator objects for fluids and fields
 
 -- apply boundary conditions to distribution functions
-function applyPhaseBc(curr, dt, fldElc, fldIon)
+function applyDistFuncBc(curr, dt, fldElc, fldIon)
    for i,bc in ipairs({}) do
       runUpdater(bc, curr, dt, {}, {fldElc})
    end
@@ -367,13 +387,15 @@ function applyPhaseBc(curr, dt, fldElc, fldIon)
 end
 
 -- apply BCs to EM fields
-function applyPhaseBc(curr, dt, EM)
+function applyEmBc(curr, dt, EM)
    for i,bc in ipairs({}) do
       runUpdater(bc, curr, dt, {}, {EM})
    end
    for i,bc in ipairs({}) do
       runUpdater(bc, curr, dt, {}, {EM})
    end
+   EM:applyCopyBc(0, "lower")
+   EM:applyCopyBc(0, "upper")
    -- sync EM fields across processors
    EM:sync()
 end
@@ -416,12 +438,10 @@ function calcMoments(curr, dt, distfElcIn, distfIonIn)
    -- number density
    calcNumDensity(numDensityCalcElc, curr, dt, distfElcIn, numDensityElc)
    calcNumDensity(numDensityCalcIon, curr, dt, distfIonIn, numDensityIon)
-   -- momentum
-   calcMomentum(momentumCalcElc, curr, dt, distfElcIn, momentumElc)
-   calcMomentum(momentumCalcIon, curr, dt, distfIonIn, momentumIon)
    -- energy
    calcPtclEnergy(ptclEnergyCalcElc, curr, dt, distfElcIn, ptclEnergyElc)
    calcPtclEnergy(ptclEnergyCalcIon, curr, dt, distfIonIn, ptclEnergyIon)
+   -- (momentum is computed in the rkStage method)   
 end
 
 -- function to update Vlasov equation
@@ -439,63 +459,81 @@ end
 
 -- function to compute diagnostics
 function calcDiagnostics(curr, dt)
+   -- Nothing to do
 end
 
 ----------------------------
 -- Time-stepping routines --
 ----------------------------
 
-function rk3(tCurr, myDt)
-   local statusElc, dtSuggestedElc
-   local statusIon, dtSuggestedIon
-
-   -- RK stage 1
-   statusElc, dtSuggestedElc = updateVlasovEqn(vlasovSolverElc, tCurr, myDt, distfElc, hamilElc, distf1Elc)
-   statusIon, dtSuggestedIon = updateVlasovEqn(vlasovSolverIon, tCurr, myDt, distfIon, hamilIon, distf1Ion)
-   if (statusElc == false) or (statusIon == false) then
-      return false, math.min(dtSuggestedElc, dtSuggestedIon)
+-- take single RK step
+function rkStage(tCurr, dt, elcIn, ionIn, emIn, elcOut, ionOut, emOut)
+   -- update distribution functions and homogenous Maxwell equations
+   local stElc, dtElc = updateVlasovEqn(vlasovSolverElc, tCurr, dt, elcIn, emIn, elcOut)
+   local stIon, dtIon = updateVlasovEqn(vlasovSolverIon, tCurr, dt, ionIn, emIn, ionOut)
+   local stEm, dtEm = updateMaxwellEqn(tCurr, dt, emIn, emOut)
+   
+   -- compute currents from old values
+   calcMomentum(momentumCalcElc, tCurr, dt, elcIn, momentumElc)
+   calcMomentum(momentumCalcIon, tCurr, dt, ionIn, momentumIon)
+   current:combine(elcCharge, momentumElc, ionCharge, momentumIon)
+   -- copy into EM sources
+   runUpdater(copyToEmSource, tCurr, dt, {current}, {emSource})
+   -- add in current source to Maxwell equation output
+   emOut:accumulate(-dt/epsilon0, emSource)
+   
+   if (stElc == false) or (stIon == false) or (stEm == false)  then
+      return false, math.min(dtElc, dtIon, dtEm)
    end
-   applyBc(tCurr, myDt, distf1Elc, distf1Ion)
-   calcPhiFromChargeDensity(tCurr, myDt, distf1Elc, distf1Ion, phi1d)
-   calcHamiltonianElc(tCurr, myDt, phi1d, hamilElc)
-   calcHamiltonianIon(tCurr, myDt, phi1d, hamilIon)
+   return true, math.min(dtElc, dtIon, dtEm)
+end
+
+function rk3(tCurr, myDt)
+   local myStatus, myDtSuggested
+   -- RK stage 1
+   myStatus, myDtSuggested = rkStage(tCurr, myDt, distfElc, distfIon, em, distf1Elc, distf1Ion, em1)
+   if (myStatus == false)  then
+      return false, myDtSuggested
+   end
+   -- apply BC
+   applyDistFuncBc(tCurr, dt, distf1Elc, distf1Ion)
+   applyEmBc(tCurr, dt, em1)
 
    -- RK stage 2
-   statusElc, dtSuggestedElc = updateVlasovEqn(vlasovSolverElc, tCurr, myDt, distf1Elc, hamilElc, distfNewElc)
-   statusIon, dtSuggestedIon = updateVlasovEqn(vlasovSolverIon, tCurr, myDt, distf1Ion, hamilIon, distfNewIon)
-   if (statusElc == false) or (statusIon == false) then
-      return false, math.min(dtSuggestedElc, dtSuggestedIon)
+   myStatus, myDtSuggested = rkStage(tCurr, myDt, distf1Elc, distf1Ion, em1, distfNewElc, distfNewIon, emNew)
+   if (myStatus == false)  then
+      return false, myDtSuggested
    end
    distf1Elc:combine(3.0/4.0, distfElc, 1.0/4.0, distfNewElc)
    distf1Ion:combine(3.0/4.0, distfIon, 1.0/4.0, distfNewIon)
-   applyBc(tCurr, myDt, distf1Elc, distf1Ion)
-   calcPhiFromChargeDensity(tCurr, myDt, distf1Elc, distf1Ion, phi1d)
-   calcHamiltonianElc(tCurr, myDt, phi1d, hamilElc)
-   calcHamiltonianIon(tCurr, myDt, phi1d, hamilIon)
+   em1:combine(3.0/4.0, em, 1.0/4.0, emNew)
+   -- apply BC
+   applyDistFuncBc(tCurr, dt, distf1Elc, distf1Ion)
+   applyEmBc(tCurr, dt, em1)   
 
    -- RK stage 3
-   statusElc, dtSuggestedElc = updateVlasovEqn(vlasovSolverElc, tCurr, myDt, distf1Elc, hamilElc, distfNewElc)
-   statusIon, dtSuggestedIon = updateVlasovEqn(vlasovSolverIon, tCurr, myDt, distf1Ion, hamilIon, distfNewIon)
-   if (statusElc == false) or (statusIon == false) then
-      return false, math.min(dtSuggestedElc, dtSuggestedIon)
+   myStatus, myDtSuggested = rkStage(tCurr, myDt, distf1Elc, distf1Ion, em1, distfNewElc, distfNewIon, emNew)
+   if (myStatus == false)  then
+      return false, myDtSuggested
    end
    distf1Elc:combine(1.0/3.0, distfElc, 2.0/3.0, distfNewElc)
    distf1Ion:combine(1.0/3.0, distfIon, 2.0/3.0, distfNewIon)
-   applyBc(tCurr, myDt, distf1Elc, distf1Ion)
+   em1:combine(1.0/3.0, em, 2.0/3.0, emNew)
+   -- apply BC
+   applyDistFuncBc(tCurr, dt, distf1Elc, distf1Ion)
+   applyEmBc(tCurr, dt, em1)   
 
    distfElc:copy(distf1Elc)
    distfIon:copy(distf1Ion)
+   em:copy(em1)
 
-   calcPhiFromChargeDensity(tCurr, myDt, distfElc, distfIon, phi1d)
-   calcHamiltonianElc(tCurr, myDt, phi1d, hamilElc)
-   calcHamiltonianIon(tCurr, myDt, phi1d, hamilIon)
-
-   return true, math.min(dtSuggestedElc, dtSuggestedIon)
+   return true, myDtSuggested
 end
 
--- make a duplicate in case we need it
+-- make duplicates in case we need them
 distfDupElc = distfElc:duplicate()
 distfDupIon = distfIon:duplicate()
+emDup = em:duplicate()
 
 -- function to advance solution from tStart to tEnd
 function runSimulation(tStart, tEnd, nFrames, initDt)
@@ -511,6 +549,7 @@ function runSimulation(tStart, tEnd, nFrames, initDt)
    while true do
       distfDupElc:copy(distfElc)
       distfDupIon:copy(distfIon)
+      emDup:copy(em)
       -- if needed adjust dt to hit tEnd exactly
       if (tCurr+myDt > tEnd) then
 	 myDt = tEnd-tCurr
@@ -525,6 +564,7 @@ function runSimulation(tStart, tEnd, nFrames, initDt)
 	 myDt = dtSuggested
 	 distfElc:copy(distfDupElc)
 	 distfIon:copy(distfDupIon)
+	 em:copy(emDup)
       else
 	 -- compute diagnostics
 	 calcDiagnostics(tCurr, myDt)
@@ -554,43 +594,36 @@ function writeFields(frameNum, tCurr)
    -- distribution functions
    distfElc:write(string.format("distfElc_%d.h5", frameNum), tCurr)
    distfIon:write(string.format("distfIon_%d.h5", frameNum), tCurr)
-   -- potential
-   phi1d:write(string.format("phi_%d.h5", frameNum), tCurr)   
-   -- moments
+
+   -- EM field
+   em:write(string.format("em_%d.h5", frameNum), tCurr)   
+
+   -- compute moments and write them out
+   calcMoments(tCurr, 0.0, distfElc, distfIon)
    numDensityElc:write(string.format("numDensityElc_%d.h5", frameNum), tCurr)
    numDensityIon:write(string.format("numDensityIon_%d.h5", frameNum), tCurr)
    momentumElc:write(string.format("momentumElc_%d.h5", frameNum), tCurr)
    momentumIon:write(string.format("momentumIon_%d.h5", frameNum), tCurr)
-   -- diagnostics
-   totalPtclElc:write(string.format("totalPtclElc_%d.h5", frameNum), tCurr)
-   totalPtclIon:write(string.format("totalPtclIon_%d.h5", frameNum), tCurr)
    ptclEnergyElc:write(string.format("ptclEnergyElc_%d.h5", frameNum), tCurr)
    ptclEnergyIon:write(string.format("ptclEnergyIon_%d.h5", frameNum), tCurr)
+
+   -- diagnostics
 end
 
 ----------------------------
 -- RUNNING THE SIMULATION --
 ----------------------------
 
--- -- apply initial conditions for electrons and ion
+-- apply initial conditions for electrons and ion
 runUpdater(initDistfElc, 0.0, 0.0, {}, {distfElc})
 runUpdater(initDistfIon, 0.0, 0.0, {}, {distfIon})
--- initialize KE parts of Hamiltonian
-runUpdater(initHamilKeElc, 0.0, 0.0, {}, {hamilKeElc})
-runUpdater(initHamilKeIon, 0.0, 0.0, {}, {hamilKeIon})
+em:clear(0.0) -- initially there are no fields
 
--- -- compute initial moments
-calcMoments(0.0, 0.0, distfElc, distfIon)
-
--- -- calculate initial potential and Hamiltonians
-applyBc(0.0, 0.0, distfElc, distfIon)
-calcPhiFromChargeDensity(0.0, 0.0, distfElc, distfIon, phi1d)
-calcHamiltonianElc(0.0, 0.0, phi1d, hamilElc)
-calcHamiltonianIon(0.0, 0.0, phi1d, hamilIon)
-
---compute initial diagnostics
+-- apply BCs
+applyDistFuncBc(0.0, 0.0, distfElc, distfIon)
+applyEmBc(0.0, 0.0, em)
+-- compute initial diagnostics
 calcDiagnostics(0.0, 0.0)
-
 -- write out initial fields
 writeFields(0, 0.0)
 
