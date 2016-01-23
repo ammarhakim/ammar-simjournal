@@ -266,7 +266,7 @@ end
 embeddedBcUpdater = Updater.StairSteppedBc2D {
    onGrid = grid,
    -- boundary conditions to apply
-   boundaryConditions = {bcVaporFunc},
+   boundaryConditions = {bcFluidCopy, bcFluidWall, bcVaporFunc},
    -- in/out field
    inOutField = inOut,
 }

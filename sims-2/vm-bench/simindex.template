@@ -1,0 +1,40 @@
+<%!
+  import glob
+  def makeRst(lua, lang):
+    extension = "lua"
+
+    if lang == "lua":
+      extension = "lua"
+    elif lang == "python":
+      extension = "py"
+
+    fls = glob.glob("%s/%s-*.%s" % (lua, lua, extension))
+    if (len(fls)>0):
+      return fls[0][:fls[0].find(".")]
+    return ""
+%>
+<%def name="mdl(sim, lang='lua')"><% luaFl = makeRst(sim, lang) %>:doc:`${sim} <${luaFl}>` </%def>
+
+Simulation Index
+================
+
+1D electrostatic shock problem.
+
+.. list-table::
+  :header-rows: 1
+  :widths: 10,90
+
+Landau damping in 1X/1V
+
+  * - Number
+    - Description
+  * - s1
+    - 1X/1V V-M version of Landau damping problem. :math:`k\lambda_D = 0.5`
+  * - s2
+    - 1X/1V V-M version of Landau damping problem. :math:`k\lambda_D = 0.75`
+  * - s3
+    - 1X/1V V-M version of Landau damping problem. :math:`k\lambda_D = 1.0`
+  * - s4
+    - 1X/1V V-M version of Landau damping problem. :math:`k\lambda_D = 1.25`
+  * - s5
+    - 1X/1V V-M version of Landau damping problem. :math:`k\lambda_D = 0.4`
