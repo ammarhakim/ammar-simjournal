@@ -40,7 +40,7 @@ pert = 1e-5
 LX = 2*Lucee.Pi/knumber
 
 tStart = 0.0 -- start time 
-tEnd = 2.0/wpe
+tEnd = 10.0/wpe
 nFrames = 1
 
 -- Resolution, time-stepping etc.
@@ -73,7 +73,7 @@ log(string.format("Ion velociy domain extents = [%g,%g]", VL_ION, VU_ION))
 -- COMPUTATIONAL DOMAIN, DATA STRUCTURE, ETC. --
 ------------------------------------------------
 -- decomposition object
-phaseDecomp = DecompRegionCalc3D.CartProd { cuts = {1,1,1} }
+phaseDecomp = DecompRegionCalc3D.CartProd { cuts = {2,1,1} }
 confDecomp = DecompRegionCalc1D.SubCartProd3D {
    decomposition = phaseDecomp,
    collectDirections = {0},
