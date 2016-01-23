@@ -24,17 +24,22 @@ Simulation Index
   :header-rows: 1
   :widths: 10,90
 
-Landau damping in 1X/1V
+Landau damping using V-M
 
   * - Number
     - Description
   * - s1
     - 1X/1V V-M version of Landau damping problem. :math:`k\lambda_D = 0.5`
   * - s2
-    - 1X/1V V-M version of Landau damping problem. :math:`k\lambda_D = 0.75`
+    - Same as s1, except :math:`k\lambda_D = 0.75`
   * - s3
-    - 1X/1V V-M version of Landau damping problem. :math:`k\lambda_D = 1.0`
+    - Same as s1, except :math:`k\lambda_D = 1.0`
   * - s4
-    - 1X/1V V-M version of Landau damping problem. :math:`k\lambda_D = 1.25`
+    - Same as s1, except :math:`k\lambda_D = 1.25`
   * - s5
-    - 1X/1V V-M version of Landau damping problem. :math:`k\lambda_D = 0.4`
+    - Same as s1, except :math:`k\lambda_D = 0.4`
+  * - s5
+    - Same as s1, except :math:`k\lambda_D = 0.4`
+  * - s6
+    - 1X/2V V-M version of Landau damping problem. :math:`k\lambda_D = 0.5`
+
