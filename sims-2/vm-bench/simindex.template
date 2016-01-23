@@ -43,3 +43,9 @@ Landau damping using V-M
   * - s6
     - 1X/2V V-M version of Landau damping problem. :math:`k\lambda_D = 0.5`
 
+RF problems using V-M
+
+  * - Number
+    - Description
+  * - t1
+    - 1X/1V V-M simulation of plasma wave-beach problem
