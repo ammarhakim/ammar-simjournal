@@ -36,7 +36,8 @@ LX = xupper-xlower
 
 -- Resolution, time-stepping etc.
 NX = 128
-NV = 32
+NVX = 32
+NVY = 16
 tStart = 0.0 -- start time 
 tEnd = 5.0e-9
 nFrames = 1
@@ -50,7 +51,7 @@ dx100 = (xupper-xlower)/100
 deltaT = dx100/Lucee.SpeedOfLight
 driveOmega = Lucee.Pi/10/deltaT
 
-cfl = 0.5/(2*polyOrder+1)
+cfl = (1.0/3.0)/(2*polyOrder+1)
 
 -- compute max thermal speed to set velocity space extents
 VL_ELC, VU_ELC = -6.0*vtElc, 6.0*vtElc
@@ -74,24 +75,24 @@ log(string.format("Drive frequency = %g", driveOmega))
 -- COMPUTATIONAL DOMAIN, DATA STRUCTURE, ETC. --
 ------------------------------------------------
 -- decomposition object
-phaseDecomp = DecompRegionCalc2D.CartProd { cuts = {1,1} }
-confDecomp = DecompRegionCalc1D.SubCartProd2D {
+phaseDecomp = DecompRegionCalc3D.CartProd { cuts = {2,1,1} }
+confDecomp = DecompRegionCalc1D.SubCartProd3D {
    decomposition = phaseDecomp,
    collectDirections = {0},
 }
 
 -- phase space grid for electrons
-phaseGridElc = Grid.RectCart2D {
-   lower = {xlower, VL_ELC},
-   upper = {xupper, VU_ELC},
-   cells = {NX, NV},
+phaseGridElc = Grid.RectCart3D {
+   lower = {xlower, VL_ELC, VL_ELC},
+   upper = {xupper, VU_ELC, VU_ELC},
+   cells = {NX, NVX, NVY},
    decomposition = phaseDecomp,   
 }
 -- phase space grid for ions
-phaseGridIon = Grid.RectCart2D {
-   lower = {xlower, VL_ION},
-   upper = {xupper, VU_ION},
-   cells = {NX, NV},
+phaseGridIon = Grid.RectCart3D {
+   lower = {xlower, VL_ION, VL_ION},
+   upper = {xupper, VU_ION, VL_ION},
+   cells = {NX, NVX, NVY},
    decomposition = phaseDecomp,
 }
 
@@ -104,11 +105,11 @@ confGrid = Grid.RectCart1D {
 }
 
 -- phase-space basis functions for electrons and ions
-phaseBasisElc = NodalFiniteElement2D.SerendipityElement {
+phaseBasisElc = NodalFiniteElement3D.SerendipityElement {
    onGrid = phaseGridElc,
    polyOrder = polyOrder,
 }
-phaseBasisIon = NodalFiniteElement2D.SerendipityElement {
+phaseBasisIon = NodalFiniteElement3D.SerendipityElement {
    onGrid = phaseGridIon,
    polyOrder = polyOrder,
 }
@@ -120,35 +121,35 @@ confBasis = NodalFiniteElement1D.LagrangeTensor {
 }
 
 -- distribution function for electrons
-distfElc = DataStruct.Field2D {
+distfElc = DataStruct.Field3D {
    onGrid = phaseGridElc,
    numComponents = phaseBasisElc:numNodes(),
    ghost = {1, 1},
 }
 -- distribution function for ions
-distfIon = DataStruct.Field2D {
+distfIon = DataStruct.Field3D {
    onGrid = phaseGridIon,
    numComponents = phaseBasisIon:numNodes(),
    ghost = {1, 1},
 }
 
 -- extra fields for performing RK update
-distfNewElc = DataStruct.Field2D {
+distfNewElc = DataStruct.Field3D {
    onGrid = phaseGridElc,
    numComponents = phaseBasisElc:numNodes(),
    ghost = {1, 1},
 }
-distf1Elc = DataStruct.Field2D {
+distf1Elc = DataStruct.Field3D {
    onGrid = phaseGridElc,
    numComponents = phaseBasisElc:numNodes(),
    ghost = {1, 1},
 }
-distfNewIon = DataStruct.Field2D {
+distfNewIon = DataStruct.Field3D {
    onGrid = phaseGridIon,
    numComponents = phaseBasisElc:numNodes(),
    ghost = {1, 1},
 }
-distf1Ion = DataStruct.Field2D {
+distf1Ion = DataStruct.Field3D {
    onGrid = phaseGridIon,
    numComponents = phaseBasisElc:numNodes(),
    ghost = {1, 1},
@@ -169,13 +170,13 @@ numDensityIon = DataStruct.Field1D {
 -- Electron momentum
 momentumElc = DataStruct.Field1D {
    onGrid = confGrid,
-   numComponents = confBasis:numNodes(),
+   numComponents = 2*confBasis:numNodes(),
    ghost = {1, 1},
 }
 -- Ion momentum
 momentumIon = DataStruct.Field1D {
    onGrid = confGrid,
-   numComponents = confBasis:numNodes(),
+   numComponents = 2*confBasis:numNodes(),
    ghost = {1, 1},
 }
 -- Electron particle energy
@@ -194,7 +195,7 @@ ptclEnergyIon = DataStruct.Field1D {
 -- net current
 current = DataStruct.Field1D {
    onGrid = confGrid,
-   numComponents = confBasis:numNodes(),
+   numComponents = 2*confBasis:numNodes(),
    ghost = {1, 1},
 }
 -- for adding to EM fields (this perhaps is not the best way to do it)
@@ -229,37 +230,38 @@ emNew = DataStruct.Field1D {
 -- Maxwellian with number density 'n0', drift-speed 'vdrift' and
 -- thermal speed 'vt' = \sqrt{T/m}, where T and m are species
 -- temperature and mass respectively.
-function maxwellian(n0, vdrift, vt, v)
-   return n0/math.sqrt(2*Lucee.Pi*vt^2)*math.exp(-(v-vdrift)^2/(2*vt^2))
+function maxwellian(n0, vdrift_x, vdrift_y, vt, vx, vy)
+   local v2 = (vx-vdrift_x)^2 + (vy-vdrift_y)^2
+   return n0/(2*Lucee.Pi*vt^2)*math.exp(-v2/(2*vt^2))
 end
 
 -- updater to initialize electron distribution function
-initDistfElc = Updater.ProjectOnNodalBasis2D {
+initDistfElc = Updater.ProjectOnNodalBasis3D {
    onGrid = phaseGridElc,
    basis = phaseBasisElc,
    -- are common nodes shared?
    shareCommonNodes = false, -- In DG, common nodes are not shared
    -- function to use for initialization
-   evaluate = function(x,v,z,t)
+   evaluate = function(x,vx,vy,t)
       local wpdt = 25*(1-x)^5 -- plasma frequency
       local factor = deltaT^2*Lucee.ElementaryCharge^2/(Lucee.ElectronMass*Lucee.Epsilon0)
       local nElc = wpdt^2/factor
-      return maxwellian(nElc, elcDrift, vtElc, v)
+      return maxwellian(nElc, 0.0, 0.0, vtElc, vx, vy)
    end
 }
 
 -- updater to initialize ion distribution function
-initDistfIon = Updater.ProjectOnNodalBasis2D {
+initDistfIon = Updater.ProjectOnNodalBasis3D {
    onGrid = phaseGridIon,
    basis = phaseBasisIon,
    -- are common nodes shared?
    shareCommonNodes = false, -- In DG, common nodes are not shared
    -- function to use for initialization
-   evaluate = function(x,v,z,t)
+   evaluate = function(x,vx,vy,t)
       local wpdt = 25*(1-x)^5 -- plasma frequency
       local factor = deltaT^2*Lucee.ElementaryCharge^2/(Lucee.ElectronMass*Lucee.Epsilon0)
       local nElc = wpdt^2/factor
-      return maxwellian(nElc, elcDrift, vtElc, v)
+      return maxwellian(nElc, 0.0, 0.0, vtIon, vx, vy)
    end
 }
 
@@ -321,13 +323,13 @@ maxwellSlvr = Updater.NodalDgHyper1D {
 }
 
 -- Updater to compute electron number density
-numDensityCalcElc = Updater.DistFuncMomentCalc1X1V {
+numDensityCalcElc = Updater.DistFuncMomentCalc1X2V {
    onGrid = phaseGridElc,
    phaseBasis = phaseBasisElc,
    confBasis = confBasis,   
    moment = 0,
 }
-numDensityCalcIon = Updater.DistFuncMomentCalc1X1V {
+numDensityCalcIon = Updater.DistFuncMomentCalc1X2V {
    onGrid = phaseGridIon,
    phaseBasis = phaseBasisIon,
    confBasis = confBasis,   
@@ -335,13 +337,13 @@ numDensityCalcIon = Updater.DistFuncMomentCalc1X1V {
 }
 
 -- Updater to compute momentum
-momentumCalcElc = Updater.DistFuncMomentCalc1X1V {
+momentumCalcElc = Updater.DistFuncMomentCalc1X2V {
    onGrid = phaseGridElc,
    phaseBasis = phaseBasisElc,
    confBasis = confBasis,
    moment = 1,
 }
-momentumCalcIon = Updater.DistFuncMomentCalc1X1V {
+momentumCalcIon = Updater.DistFuncMomentCalc1X2V {
    onGrid = phaseGridIon,
    phaseBasis = phaseBasisIon,
    confBasis = confBasis,
@@ -356,8 +358,8 @@ copyToEmSource = Updater.CopyNodalFields1D {
    onGrid = confGrid,
    sourceBasis = confBasis,
    targetBasis = confBasis,
-   sourceComponents = {0},
-   targetComponents = {0},
+   sourceComponents = {0, 1},
+   targetComponents = {0, 1},
 }
 
 -------------------------
@@ -482,7 +484,7 @@ end
 function rkStage(tCurr, dt, elcIn, ionIn, emIn, elcOut, ionOut, emOut)
    -- update distribution functions and homogenous Maxwell equations
    local stElc, dtElc = updateVlasovEqn(vlasovSolverElc, tCurr, dt, elcIn, emIn, elcOut)
-   local stIon, dtIon = updateVlasovEqn(vlasovSolverIon, tCurr, dt, ionIn, emIn, ionOut)
+   ionOut:copy(ionIn) -- not updating ion equations, so just copy old solution to output field
    local stEm, dtEm = updateMaxwellEqn(tCurr, dt, emIn, emOut)
    
    -- compute currents from old values
