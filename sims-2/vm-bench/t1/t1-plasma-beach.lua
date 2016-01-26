@@ -91,7 +91,7 @@ phaseGridElc = Grid.RectCart3D {
 -- phase space grid for ions
 phaseGridIon = Grid.RectCart3D {
    lower = {xlower, VL_ION, VL_ION},
-   upper = {xupper, VU_ION, VL_ION},
+   upper = {xupper, VU_ION, VU_ION},
    cells = {NX, NVX, NVY},
    decomposition = phaseDecomp,
 }
@@ -282,7 +282,7 @@ initField = Updater.ProjectOnNodalBasis1D {
 ----------------------
 
 -- Updater for electron Vlasov equation
-vlasovSolverElc = Updater.NodalVlasov1X1V {
+vlasovSolverElc = Updater.NodalVlasov1X2V {
    onGrid = phaseGridElc,
    phaseBasis = phaseBasisElc,
    confBasis = confBasis,
@@ -290,7 +290,7 @@ vlasovSolverElc = Updater.NodalVlasov1X1V {
    charge = elcCharge,
    mass = elcMass,
 }
-vlasovSolverIon = Updater.NodalVlasov1X1V {
+vlasovSolverIon = Updater.NodalVlasov1X2V {
    onGrid = phaseGridIon,
    phaseBasis = phaseBasisIon,
    confBasis = confBasis,   
