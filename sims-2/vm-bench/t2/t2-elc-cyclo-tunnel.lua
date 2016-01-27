@@ -12,7 +12,7 @@ mu0 = Lucee.Mu0 -- Permeabilty of free space
 lightSpeed = Lucee.SpeedOfLight -- speed of light
 
 Te_Ti = 1.0 -- ratio of electron to ion temperature
-elcTemp = 1.0*Lucee.Ev2Kelvin -- electron temperature
+elcTemp = 0.1*Lucee.Ev2Kelvin -- electron temperature
 elcMass = Lucee.ElectronMass -- electron mass
 elcCharge = -Lucee.ElementaryCharge -- electron charge
 
@@ -30,7 +30,7 @@ ionDrift = elcDrift -- no net current
 
 -- domain size and simulation time
 xlower = 0.0 -- lower bounds of domain
-xupper = 1.0 -- upper bounds of domain
+xupper = 0.14 -- upper bounds of domain
 
 LX = xupper-xlower
 
@@ -39,19 +39,17 @@ NX = 64
 NVX = 32
 NVY = 16
 tStart = 0.0 -- start time 
-tEnd = 5.0e-9
-nFrames = 100
+tEnd = 1.4e-9 -- this is about 20 periods
+nFrames = 4
 
 -- compute coordinate of interior last edge
 dx = (xupper-xlower)/NX
 xLastEdge = xupper-dx
 
-dx100 = (xupper-xlower)/100
--- compute drive frequency
-deltaT = dx100/Lucee.SpeedOfLight
-driveOmega = Lucee.Pi/10/deltaT
+driveF = 15.0e9 -- [Hz]
+driveOmega = 2*Lucee.Pi*driveF -- [r/s]
 
-cfl = 0.5*(1.0/3.0)/(2*polyOrder+1)
+cfl = (1.0/3.0)/(2*polyOrder+1)
 
 -- compute max thermal speed to set velocity space extents
 VL_ELC, VU_ELC = -6.0*vtElc, 6.0*vtElc
@@ -681,7 +679,7 @@ writeFields(0, 0.0)
 
 -- run the whole thing
 initDt = tEnd
-runSimulation(tStart, tEnd, nFrames, initDt)
+--runSimulation(tStart, tEnd, nFrames, initDt)
 
 -- print some timing information
 log(string.format("Total time in vlasov solver for electrons = %g", vlasovSolverElc:totalAdvanceTime()))
