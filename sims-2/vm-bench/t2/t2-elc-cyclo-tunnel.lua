@@ -23,7 +23,7 @@ ionCharge = Lucee.ElementaryCharge -- ion charge
 -- initial electron density
 n0 = 1e17 -- [#/m^3]
 -- magnetic field parameters
-B0 = 0.01 -- 0.536 -- [Tesla]
+B0 = 0.536 -- [Tesla]
 R0 = 0.005 -- [m]
 xcoff = 0.04 -- [m]
 Bmax = B0*(R0+xcoff)/R0 -- maximum magnetic field
@@ -60,9 +60,8 @@ wpe = math.sqrt(n0*elcCharge^2/(elcMass*Lucee.Epsilon0))
 wce = elcCharge*Bmax/elcMass
 wce0 = elcCharge*B0/elcMass
 
--- driveF = 15.0e9 -- [Hz]
-driveOmega = math.abs(wce0) -- 2*Lucee.Pi*driveF -- [r/s]
-driveF = driveOmega/(2*Lucee.Pi)
+driveF = 15.0e9 -- [Hz]
+driveOmega = 2*Lucee.Pi*driveF -- [r/s]
 
 cfl = 0.5*(1.0/3.0)/(2*polyOrder+1)
 
@@ -555,7 +554,7 @@ function rkStage(tCurr, dt, elcIn, ionIn, emIn, elcOut, ionOut, emOut)
    -- add in current source to Maxwell equation output
    emOut:accumulate(-dt/epsilon0, emSource)
    
-   if (stElc == false) or (stIon == false) or (stEm == false)  then
+   if (stElc == false) or (stEm == false)  then
       return false, math.min(dtElc, dtEm)
    end
    return true, math.min(dtElc, dtEm)
