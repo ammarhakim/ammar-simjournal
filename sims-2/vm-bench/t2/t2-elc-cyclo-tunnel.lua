@@ -20,6 +20,14 @@ ionTemp = elcTemp/Te_Ti -- ion temperature
 ionMass = Lucee.ProtonMass -- ion mass
 ionCharge = Lucee.ElementaryCharge -- ion charge
 
+-- initial electron density
+n0 = 1e13 -- 1e17 -- [#/m^3]
+-- magnetic field parameters
+B0 = 0.1 --0.536 -- [Tesla]
+R0 = 0.005 -- [m]
+xcoff = 0.04 -- [m]
+Bmax = B0*(R0+xcoff)/R0 -- maximum magnetic field
+
 -- thermal speeds
 vtElc = math.sqrt(Lucee.BoltzmannConstant*elcTemp/elcMass)
 vtIon = math.sqrt(Lucee.BoltzmannConstant*ionTemp/ionMass)
@@ -35,12 +43,12 @@ xupper = 0.14 -- upper bounds of domain
 LX = xupper-xlower
 
 -- Resolution, time-stepping etc.
-NX = 64
-NVX = 32
-NVY = 16
+NX = 128
+NVX = 16
+NVY = 8
 tStart = 0.0 -- start time 
 tEnd = 1.4e-9 -- this is about 20 periods
-nFrames = 4
+nFrames = 10
 
 -- compute coordinate of interior last edge
 dx = (xupper-xlower)/NX
@@ -49,7 +57,12 @@ xLastEdge = xupper-dx
 driveF = 15.0e9 -- [Hz]
 driveOmega = 2*Lucee.Pi*driveF -- [r/s]
 
-cfl = (1.0/3.0)/(2*polyOrder+1)
+cfl = 0.5*(1.0/3.0)/(2*polyOrder+1)
+
+-- plasma frequency
+wpe = math.sqrt(n0*elcCharge^2/(elcMass*Lucee.Epsilon0))
+-- electron cyclotron frequency
+wce = elcCharge*Bmax/elcMass
 
 -- compute max thermal speed to set velocity space extents
 VL_ELC, VU_ELC = -6.0*vtElc, 6.0*vtElc
@@ -61,12 +74,16 @@ log(string.format("Electron thermal speed=%g", vtElc))
 log(string.format("Cell size=%g", LX/NX))
 log(string.format("Light speed=%g", lightSpeed))
 log(string.format("Time-step from light speed=%g", cfl*LX/NX/lightSpeed))
+log(string.format("Time-step from plasma-frequency = %g", cfl*2/wpe))
+log(string.format("Time-step from cyclotron-frequency = %g", cfl*2/wce/NVX))
 log(string.format("Electron thermal speed=%g", vtElc))
 log(string.format("Ion thermal speed=%g", vtIon))
 log(string.format("Electron/Ion drift speed=%g", elcDrift))
 log(string.format("Configuration domain extents = [%g,%g]", -LX/2, LX/2))
 log(string.format("Electron velocity domain extents = [%g,%g]", VL_ELC, VU_ELC))
 log(string.format("Ion velociy domain extents = [%g,%g]", VL_ION, VU_ION))
+log(string.format("Plasma frequency = %g", wpe))
+log(string.format("Electron cyclotron frequency = %g", math.abs(wce)))
 log(string.format("Drive frequency = %g", driveOmega))
 
 ------------------------------------------------
@@ -228,6 +245,19 @@ emNew = DataStruct.Field1D {
    ghost = {1, 1},
 }
 
+-- Static background EM field
+emStatic = DataStruct.Field1D {
+   onGrid = confGrid,
+   numComponents = 8*confBasis:numNodes(),
+   ghost = {1, 1},
+}
+-- total EM field
+emTotal = DataStruct.Field1D {
+   onGrid = confGrid,
+   numComponents = 8*confBasis:numNodes(),
+   ghost = {1, 1},
+}
+
 --------------------------------
 -- INITIAL CONDITION UPDATERS --
 --------------------------------
@@ -248,8 +278,7 @@ initDistfElc = Updater.ProjectOnNodalBasis3D {
    shareCommonNodes = false, -- In DG, common nodes are not shared
    -- function to use for initialization
    evaluate = function(x,vx,vy,t)
-      local nElc = 1e17 -- electron density [#/m^3]
-      return maxwellian(nElc, 0.0, 0.0, vtElc, vx, vy)
+      return maxwellian(n0, 0.0, 0.0, vtElc, vx, vy)
    end
 }
 
@@ -261,8 +290,7 @@ initDistfIon = Updater.ProjectOnNodalBasis3D {
    shareCommonNodes = false, -- In DG, common nodes are not shared
    -- function to use for initialization
    evaluate = function(x,vx,vy,t)
-      local nElc = 1e17 -- electron density [#/m^3]
-      return maxwellian(nElc, 0.0, 0.0, vtIon, vx, vy)
+      return maxwellian(n0, 0.0, 0.0, vtIon, vx, vy)
    end
 }
 
@@ -273,9 +301,6 @@ initField = Updater.ProjectOnNodalBasis1D {
    shareCommonNodes = false, -- In DG, common nodes are not shared
    -- function to use for initialization
    evaluate = function (x,y,z,t)
-      local B0 = 0.536 -- 0.536 -- [Tesla]
-      local R0 = 0.005 -- [m]
-      local xcoff = 0.04
       return 0.0, 0.0, 0.0, 0.0, 0.0, B0*(R0+xcoff)/(R0+x), 0.0, 0.0
    end
 }
@@ -333,7 +358,7 @@ antennaCurrentSrc = Updater.ProjectOnNodalBasis1D {
    shareCommonNodes = false, -- In DG, common nodes are not shared
    -- function to use for initialization
    evaluate = function (x,y,z,t)
-      local J0 = 1.0 -- Amps/m^3
+      local J0 = 1.0e-12 -- Amps/m^3
       local Jy = 0.0
       if (x>xLastEdge) then
 	 local ramp = math.sin(0.5*Lucee.Pi*math.min(1, 0.1*driveF*t))
@@ -508,8 +533,9 @@ end
 
 -- take single RK step
 function rkStage(tCurr, dt, elcIn, ionIn, emIn, elcOut, ionOut, emOut)
+   emTotal:combine(1.0, emIn, 1.0, emStatic)
    -- update distribution functions and homogenous Maxwell equations
-   local stElc, dtElc = updateVlasovEqn(vlasovSolverElc, tCurr, dt, elcIn, emIn, elcOut)
+   local stElc, dtElc = updateVlasovEqn(vlasovSolverElc, tCurr, dt, elcIn, emTotal, elcOut)
    ionOut:copy(ionIn) -- not updating ion equations, so just copy old solution to output field
    local stEm, dtEm = updateMaxwellEqn(tCurr, dt, emIn, emOut)
    
@@ -662,7 +688,11 @@ end
 -- apply initial conditions for electrons and ion
 runUpdater(initDistfElc, 0.0, 0.0, {}, {distfElc})
 runUpdater(initDistfIon, 0.0, 0.0, {}, {distfIon})
-runUpdater(initField, 0.0, 0.0, {}, {em})
+runUpdater(initField, 0.0, 0.0, {}, {emStatic})
+em:clear(0.0) -- initially no fields
+
+-- write out initial static field
+emStatic:write("emStatic.h5")
 
 -- print IC timing information
 log(string.format("Electron IC updater took = %g", initDistfElc:totalAdvanceTime()))
@@ -678,7 +708,7 @@ writeFields(0, 0.0)
 
 -- run the whole thing
 initDt = tEnd
---runSimulation(tStart, tEnd, nFrames, initDt)
+runSimulation(tStart, tEnd, nFrames, initDt)
 
 -- print some timing information
 log(string.format("Total time in vlasov solver for electrons = %g", vlasovSolverElc:totalAdvanceTime()))
