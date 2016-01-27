@@ -248,9 +248,7 @@ initDistfElc = Updater.ProjectOnNodalBasis3D {
    shareCommonNodes = false, -- In DG, common nodes are not shared
    -- function to use for initialization
    evaluate = function(x,vx,vy,t)
-      local wpdt = 25*(1-x)^5 -- plasma frequency
-      local factor = deltaT^2*Lucee.ElementaryCharge^2/(Lucee.ElectronMass*Lucee.Epsilon0)
-      local nElc = wpdt^2/factor
+      local nElc = 1e17 -- electron density [#/m^3]
       return maxwellian(nElc, 0.0, 0.0, vtElc, vx, vy)
    end
 }
@@ -263,9 +261,7 @@ initDistfIon = Updater.ProjectOnNodalBasis3D {
    shareCommonNodes = false, -- In DG, common nodes are not shared
    -- function to use for initialization
    evaluate = function(x,vx,vy,t)
-      local wpdt = 25*(1-x)^5 -- plasma frequency
-      local factor = deltaT^2*Lucee.ElementaryCharge^2/(Lucee.ElectronMass*Lucee.Epsilon0)
-      local nElc = wpdt^2/factor
+      local nElc = 1e17 -- electron density [#/m^3]
       return maxwellian(nElc, 0.0, 0.0, vtIon, vx, vy)
    end
 }
@@ -277,8 +273,10 @@ initField = Updater.ProjectOnNodalBasis1D {
    shareCommonNodes = false, -- In DG, common nodes are not shared
    -- function to use for initialization
    evaluate = function (x,y,z,t)
-      -- no fields initially
-      return 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+      local B0 = 0.536 -- 0.536 -- [Tesla]
+      local R0 = 0.005 -- [m]
+      local xcoff = 0.04
+      return 0.0, 0.0, 0.0, 0.0, 0.0, B0*(R0+xcoff)/(R0+x), 0.0, 0.0
    end
 }
 
@@ -335,10 +333,11 @@ antennaCurrentSrc = Updater.ProjectOnNodalBasis1D {
    shareCommonNodes = false, -- In DG, common nodes are not shared
    -- function to use for initialization
    evaluate = function (x,y,z,t)
-      local J0 = 1.0e-12 -- Amps/m^3
+      local J0 = 1.0 -- Amps/m^3
       local Jy = 0.0
       if (x>xLastEdge) then
-	 Jy = -J0*math.sin(driveOmega*t)/Lucee.Epsilon0
+	 local ramp = math.sin(0.5*Lucee.Pi*math.min(1, 0.1*driveF*t))
+	 Jy = -J0*ramp^2*math.sin(driveOmega*t)/Lucee.Epsilon0
       end
       return 0.0, Jy
    end
