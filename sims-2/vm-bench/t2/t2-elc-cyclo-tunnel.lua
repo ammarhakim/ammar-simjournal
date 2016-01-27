@@ -21,9 +21,9 @@ ionMass = Lucee.ProtonMass -- ion mass
 ionCharge = Lucee.ElementaryCharge -- ion charge
 
 -- initial electron density
-n0 = 1e13 -- 1e17 -- [#/m^3]
+n0 = 1e17 -- [#/m^3]
 -- magnetic field parameters
-B0 = 0.1 --0.536 -- [Tesla]
+B0 = 0.01 -- 0.536 -- [Tesla]
 R0 = 0.005 -- [m]
 xcoff = 0.04 -- [m]
 Bmax = B0*(R0+xcoff)/R0 -- maximum magnetic field
@@ -43,7 +43,7 @@ xupper = 0.14 -- upper bounds of domain
 LX = xupper-xlower
 
 -- Resolution, time-stepping etc.
-NX = 128
+NX = 64
 NVX = 16
 NVY = 8
 tStart = 0.0 -- start time 
@@ -54,15 +54,17 @@ nFrames = 10
 dx = (xupper-xlower)/NX
 xLastEdge = xupper-dx
 
-driveF = 15.0e9 -- [Hz]
-driveOmega = 2*Lucee.Pi*driveF -- [r/s]
-
-cfl = 0.5*(1.0/3.0)/(2*polyOrder+1)
-
 -- plasma frequency
 wpe = math.sqrt(n0*elcCharge^2/(elcMass*Lucee.Epsilon0))
 -- electron cyclotron frequency
 wce = elcCharge*Bmax/elcMass
+wce0 = elcCharge*B0/elcMass
+
+-- driveF = 15.0e9 -- [Hz]
+driveOmega = math.abs(wce0) -- 2*Lucee.Pi*driveF -- [r/s]
+driveF = driveOmega/(2*Lucee.Pi)
+
+cfl = 0.5*(1.0/3.0)/(2*polyOrder+1)
 
 -- compute max thermal speed to set velocity space extents
 VL_ELC, VU_ELC = -6.0*vtElc, 6.0*vtElc
@@ -75,7 +77,8 @@ log(string.format("Cell size=%g", LX/NX))
 log(string.format("Light speed=%g", lightSpeed))
 log(string.format("Time-step from light speed=%g", cfl*LX/NX/lightSpeed))
 log(string.format("Time-step from plasma-frequency = %g", cfl*2/wpe))
-log(string.format("Time-step from cyclotron-frequency = %g", cfl*2/wce/NVX))
+log(string.format("Time-step from cyclotron-frequency = %g", math.abs(cfl*2/wce/NVX)))
+log(string.format("Time-step from cyclotron-frequency at cut-off = %g", cfl*2/wce0/NVX))
 log(string.format("Electron thermal speed=%g", vtElc))
 log(string.format("Ion thermal speed=%g", vtIon))
 log(string.format("Electron/Ion drift speed=%g", elcDrift))
@@ -84,6 +87,7 @@ log(string.format("Electron velocity domain extents = [%g,%g]", VL_ELC, VU_ELC))
 log(string.format("Ion velociy domain extents = [%g,%g]", VL_ION, VU_ION))
 log(string.format("Plasma frequency = %g", wpe))
 log(string.format("Electron cyclotron frequency = %g", math.abs(wce)))
+log(string.format("Electron cyclotron frequency at cut-off = %g", math.abs(wce0)))
 log(string.format("Drive frequency = %g", driveOmega))
 
 ------------------------------------------------
