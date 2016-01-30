@@ -148,9 +148,10 @@ initDistf = Updater.ProjectOnNodalBasis2D {
    shareCommonNodes = false, -- In DG, common nodes are not shared
    -- function to use for initialization
    evaluate = function(x,v,z,t)
-      local fv = 0.01
-      if math.abs(v) < vThermal then
-	 fv = 1.0
+      local fv = 1e-4
+      local vStep = 1.5*vThermal
+      if math.abs(v) < vStep then
+	 fv = 1.0/(2*vStep)
       end
       return fv
    end
@@ -376,7 +377,6 @@ end
 
 -- Write out data frame 'frameNum' with at specified time 'tCurr'
 function writeFields(frameNum, tCurr)
-   -- distribution functions
    distf:write(string.format("distf_%d.h5", frameNum), tCurr)
    numDensity:write(string.format("numDensity_%d.h5", frameNum), tCurr)
    momentum:write(string.format("momentum_%d.h5", frameNum), tCurr)
@@ -391,6 +391,7 @@ end
 runUpdater(initDistf, 0.0, 0.0, {}, {distf})
 runUpdater(initHamilKE, 0.0, 0.0, {}, {hamilKE})
 applyDistFuncBc(0.0, 0.0, distf)
+calcMoments(0.0, 0.0, distf)
 calcDiagnostics(0.0, 0.0)
 writeFields(0, 0.0)
 
@@ -400,4 +401,5 @@ runSimulation(tStart, tEnd, nFrames, initDt)
 
 -- print some timing information
 log(string.format("Total time in vlasov solver for electrons = %g", vlasovSolver:totalAdvanceTime()))
-log(string.format("Total time moment computations = %g", momentumCalc:totalAdvanceTime()+numDensityCalc:totalAdvanceTime()))
+log(string.format("Total time moment computations = %g",
+		  numDensityCalc:totalAdvanceTime()+momentumCalc:totalAdvanceTime()+ptclEnergyCalc:totalAdvanceTime()))
