@@ -18,7 +18,7 @@
 Simulation Index
 ================
 
-1D electrostatic shock problem.
+Benchmark problems for the V-M system
 
 .. list-table::
   :header-rows: 1
@@ -50,4 +50,4 @@ RF problems using V-M
   * - t1
     - 1X/2V V-M simulation of plasma wave-beach problem
   * - t2
-    - 1X/2V V-M simulation of tunnelling through electron-cyclotron layer
+    - 1X/2V V-M simulation of tunnelling through electron-cyclotron layer [THIS DOES NOT WORK]

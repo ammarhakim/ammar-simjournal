@@ -18,22 +18,15 @@
 Simulation Index
 ================
 
-Tests for Euler positivity code
+Benchmarks for Boltzmann-BGK system
 
 .. list-table::
   :header-rows: 1
   :widths: 10,90
 
+Landau damping using V-M
+
   * - Number
     - Description
-  * - ${mdl("s1")}
-    - Near-vaccum shock tube, polyOrder=1 (Problem 2 in JE2)
-  * - ${mdl("s2")}
-    - 1D Noh problem, polyOrder=1 (Problem 3 in JE2)
-  * - ${mdl("s3")}
-    - 1D strong shock problem, polyOrder=1 (Problem 5 in JE2)
-  * - ${mdl("s4")}
-    - 1D strong shock problem, with peak in density, polyOrder=1 (Problem 8 in JE2)
-  * - ${mdl("s5")}
-    - 2D Noh problem, see JE22, polyOrder=1
-
+  * - s1
+    - Relaxation of step-function to Maxwellian
