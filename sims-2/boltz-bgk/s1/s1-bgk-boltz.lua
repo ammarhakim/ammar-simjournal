@@ -26,7 +26,7 @@ nFrames = 1
 VL, VU = -6.0*vThermal, 6.0*vThermal -- velocity space extents
 
 -- Resolution, time-stepping etc.
-NX = 64
+NX = 2
 NV = 32
 
 cfl = 0.5/(2*polyOrder+1)
@@ -96,6 +96,13 @@ distf1 = DataStruct.Field2D {
    ghost = {1, 1},
 }
 
+-- Maxwellian distribution corresponding
+distfMaxwell = DataStruct.Field2D {
+   onGrid = phaseGrid,
+   numComponents = phaseBasis:numNodes(),
+   ghost = {1, 1},
+}
+
 -- Kinetic-energy term in Hamiltonian
 hamilKE = DataStruct.Field2D {
    onGrid = phaseGrid,
@@ -141,7 +148,11 @@ initDistf = Updater.ProjectOnNodalBasis2D {
    shareCommonNodes = false, -- In DG, common nodes are not shared
    -- function to use for initialization
    evaluate = function(x,v,z,t)
-      return maxwellian(n0, u0, vThermal, v)
+      local fv = 0.01
+      if math.abs(v) < vThermal then
+	 fv = 1.0
+      end
+      return fv
    end
 }
 
@@ -168,7 +179,13 @@ vlasovSolver = Updater.PoissonBracket {
    fluxType = "upwind",
    hamilNodesShared = false, -- Hamiltonian is not continuous
    zeroFluxDirections = {1},
-   onlyIncrement = true,
+}
+
+-- updater to initialize Maxwellian
+calcMaxwellian = Updater.MaxwellDistInit1X1V {
+   onGrid = phaseGrid,
+   phaseBasis = phaseBasis,
+   confBasis = confBasis
 }
 
 -- Updater to compute number density
@@ -203,7 +220,6 @@ function applyDistFuncBc(curr, dt, fld)
    for i,bc in ipairs({}) do
       runUpdater(bc, curr, dt, {}, {fld})
    end
-   -- sync the distribution function across processors
    fld:sync()
 end
 
@@ -227,28 +243,32 @@ function runUpdater(updater, currTime, timeStep, inpFlds, outFlds)
    return updater:advance(currTime+timeStep)
 end
 
--- function to calculate number density
+-- calculate number density
 function calcNumDensity(calculator, curr, dt, distfIn, numDensOut)
    return runUpdater(calculator, curr, dt, {distfIn}, {numDensOut})
 end
--- function to calculate momentum density
+-- calculate momentum density
 function calcMomentum(calculator, curr, dt, distfIn, momentumOut)
    return runUpdater(calculator, curr, dt, {distfIn}, {momentumOut})
 end
+-- calculate ptcl energy
+function calcPtclEnergy(calculator, curr, dt, distfIn, energyOut)
+   runUpdater(calculator, curr, dt, {distfIn}, {energyOut})
+end
 
--- function to compute moments from distribution function
-function calcMoments(curr, dt, distfIn, distfIonIn)
-   -- number density
+-- compute moments from distribution function
+function calcMoments(curr, dt, distfIn)
    calcNumDensity(numDensityCalc, curr, dt, distfIn, numDensity)
+   calcMomentum(momentumCalc, curr, dt, distfIn, momentum)
+   calcPtclEnergy(ptclEnergyCalc, curr, dt, distfIn, ptclEnergy)
 end
 
--- function to update Vlasov equation
-function updateVlasovEqn(vlasovSlvr, curr, dt, distfIn, emIn, distfOut)
-   return runUpdater(vlasovSlvr, curr, dt, {distfIn, emIn}, {distfOut})
+-- update Vlasov equation
+function updateVlasovEqn(vlasovSlvr, curr, dt, distfIn, hamilIn, distfOut)
+   return runUpdater(vlasovSlvr, curr, dt, {distfIn, hamilIn}, {distfOut})
 end
 
-
--- function to compute diagnostics
+-- compute diagnostics
 function calcDiagnostics(tCurr, myDt)
    for i,diag in ipairs({}) do
       diag:setCurrTime(tCurr)
@@ -261,40 +281,39 @@ end
 ----------------------------
 
 -- take single RK step
-function rkStage(tCurr, dt, elcIn, ionIn, emIn, elcOut, ionOut, emOut)
-   -- update distribution functions and homogenous Maxwell equations
-   local st, dt = updateVlasovEqn(vlasovSolver, tCurr, dt, elcIn, emIn, elcOut)
-   -- add contribution from BGK operator
+function rkStage(tCurr, dt, distfIn, hamilIn, distfOut)
+   local status, suggestedDt = updateVlasovEqn(vlasovSolver, tCurr, dt, distfIn, hamilIn, distfOut)
+   -- add contribution from BGK collision operator
+   calcMoments(tCurr, dt, distfIn)
+   runUpdater(calcMaxwellian, tCurr, dt, {numDensity, momentum, ptclEnergy}, {distfMaxwell})
+   distfOut:accumulate(nu*dt, distfMaxwell, -nu*dt, distfIn)
    
-   return st, dt
+   return status, suggestedDt
 end
 
 function rk3(tCurr, myDt)
    local myStatus, myDtSuggested
    -- RK stage 1
-   myStatus, myDtSuggested = rkStage(tCurr, myDt, distf, distfIon, em, distf1, distf1Ion, em1)
+   myStatus, myDtSuggested = rkStage(tCurr, myDt, distf, hamilKE, distf1)
    if (myStatus == false)  then
       return false, myDtSuggested
    end
-   -- apply BC
    applyDistFuncBc(tCurr, dt, distf1)
 
    -- RK stage 2
-   myStatus, myDtSuggested = rkStage(tCurr, myDt, distf1, distf1Ion, em1, distfNew, distfNewIon, emNew)
+   myStatus, myDtSuggested = rkStage(tCurr, myDt, distf1, hamilKE, distfNew)
    if (myStatus == false)  then
       return false, myDtSuggested
    end
    distf1:combine(3.0/4.0, distf, 1.0/4.0, distfNew)
-   -- apply BC
    applyDistFuncBc(tCurr, dt, distf1)
 
    -- RK stage 3
-   myStatus, myDtSuggested = rkStage(tCurr, myDt, distf1, distf1Ion, em1, distfNew, distfNewIon, emNew)
+   myStatus, myDtSuggested = rkStage(tCurr, myDt, distf1, hamilKE, distfNew)
    if (myStatus == false)  then
       return false, myDtSuggested
    end
    distf1:combine(1.0/3.0, distf, 2.0/3.0, distfNew)
-   -- apply BC
    applyDistFuncBc(tCurr, dt, distf1)
 
    distf:copy(distf1)
@@ -368,20 +387,16 @@ end
 -- RUNNING THE SIMULATION --
 ----------------------------
 
--- apply initial conditions for  and ion
+-- setup simulation
 runUpdater(initDistf, 0.0, 0.0, {}, {distf})
 runUpdater(initHamilKE, 0.0, 0.0, {}, {hamilKE})
-
--- apply BCs
 applyDistFuncBc(0.0, 0.0, distf)
--- compute initial diagnostics
 calcDiagnostics(0.0, 0.0)
--- write out initial fields
 writeFields(0, 0.0)
 
 -- run the whole thing
 initDt = tEnd
---runSimulation(tStart, tEnd, nFrames, initDt)
+runSimulation(tStart, tEnd, nFrames, initDt)
 
 -- print some timing information
 log(string.format("Total time in vlasov solver for electrons = %g", vlasovSolver:totalAdvanceTime()))
