@@ -32,6 +32,17 @@ rcParams['savefig.bbox']               = 'tight'
 # Example: xlabel(r'$t \cdot l / V_{A,bc}$')
 rcParams['mathtext.default'] = 'regular' # match the font used for regular text
 
+def calcCenters(VcEdges):
+    Vx = numpy.zeros((VcEdges.shape[0]-1,), float)
+    for i in range(VcEdges.shape[0]-1):
+        Vx[i] = 0.5*(VcEdges[i]+VcEdges[i+1])
+    return Vx
+
+def calcExact(n, nu, E, V):
+    u = nu/n
+    vt2 = E-n*u**2
+    return n/sqrt(2*pi*vt2)*exp(-(V-u)**2/(2*vt2))
+
 d = gkedata.GkeData("s1-bgk-boltz_distf_0.h5")
 dg1 = gkedgbasis.GkeDgSerendip2DPolyOrder2Basis(d)
 Xc, Vc, fv_0 = dg1.project(0)
@@ -40,11 +51,24 @@ d = gkedata.GkeData("s1-bgk-boltz_distf_1.h5")
 dg1 = gkedgbasis.GkeDgSerendip2DPolyOrder2Basis(d)
 Xc, Vc, fv_1 = dg1.project(0)
 
-Vext = linspace(-6, 6, 96)
+# number density
+fh = tables.openFile("s1-bgk-boltz_numDensity_0.h5")
+n = fh.root.StructGridField[0,0]
+# momentum density
+fh = tables.openFile("s1-bgk-boltz_momentum_0.h5")
+nu = fh.root.StructGridField[0,0]
+# energy density
+fh = tables.openFile("s1-bgk-boltz_ptclEnergy_0.h5")
+E = fh.root.StructGridField[0,0]
+
+Vx = calcCenters(Vc[:,0]) # cell center coordinates
+Vex = linspace(Vc[0,0], Vc[-1,0], 32)
+fex = calcExact(n, nu, E, Vex)
 
 # plot initial and final solution
-plot(Vext, fv_0[2,:], 'r-')
-plot(Vext, fv_1[2,:], 'k-')
+plot(Vx, fv_0[2,:], 'r-')
+plot(Vx, fv_1[2,:], 'k-')
+plot(Vex, fex, 'bo')
 
 show()
 

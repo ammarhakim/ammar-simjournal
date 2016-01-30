@@ -20,7 +20,7 @@ mfp = 0.01*Lx -- mean-free path
 nu = vThermal/mfp
 
 tStart = 0.0 -- start time 
-tEnd = 1.0
+tEnd = 2.0
 nFrames = 1
 
 VL, VU = -6.0*vThermal, 6.0*vThermal -- velocity space extents
