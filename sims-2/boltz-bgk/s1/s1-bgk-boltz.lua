@@ -33,8 +33,9 @@ cfl = 0.5/(2*polyOrder+1)
 
 -- print some diagnostics
 log(string.format("tEnd = %g,  nFrames=%d", tEnd, nFrames))
-log(string.format("Mean-free path = %g", nu))
+log(string.format("Mean-free path = %g", mfp))
 log(string.format("Collision frequency = %g", nu))
+log(string.format("Time between collisions = %g", 1/nu))
 
 ------------------------------------------------
 -- COMPUTATIONAL DOMAIN, DATA STRUCTURE, ETC. --
@@ -147,8 +148,8 @@ vlasovSolver = Updater.NodalVlasov1X1V {
    phaseBasis = phaseBasis,
    confBasis = confBasis,
    cfl = cfl,
-   charge = elcCharge,
-   mass = elcMass,
+   charge = 0.0,
+   mass = 1.0,
 }
 
 -- Updater to compute electron number density
