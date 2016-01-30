@@ -36,6 +36,7 @@ log(string.format("tEnd = %g,  nFrames=%d", tEnd, nFrames))
 log(string.format("Mean-free path = %g", mfp))
 log(string.format("Collision frequency = %g", nu))
 log(string.format("Time between collisions = %g", 1/nu))
+log(string.format("\n"))
 
 ------------------------------------------------
 -- COMPUTATIONAL DOMAIN, DATA STRUCTURE, ETC. --
@@ -66,7 +67,7 @@ confGrid = Grid.RectCart1D {
 }
 
 -- phase-space basis functions
-phaseBasis = NodalFiniteElement2D.SerendipityElement {
+phaseBasis = NodalFiniteElement2D.Serendipity {
    onGrid = phaseGrid,
    polyOrder = polyOrder,
 }
@@ -83,7 +84,6 @@ distf = DataStruct.Field2D {
    numComponents = phaseBasis:numNodes(),
    ghost = {1, 1},
 }
-
 -- extra fields for performing RK update
 distfNew = DataStruct.Field2D {
    onGrid = phaseGrid,
@@ -91,6 +91,13 @@ distfNew = DataStruct.Field2D {
    ghost = {1, 1},
 }
 distf1 = DataStruct.Field2D {
+   onGrid = phaseGrid,
+   numComponents = phaseBasis:numNodes(),
+   ghost = {1, 1},
+}
+
+-- Kinetic-energy term in Hamiltonian
+hamilKE = DataStruct.Field2D {
    onGrid = phaseGrid,
    numComponents = phaseBasis:numNodes(),
    ghost = {1, 1},
@@ -138,34 +145,52 @@ initDistf = Updater.ProjectOnNodalBasis2D {
    end
 }
 
+-- updater to initialize hamiltonian
+initHamilKE = Updater.EvalOnNodes2D {
+   onGrid = phaseGrid,
+   basis = phaseBasis,
+   shareCommonNodes = false,
+   evaluate = function (x,v,z,t)
+      return v^2/2
+   end
+}
+
 ----------------------
 -- EQUATION SOLVERS --
 ----------------------
 
 -- Updater for electron Vlasov equation
-vlasovSolver = Updater.NodalVlasov1X1V {
+vlasovSolver = Updater.PoissonBracket {
    onGrid = phaseGrid,
-   phaseBasis = phaseBasis,
-   confBasis = confBasis,
+   basis = phaseBasis,
    cfl = cfl,
-   charge = 0.0,
-   mass = 1.0,
+   -- flux type: one of "upwind" (default) or "central"
+   fluxType = "upwind",
+   hamilNodesShared = false, -- Hamiltonian is not continuous
+   zeroFluxDirections = {1},
+   onlyIncrement = true,
 }
 
--- Updater to compute electron number density
-numDensityCalc = Updater.DistFuncMomentCalc1X1V {
+-- Updater to compute number density
+numDensityCalc = Updater.DistFuncMomentCalc1D {
    onGrid = phaseGrid,
-   phaseBasis = phaseBasis,
-   confBasis = confBasis,   
+   basis2d = phaseBasis,
+   basis1d = confBasis,
    moment = 0,
 }
-
 -- Updater to compute momentum
-momentumCalc = Updater.DistFuncMomentCalc1X1V {
+momentumCalc = Updater.DistFuncMomentCalc1D {
    onGrid = phaseGrid,
-   phaseBasis = phaseBasis,
-   confBasis = confBasis,
+   basis2d = phaseBasis,
+   basis1d = confBasis,
    moment = 1,
+}
+-- Updater to compute particle energy
+ptclEnergyCalc = Updater.DistFuncMomentCalc1D {
+   onGrid = phaseGrid,
+   basis2d = phaseBasis,
+   basis1d = confBasis,
+   moment = 2,
 }
 
 -------------------------
@@ -345,6 +370,7 @@ end
 
 -- apply initial conditions for  and ion
 runUpdater(initDistf, 0.0, 0.0, {}, {distf})
+runUpdater(initHamilKE, 0.0, 0.0, {}, {hamilKE})
 
 -- apply BCs
 applyDistFuncBc(0.0, 0.0, distf)
