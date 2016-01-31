@@ -42,4 +42,8 @@ Boltzmann-BGK system
     - Counter propagating jets, :math:`u/v_t = 0.75`, :math:`\lambda_{\textrm{mfp}}=L/100`
   * - s6
     - Same as s5, :math:`\lambda_{\textrm{mfp}}=L/1000`
+  * - s7
+    - Another shock-tube problem, :math:`\lambda/L = 1/100`
+  * - s8
+    - Another shock-tube problem, :math:`\lambda/L = 1/1000`
     
