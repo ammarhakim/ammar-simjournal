@@ -29,4 +29,8 @@ Landau damping using V-M
   * - Number
     - Description
   * - s1
-    - Relaxation of step-function to Maxwellian
+    - Relaxation of step-function to Maxwellian, :math:`\lambda_{\textrm{mfp}}=L/10`
+  * - s3
+    - Same as s1, except :math:`\lambda_{\textrm{mfp}}=L/100`
+  * - s4
+    - Same as s1, except :math:`\lambda_{\textrm{mfp}}=L/1000`
