@@ -124,8 +124,6 @@ the Boltzmann-BGK system. The initial conditions are
 
 .. math::
 
-.. math::
-
   \left[
     \begin{matrix}
       \rho_l \\
@@ -161,13 +159,16 @@ the Boltzmann-BGK system. The initial conditions are
 For a 1D/1V system, the thermal velocity needs to be computed as
 :math:`p=n v_{th}^2`, indicating a gas adiabatic constant of
 :math:`\gamma=3`. (The internal energy is :math:`p/(\gamma-1) = n
-v_{th}^2/2`, which means :math:`\gamma=3`). The Knudsen number
-(:math:`\mathrm{Kn} = \lambda_\textrm{mfp}/L`) is varied from
-:math:`1/10`, :math:`1/100` and :math:`1/1000`. In the first case, the
-gas is collisionless (on the time-scale of the simulation), and in the
-last case, the gas is highly collisional. Hence, the solution should
-match (approximately) the solution from (Navier-Stokes) Euler
-equations.
+v_{th}^2/2`, which means :math:`\gamma=3`).
+
+The simulations were run with 128 spatial cells, and 32 velocity
+cells, with piecewise polynomial order 2 elements, and to
+:math:`t=0.1`. The Knudsen number (:math:`\mathrm{Kn} =
+\lambda_\textrm{mfp}/L`) is varied from :math:`1/10`, :math:`1/100`
+and :math:`1/1000`. In the first case, the gas is collisionless (on
+the time-scale of the simulation), and in the last case, the gas is
+highly collisional. Hence, the solution should match (approximately)
+the solution from (Navier-Stokes) Euler equations.
 
 In the following figures, the results with various Knudsen numbers are
 shown, as well the exact solution of the Euler equations for the same
@@ -214,6 +215,96 @@ solution, with transport parameters derived from the BGK operator
   :math:`\mathrm{Kn}=1/1000` (magenta) [:doc:`s4
   <../../sims-2/boltz-bgk/s4/s4-bgk-boltz>`]. The black dashed line
   shows the exact solution from the Euler equation.
+
+Problem 3: Counter propagating jets
++++++++++++++++++++++++++++++++++++
+
+In this problem two counter propagating jets interact, creating
+quasi-steady shocks. The initial conditions are
+
+.. math::
+
+  \left[
+    \begin{matrix}
+      \rho_l \\
+      u_l \\
+      p_l
+    \end{matrix}
+  \right]
+  = 
+  \left[
+    \begin{matrix}
+      1 \\
+      0.75 \\
+      1.0
+    \end{matrix}
+  \right],
+  \qquad
+  \left[
+    \begin{matrix}
+      \rho_r \\
+      u_r \\
+      p_r
+    \end{matrix}
+  \right]
+  = 
+  \left[
+    \begin{matrix}
+      0.125 \\
+      -0.75 \\
+      0.75
+    \end{matrix}
+  \right].
+
+Note that the jets are not symmetrical: the jet propagating to the
+left has a lower pressure. The propagating shock fronts are
+steady-state (in the frame of the shock), and it should be possible to
+compare with kinetic shock theory. The simulations were run with 128
+spatial cells, and 32 velocity cells, with piecewise polynomial order
+2 elements, and to :math:`t=0.15`. The Knudsen numbers we set to
+:math:`1/100` and :math:`1/1000`. Results are shown below.
+
+.. figure:: jets-density-cmp.png
+  :width: 100%
+  :align: center
+
+  Density from jets problem for :math:`\mathrm{Kn}=1/100` (red)
+  [:doc:`s5 <../../sims-2/boltz-bgk/s5/s5-bgk-boltz>`] and
+  :math:`\mathrm{Kn}=1/1000` (blue) [:doc:`s6
+  <../../sims-2/boltz-bgk/s6/s6-bgk-boltz>`]. The black dashed line
+  shows the exact solution from the Euler equation.
+
+.. figure:: jets-velocity-cmp.png
+  :width: 100%
+  :align: center
+
+  Velocity from jets problem for :math:`\mathrm{Kn}=1/100` (red)
+  [:doc:`s5 <../../sims-2/boltz-bgk/s5/s5-bgk-boltz>`] and
+  :math:`\mathrm{Kn}=1/1000` (blue) [:doc:`s6
+  <../../sims-2/boltz-bgk/s6/s6-bgk-boltz>`]. The black dashed line
+  shows the exact solution from the Euler equation.
+
+.. figure:: jets-ptclInternalEnergy-cmp.png
+  :width: 100%
+  :align: center
+
+  Internal energy (:math:`n v_{th}^2/2 = p/(\gamma-1)`) from jets
+  problem for :math:`\mathrm{Kn}=1/100` (red) [:doc:`s5
+  <../../sims-2/boltz-bgk/s5/s5-bgk-boltz>`] and
+  :math:`\mathrm{Kn}=1/1000` (blue) [:doc:`s6
+  <../../sims-2/boltz-bgk/s6/s6-bgk-boltz>`]. The black dashed line
+  shows the exact solution from the Euler equation. I am not
+  completely sure why the high collisionality solution (blue)
+  converges to a lower energy level than the Euler solution.
+
+Conclusion
+----------
+
+Some basic tests for the Boltzmann-BGK collision operator have been
+presented. From these tests it seems that the collisional kinetic
+physics is being captured correctly. Issues of positivity and
+asymptotic preservation remain, but these will be fixed in the near
+future.
 
 References
 ----------
