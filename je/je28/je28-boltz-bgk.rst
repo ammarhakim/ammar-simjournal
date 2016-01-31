@@ -51,6 +51,36 @@ where
 The above equations are written in 1X/1V, however, the code works in
 higher dimensions.
 
+Notes on algorithm: positivity and asymptotic preservation
+----------------------------------------------------------
+
+The are two major issues with algorithms for Boltzmann type equations
+(i.e. with collisions) which one needs to deal with. The first, is to
+ensure that the distribution function remains positive, and second, to
+ensure that the time-step in the very high collisionality regime is
+not dominated by the collision frequency.
+
+Gkeyll's current algorithm for evolving the distribution function does
+not maintain positivity. However, a positivity "fix" (which maintains
+particle conservation) has been implemented, and can applied as a
+filter step. This positivity fix, although conservative and easy to
+use, is not very good as it often reduces the order of the
+scheme. Better schemes will be implemented in the future.
+
+Its clear from the form of the BGK operator, that for :math:`\nu
+\rightarrow \infty`, the collisional sources become very stiff. In
+this fluid regime the time-step restriction from the collisions become
+more severe than the explicit time-step from the thermal
+velocity. Hence, to avoid taking a small time-step, an asymptotic
+preserving (AP) method needs to be implemented [#pareschi]_. (Note
+that to achieve AP property we need to ensure also that the spatial
+scheme is AP. This is naturally the case for the Gkeyll kinetic
+solver, which asymptotes to a kinetic-Riemann solver based fluid
+solver in the fluid limit).  As far as can be determined, this can be
+done from the Lua script without any new C++ code. We hope to do this
+soon.
+
+
 Test Problems
 -------------
 
@@ -139,3 +169,55 @@ last case, the gas is highly collisional. Hence, the solution should
 match (approximately) the solution from (Navier-Stokes) Euler
 equations.
 
+In the following figures, the results with various Knudsen numbers are
+shown, as well the exact solution of the Euler equations for the same
+parameters. Note that the Euler equations represent the inviscid limit
+of the Boltzmann equation, and hence even in high collisionality
+regime won't match the kinetic results exactly. In fact, the high
+collisionality results would be better compared to a Navier-Stokes
+solution, with transport parameters derived from the BGK operator
+(rather than the Boltzmann collision operator).
+
+.. figure:: sod-shock-density-cmp.png
+  :width: 100%
+  :align: center
+
+  Density from Sod-shock problem for :math:`\mathrm{Kn}=1/10` (red)
+  [:doc:`s2 <../../sims-2/boltz-bgk/s2/s2-bgk-boltz>`],
+  :math:`\mathrm{Kn}=1/100` (blue) [:doc:`s3
+  <../../sims-2/boltz-bgk/s3/s3-bgk-boltz>`], and
+  :math:`\mathrm{Kn}=1/1000` (magenta) [:doc:`s4
+  <../../sims-2/boltz-bgk/s4/s4-bgk-boltz>`]. The black dashed line
+  shows the exact solution from the Euler equation.
+
+.. figure:: sod-shock-velocity-cmp.png
+  :width: 100%
+  :align: center
+
+  Velocity from Sod-shock problem for :math:`\mathrm{Kn}=1/10` (red)
+  [:doc:`s2 <../../sims-2/boltz-bgk/s2/s2-bgk-boltz>`],
+  :math:`\mathrm{Kn}=1/100` (blue) [:doc:`s3
+  <../../sims-2/boltz-bgk/s3/s3-bgk-boltz>`], and
+  :math:`\mathrm{Kn}=1/1000` (magenta) [:doc:`s4
+  <../../sims-2/boltz-bgk/s4/s4-bgk-boltz>`]. The black dashed line
+  shows the exact solution from the Euler equation.
+
+.. figure:: sod-shock-ptclInternalEnergy-cmp.png
+  :width: 100%
+  :align: center
+
+  Internal energy (:math:`n v_{th}^2/2 = p/(\gamma-1)`) from Sod-shock
+  problem for :math:`\mathrm{Kn}=1/10` (red) [:doc:`s2
+  <../../sims-2/boltz-bgk/s2/s2-bgk-boltz>`],
+  :math:`\mathrm{Kn}=1/100` (blue) [:doc:`s3
+  <../../sims-2/boltz-bgk/s3/s3-bgk-boltz>`], and
+  :math:`\mathrm{Kn}=1/1000` (magenta) [:doc:`s4
+  <../../sims-2/boltz-bgk/s4/s4-bgk-boltz>`]. The black dashed line
+  shows the exact solution from the Euler equation.
+
+References
+----------
+
+.. [#pareschi] Pareschi, L., & Russo, G.. "Implicit-explicit
+   Runge-Kutta schemes and applications to hyperbolic systems with
+   relaxation". arXiv:1009.2757.
