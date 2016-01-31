@@ -16,7 +16,6 @@ Lx = 1.0 -- domain size
 mfp = 0.1*Lx -- mean-free path
 
 -- thermal velocity to give same energy as in fluid internal energy
-gasGamma = 5.0/3.0
 vThermal_l = math.sqrt(pl/nl)
 vThermal_r = math.sqrt(pr/nr)
 
