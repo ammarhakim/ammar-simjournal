@@ -69,6 +69,10 @@ fex = calcExact(n, nu, E, Vex)
 plot(Vx, fv_0[2,:], 'r-')
 plot(Vx, fv_1[2,:], 'k-')
 plot(Vex, fex, 'bo')
+xlabel('V')
+ylabel('f(V)')
+
+savefig('s1-max-relax-cmp.png', dpi=200)
 
 show()
 
