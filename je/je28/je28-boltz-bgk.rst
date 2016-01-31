@@ -83,8 +83,8 @@ the exact solution very well.
   Relaxation of an initial step-function distribution function
   (red-line) to a Maxwellian. Black line is the numerical solution,
   while blue dots are the exact solution computed from the moments of
-  the initial condition. See :doc:`s1
-  <../../sims-2/boltz-bgk/s1/s1-bgk-boltz>` for input file.
+  the initial condition. See [:doc:`s1
+  <../../sims-2/boltz-bgk/s1/s1-bgk-boltz>`] for input file.
 
 Problem 2: Sod-shock problem
 ++++++++++++++++++++++++++++
@@ -131,9 +131,11 @@ the Boltzmann-BGK system. The initial conditions are
 For a 1D/1V system, the thermal velocity needs to be computed as
 :math:`p=n v_{th}^2`, indicating a gas adiabatic constant of
 :math:`\gamma=3`. (The internal energy is :math:`p/(\gamma-1) = n
-v_{th}^2/2`, which means :math:`\gamma=3`). The mean-free-path
-(:math:`\lambda_\textrm{mfp}`) is varied from :math:`1/10`,
-:math:`1/100` and :math:`1/1000`. In the first case, the gas is
-collisionless (on the time-scale of the simulation), and in the last
-case, the gas is highly collisional. Hence, the solution should match
-(approximately) the solution from Euler equations.
+v_{th}^2/2`, which means :math:`\gamma=3`). The Knudsen number
+(:math:`\mathrm{Kn} = \lambda_\textrm{mfp}/L`) is varied from
+:math:`1/10`, :math:`1/100` and :math:`1/1000`. In the first case, the
+gas is collisionless (on the time-scale of the simulation), and in the
+last case, the gas is highly collisional. Hence, the solution should
+match (approximately) the solution from (Navier-Stokes) Euler
+equations.
+
