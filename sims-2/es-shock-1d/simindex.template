@@ -37,9 +37,36 @@ Simulation Index
   * - ${mdl("s5")}
     - Same as s4, except :math:`Te/Ti=9.0`
 
-Redoing the above in the proper, clean way.
+Redoing the above in the proper, clean way. [Increase X domain size
+and also ion velocity extents. Run longer, perhaps to 1000 plasma
+periods. Do in parallel on VT. Add diagnostic to measure potential at midplane]
 
 * - Number
     - Description
   * - ${mdl("m1")}
     - :math:`Te/Ti=9.0`, Mach number 1.5, polyOrder 2 serendipity elements.
+  * - ${mdl("m2")}
+    - Same as m1, Mach number 2.0
+  * - ${mdl("m3")}
+    - Same as m1 Mach number 3.0
+  * - ${mdl("m4")}
+    - Same as m1, Mach number 5.0
+
+Fluid sims corresponding to m series simulations [Source solver takes
+about 1/2 the total run time! Also, Maxwell solver takes longer than
+each fluid solver. This is very strange. Perhaps one can imagine a
+hard-coded Maxwell solver (even Balsara based) and manually inverting
+the source term. One way to speed up the fluid solver is to use ES
+equations and not Maxwell equations at all.]
+
+* - Number
+    - Description
+  * - ${mdl("f1")}
+    - Corresponds to m1
+  * - ${mdl("f2")}
+    - Corresponds to m2
+  * - ${mdl("f3")}
+    - Corresponds to m3
+  * - ${mdl("f4")}
+    - Corresponds to m4
+    
