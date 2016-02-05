@@ -13,7 +13,7 @@ elcMass = 1.0
 elcCharge = -1.0
 
 ionTemp = elcTemp/Te_Ti
-ionMass = 1836.2*40
+ionMass = 1836.2
 ionCharge = 1.0
 
 -- permittivity of free space

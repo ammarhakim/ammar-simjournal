@@ -42,4 +42,4 @@ Redoing the above in the proper, clean way.
 * - Number
     - Description
   * - ${mdl("m1")}
-    - :math:`Te/Ti=9.0`, Mach number 1.5, polyOrder 2 serendipity elements
+    - :math:`Te/Ti=9.0`, Mach number 1.5, polyOrder 2 serendipity elements.
