@@ -10,7 +10,7 @@ polyOrder = 2 -- polynomial order
 epsilon0 = 1.0 -- permittivity of free space
 
 Te_Ti = 9.0 -- ratio of electron to ion temperaute
-machNum = 1.5 -- Mach number computed from ion thermal speed
+machNum = 2.0 -- Mach number computed from ion thermal speed
 n0 = 1.0 -- initial number density
 elcTemp = 1.0 -- electron temperature
 elcMass = 1.0 -- electron mass
