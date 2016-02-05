@@ -35,12 +35,12 @@ ionDrift = elcDrift -- no net current
 -- domain size and simulation time
 LX = 200*lambdaD
 tStart = 0.0 -- start time 
-tEnd = 10.0/wpe
-nFrames = 1
+tEnd = 500.0/wpe
+nFrames = 100
 
 -- Resolution, time-stepping etc.
 NX = 100
-NV = 32 
+NV = 32
 polyOrder = 2
 
 cfl = 0.5/(2*polyOrder+1)
@@ -66,7 +66,7 @@ log(string.format("Ion domain extents = [%g,%g]", VL_ION, VU_ION))
 -- COMPUTATIONAL DOMAIN, DATA STRUCTURE, ETC. --
 ------------------------------------------------
 -- decomposition object
-phaseDecomp = DecompRegionCalc2D.CartProd { cuts = {1,1} }
+phaseDecomp = DecompRegionCalc2D.CartProd { cuts = {2,1} }
 confDecomp = DecompRegionCalc1D.SubCartProd2D {
    decomposition = phaseDecomp,
    collectDirections = {0},
@@ -664,3 +664,11 @@ writeFields(0, 0.0)
 -- run the whole thing
 initDt = tEnd
 runSimulation(tStart, tEnd, nFrames, initDt)
+
+-- print some timing information
+Lucee.logInfo(string.format("Total time in poisson solver = %g", phiFromChargeDensityCalc:totalAdvanceTime()) )
+Lucee.logInfo(string.format(
+		 "Total time in poisson bracket = %g", vlasovSolverElc:totalAdvanceTime()+vlasovSolverIon:totalAdvanceTime()))
+Lucee.logInfo(string.format(
+		 "Total time in number density calc = %g", numDensityCalcElc:totalAdvanceTime()+numDensityCalcIon:totalAdvanceTime()))
+     
