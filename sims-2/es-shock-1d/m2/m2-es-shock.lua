@@ -33,21 +33,21 @@ elcDrift = machNum*cs
 ionDrift = elcDrift -- no net current
 
 -- domain size and simulation time
-LX = 200*lambdaD
+LX = 500*lambdaD
 tStart = 0.0 -- start time 
-tEnd = 500.0/wpe
+tEnd = 1000.0/wpe
 nFrames = 100
 
 -- Resolution, time-stepping etc.
-NX = 100
-NV = 16
+NX = 500
+NV = 32
 polyOrder = 2
 
 cfl = 0.5/(2*polyOrder+1)
 
 -- compute max thermal speed to set velocity space extents
 VL_ELC, VU_ELC = -6.0*vtElc, 6.0*vtElc
-VL_ION, VU_ION = -6.0*vtIon-ionDrift, 6.0*vtIon+ionDrift
+VL_ION, VU_ION = -10.0*vtIon-ionDrift, 10.0*vtIon+ionDrift
 
 -- print some diagnostics
 log(string.format("tEnd=%g,  nFrames=%d", tEnd, nFrames))
