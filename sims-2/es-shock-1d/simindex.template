@@ -54,7 +54,9 @@ periods. Do in parallel on VT. Add diagnostic to measure potential at midplane]
   * - ${mdl("m5")}
     - Same as m1, Mach number 1.0
   * - ${mdl("m6")}
-    - Same as m1, Mach number 0.75    
+    - Same as m1, Mach number 0.75
+  * - ${mdl("m7")}
+    - Same as m1, Mach number 0.5    
 
 Fluid sims corresponding to m series simulations [Source solver takes
 about 1/2 the total run time! Also, Maxwell solver takes longer than
