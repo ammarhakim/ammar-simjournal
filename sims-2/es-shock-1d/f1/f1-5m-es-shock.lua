@@ -35,12 +35,12 @@ elcDrift = machNum*cs
 ionDrift = elcDrift -- no net current
 
 -- domain size and simulation time
-LX = 200*lambdaD
-tEnd = 500.0/wpe
+LX = 500*lambdaD
+tEnd = 1000.0/wpe
 nFrames = 100
 
 -- Resolution, time-stepping etc.
-NX = 500
+NX = 1000
 cfl = 0.9
 
 -- print some diagnostics
