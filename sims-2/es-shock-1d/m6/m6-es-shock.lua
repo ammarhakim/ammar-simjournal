@@ -39,7 +39,7 @@ tEnd = 1000.0/wpe
 nFrames = 100
 
 -- Resolution, time-stepping etc.
-NX = 500
+NX = 512
 NV = 32
 polyOrder = 2
 
@@ -66,7 +66,7 @@ log(string.format("Ion domain extents = [%g,%g]", VL_ION, VU_ION))
 -- COMPUTATIONAL DOMAIN, DATA STRUCTURE, ETC. --
 ------------------------------------------------
 -- decomposition object
-phaseDecomp = DecompRegionCalc2D.CartProd { cuts = {2,1} }
+phaseDecomp = DecompRegionCalc2D.CartProd { cuts = {8,4} }
 confDecomp = DecompRegionCalc1D.SubCartProd2D {
    decomposition = phaseDecomp,
    collectDirections = {0},
