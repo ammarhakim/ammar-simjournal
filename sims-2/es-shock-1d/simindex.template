@@ -37,9 +37,7 @@ Simulation Index
   * - ${mdl("s5")}
     - Same as s4, except :math:`Te/Ti=9.0`
 
-Redoing the above in the proper, clean way. [Increase X domain size
-and also ion velocity extents. Run longer, perhaps to 1000 plasma
-periods. Do in parallel on VT. Add diagnostic to measure potential at midplane]
+Redoing the above in the proper, clean way.
 
 * - Number
     - Description
@@ -56,7 +54,7 @@ periods. Do in parallel on VT. Add diagnostic to measure potential at midplane]
   * - ${mdl("m6")}
     - Same as m1, Mach number 0.75
   * - ${mdl("m7")}
-    - Same as m1, Mach number 0.5    
+    - Same as m1, Mach number 0.5
 
 Fluid sims corresponding to m series simulations [Source solver takes
 about 1/2 the total run time! Also, Maxwell solver takes longer than
