@@ -55,6 +55,8 @@ Redoing the above in the proper, clean way.
     - Same as m1, Mach number 0.75
   * - ${mdl("m7")}
     - Same as m1, Mach number 0.5
+  * - ${mdl("m8")}
+    - Same as m1, Mach number 0.25
 
 Fluid sims corresponding to m series simulations [Source solver takes
 about 1/2 the total run time! Also, Maxwell solver takes longer than
