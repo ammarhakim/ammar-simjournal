@@ -59,6 +59,8 @@ Redoing the above in the proper, clean way.
     - Same as m1, Mach number 0.25
   * - ${mdl("m9")}
     - Same as m1, Mach number 4.0
+  * - ${mdl("m10")}
+    - Same as m1, except run for longer, and 2X velocity mesh (to see if ions go unstable)
 
 Fluid sims corresponding to m series simulations [Source solver takes
 about 1/2 the total run time! Also, Maxwell solver takes longer than
