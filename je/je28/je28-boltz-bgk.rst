@@ -1,6 +1,6 @@
 :Author: Ammar Hakim
-:Date: 30nd Jan 2016
-:Completed: 
+:Date: 30th Jan 2016
+:Completed: 30th Jan 2016
 :Last Updated:
 
 JE28: Some tests for Boltzmann-BGK equations
