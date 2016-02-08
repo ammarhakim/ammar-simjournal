@@ -32,14 +32,27 @@ rcParams['savefig.bbox']               = 'tight'
 # Example: xlabel(r'$t \cdot l / V_{A,bc}$')
 rcParams['mathtext.default'] = 'regular' # match the font used for regular text
 
+def calcHamilton(Xc, Vc, mass, charge, phi):
+    X1 = linspace(Xc[0,0], Xc[0,-1], Xc.shape[1]-1)
+    V1 = linspace(Vc[0,0], Vc[-1,0], Vc.shape[0]-1)
+    XX, VV = meshgrid(X1, V1)
+    return XX, VV, 0.5*mass*VV**2 + charge*phi
+    
 for i in range(0,101):
     print "Working on %d ..." % i
     d = gkedata.GkeData("m4-es-shock_distfElc_%d.h5" % i )
     dg1 = gkedgbasis.GkeDgSerendip2DPolyOrder2Basis(d)
     Xc, Yc, fve = dg1.project(0)
 
+    # potential
+    d = gkedata.GkeData("m4-es-shock_phi_%d.h5" % i )
+    dg1 = gkedgbasis.GkeDgLobatto1DPolyOrder2Basis(d)
+    Xp, phi = dg1.project(0)
+    XX, VV, ham = calcHamilton(Xc, Yc, 1.0, -1.0, phi)
+
     subplot(2,1,1)
     pylab.pcolormesh(Xc, Yc, pylab.transpose(fve))
+    pylab.contour(XX, VV, ham, linewidth=1, levels=[0], colors='k')
     pylab.axis('tight')
     #pylab.xlabel('X')
     pylab.ylabel('V')
