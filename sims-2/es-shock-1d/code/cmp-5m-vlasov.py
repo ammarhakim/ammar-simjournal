@@ -163,6 +163,6 @@ plot(XcFV, erIonFV/erIonFV[0]*erIon[0], 'k-')
 
 suptitle("Kinetic (red) and Fluid (black) solution at t=%g" % tm)
 
-savefig('%s-cmp-kin-flu.png' % outPrefix, dpi=300)
+savefig('%s-cmp-kin-flu_%d.png' % (outPrefix, frame), dpi=300)
 
 #show()
