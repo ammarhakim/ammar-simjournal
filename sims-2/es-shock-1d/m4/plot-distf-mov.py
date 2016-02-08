@@ -33,8 +33,11 @@ rcParams['savefig.bbox']               = 'tight'
 rcParams['mathtext.default'] = 'regular' # match the font used for regular text
 
 def calcHamilton(Xc, Vc, mass, charge, phi):
-    X1 = linspace(Xc[0,0], Xc[0,-1], Xc.shape[1]-1)
-    V1 = linspace(Vc[0,0], Vc[-1,0], Vc.shape[0]-1)
+    dx = (Xc[0,-1]-Xc[0,0])/(Xc.shape[1]-1)
+    dv = (Vc[-1,0]-Vc[0,0])/(Vc.shape[0]-1)
+    
+    X1 = linspace(Xc[0,0]+0.5*dx, Xc[0,-1]-0.5*dx, Xc.shape[1]-1)
+    V1 = linspace(Vc[0,0]+0.5*dv, Vc[-1,0]-0.5*dv, Vc.shape[0]-1)
     XX, VV = meshgrid(X1, V1)
     return XX, VV, 0.5*mass*VV**2 + charge*phi
     
