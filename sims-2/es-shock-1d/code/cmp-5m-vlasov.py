@@ -159,4 +159,4 @@ plot(XcFV, erIonFV/erIonFV[0]*erIon[0], 'k-')
 title('Ion energy density at t=%g' % tm)
 savefig('%s-fluid-kinetic-cmp-ion-enrDens.png' % outPrefix)
 
-show()
+#show()
