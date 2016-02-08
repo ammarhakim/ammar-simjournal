@@ -23,7 +23,7 @@ rcParams['figure.facecolor']           = 'white'
 #rcParams['figure.subplot.right']       = 0.85 # keep labels/ticks of colobar in figure
 rcParams['image.interpolation']        = 'none'
 rcParams['image.origin']               = 'lower'
-rcParams['contour.negative_linestyle'] = 'solid'
+#rcParams['contour.negative_linestyle'] = 'solid'
 rcParams['savefig.bbox']               = 'tight'
 
 # Math/LaTex fonts:
@@ -55,7 +55,8 @@ for i in range(0,101):
 
     subplot(2,1,1)
     pylab.pcolormesh(Xc, Yc, pylab.transpose(fve))
-    pylab.contour(XX, VV, ham, linewidth=1, levels=[0], colors='k')
+    pylab.contour(XX, VV, ham, colors='k', linewidths=1)
+    pylab.contour(XX, VV, ham, levels=[0], colors='w')
     pylab.axis('tight')
     #pylab.xlabel('X')
     pylab.ylabel('V')
