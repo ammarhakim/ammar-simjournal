@@ -78,7 +78,7 @@ figure(1)
 plot(Xc, numElc, 'r-')
 plot(XcFV, numElcFV, 'k-')
 title('Electron number density at t=%g' % tm)
-savefig('%s-fluid-kinetic-cmp-elc-numDens.png' % outPrefix)
+savefig('%s-fluid-kinetic-cmp-elc-numDens_%d.png' % (outPrefix, frame) )
 
 # ion number density
 d = gkedata.GkeData("%s_numDensityIon_%d.h5"  % (kinFileName, frame) )
@@ -93,7 +93,7 @@ figure(2)
 plot(Xc, numIon, 'r-')
 plot(XcFV, numIonFV, 'k-')
 title('Ion number density at t=%g' % tm)
-savefig('%s-fluid-kinetic-cmp-ion-numDens.png' % outPrefix)
+savefig('%s-fluid-kinetic-cmp-ion-numDens_%d.png' % (outPrefix, frame) )
 
 ######
 
@@ -109,7 +109,7 @@ figure(3)
 plot(Xc, momElc, 'r-')
 plot(XcFV, momElcFV/0.01, 'k-')
 title('Electron momentum density at t=%g' % tm)
-savefig('%s-fluid-kinetic-cmp-elc-momDens.png' % outPrefix)
+savefig('%s-fluid-kinetic-cmp-elc-momDens_%d.png' % (outPrefix, frame) )
 
 # ion momentum density
 d = gkedata.GkeData("%s_momentumIon_%d.h5"  % (kinFileName, frame) )
@@ -124,7 +124,7 @@ figure(4)
 plot(Xc, momIon, 'r-')
 plot(XcFV, momIonFV/0.01, 'k-')
 title('Ion momentum density at t=%g' % tm)
-savefig('%s-fluid-kinetic-cmp-ion-momDens.png' % outPrefix)
+savefig('%s-fluid-kinetic-cmp-ion-momDens_%d.png' % (outPrefix, frame) )
 
 ######
 
@@ -141,7 +141,7 @@ figure(5)
 plot(Xc, erElc, 'r-')
 plot(XcFV, erElcFV/erElcFV[0]*erElc[0], 'k-')
 title('Electron energy density at t=%g' % tm)
-savefig('%s-fluid-kinetic-cmp-elc-enrDens.png' % outPrefix)
+savefig('%s-fluid-kinetic-cmp-elc-enrDens_%d.png' % (outPrefix, frame) )
 
 # ion momentum density
 d = gkedata.GkeData("%s_ptclEnergyIon_%d.h5"  % (kinFileName, frame) )
@@ -157,6 +157,6 @@ figure(6)
 plot(Xc, erIon, 'r-')
 plot(XcFV, erIonFV/erIonFV[0]*erIon[0], 'k-')
 title('Ion energy density at t=%g' % tm)
-savefig('%s-fluid-kinetic-cmp-ion-enrDens.png' % outPrefix)
+savefig('%s-fluid-kinetic-cmp-ion-enrDens_%d.png' % (outPrefix, frame) )
 
 #show()
