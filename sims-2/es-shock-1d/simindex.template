@@ -39,7 +39,11 @@ Simulation Index
 
 Redoing the above in the proper, clean way.
 
-* - Number
+.. list-table::
+  :header-rows: 1
+  :widths: 10,90
+
+  * - Number
     - Description
   * - ${mdl("m1")}
     - :math:`Te/Ti=9.0`, Mach number 1.5, polyOrder 2 serendipity elements.
@@ -69,7 +73,11 @@ hard-coded Maxwell solver (even Balsara based) and manually inverting
 the source term. One way to speed up the fluid solver is to use ES
 equations and not Maxwell equations at all.]
 
-* - Number
+.. list-table::
+  :header-rows: 1
+  :widths: 10,90
+
+  * - Number
     - Description
   * - ${mdl("f1")}
     - Corresponds to m1
