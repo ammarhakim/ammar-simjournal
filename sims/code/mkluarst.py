@@ -2,7 +2,7 @@
 import glob
 
 def main():
-    luaList = glob.glob("s*/*.lua")
+    luaList = glob.glob("*/*.lua")
     for luaFile in luaList:
 
         outName = luaFile[:luaFile.find(".lua")] + ".rst"

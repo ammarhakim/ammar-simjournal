@@ -845,7 +845,7 @@ program for that simulation.
   * - :doc:`s413 <s413/s413-shock-vort-euler-3d>` 
     - Same as s412, except on :math:`300\times 200\times 100` grid.
   * - :doc:`s414 <s414/s414-5m-lhdi>` 
-    - Five-moment LHDI simulation. As of now, I do not fully understand the results.
+    - Five-moment LHDI simulation. Random initial perturbation
   * - :doc:`s415 <s415/s415-euler-nozzle-2d>` 
     - 2D Euler equations with embedded boundary: flow in nozzle
   * - :doc:`s416 <s416/s416-euler-wedge-2d>` 
@@ -866,6 +866,49 @@ program for that simulation.
     - Supersonic (Mach 2) flow over an ellipsoid. Axisymmetric case.
   * - :doc:`s424 <s424/s424-super-euler-3d>` 
     - Supersonic (Mach 2) flow over an ellipsoid.
-
-
-
+  * - :doc:`s425 <s425/s425-super-euler-3d>` 
+    - Same as s424, except on higher resolution grid.
+  * - :doc:`s426 <s426/s426-is-coal>` 
+    - Island coalescence problem with 5-moment equations. See Karimaadi Phys. Rev. Letters, 107. 2011. :math:`640\times 320`
+  * - :doc:`s427 <s427/s427-is-coal>` 
+    - Same as s426, except :math:`1280\times 640` grid
+  * - :doc:`s428 <s428/s428-is-coal>` 
+    - Same as s426, except for :math:`\lambda = 10 d_i`.
+  * - :doc:`s429 <s429/s429-is-coal>` 
+    - Same as s426, except for :math:`\lambda = 25 d_i`.
+  * - :doc:`s430 <s430/s430-is-coal>` 
+    - Same as s426, except for :math:`\lambda = 15 d_i`.
+  * - :doc:`s431 <s431/s431-is-coal>` 
+    - Same as s426, except for :math:`\lambda = 50 d_i`.
+  * - :doc:`s432 <s432/s432-is-coal>` 
+    - Same as s426, except for :math:`\lambda = 100 d_i`.
+  * - :doc:`s433 <s433/s433-is-coal>` 
+    - Island coalescence problem with 10-moment equations, :math:`\lambda = 5 d_i` (See s426), :math:`640\times 320` grid.
+  * - :doc:`s434 <s434/s434-is-coal>` 
+    - Same as s433, except :math:`1280\times 640` grid.
+  * - :doc:`s435 <s435/s435-is-coal>` 
+    - Same as s433, except :math:`\lambda = 10 d_i`.
+  * - :doc:`s436 <s436/s436-is-coal>` 
+    - Same as s433, except :math:`\lambda = 25 d_i`.
+  * - :doc:`s437 <s437/s437-is-coal>` 
+    - Same as s433, except :math:`\lambda = 15 d_i`.
+  * - :doc:`s438 <s438/s438-euler-rt-2d>` 
+    - 2D Euler RT instability (Athena test)
+  * - :doc:`s439 <s439/s439-euler-rt-2d>` 
+    - Same as s438, except on a :math:`300\times 900` grid.
+  * - :doc:`s440 <s440/s440-euler-rt-2d>` 
+    - Same as s438, except with random noise perturbation
+  * - :doc:`s441 <s441/s441-euler-rt-2d>` 
+    - Same as s440, except on a :math:`300\times 900` grid.
+  * - :doc:`s442 <s442/s442-euler-rt-3d>` 
+    - 3D Euler RT instability (Athena test), :math:`50\times 150\times 50` grid.
+  * - :doc:`s443 <s443/s443-euler-rt-3d>` 
+    - Same as s442, :math:`100\times 300\times 100` grid
+  * - :doc:`s444 <s444/s444-euler-rt-3d>` 
+    - Same as s443, :math:`100\times 300\times 100` grid, with random perturbation
+  * - :doc:`s445 <s445/s445-euler-rt-3d>` 
+    - Same as s444, :math:`200\times 600\times 200` grid
+  * - :doc:`s446 <s446/s446-euler-rt-3d>` 
+    - Same as s443, :math:`200\times 600\times 200` grid
+  * - :doc:`s447 <s447/s447-5m-lhdi>` 
+    - Five-moment LHDI simulation. Same as s441, except on a :math:`500\times 500` grid

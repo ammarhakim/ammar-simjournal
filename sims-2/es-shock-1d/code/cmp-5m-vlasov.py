@@ -93,7 +93,6 @@ XcFV = XcFV/XcFV[-1]*Xc[-1]
 numIonFV = numIonFV/massRatio
 
 ax = subplot(3,2,2)
-ax2 = ax.twinx()
 title('Ions')
 plot(Xc, numIon, 'r-')
 plot(XcFV, numIonFV, 'k-')
