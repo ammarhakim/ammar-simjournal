@@ -38,8 +38,8 @@ instead of two counter propagating beams. However, as of this writing,
 Gkeyll does not have reflecting BCs for the distribution function, and
 hence I am just using a bigger domain.
 
-Some notes on collionless electrostatic shock formation
--------------------------------------------------------
+Some notes on collisionless electrostatic shock formation
+---------------------------------------------------------
 
 When two counter propagating, but otherwise identical, slabs of plasma
 collide, a potential well is created, leading to trapping of electrons
@@ -91,7 +91,7 @@ simulations with initial Mach numbers of :math:`1.5` [:doc:`m1
 <../../sims-2/es-shock-1d/m4/m4-es-shock>`].
 
 The distribution functions for the Mach :math:`1.5` and Mach
-:math:`5.0` at :math: `T\Omega_{pe} = 1000` are shown below.
+:math:`5.0` at :math:`T\Omega_{pe} = 1000` are shown below.
 
 In the first case, the potential well traps the electrons and
 decelerates the ions in the interaction region, significantly slowing
@@ -199,6 +199,19 @@ nv_{th}^2`) are compared.
   Same as previous figures, except for for Mach :math:`5.0` case. The
   lack of shock in the kinetic solutions leads to significant
   differences with the fluid results.
+
+Conclusions
+-----------
+
+Kinetic simulations of collisionless electrostatic shocks confirm the
+lack of shocks above the critical Mach number. Comparisons with
+multi-fluid simulations show that the fluid model correctly predicts
+the shock location and profiles of moments (except for ion energy
+density) for low Mach number cases. However, the fluid results diverge
+significantly for high Mach numbers: shocks don't form above a
+critical Mach number in the kinetic model, while continue to form in
+the fluid model. This indicate some caution in using fluid
+approximations to model collisionless shocks.
 
 References
 ----------
