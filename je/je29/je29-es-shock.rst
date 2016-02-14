@@ -218,9 +218,9 @@ References
 
 .. [#Forslund] D. W. Forslund and C. R. Shonk "Formation and Structure
    of Electrostatic Collisionless Shocks". *Phy. Review Letters*,
-   **25**, No 25, 1970.
+   **25** (25), 1699. 1970.
 
 .. [#Sorasio] Sorasio, G., Marti, M., Fonseca, R., &
    Silva, L. O. (2006). "Very High Mach-Number Electrostatic Shocks in
-   Collisionless Plasmas". *Phys. Rev. Letters*,
-   96(4), 045005. http://doi.org/10.1103/PhysRevLett.96.045005
+   Collisionless Plasmas". *Phys. Review Letters*, **96**
+   (4), 045005. http://doi.org/10.1103/PhysRevLett.96.045005
