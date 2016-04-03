@@ -8,7 +8,7 @@ NY = 10
 lightSpeed = 1.0
 
 polyOrder = 3 -- DG polynomial order
-cfl = 0.45/(2*polyOrder+1)
+cfl = 0.4/(2*polyOrder+1)
 tStart = 0.0
 tEnd = 3.0
 nFrames = 2
@@ -94,7 +94,7 @@ bcMgn = BoundaryCondition.NodalDgZeroNormal2D {
 }
 potBc = BoundaryCondition.NodalDgCopy2D { 
    components = {6, 7}, 
-   fact = {-1, -1},
+   fact = {-1, 1},
    basis = basis,
 }
 
@@ -153,7 +153,7 @@ maxwellEqn = HyperEquation.PhMaxwell {
    elcErrorSpeedFactor = 1.0,
    -- factor for magnetic field correction potential speed
    mgnErrorSpeedFactor = 1.0,
-   -- numerical flux to use: one of "lax" or "central"
+   -- numerical flux to use: one of "lax", "central" or "upwind"
    numericalFlux = "upwind",
 }
 
