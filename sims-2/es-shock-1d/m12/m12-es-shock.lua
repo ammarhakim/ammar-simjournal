@@ -35,14 +35,14 @@ elcDrift = machNum*cs
 ionDrift = elcDrift -- no net current
 
 -- domain size and simulation time
-LX = 500*lambdaD
+LX = 1000*lambdaD
 tStart = 0.0 -- start time 
-tEnd = 1000.0/wpe
+tEnd = 500.0/wpe
 nFrames = 100
 
 -- Resolution, time-stepping etc.
 NX = 512
-NV = 32
+NV = 16
 polyOrder = 2
 
 cfl = 0.5/(2*polyOrder+1)
@@ -68,7 +68,7 @@ log(string.format("Ion domain extents = [%g,%g]", VL_ION, VU_ION))
 -- COMPUTATIONAL DOMAIN, DATA STRUCTURE, ETC. --
 ------------------------------------------------
 -- decomposition object
-phaseDecomp = DecompRegionCalc2D.CartProd { cuts = {8,4} }
+phaseDecomp = DecompRegionCalc2D.CartProd { cuts = {2,1} }
 confDecomp = DecompRegionCalc1D.SubCartProd2D {
    decomposition = phaseDecomp,
    collectDirections = {0},

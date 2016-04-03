@@ -92,7 +92,7 @@ bcMgn = BoundaryCondition.NodalDgZeroNormal2D {
 }
 potBc = BoundaryCondition.NodalDgCopy2D { 
    components = {6, 7}, 
-   fact = {-1, -1},
+   fact = {-1, 1},
    basis = basis,
 }
 
