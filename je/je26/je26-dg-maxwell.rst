@@ -150,7 +150,7 @@ functions.
     - 
     - :doc:`s8 <../../sims-2/dg-maxwell/s8/s8-dg-maxwell>`
   * - :math:`0.125`
-    - :math:`8.9166\times 10^{-5}`
+    - :math:`8.9183\times 10^{-5}`
     - :math:`9.1`
     - :doc:`s9 <../../sims-2/dg-maxwell/s9/s9-dg-maxwell>`
   * - :math:`0.0625`
@@ -186,19 +186,17 @@ functions.
     - Order
     - Simulation
   * - :math:`0.05`
-    - :math:`8.699\times 10^{-2}`
+    - :math:`1.2\times 10^{-1}`
     - 
     - :doc:`s15 <../../sims-2/dg-maxwell/s15/s15-dg-maxwell>`
   * - :math:`0.025`
-    - :math:`9.619\times 10^{-3}`
-    - :math:`3.1`
+    - :math:`1.22\times 10^{-2}`
+    - :math:`3.3`
     - :doc:`s16 <../../sims-2/dg-maxwell/s16/s16-dg-maxwell>`
   * - :math:`0.0125`
-    - :math:`1.065\times 10^{-3}`
-    - :math:`3.2`
+    - :math:`1.25\times 10^{-3}`
+    - :math:`3.3`
     - :doc:`s17 <../../sims-2/dg-maxwell/s17/s17-dg-maxwell>`
-
-
 
 .. list-table:: **Serendipity polynomial order 2**
   :header-rows: 1
@@ -209,16 +207,16 @@ functions.
     - Order
     - Simulation
   * - :math:`0.1`
-    - :math:`2.332\times 10^{-2}`
+    - :math:`3.48\times 10^{-2}`
     - 
     - :doc:`s18 <../../sims-2/dg-maxwell/s18/s18-dg-maxwell>`
   * - :math:`0.05`
-    - :math:`7.359\times 10^{-4}`
-    - :math:`4.95`
+    - :math:`1.065\times 10^{-3}`
+    - :math:`5.0`
     - :doc:`s19 <../../sims-2/dg-maxwell/s19/s19-dg-maxwell>`
   * - :math:`0.025`
-    - :math:`3.5146\times 10^{-5}`
-    - :math:`4.4`
+    - :math:`4.312\times 10^{-5}`
+    - :math:`4.6`
     - :doc:`s20 <../../sims-2/dg-maxwell/s20/s20-dg-maxwell>`
 
 Example solutions with polynomial order 1 on grid :math:`40\times 40`

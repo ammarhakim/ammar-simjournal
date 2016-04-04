@@ -14,8 +14,8 @@ Ly = 20.0
 rad = 2.0
 
 -- resolution and time-stepping
-NX = 250
-NY = 250
+NX = 200
+NY = 200
 cfl = 0.9
 tStart = 0.0
 tEnd = 10*Lx/lightSpeed 

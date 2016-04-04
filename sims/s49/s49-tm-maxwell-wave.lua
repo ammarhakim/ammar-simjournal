@@ -78,7 +78,7 @@ maxSlvr:setOut( {qNew} )
 -- boundary condition to apply
 bcElc = BoundaryCondition.ZeroTangent { components = {0, 1, 2} }
 bcMgn = BoundaryCondition.ZeroNormal { components = {3, 4, 5} }
-potBc = BoundaryCondition.Copy { components = {6, 7}, fact = {-1, -1} }
+potBc = BoundaryCondition.Copy { components = {6, 7}, fact = {-1, 1} }
 
 -- create boundary condition object
 function createBc(myDir, myEdge)
