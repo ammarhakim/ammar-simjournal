@@ -74,7 +74,7 @@ subplot(1,2,1)
 prMa = numpy.ma.masked_where(inOut[:,:,0]<0, pr)
 contour(X, Y, transpose(prMa), 20, colors='k', linewidth=0.1)
 im = pcolormesh(X, Y, transpose(prMa))
-title('Pressure %g' % tm)
+title('T=%g' % tm)
 axis('image')
 colorbar_adj(im)
 
@@ -97,7 +97,7 @@ contour(X, Y, transpose(prMa), 20, colors='k', linewidth=0.1)
 im = pcolormesh(X, Y, transpose(prMa))
 gca().set_yticklabels([])
 tm = fh.root.timeData._v_attrs.vsTime
-title('Pressure %g' % tm)
+title('T=%g' % tm)
 axis('image')
 colorbar_adj(im)
 

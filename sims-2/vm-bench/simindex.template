@@ -51,3 +51,6 @@ RF problems using V-M
     - 1X/2V V-M simulation of plasma wave-beach problem
   * - t2
     - 1X/2V V-M simulation of tunnelling through electron-cyclotron layer [THIS DOES NOT WORK]
+  * - t3
+    - Fluid simulation of Weilbel instability. Califano et. al. Phys. Rev E 1998
+    
