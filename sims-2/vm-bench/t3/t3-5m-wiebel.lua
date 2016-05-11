@@ -15,8 +15,10 @@ mu0 = 1.0
 mgnErrorSpeedFactor = 1.0
 
 -- simulation parameters
-udrift = 0.3 -- beam drift velocity
+udrift1 = 0.3
+udrift2 = -0.3
 k0 = 0.2 -- wave number
+elcTemp = 0.01
 
 Lx = 1.0
 Ly = 2*Lucee.Pi/k0
@@ -27,8 +29,8 @@ NX = 1
 NY = 1024
 cfl = 0.9
 tStart = 0.0
-tEnd = 10.0
-nFrames = 10
+tEnd = 150.0
+nFrames = 75
 
 ------------------------------------------------
 -- COMPUTATIONAL DOMAIN, DATA STRUCTURE, ETC. --
@@ -92,14 +94,17 @@ emFieldNew = qNew:alias(10, 18)
 -----------------------
 -- initial conditions
 function init(x,y,z)
-   local u = 0.3
    local rho = elcMass*n0
-   local pr0 = 1e-3 -- cold
-   local Er = pr0/(gasGamma-1) + 0.5*rho*u^2
+   local pr0 = n0*elcTemp
    local Bz = 1e-3*math.sin(k0*y)
    
-   return rho, rho*u, 0.0, 0.0, Er, rho, -rho*u, 0.0, 0.0, Er, 0.0, 0.0, 0.0, 0.0, 0.0, Bz, 0.0, 0.0
+   local u1 = udrift1
+   local Er1 = pr0/(gasGamma-1) + 0.5*rho*u1^2
 
+   local u2 = udrift2
+   local Er2 = pr0/(gasGamma-1) + 0.5*rho*u2^2
+   
+   return rho, rho*u1, 0.0, 0.0, Er1, rho, rho*u2, 0.0, 0.0, Er2, 0.0, 0.0, 0.0, 0.0, 0.0, Bz, 0.0, 0.0
 end
 
 
@@ -114,6 +119,9 @@ function applyBc(fld, tCurr, myDt)
       bc:setOut( {fld} )
       bc:advance(tCurr+myDt)
    end
+   -- copy BCs in Y
+   fld:applyCopyBc(1, "lower")
+   fld:applyCopyBc(1, "upper")   
    -- sync ghost cells
    fld:sync()
 end
