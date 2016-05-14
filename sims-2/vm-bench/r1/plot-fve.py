@@ -40,6 +40,11 @@ def getXv(Xc, Vc):
     V1 = linspace(Vc[0,0]+0.5*dv, Vc[-1,0]-0.5*dv, Vc.shape[0]-1)
 
     return X1, V1
+
+# initial conditions
+d = gkedata.GkeData("r1-es-resonance_distfElc_0.h5")
+dg1 = gkedgbasis.GkeDgSerendip2DPolyOrder2Basis(d)
+Xc, Yc, fve0 = dg1.project(0)
     
 for i in range(0,11):
     print "Working on %d ..." % i
@@ -48,11 +53,20 @@ for i in range(0,11):
     Xc, Yc, fve = dg1.project(0)
 
     X, V = getXv(Xc, Yc)
+    figure(1)
     plot(V, fve[fve.shape[0]/2, :], 'r-')
     title('Time %g' % d.time)
     xlabel('V')
     ylabel('f(V)')
-    
+    savefig('r1-es-resonance-fve1_%05d.png' % i)
+    close()
+
+    figure(2)
+    pcolormesh(Xc, Yc, pylab.transpose(fve-fve0))
+    title('Time %g' % d.time)
+    colorbar()
+    axis('tight')
     savefig('r1-es-resonance-fve_%05d.png' % i)
-    pylab.close()
+    close()    
+    
     d.close()
