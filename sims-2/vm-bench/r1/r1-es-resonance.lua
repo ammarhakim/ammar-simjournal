@@ -29,7 +29,7 @@ lambdaD = vtElc/wpe
 -- wave-number
 knumber = 0.5/lambdaD
 -- field amplitude
-phi0 = 0.1
+phi0 = 0.01
 -- velocity at which we want resonance
 vRes = 1.0*vtElc
 -- field frequency
