@@ -32,6 +32,25 @@ rcParams['savefig.bbox']               = 'tight'
 # Example: xlabel(r'$t \cdot l / V_{A,bc}$')
 rcParams['mathtext.default'] = 'regular' # match the font used for regular text
 
+def colorbar_adj(obj, mode=1, redraw=False, _fig_=None, _ax_=None, aspect=None):
+    '''
+    Add a colorbar adjacent to obj, with a matching height
+    For use of aspect, see http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes.set_aspect ; E.g., to fill the rectangle, try "auto"
+    '''
+    from mpl_toolkits.axes_grid1 import make_axes_locatable
+    if mode == 1:
+        _fig_ = obj.figure; _ax_ = obj.axes
+    elif mode == 2: # assume obj is in the current figure/axis instance
+        _fig_ = plt.gcf(); _ax_ = plt.gca()
+    _divider_ = make_axes_locatable(_ax_)
+    _cax_ = _divider_.append_axes("right", size="5%", pad=0.05)
+    _cbar_ =  _fig_.colorbar(obj, cax=_cax_)
+    if aspect != None:
+        _ax_.set_aspect(aspect)
+    if redraw:
+        _fig_.canvas.draw()
+    return _cbar_
+
 def getXv(Xc, Vc):
     dx = (Xc[0,-1]-Xc[0,0])/(Xc.shape[1]-1)
     dv = (Vc[-1,0]-Vc[0,0])/(Vc.shape[0]-1)
@@ -46,7 +65,7 @@ d = gkedata.GkeData("r1-es-resonance_distfElc_0.h5")
 dg1 = gkedgbasis.GkeDgSerendip2DPolyOrder2Basis(d)
 Xc, Yc, fve0 = dg1.project(0)
     
-for i in range(0,11):
+for i in range(0,21):
     print "Working on %d ..." % i
     d = gkedata.GkeData("r1-es-resonance_distfElc_%d.h5" % i )
     dg1 = gkedgbasis.GkeDgSerendip2DPolyOrder2Basis(d)
@@ -55,6 +74,9 @@ for i in range(0,11):
     X, V = getXv(Xc, Yc)
     figure(1)
     plot(V, fve[fve.shape[0]/2, :], 'r-')
+    ylo, yup = gca().get_ylim()
+    plot([1.0, 1.0], [ylo, yup], '--k')
+    gca().set_ylim([0, 0.4])
     title('Time %g' % d.time)
     xlabel('V')
     ylabel('f(V)')
@@ -62,11 +84,22 @@ for i in range(0,11):
     close()
 
     figure(2)
-    pcolormesh(Xc, Yc, pylab.transpose(fve-fve0))
-    title('Time %g' % d.time)
-    colorbar()
+    subplot(2,1,1)
+    im = pcolormesh(Xc, Yc, pylab.transpose(fve))
+    plot([-2*pi,2*pi], [1.0, 1.0], 'k--', linewidth=2.0)
     axis('tight')
+    colorbar_adj(im)
+
+    subplot(2,1,2)
+    im = pcolormesh(Xc, Yc, pylab.transpose(fve-fve0))
+    plot([-2*pi,2*pi], [1.0, 1.0], 'k--', linewidth=2.0)
+    #axis('tight')
+    gca().set_ylim([0.0, 2.0])
+    gca().set_xlim([-2*pi, 2*pi])
+    colorbar_adj(im)
+    
+    suptitle('Time %g' % d.time)
     savefig('r1-es-resonance-fve_%05d.png' % i)
-    close()    
+    close()
     
     d.close()

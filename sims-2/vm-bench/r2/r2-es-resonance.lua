@@ -500,8 +500,7 @@ function calcPhiFromChargeDensity(curr, dt, distElcIn, distIonIn, phiOut)
    local myS, myDt = runUpdater(phiFromChargeDensityCalc, curr, dt, {chargeDensity}, {phiOut})
    -- add in drive field
    runUpdater(calcDrivePhi, curr, dt, {}, {phiDrive})
-   --phiOut:accumulate(1.0, phiDrive)
-   phiOut:copy(phiDrive)
+   phiOut:accumulate(1.0, phiDrive)
    return myS, myDt
 end
 
