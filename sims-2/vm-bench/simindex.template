@@ -59,5 +59,7 @@ Resonance in wave fields
   * - Number
     - Description
   * - r1
-    - 1X/1V Vlasov in specified electric field
+    - 1X/1V Vlasov in specified electric field: no contribution from plasma fields. :math:`phi_0=0.01`.
+  * - r2
+    - 1X/1V Vlasov in specified electric field: self-consistent contribution from plasma fields. :math:`phi_0=0.01`.
 
