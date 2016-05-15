@@ -1,4 +1,4 @@
--- Vlasov-Poisson solver in Poisson-Bracket formulation
+-- Vlasov-Poisson solver in Poisson-Bracket formulation: ions NOT updated
 
 ----------------------------------
 -- Problem dependent parameters --
@@ -530,12 +530,13 @@ end
 ----------------------------
 
 function rk3(tCurr, myDt)
-   local statusElc, dtSuggestedElc
-   local statusIon, dtSuggestedIon
+   local statusElc, dtSuggestedElc = true, 1e6
+   local statusIon, dtSuggestedIon = true, 1e6
 
    -- RK stage 1
    statusElc, dtSuggestedElc = updateVlasovEqn(vlasovSolverElc, tCurr, myDt, distfElc, hamilElc, distf1Elc)
-   statusIon, dtSuggestedIon = updateVlasovEqn(vlasovSolverIon, tCurr, myDt, distfIon, hamilIon, distf1Ion)
+   --statusIon, dtSuggestedIon = updateVlasovEqn(vlasovSolverIon, tCurr, myDt, distfIon, hamilIon, distf1Ion)
+   distf1Ion:copy(distfIon)
    if (statusElc == false) or (statusIon == false) then
       return false, math.min(dtSuggestedElc, dtSuggestedIon)
    end
@@ -546,7 +547,8 @@ function rk3(tCurr, myDt)
 
    -- RK stage 2
    statusElc, dtSuggestedElc = updateVlasovEqn(vlasovSolverElc, tCurr, myDt, distf1Elc, hamilElc, distfNewElc)
-   statusIon, dtSuggestedIon = updateVlasovEqn(vlasovSolverIon, tCurr, myDt, distf1Ion, hamilIon, distfNewIon)
+   --statusIon, dtSuggestedIon = updateVlasovEqn(vlasovSolverIon, tCurr, myDt, distf1Ion, hamilIon, distfNewIon)
+   distfNewIon:copy(distf1Ion)
    if (statusElc == false) or (statusIon == false) then
       return false, math.min(dtSuggestedElc, dtSuggestedIon)
    end
@@ -559,7 +561,8 @@ function rk3(tCurr, myDt)
 
    -- RK stage 3
    statusElc, dtSuggestedElc = updateVlasovEqn(vlasovSolverElc, tCurr, myDt, distf1Elc, hamilElc, distfNewElc)
-   statusIon, dtSuggestedIon = updateVlasovEqn(vlasovSolverIon, tCurr, myDt, distf1Ion, hamilIon, distfNewIon)
+   --statusIon, dtSuggestedIon = updateVlasovEqn(vlasovSolverIon, tCurr, myDt, distf1Ion, hamilIon, distfNewIon)
+   distfNewIon:copy(distf1Ion)
    if (statusElc == false) or (statusIon == false) then
       return false, math.min(dtSuggestedElc, dtSuggestedIon)
    end
