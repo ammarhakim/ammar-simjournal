@@ -37,12 +37,12 @@ omega0 = knumber*vRes
 -- domain size and simulation time
 LX = 2*Lucee.Pi/knumber
 tStart = 0.0 -- start time 
-tEnd = 40.0/wpe
-nFrames = 20
+tEnd = 500.0/wpe
+nFrames = 50
 
 -- Resolution, time-stepping etc.
-NX = 128
-NV = 48
+NX = 64
+NV = 64
 polyOrder = 2
 
 cfl = 0.5/(2*polyOrder+1)
@@ -368,7 +368,7 @@ momentumCalcIon = Updater.DistFuncMomentCalc1D {
    moment = 1,
 }
 
--- Updater to compute electron momentum
+-- Updater to compute electron energy
 ptclEnergyCalcElc = Updater.DistFuncMomentCalc1D {
    onGrid = phaseGridElc,
    basis2d = phaseBasisElc,
@@ -425,18 +425,24 @@ end
 
 totalPtclElc = DataStruct.DynVector { numComponents = 1, }
 totalPtclIon = DataStruct.DynVector { numComponents = 1, }
+fieldEnergy = DataStruct.DynVector { numComponents = 1, }
 
--- updater compute total number of electrons in domain
+-- updater to compute total number of electrons in domain
 totalPtclCalcElc = Updater.IntegrateNodalField1D {
    onGrid = confGrid,
    basis = confBasis,
    shareCommonNodes = false, -- for DG fields common nodes not shared
 }
--- updater compute total number of ions in domain
+-- updater to compute total number of ions in domain
 totalPtclCalcIon = Updater.IntegrateNodalField1D {
    onGrid = confGrid,
    basis = confBasis,
    shareCommonNodes = false, -- for DG fields common nodes not shared
+}
+-- updater to compute field energy
+fieldEnergyCalc = Updater.NormGrad1D {
+   onGrid = confGrid,
+   basis = confBasis,
 }
 
 ----------------------
@@ -523,6 +529,7 @@ end
 function calcDiagnostics(curr, dt)
    runUpdater(totalPtclCalcElc, curr, dt, {numDensityElc}, {totalPtclElc})
    runUpdater(totalPtclCalcIon, curr, dt, {numDensityIon}, {totalPtclIon})
+   runUpdater(fieldEnergyCalc, curr, dt, {phi1d}, {fieldEnergy})
 end
 
 ----------------------------
@@ -643,16 +650,17 @@ function writeFields(frameNum, tCurr)
    distfIon:write(string.format("distfIon_%d.h5", frameNum), tCurr)
    -- potential
    phi1d:write(string.format("phi_%d.h5", frameNum), tCurr)   
+
    -- moments
    numDensityElc:write(string.format("numDensityElc_%d.h5", frameNum), tCurr)
    numDensityIon:write(string.format("numDensityIon_%d.h5", frameNum), tCurr)
    momentumElc:write(string.format("momentumElc_%d.h5", frameNum), tCurr)
    momentumIon:write(string.format("momentumIon_%d.h5", frameNum), tCurr)
-   -- diagnostics
-   totalPtclElc:write(string.format("totalPtclElc_%d.h5", frameNum), tCurr)
-   totalPtclIon:write(string.format("totalPtclIon_%d.h5", frameNum), tCurr)
    ptclEnergyElc:write(string.format("ptclEnergyElc_%d.h5", frameNum), tCurr)
    ptclEnergyIon:write(string.format("ptclEnergyIon_%d.h5", frameNum), tCurr)
+
+   -- diagnostics
+   fieldEnergy:write( string.format("fieldEnergy_%d.h5", frameNum), tCurr )
 end
 
 ----------------------------
