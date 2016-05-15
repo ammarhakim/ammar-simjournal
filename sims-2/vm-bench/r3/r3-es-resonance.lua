@@ -31,9 +31,9 @@ knumber = 0.5/lambdaD
 -- field amplitude
 phi0 = 5e-2
 -- velocity at which we want resonance
-vRes = 1.0*vtElc
--- field frequency
-omega0 = knumber*vRes
+vRes1 = 1.0*vtElc
+vRes2 = 2.0*vtElc
+
 -- domain size and simulation time
 LX = 2*Lucee.Pi/knumber
 tStart = 0.0 -- start time 
@@ -41,8 +41,8 @@ tEnd = 40.0/wpe
 nFrames = 20
 
 -- Resolution, time-stepping etc.
-NX = 128
-NV = 48
+NX = 64
+NV = 32
 polyOrder = 2
 
 cfl = 0.5/(2*polyOrder+1)
@@ -55,8 +55,8 @@ VL_ION, VU_ION = -10.0*vtIon, 10.0*vtIon
 log(string.format("tEnd=%g,  nFrames=%d", tEnd, nFrames))
 log(string.format("Electron thermal speed=%g", vtElc))
 log(string.format("Plasma frequency=%g", wpe))
-log(string.format("Drive frequency=%g", omega0))
-log(string.format("Resonance velocity=%g", vRes))
+log(string.format("Drive frequency=%g", vRes1*knumber))
+log(string.format("Resonance velocity=%g,%g", vRes1, vRes2))
 log(string.format("Debye length=%g", lambdaD))
 log(string.format("Cell size=%g", LX/NX))
 log(string.format("Ion thermal speed=%g", vtIon))
@@ -300,7 +300,7 @@ calcDrivePhi = Updater.ProjectOnNodalBasis1D {
    shareCommonNodes = false, -- In DG, common nodes are not shared
    -- function to use for initialization
    evaluate = function(x,v,z,t)
-      return  phi0*math.cos(knumber*x-omega0*t)
+      return  phi0*(math.cos(knumber*x-knumber*vRes1*t) + math.cos(knumber*x-knumber*vRes2*t))
    end
 }
 
