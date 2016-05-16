@@ -32,6 +32,25 @@ rcParams['savefig.bbox']               = 'tight'
 # Example: xlabel(r'$t \cdot l / V_{A,bc}$')
 rcParams['mathtext.default'] = 'regular' # match the font used for regular text
 
+def colorbar_adj(obj, mode=1, redraw=False, _fig_=None, _ax_=None, aspect=None):
+    '''
+    Add a colorbar adjacent to obj, with a matching height
+    For use of aspect, see http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes.set_aspect ; E.g., to fill the rectangle, try "auto"
+    '''
+    from mpl_toolkits.axes_grid1 import make_axes_locatable
+    if mode == 1:
+        _fig_ = obj.figure; _ax_ = obj.axes
+    elif mode == 2: # assume obj is in the current figure/axis instance
+        _fig_ = plt.gcf(); _ax_ = plt.gca()
+    _divider_ = make_axes_locatable(_ax_)
+    _cax_ = _divider_.append_axes("right", size="5%", pad=0.05)
+    _cbar_ =  _fig_.colorbar(obj, cax=_cax_)
+    if aspect != None:
+        _ax_.set_aspect(aspect)
+    if redraw:
+        _fig_.canvas.draw()
+    return _cbar_
+
 def getXv(Xc, Vc):
     dx = (Xc[0,-1]-Xc[0,0])/(Xc.shape[1]-1)
     dv = (Vc[-1,0]-Vc[0,0])/(Vc.shape[0]-1)
@@ -53,23 +72,16 @@ for i in range(0,51):
     Xc, Yc, fve = dg1.project(0)
     fveAvg = sum(fve,0)/fve.shape[0]
 
-    d = gkedata.GkeData("../r1/r1-es-resonance_distfElc_%d.h5" % i )
-    dg1 = gkedgbasis.GkeDgSerendip2DPolyOrder2Basis(d)
-    Xc, Yc, fve_r1 = dg1.project(0)
-    fve_r1_Avg = sum(fve_r1,0)/fve_r1.shape[0]
-
     X, V = getXv(Xc, Yc)
     figure(1)
-    plot(V, fveAvg, 'r-', label='SC')
-    plot(V, fve_r1_Avg, 'k-', label='IC')
-    legend()
+    plot(V, fveAvg, 'r-')
     ylo, yup = gca().get_ylim()
     plot([1.0, 1.0], [ylo, yup], '--k')
-    axis('tight')
+    gca().set_ylim([0, 0.4])
     title('Time %g' % d.time)
     xlabel('V')
     ylabel('f(V)')
-    savefig('r2-es-resonance-fve1-cmp_%05d.png' % i)
+    savefig('r2-es-resonance-fve1-avg_%05d.png' % i)
     close()
     
     d.close()

@@ -65,7 +65,7 @@ d = gkedata.GkeData("r1-es-resonance_distfElc_0.h5")
 dg1 = gkedgbasis.GkeDgSerendip2DPolyOrder2Basis(d)
 Xc, Yc, fve0 = dg1.project(0)
     
-for i in range(0,21):
+for i in range(0,51):
     print "Working on %d ..." % i
     d = gkedata.GkeData("r1-es-resonance_distfElc_%d.h5" % i )
     dg1 = gkedgbasis.GkeDgSerendip2DPolyOrder2Basis(d)
