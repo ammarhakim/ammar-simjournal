@@ -90,5 +90,5 @@ Gkeyll Simulation Journal
   je/je26/je26-dg-maxwell.rst
   je/je28/je28-boltz-bgk.rst
   je/je29/je29-es-shock.rst
+  je/je30/je30-vlas-mom.rst  
 
-..   je/je27/je27-vm-bench.rst    
