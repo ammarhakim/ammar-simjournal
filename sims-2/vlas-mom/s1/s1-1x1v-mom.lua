@@ -53,6 +53,11 @@ pressureTensor = DataStruct.Field1D {
    numComponents = nPrs*confBasis:numNodes(),
    ghost = {1, 1},
 }
+ptclEnergy = DataStruct.Field1D {
+   onGrid = confGrid,
+   numComponents = confBasis:numNodes(),
+   ghost = {1, 1},
+}
 
 --------------
 -- Updaters --
@@ -76,17 +81,26 @@ pressureTensorCalc = Updater.DistFuncMomentCalc1X1V {
    confBasis = confBasis,
    moment = 2,
 }
+ptclEnergyCalc = Updater.DistFuncMomentCalc1X1V {
+   onGrid = phaseGrid,
+   phaseBasis = phaseBasis,
+   confBasis = confBasis,
+   moment = 2,
+   scalarPtclEnergy = true,
+}
 
 -- initial condition to apply
 function maxwellian(x,vx,vy,vz)
    local Pi = Lucee.Pi   
    local n = 1.0*math.sin(2*Pi*x)
    local ux = 0.1*math.cos(2*Pi*x)
-   local theta = (vx-ux)^2
-   return n/math.sqrt(2*Pi)*math.exp(-0.5*theta)
+   local Txx = 0.75 + 0.25*math.cos(2*Pi*x)
+   
+   local u2 = (vx-ux)^2/(2*Txx)
+   return n/math.sqrt(2*Pi*Txx)*math.exp(-u2)
 end
 
-initDistf = Updater.EvalOnNodes2D {
+initDistf = Updater.ProjectOnNodalBasis2D {
    onGrid = phaseGrid,
    basis = phaseBasis,
    shareCommonNodes = false, -- In DG, common nodes are not shared
@@ -97,6 +111,7 @@ initDistf = Updater.EvalOnNodes2D {
 initDistf:setOut( {distf} )
 initDistf:setCurrTime(0.0)
 initDistf:advance(0.0) -- does not matter for initial conditions
+distf:write("distf.h5")
 
 ---------------
 -- Functions --
@@ -128,3 +143,12 @@ function calcPressureTensor(curr, dt, distfIn, pressureTensorOut)
 end
 calcPressureTensor(0.0, 0.0, distf, pressureTensor)
 pressureTensor:write("pressureTensor.h5")
+
+function calcPtclEnergy(curr, dt, distfIn, ptclEnergyOut)
+   ptclEnergyCalc:setCurrTime(curr)
+   ptclEnergyCalc:setIn( {distfIn} )
+   ptclEnergyCalc:setOut( {pressureTensorOut} )
+   ptclEnergyCalc:advance(curr+dt)
+end
+calcPressureTensor(0.0, 0.0, distf, ptclEnergy)
+ptclEnergy:write("ptclEnergy.h5")

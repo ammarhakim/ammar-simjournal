@@ -47,74 +47,14 @@ def getXv(Xc, Vc):
     return X1, V1
 
 # density
-d = gkedata.GkeData("s1-1x1v-mom_numDensity.h5")
-dg1Num = gkedgbasis.GkeDgLobatto1DPolyOrder1Basis(d)
-Xc, num = dg1Num.project(0)
+d = gkedata.GkeData("s1-1x1v-mom_distf.h5")
+dg1Num = gkedgbasis.GkeDgSerendipNorm2DPolyOrder1Basis(d)
+Xc, Yc, fve = dg1Num.project(0)
 
-Xhr = linspace(Xc[0], Xc[-1], 200) # for plotting
-
-n = sin(2*pi*Xhr)
-ux = 0.1*cos(2*pi*Xhr)
-Txx = 0.75 + 0.25*cos(2*pi*Xhr)
-
-# density
 figure(1)
-plot(Xc, num, 'ro-')
-plot(Xhr, n, 'k-')
-axis('tight')
-xlabel('X')
-ylabel('Number Density')
-title('Number Density')
-minorticks_on()
-grid()
-savefig('s1-1x1v-num.png', bbox='tight')
-
-# momentum
-d = gkedata.GkeData("s1-1x1v-mom_momDensity.h5")
-dg1Mom = gkedgbasis.GkeDgLobatto1DPolyOrder1Basis(d)
-Xc, mom = dg1Mom.project(0)
-
-figure(2)
-plot(Xc, mom, 'ro-')
-plot(Xhr, n*ux, 'k-')
-axis('tight')
-xlabel('X')
-ylabel('Momentum Density')
-title('Momentum Density')
-minorticks_on()
-grid()
-savefig('s1-1x1v-mom.png', bbox='tight')
-
-# total Pxx
-d = gkedata.GkeData("s1-1x1v-mom_pressureTensor.h5")
-dg1Pr = gkedgbasis.GkeDgLobatto1DPolyOrder1Basis(d)
-Xc, pr = dg1Pr.project(0)
-
-figure(3)
-plot(Xc, pr, 'ro-')
-plot(Xhr, n*Txx + n*ux*ux, 'k-')
-axis('tight')
-xlabel('X')
-ylabel(r'$P_{xx}$')
-title(r'$P_{xx}$')
-minorticks_on()
-grid()
-savefig('s1-1x1v-pr.png', bbox='tight')
-
-# ptcl energy
-d = gkedata.GkeData("s1-1x1v-mom_ptclEnergy.h5")
-dg1Eg = gkedgbasis.GkeDgLobatto1DPolyOrder1Basis(d)
-Xc, Eg = dg1Eg.project(0)
-
-figure(4)
-plot(Xc, Eg, 'ro-')
-plot(Xhr, n*Txx + n*ux*ux, 'k-')
-axis('tight')
-xlabel('X')
-ylabel(r'$Energy$')
-title(r'Particle Energy')
-minorticks_on()
-grid()
-savefig('s1-1x1v-Eg.png', bbox='tight')
+pcolormesh(Xc, Yc, transpose(fve))
 
 show()
+
+
+
