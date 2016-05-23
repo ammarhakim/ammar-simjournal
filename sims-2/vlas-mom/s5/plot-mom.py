@@ -70,9 +70,9 @@ uz = 0.1*cos(2*pi*Xhr)
 Txx = 0.75 + 0.25*cos(2*pi*Xhr)
 Tyy = 0.75 + 0.25*sin(2*pi*Xhr)
 Tzz = 0.75 + 0.1*sin(2*pi*Xhr)
-Txy = 0.0
-Txz = 0.0
-Tyz = 0.0
+Txy = 0.5 + 0.1*sin(2*pi*Xhr)
+Txz = 0.25 + 0.1*sin(2*pi*Xhr)
+Tyz = 0.125 + 0.1*sin(2*pi*Xhr)
 
 # density
 figure(cnt.bump())
