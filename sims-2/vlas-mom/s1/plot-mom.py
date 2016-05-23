@@ -108,7 +108,7 @@ Xc, Eg = dg1Eg.project(0)
 
 figure(4)
 plot(Xc, Eg, 'ro-')
-plot(Xhr, n*Txx + n*ux*ux, 'k-')
+plot(Xhr, 0.5*(n*Txx + n*ux*ux), 'k-')
 axis('tight')
 xlabel('X')
 ylabel(r'$Energy$')
