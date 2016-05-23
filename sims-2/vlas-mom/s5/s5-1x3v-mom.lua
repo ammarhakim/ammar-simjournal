@@ -90,29 +90,59 @@ ptclEnergyCalc = Updater.DistFuncMomentCalc1X3V {
 }
 
 -- initial condition to apply
-function maxwellian(x,vx,vy,vz)
+function xmaxwellian(x,vx,vy,vz)
    local Pi = Lucee.Pi   
    local n = 1.0*math.sin(2*Pi*x)
 
+   local ux = 0.1*math.cos(2*Pi*x)
+   local uy = 0.0 --0.2*math.sin(2*Pi*x)
+   local uz = 0.0 --0.1*math.cos(2*Pi*x)
+
+   local Txx = 1.0 --0.75 + 0.25*math.cos(2*Pi*x)
+   local Tyy = 1.0 --0.75 + 0.25*math.sin(2*Pi*x)
+   local Tzz = 1.0 --0.75 + 0.1*math.sin(2*Pi*x)   
+   local Txy = 0.0
+   local Txz = 0.0
+   local Tyz = 0.0
+
+   local detT = 1.0 --Txx*(Tyy*Tzz-Tyz^2)-Txy*(Txy*Tzz-Txz*Tyz)+Txz*(Txy*Tyz-Txz*Tyy)
+   local cx = vx-ux
+   local cy = vy-uy
+   local cz = vz-uz
+
+   --local u2 = cx*(cx*(Tyy*Tzz-Tyz^2)+cy*(Txz*Tyz-Txy*Tzz)+cz*(Txy*Tyz-Txz*Tyy))+cy*(cx*(Txz*Tyz-Txy*Tzz)+cy*(Txx*Tzz-Txz^2)+cz*(Txy*Txz-Txx*Tyz))+cz*(cx*(Txy*Tyz-Txz*Tyy)+cy*(Txy*Txz-Txx*Tyz)+cz*(Txx*Tyy-Txy^2))/(2*detT)
+
+   local u2 = cx^2/2
+
+   return n/(math.pow(2*Pi,VDIM/2)*math.sqrt(detT))*math.exp(-u2)
+end
+
+-- initial condition to apply
+function maxwellian(x,vx,vy,vz)
+   local Pi = math.pi   
+   local n = 1.0*math.sin(2*Pi*x)
    local ux = 0.1*math.cos(2*Pi*x)
    local uy = 0.2*math.sin(2*Pi*x)
    local uz = 0.1*math.cos(2*Pi*x)
 
    local Txx = 0.75 + 0.25*math.cos(2*Pi*x)
    local Tyy = 0.75 + 0.25*math.sin(2*Pi*x)
-   local Tzz = 0.75 + 0.1*math.sin(2*Pi*x)   
+   local Tzz = 0.75 + 0.1*math.sin(2*Pi*x)
    local Txy = 0.0
    local Txz = 0.0
-   local Tyz = 0.0
+   local Tyz = 0.0   
 
-   local detT = Txx*(Tyy*Tzz-Tyz^2)-Txy*(Txy*Tzz-Txz*Tyz)+Txz*(Txy*Tyz-Txz*Tyy)
    local cx = vx-ux
    local cy = vy-uy
    local cz = vz-uz
 
-   local u2 = cx*(cx*(Tyy*Tzz-Tyz^2)+cy*(Txz*Tyz-Txy*Tzz)+cz*(Txy*Tyz-Txz*Tyy))+cy*(cx*(Txz*Tyz-Txy*Tzz)+cy*(Txx*Tzz-Txz^2)+cz*(Txy*Txz-Txx*Tyz))+cz*(cx*(Txy*Tyz-Txz*Tyy)+cy*(Txy*Txz-Txx*Tyz)+cz*(Txx*Tyy-Txy^2))/(2*detT)
-   return n/(math.pow(2*Pi,VDIM/2)*math.sqrt(detT))*math.exp(-u2)
+   local detT = Txx*(Tyy*Tzz-Tyz^2)-Txy*(Txy*Tzz-Txz*Tyz)+Txz*(Txy*Tyz-Txz*Tyy)
+   local u2 = cx*(cx*(Tyy*Tzz-Tyz^2)+cy*(Txz*Tyz-Txy*Tzz)+cz*(Txy*Tyz-Txz*Tyy))+cy*(cx*(Txz*Tyz-Txy*Tzz)+cy*(Txx*Tzz-Txz^2)+cz*(Txy*Txz-Txx*Tyz))+cz*(cx*(Txy*Tyz-Txz*Tyy)+cy*(Txy*Txz-Txx*Tyz)+cz*(Txx*Tyy-Txy^2))
+   u2 = u2/(2*detT)
+
+   return n/(math.pow(2*Pi, VDIM/2)*math.sqrt(detT))*math.exp(-u2)
 end
+
 
 initDistf = Updater.ProjectOnNodalBasis4D {
    onGrid = phaseGrid,
