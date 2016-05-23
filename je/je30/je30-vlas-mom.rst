@@ -28,18 +28,47 @@ configuration space), making the parallel code rather
 complicated. Hence, careful tests are needed to ensure that the moment
 calculator works correctly.
 
+The updater computes the following moments
+
+.. math::
+
+   n &= \int_{-\infty}^{\infty} f(\mathbf{v}) d\mathbf{v} \\
+   nu_i &= \int_{-\infty}^{\infty} v_j f(\mathbf{v}) d\mathbf{v} \\
+   \mathcal{P}_{ij} &= \int_{-\infty}^{\infty} v_i v_j f(\mathbf{v}) d\mathbf{v} \\
+   \mathcal{E} &= \frac{1}{2} \int_{-\infty}^{\infty} v^2
+   f(\mathbf{v}) d\mathbf{v}
+
+Note that the moment calculator computes the pressure tensor in the
+*lab frame* and hence contains the contribution from the Reynolds
+stresses:
+
+.. math::
+
+   \mathcal{P}_{ij} = P_{ij} + mn u_i u_j
+
+where
+
+.. math::
+
+   {P}_{ij} &= \int_{-\infty}^{\infty} (v_i-u_i) (v_j-u_j)
+   f(\mathbf{v}) d\mathbf{v}
+
+is the pressure tensor in the fluid frame.   
+
+
 A Multi-modal Gaussian
 ----------------------
 
 To test the moment calculator, I initialize the distribution function
 with a multi-modal Gaussian. This allows the pressure tensor to be
 anisotropic, with each of the six components specified
-arbitrarily. The multi-modal Gaussian is given by
+arbitrarily. The multi-modal Gaussian in :math:`N` velocity space
+dimensions is given by
 
 .. math::
 
-   \mathcal{G} =
-   \frac{n}{(2\pi)^{3/2}\triangle^{1/2}}\exp(-\frac{1}{2}\Theta^{-1}_{ij}c_ic_j)
+   \mathcal{G}_N =
+   \frac{n}{(2\pi)^{N/2}\triangle^{1/2}}\exp(-\frac{1}{2}\Theta^{-1}_{ij}c_ic_j)
 
 where :math:`\triangle = \mathrm{det}(\Theta_{ij})`,
 :math:`\Theta_{ij} = P_{ij}/mn` and :math:`c_i = v_i-u_i`.

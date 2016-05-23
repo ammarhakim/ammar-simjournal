@@ -1,0 +1,130 @@
+-- Test code for moment calculators
+
+polyOrder = 1
+VDIM = 1
+nMom = VDIM
+nPrs = VDIM*(VDIM+1)/2
+
+----------------------------
+-- Grids, basis functions --
+----------------------------
+phaseGrid = Grid.RectCart2D {
+   lower = {-1.0, -6.0},
+   upper = {1.0, 6.0},
+   cells = {32, 8},
+   periodicDirs = {0},
+}
+phaseBasis = NodalFiniteElement2D.SerendipityElement {
+   onGrid = phaseGrid,
+   polyOrder = polyOrder,
+}
+confGrid = Grid.RectCart1D {
+   lower = {phaseGrid:lower(0)},
+   upper = {phaseGrid:upper(0)},
+   cells = {phaseGrid:shape(0)},
+   periodicDirs = {0},   
+}
+confBasis = NodalFiniteElement1D.SerendipityElement {
+   onGrid = confGrid,
+   polyOrder = polyOrder,
+}
+
+---------------------
+-- Data structures --
+---------------------
+
+distf = DataStruct.Field2D {
+   onGrid = phaseGrid,
+   numComponents = phaseBasis:numNodes(),
+   ghost = {1, 1},
+}
+numDensity = DataStruct.Field1D {
+   onGrid = confGrid,
+   numComponents = confBasis:numNodes(),
+   ghost = {1, 1},
+}
+momDensity = DataStruct.Field1D {
+   onGrid = confGrid,
+   numComponents = nMom*confBasis:numNodes(),
+   ghost = {1, 1},
+}
+pressureTensor = DataStruct.Field1D {
+   onGrid = confGrid,
+   numComponents = nPrs*confBasis:numNodes(),
+   ghost = {1, 1},
+}
+
+--------------
+-- Updaters --
+--------------
+
+numDensityCalc = Updater.DistFuncMomentCalc1X1V {
+   onGrid = phaseGrid,
+   phaseBasis = phaseBasis,
+   confBasis = confBasis,
+   moment = 0,
+}
+momDensityCalc = Updater.DistFuncMomentCalc1X1V {
+   onGrid = phaseGrid,
+   phaseBasis = phaseBasis,
+   confBasis = confBasis,
+   moment = 1,
+}		
+pressureTensorCalc = Updater.DistFuncMomentCalc1X1V {
+   onGrid = phaseGrid,
+   phaseBasis = phaseBasis,
+   confBasis = confBasis,
+   moment = 2,
+}
+
+-- initial condition to apply
+function maxwellian(x,vx,vy,vz)
+   local Pi = Lucee.Pi   
+   local n = 1.0*math.sin(2*Pi*x)
+   local ux = 0.1*math.cos(2*Pi*x)
+   local theta = (vx-ux)^2
+   return n/math.sqrt(2*Pi)*math.exp(-0.5*theta)
+end
+
+initDistf = Updater.EvalOnNodes2D {
+   onGrid = phaseGrid,
+   basis = phaseBasis,
+   shareCommonNodes = false, -- In DG, common nodes are not shared
+   evaluate = function (x,vx,vy,t)
+      return maxwellian(x,vx,vy,0.0)
+   end
+}
+initDistf:setOut( {distf} )
+initDistf:setCurrTime(0.0)
+initDistf:advance(0.0) -- does not matter for initial conditions
+
+---------------
+-- Functions --
+---------------
+
+function calcNumDensity(curr, dt, distfIn, numDensOut)
+   numDensityCalc:setCurrTime(curr)
+   numDensityCalc:setIn( {distfIn} )
+   numDensityCalc:setOut( {numDensOut} )
+   numDensityCalc:advance(curr+dt)
+end
+calcNumDensity(0.0, 0.0, distf, numDensity)
+numDensity:write("numDensity.h5")
+
+function calcMomDensity(curr, dt, distfIn, momDensOut)
+   momDensityCalc:setCurrTime(curr)
+   momDensityCalc:setIn( {distfIn} )
+   momDensityCalc:setOut( {momDensOut} )
+   momDensityCalc:advance(curr+dt)
+end
+calcMomDensity(0.0, 0.0, distf, momDensity)
+momDensity:write("momDensity.h5")
+
+function calcPressureTensor(curr, dt, distfIn, pressureTensorOut)
+   pressureTensorCalc:setCurrTime(curr)
+   pressureTensorCalc:setIn( {distfIn} )
+   pressureTensorCalc:setOut( {pressureTensorOut} )
+   pressureTensorCalc:advance(curr+dt)
+end
+calcPressureTensor(0.0, 0.0, distf, pressureTensor)
+pressureTensor:write("pressureTensor.h5")
