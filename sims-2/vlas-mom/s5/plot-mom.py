@@ -66,9 +66,13 @@ Xhr = linspace(Xc[0], Xc[-1], 200) # for plotting
 n = sin(2*pi*Xhr)
 ux = 0.1*cos(2*pi*Xhr)
 uy = 0.2*sin(2*pi*Xhr)
+uz = 0.1*cos(2*pi*Xhr)
 Txx = 0.75 + 0.25*cos(2*pi*Xhr)
-Txy = 0.1 + 0.01*sin(2*pi*Xhr)*cos(2*pi*Xhr)
 Tyy = 0.75 + 0.25*sin(2*pi*Xhr)
+Tzz = 0.75 + 0.1*sin(2*pi*Xhr)
+Txy = 0.0
+Txz = 0.0
+Tyz = 0.0
 
 # density
 figure(cnt.bump())
@@ -112,6 +116,20 @@ minorticks_on()
 grid()
 savefig('s5-1x3v-momy.png', bbox='tight')
 
+# momentum-z
+Xc, mom = dg1Mom.project(2)
+
+figure(cnt.bump())
+plot(Xc, mom, 'ro-')
+plot(Xhr, n*uz, 'k-')
+axis('tight')
+xlabel('X')
+ylabel('Momentum Density')
+title('Momentum Density in Z')
+minorticks_on()
+grid()
+savefig('s5-1x3v-momz.png', bbox='tight')
+
 # total Pxx
 d = gkedata.GkeData("s5-1x3v-mom_pressureTensor.h5")
 dg1Pr = gkedgbasis.GkeDgLobatto1DPolyOrder1Basis(d)
@@ -128,20 +146,6 @@ minorticks_on()
 grid()
 savefig('s5-1x3v-pxx.png', bbox='tight')
 
-# total Pyy
-Xc, pr = dg1Pr.project(2)
-
-figure(cnt.bump())
-plot(Xc, pr, 'ro-')
-plot(Xhr, n*Tyy + n*uy*uy, 'k-')
-axis('tight')
-xlabel('X')
-ylabel(r'$P_{yy}$')
-title(r'$P_{yy}$')
-minorticks_on()
-grid()
-savefig('s5-1x3v-pyy.png', bbox='tight')
-
 # total Pxy
 Xc, pr = dg1Pr.project(1)
 
@@ -155,6 +159,62 @@ title(r'$P_{xy}$')
 minorticks_on()
 grid()
 savefig('s5-1x3v-pxy.png', bbox='tight')
+
+# total Pxz
+Xc, pr = dg1Pr.project(2)
+
+figure(cnt.bump())
+plot(Xc, pr, 'ro-')
+plot(Xhr, n*Txz + n*ux*uz, 'k-')
+axis('tight')
+xlabel('X')
+ylabel(r'$P_{xz}$')
+title(r'$P_{xz}$')
+minorticks_on()
+grid()
+savefig('s5-1x3v-pxz.png', bbox='tight')
+
+# total Pyy
+Xc, pr = dg1Pr.project(3)
+
+figure(cnt.bump())
+plot(Xc, pr, 'ro-')
+plot(Xhr, n*Tyy + n*uy*uy, 'k-')
+axis('tight')
+xlabel('X')
+ylabel(r'$P_{yy}$')
+title(r'$P_{yy}$')
+minorticks_on()
+grid()
+savefig('s5-1x3v-pyy.png', bbox='tight')
+
+# total Pyz
+Xc, pr = dg1Pr.project(4)
+
+figure(cnt.bump())
+plot(Xc, pr, 'ro-')
+plot(Xhr, n*Tyz + n*uy*uz, 'k-')
+axis('tight')
+xlabel('X')
+ylabel(r'$P_{yz}$')
+title(r'$P_{yz}$')
+minorticks_on()
+grid()
+savefig('s5-1x3v-pyz.png', bbox='tight')
+
+# total Pzz
+Xc, pr = dg1Pr.project(5)
+
+figure(cnt.bump())
+plot(Xc, pr, 'ro-')
+plot(Xhr, n*Tzz + n*uz*uz, 'k-')
+axis('tight')
+xlabel('X')
+ylabel(r'$P_{zz}$')
+title(r'$P_{zz}$')
+minorticks_on()
+grid()
+savefig('s5-1x3v-pzz.png', bbox='tight')
 
 # ptcl energy
 # d = gkedata.GkeData("s5-1x3v-mom_ptclEnergy.h5")
