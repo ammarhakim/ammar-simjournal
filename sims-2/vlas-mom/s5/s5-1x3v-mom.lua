@@ -100,9 +100,9 @@ function maxwellian(x,vx,vy,vz)
    local Txx = 0.75 + 0.25*math.cos(2*Pi*x)
    local Tyy = 0.75 + 0.25*math.sin(2*Pi*x)
    local Tzz = 0.75 + 0.1*math.sin(2*Pi*x)
-   local Txy = 0.0
-   local Txz = 0.0
-   local Tyz = 0.0   
+   local Txy = 0.5 + 0.1*math.sin(2*Pi*x)
+   local Txz = 0.25 + 0.1*math.sin(2*Pi*x)
+   local Tyz = 0.125 + 0.1*math.sin(2*Pi*x)
 
    local cx = vx-ux
    local cy = vy-uy

@@ -1,6 +1,8 @@
 -- Test code for moment calculators
 
-polyOrder = 2
+log = Lucee.logInfo
+
+polyOrder = 1
 VDIM = 3
 nMom = VDIM
 nPrs = VDIM*(VDIM+1)/2
@@ -8,23 +10,23 @@ nPrs = VDIM*(VDIM+1)/2
 ----------------------------
 -- Grids, basis functions --
 ----------------------------
-phaseGrid = Grid.RectCart4D {
-   lower = {-1.0, -6.0, -6.0, -6.0},
-   upper = {1.0, 6.0, 6.0, 6.0},
-   cells = {16, 4, 4, 4},
+phaseGrid = Grid.RectCart5D {
+   lower = {-1.0, -1.0, -6.0, -6.0, -6.0},
+   upper = {1.0, 1.0, 6.0, 6.0, 6.0},
+   cells = {32, 4, 8, 8, 8},
    periodicDirs = {0},
 }
-phaseBasis = NodalFiniteElement4D.SerendipityElement {
+phaseBasis = NodalFiniteElement5D.SerendipityElement {
    onGrid = phaseGrid,
    polyOrder = polyOrder,
 }
-confGrid = Grid.RectCart1D {
-   lower = {phaseGrid:lower(0)},
-   upper = {phaseGrid:upper(0)},
-   cells = {phaseGrid:shape(0)},
-   periodicDirs = {0},   
+confGrid = Grid.RectCart2D {
+   lower = {phaseGrid:lower(0), phaseGrid:lower(1)},
+   upper = {phaseGrid:upper(0), phaseGrid:upper(1)},
+   cells = {phaseGrid:shape(0), phaseGrid:shape(1)},
+   periodicDirs = {0},
 }
-confBasis = NodalFiniteElement1D.SerendipityElement {
+confBasis = NodalFiniteElement2D.SerendipityElement {
    onGrid = confGrid,
    polyOrder = polyOrder,
 }
@@ -33,27 +35,27 @@ confBasis = NodalFiniteElement1D.SerendipityElement {
 -- Data structures --
 ---------------------
 
-distf = DataStruct.Field4D {
+distf = DataStruct.Field5D {
    onGrid = phaseGrid,
    numComponents = phaseBasis:numNodes(),
    ghost = {1, 1},
 }
-numDensity = DataStruct.Field1D {
+numDensity = DataStruct.Field2D {
    onGrid = confGrid,
    numComponents = confBasis:numNodes(),
    ghost = {1, 1},
 }
-momDensity = DataStruct.Field1D {
+momDensity = DataStruct.Field2D {
    onGrid = confGrid,
    numComponents = nMom*confBasis:numNodes(),
    ghost = {1, 1},
 }
-pressureTensor = DataStruct.Field1D {
+pressureTensor = DataStruct.Field2D {
    onGrid = confGrid,
    numComponents = nPrs*confBasis:numNodes(),
    ghost = {1, 1},
 }
-ptclEnergy = DataStruct.Field1D {
+ptclEnergy = DataStruct.Field2D {
    onGrid = confGrid,
    numComponents = confBasis:numNodes(),
    ghost = {1, 1},
@@ -63,25 +65,25 @@ ptclEnergy = DataStruct.Field1D {
 -- Updaters --
 --------------
 
-numDensityCalc = Updater.DistFuncMomentCalc1X3V {
+numDensityCalc = Updater.DistFuncMomentCalc2X3V {
    onGrid = phaseGrid,
    phaseBasis = phaseBasis,
    confBasis = confBasis,
    moment = 0,
 }
-momDensityCalc = Updater.DistFuncMomentCalc1X3V {
+momDensityCalc = Updater.DistFuncMomentCalc2X3V {
    onGrid = phaseGrid,
    phaseBasis = phaseBasis,
    confBasis = confBasis,
    moment = 1,
 }		
-pressureTensorCalc = Updater.DistFuncMomentCalc1X3V {
+pressureTensorCalc = Updater.DistFuncMomentCalc2X3V {
    onGrid = phaseGrid,
    phaseBasis = phaseBasis,
    confBasis = confBasis,
    moment = 2,
 }
-ptclEnergyCalc = Updater.DistFuncMomentCalc1X3V {
+ptclEnergyCalc = Updater.DistFuncMomentCalc2X3V {
    onGrid = phaseGrid,
    phaseBasis = phaseBasis,
    confBasis = confBasis,
@@ -90,7 +92,7 @@ ptclEnergyCalc = Updater.DistFuncMomentCalc1X3V {
 }
 
 -- initial condition to apply
-function maxwellian(x,vx,vy,vz)
+function maxwellian(x,y,vx,vy,vz)
    local Pi = math.pi   
    local n = 1.0*math.sin(2*Pi*x)
    local ux = 0.1*math.cos(2*Pi*x)
@@ -102,7 +104,7 @@ function maxwellian(x,vx,vy,vz)
    local Tzz = 0.75 + 0.1*math.sin(2*Pi*x)
    local Txy = 0.5 + 0.1*math.sin(2*Pi*x)
    local Txz = 0.25 + 0.1*math.sin(2*Pi*x)
-   local Tyz = 0.125 + 0.1*math.sin(2*Pi*x)   
+   local Tyz = 0.125 + 0.1*math.sin(2*Pi*x)
 
    local cx = vx-ux
    local cy = vy-uy
@@ -116,12 +118,12 @@ function maxwellian(x,vx,vy,vz)
 end
 
 
-initDistf = Updater.ProjectOnNodalBasis4D {
+initDistf = Updater.ProjectOnNodalBasis5D {
    onGrid = phaseGrid,
    basis = phaseBasis,
    shareCommonNodes = false, -- In DG, common nodes are not shared
-   evaluate = function (x,vx,vy,vz,t)
-      return maxwellian(x,vx,vy,vz)
+   evaluate = function (x,y,vx,vy,vz,t)
+      return maxwellian(x,y,vx,vy,vz)
    end
 }
 initDistf:setOut( {distf} )
@@ -168,3 +170,10 @@ function calcPtclEnergy(curr, dt, distfIn, ptclEnergyOut)
 end
 calcPtclEnergy(0.0, 0.0, distf, ptclEnergy)
 ptclEnergy:write("ptclEnergy.h5")
+
+log(string.format("Initialization took %g [s]", initDistf:totalAdvanceTime()))
+log(string.format("Moment calculation took %g [s]",
+		  numDensityCalc:totalAdvanceTime()+
+		     momDensityCalc:totalAdvanceTime()+
+		     pressureTensorCalc:totalAdvanceTime()+
+		     ptclEnergyCalc:totalAdvanceTime()))
