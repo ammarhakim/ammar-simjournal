@@ -27,4 +27,6 @@ Benchmark for moment calculator
   * - Number
     - Description
   * - s1
-    - 1X/1V, polyOrder=1
+    - 1X/1V, polyOrder=1, :math:`32\times 8`
+  * - s2
+    - 1X/1V, polyOrder=2,  :math:`16\times 4`
