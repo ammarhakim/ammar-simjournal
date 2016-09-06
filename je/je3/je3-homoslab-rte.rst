@@ -1,5 +1,5 @@
 :Author: Ammar Hakim
-:Date: September 15th 2011
+
 
 JE3: Testing the radiation transport equation solver in a homogeneous slab
 ==========================================================================

@@ -1,3 +1,5 @@
+-- WHY IS THERE MOMENTUM
+
 -- Vlasov-Maxwell solver: Units are SI
 
 ----------------------------------
@@ -6,7 +8,7 @@
 
 log = Lucee.logInfo
 
-polyOrder = 2 -- polynomial order
+polyOrder = 1 -- polynomial order
 epsilon0 = Lucee.Epsilon0 -- permittivity of free space
 mu0 = Lucee.Mu0 -- Permeabilty of free space
 lightSpeed = Lucee.SpeedOfLight -- speed of light
@@ -44,11 +46,11 @@ LX = xupper-xlower
 
 -- Resolution, time-stepping etc.
 NX = 64
-NVX = 16
-NVY = 8
+NVX = 8 --16
+NVY = 8 --8
 tStart = 0.0 -- start time 
-tEnd = 1.4e-9 -- this is about 20 periods
-nFrames = 10
+tEnd = 10*1.78091e-14 --XXXX 1.4e-9 -- this is about 20 periods
+nFrames = 1
 
 -- compute coordinate of interior last edge
 dx = (xupper-xlower)/NX
@@ -253,6 +255,7 @@ emStatic = DataStruct.Field1D {
    onGrid = confGrid,
    numComponents = 8*confBasis:numNodes(),
    ghost = {1, 1},
+   writeGhost = {1, 1},
 }
 -- total EM field
 emTotal = DataStruct.Field1D {
@@ -298,7 +301,7 @@ initDistfIon = Updater.ProjectOnNodalBasis3D {
 }
 
 -- updater to initialize EM fields
-initField = Updater.ProjectOnNodalBasis1D {
+initField = Updater.ProjectOnNodalBasis1D { -- EvalOnNodes1D
    onGrid = confGrid,
    basis = confBasis,
    shareCommonNodes = false, -- In DG, common nodes are not shared
@@ -313,21 +316,23 @@ initField = Updater.ProjectOnNodalBasis1D {
 ----------------------
 
 -- Updater for electron Vlasov equation
-vlasovSolverElc = Updater.NodalVlasov1X2V {
+vlasovSolverElc = Updater.EigenNodalVlasov1X2V {
    onGrid = phaseGridElc,
    phaseBasis = phaseBasisElc,
    confBasis = confBasis,
    cfl = cfl,
    charge = elcCharge,
    mass = elcMass,
+   polyOrder = polyOrder,
 }
-vlasovSolverIon = Updater.NodalVlasov1X2V {
+vlasovSolverIon = Updater.EigenNodalVlasov1X2V {
    onGrid = phaseGridIon,
    phaseBasis = phaseBasisIon,
    confBasis = confBasis,   
    cfl = cfl,
    charge = ionCharge,
    mass = ionMass,
+   polyOrder = polyOrder,
 }
 
 -- Maxwell equation object
@@ -415,48 +420,73 @@ copyToEmSource = Updater.CopyNodalFields1D {
 -- Boundary Conditions --
 -------------------------
 -- boundary applicator objects for fluids and fields
+bcEmCopy = BoundaryCondition.NodalDgCopy1D {
+   basis = confBasis,
+   components = {0,1,2,3,4,5,6,7,8}
+}
+bcDistElcCopy = BoundaryCondition.NodalDgCopy3D {
+   basis = phaseBasisElc,
+   components = {0}
+}
+bcDistIonCopy = BoundaryCondition.NodalDgCopy3D {
+   basis = phaseBasisIon,
+   components = {0}
+}
 
+-- create boundary condition object
+function createBc(myDir, myEdge)
+   local bcEm = Updater.Bc1D {
+      onGrid = confGrid,
+      -- boundary conditions to apply
+      boundaryConditions = {bcEmCopy},
+      -- direction to apply
+      dir = myDir,
+      -- edge to apply on
+      edge = myEdge,
+   }
+   local bcDistElc = Updater.Bc3D {
+      onGrid = phaseGridElc,
+      -- boundary conditions to apply
+      boundaryConditions = {bcDistElcCopy},
+      -- direction to apply
+      dir = myDir,
+      -- edge to apply on
+      edge = myEdge,
+   }
+   local bcDistIon = Updater.Bc3D {
+      onGrid = phaseGridIon,
+      -- boundary conditions to apply
+      boundaryConditions = {bcDistIonCopy},
+      -- direction to apply
+      dir = myDir,
+      -- edge to apply on
+      edge = myEdge,
+   }
+   return bcEm, bcDistElc, bcDistIon
+end
+
+-- create BC updaters
+bcEmLo, bcDistElcLo, bcDistIonLo = createBc(0, "lower")
+bcEmUp, bcDistElcUp, bcDistIonUp = createBc(0, "upper")
 
 -- apply boundary conditions to distribution functions
 function applyDistFuncBc(curr, dt, fldElc, fldIon)
-   for i,bc in ipairs({}) do
+   for i,bc in ipairs({bcDistElcLo, bcDistElcUp}) do
       runUpdater(bc, curr, dt, {}, {fldElc})
    end
-   for i,bc in ipairs({}) do
+   for i,bc in ipairs({bcDistIonLo, bcDistIonUp}) do
       runUpdater(bc, curr, dt, {}, {fldIon})
    end
-
-   for i,fld in ipairs({fldElc, fldIon}) do
-   end
-
-   -- copy skin into ghost cells: this is not quite right. But OK for
-   -- now. (We need to ensure gradient is zero. This does not quite do
-   -- it)
-   fldElc:applyCopyBc(0, "lower")
-   fldElc:applyCopyBc(0, "upper")
-   
-   fldIon:applyCopyBc(0, "lower")
-   fldIon:applyCopyBc(0, "upper")
-   
-   -- sync the distribution function across processors
+   -- sync distribution function across processors
    fldElc:sync()
    fldIon:sync()
 end
 
 -- apply BCs to EM fields
 function applyEmBc(curr, dt, EM)
-   for i,bc in ipairs({}) do
+   for i,bc in ipairs({bcEmLo, bcEmUp}) do
       runUpdater(bc, curr, dt, {}, {EM})
    end
-   for i,bc in ipairs({}) do
-      runUpdater(bc, curr, dt, {}, {EM})
-   end
-
-   -- copy skin into ghost cells: this is not quite right. But OK for
-   -- now. (We need to ensure gradient is zero. This does not quite do
-   -- it)
-   EM:applyCopyBc(0, "lower")
-   EM:applyCopyBc(0, "upper")
    -- sync EM fields across processors
    EM:sync()
 end
@@ -568,8 +598,8 @@ function rk3(tCurr, myDt)
       return false, myDtSuggested
    end
    -- apply BC
-   applyDistFuncBc(tCurr, dt, distf1Elc, distf1Ion)
-   applyEmBc(tCurr, dt, em1)
+   applyDistFuncBc(tCurr, myDt, distf1Elc, distf1Ion)
+   applyEmBc(tCurr, myDt, em1)
 
    -- RK stage 2
    myStatus, myDtSuggested = rkStage(tCurr, myDt, distf1Elc, distf1Ion, em1, distfNewElc, distfNewIon, emNew)
@@ -580,8 +610,8 @@ function rk3(tCurr, myDt)
    distf1Ion:combine(3.0/4.0, distfIon, 1.0/4.0, distfNewIon)
    em1:combine(3.0/4.0, em, 1.0/4.0, emNew)
    -- apply BC
-   applyDistFuncBc(tCurr, dt, distf1Elc, distf1Ion)
-   applyEmBc(tCurr, dt, em1)   
+   applyDistFuncBc(tCurr, myDt, distf1Elc, distf1Ion)
+   applyEmBc(tCurr, myDt, em1)
 
    -- RK stage 3
    myStatus, myDtSuggested = rkStage(tCurr, myDt, distf1Elc, distf1Ion, em1, distfNewElc, distfNewIon, emNew)
@@ -592,8 +622,8 @@ function rk3(tCurr, myDt)
    distf1Ion:combine(1.0/3.0, distfIon, 2.0/3.0, distfNewIon)
    em1:combine(1.0/3.0, em, 2.0/3.0, emNew)
    -- apply BC
-   applyDistFuncBc(tCurr, dt, distf1Elc, distf1Ion)
-   applyEmBc(tCurr, dt, em1)   
+   applyDistFuncBc(tCurr, myDt, distf1Elc, distf1Ion)
+   applyEmBc(tCurr, myDt, em1)   
 
    distfElc:copy(distf1Elc)
    distfIon:copy(distf1Ion)
@@ -692,6 +722,7 @@ end
 runUpdater(initDistfElc, 0.0, 0.0, {}, {distfElc})
 runUpdater(initDistfIon, 0.0, 0.0, {}, {distfIon})
 runUpdater(initField, 0.0, 0.0, {}, {emStatic})
+applyEmBc(0.0, 0.0, emStatic)
 em:clear(0.0) -- initially no fields
 
 -- write out initial static field

@@ -1,6 +1,5 @@
 :Author: Ammar Hakim
-:Date: October 8th 2011
-:Completed: October 8th 2011
+
 
 JE7: The dual Yee-cell FDTD scheme
 ==================================

@@ -1,6 +1,4 @@
 :Author: Ammar Hakim
-:Date: October 30th 2011
-:Completed: November 1st 2011
 
 JE10: Ion-cyclotron wave (ICW) propagation and mode conversion
 ==============================================================

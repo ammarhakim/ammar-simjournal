@@ -1,6 +1,5 @@
 :Author: Ammar Hakim
-:Date: October 26th 2011
-:Completed: October 28th 2011
+
 
 JE9: Tunneling through an electron-cyclotron cutoff layer
 =========================================================

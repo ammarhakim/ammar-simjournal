@@ -268,7 +268,7 @@ dtSuggested = 100.0 -- initial time-step to use (this will be discarded and adju
 tStart = 0.0
 tEnd = 1.4e-9 -- this is about 20 periods
 
-nFrames = 4
+nFrames = 10
 tFrame = (tEnd-tStart)/nFrames -- time between frames
 
 tCurr = tStart
