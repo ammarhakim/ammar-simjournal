@@ -1,5 +1,4 @@
 :Author: Ammar Hakim
-:Date: September 3rd 2011
 
 JE1: Solving Poisson equation on 2D periodic domain
 ===================================================

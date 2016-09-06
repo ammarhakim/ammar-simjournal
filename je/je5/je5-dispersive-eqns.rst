@@ -1,5 +1,5 @@
 :Author: Ammar Hakim
-:Date: September 23st 2011
+
 
 JE5: Hyperbolic balance laws with dispersive source terms
 =========================================================

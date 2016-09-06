@@ -98,7 +98,7 @@ inOut:write("inOut.h5")
 -----------------------
 -- initial conditions
 function init(x,y,z)
-   return 1e-3*rhoIn, 0.0, 0.0, 0.0, 1e-3*erIn
+   return 1e-6*rhoIn, 0.0, 0.0, 0.0, 1e-6*erIn
 end
 
 ------------------------

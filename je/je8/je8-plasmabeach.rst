@@ -1,6 +1,5 @@
 :Author: Ammar Hakim
-:Date: October 18th 2011
-:Completed: October 22nd 2011
+
 
 JE8: Propagation into a plasma wave beach
 =========================================

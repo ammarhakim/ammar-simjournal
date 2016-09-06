@@ -1,5 +1,5 @@
 :Author: Ammar Hakim
-:Date: September 21st 2011
+
 
 JE4: Two-fluid electromagnetic Riemann problems
 ===============================================

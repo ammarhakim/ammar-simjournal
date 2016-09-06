@@ -1,5 +1,4 @@
 :Author: Ammar Hakim
-:Date: September 6th 2011
 
 JE2: Benchmarking two finite-volume schemes for 1D Euler equations
 ==================================================================

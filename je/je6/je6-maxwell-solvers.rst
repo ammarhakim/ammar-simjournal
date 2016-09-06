@@ -1,6 +1,5 @@
 :Author: Ammar Hakim
-:Date: September 28th 2011
-:Completed: October 5th 2011
+
 
 JE6: Solving Maxwell equations with wave-propagation and FDTD schemes
 =====================================================================
