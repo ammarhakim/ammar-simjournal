@@ -41,7 +41,7 @@ nFrames = 10
 
 -- Resolution, time-stepping etc.
 NX = 100
-NV = 32 
+NV = 32
 polyOrder = 2
 
 cfl = 0.5/(2*polyOrder+1)
@@ -97,11 +97,11 @@ confGrid = Grid.RectCart1D {
 }
 
 -- phase-space basis functions for electrons and ions
-phaseBasisElc = NodalFiniteElement2D.Serendipity {
+phaseBasisElc = NodalFiniteElement2D.SerendipityElement {
    onGrid = phaseGridElc,
    polyOrder = polyOrder,
 }
-phaseBasisIon = NodalFiniteElement2D.Serendipity {
+phaseBasisIon = NodalFiniteElement2D.SerendipityElement {
    onGrid = phaseGridIon,
    polyOrder = polyOrder,
 }
@@ -265,21 +265,23 @@ initDistfIon = Updater.ProjectOnNodalBasis2D {
 ----------------------
 
 -- Updater for electron Vlasov equation
-vlasovSolverElc = Updater.NodalVlasov1X1V {
+vlasovSolverElc = Updater.EigenNodalVlasov1X1V {
    onGrid = phaseGridElc,
    phaseBasis = phaseBasisElc,
    confBasis = confBasis,
    cfl = cfl,
    charge = elcCharge,
    mass = elcMass,
+   polyOrder = polyOrder,
 }
-vlasovSolverIon = Updater.NodalVlasov1X1V {
+vlasovSolverIon = Updater.EigenNodalVlasov1X1V {
    onGrid = phaseGridIon,
    phaseBasis = phaseBasisIon,
    confBasis = confBasis,   
    cfl = cfl,
    charge = ionCharge,
    mass = ionMass,
+   polyOrder = polyOrder,   
 }
 
 -- Maxwell equation object
@@ -376,10 +378,6 @@ function applyDistFuncBc(curr, dt, fldElc, fldIon)
    for i,fld in ipairs({fldElc, fldIon}) do
       fld:applyCopyBc(0, "lower")
       fld:applyCopyBc(0, "upper")
-      -- for now I am applying copy BCs also in V-space. This needs to
-      -- change and V-space BCs applied in the Vlasov updater itsef.
-      fld:applyCopyBc(1, "lower")
-      fld:applyCopyBc(1, "upper")      
    end
    -- sync the distribution function across processors
    fldElc:sync()
