@@ -82,7 +82,7 @@ log(string.format("Edge of velocity space/speed of light = %g", VU_ELC))
 -- COMPUTATIONAL DOMAIN, DATA STRUCTURE, ETC. --
 ------------------------------------------------
 -- decomposition object
-phaseDecomp = DecompRegionCalc3D.CartProd { cuts = {2,1,1} }
+phaseDecomp = DecompRegionCalc3D.CartProd { cuts = {4,2,2} }
 confDecomp = DecompRegionCalc1D.SubCartProd3D {
    decomposition = phaseDecomp,
    collectDirections = {0},
