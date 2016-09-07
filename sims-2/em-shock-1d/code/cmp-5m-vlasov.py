@@ -164,4 +164,25 @@ suptitle("Kinetic (red) and Fluid (black) solution at t=%g" % tm)
 
 savefig('%s-cmp-kin-flu_%d.png' % (outPrefix, frame), dpi=300)
 
+d = gkedata.GkeData("%s_em_%d.h5"  % (kinFileName, frame) )
+dg = gkedgbasis.GkeDgLobatto1DPolyOrder2Basis(d)
+Xc, Ex = dg.project(0)
+Xc, Bz = dg.project(5)
+
+XcFV, exFV = fv.project(10)
+XcFV = XcFV/XcFV[-1]*Xc[-1]
+
+XcFV, bzFV = fv.project(15)
+XcFV = XcFV/XcFV[-1]*Xc[-1]
+
+figure(2)
+plot(Xc, Ex, 'r-')
+plot(XcFV, exFV, 'k-')
+savefig('%s-cmp-kin-flu-ex_%d.png' % (outPrefix, frame), dpi=300)
+
+figure(3)
+plot(Xc, Bz, 'r-')
+plot(XcFV, bzFV, 'k-')
+savefig('%s-cmp-kin-flu-bz_%d.png' % (outPrefix, frame), dpi=300)
+
 #show()

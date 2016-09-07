@@ -28,3 +28,13 @@ Simulation Index
     - Description
   * - ${mdl("s1")}
     - :math:`Te/Ti=9.0`, Mach number 1.5, polyOrder 2 serendipity elements (1x1v sim)
+  * - ${mdl("s2")}
+    - EM :math:`Te/Ti=9.0`, Mach number 1.5, polyOrder 2 serendipity elements (1x2v sim)
+
+.. list-table::
+  :header-rows: 1
+  :widths: 10,90
+
+* - Number
+  * - ${mdl("f2")}
+    - Same as s2 except with five-moment model.
