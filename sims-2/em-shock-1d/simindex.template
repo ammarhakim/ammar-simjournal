@@ -30,6 +30,8 @@ Simulation Index
     - :math:`Te/Ti=9.0`, Mach number 1.5, polyOrder 2 serendipity elements (1x1v sim)
   * - ${mdl("s2")}
     - EM :math:`Te/Ti=9.0`, Mach number 1.5, polyOrder 2 serendipity elements (1x2v sim)
+  * - ${mdl("s3")}
+    - Same as s2, except :math:`128` cells in config. space.
 
 .. list-table::
   :header-rows: 1

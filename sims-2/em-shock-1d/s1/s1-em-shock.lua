@@ -13,7 +13,7 @@ mu0 = 1.0 -- pemiability of free space
 Te_Ti = 9.0 -- ratio of electron to ion temperature
 machNum = 1.5 -- Mach number computed from ion thermal speed
 n0 = 1.0 -- initial number density
-elcTemp = 1.0e-4 -- electron temperature
+elcTemp = 1.0e-2 -- electron temperature
 elcMass = 1.0 -- electron mass
 elcCharge = -1.0 -- electron charge
 
@@ -36,12 +36,12 @@ ionDrift = elcDrift -- no net current
 -- domain size and simulation time
 LX = 200*lambdaD
 tStart = 0.0 -- start time 
-tEnd = 100.0/wpe
+tEnd = 500.0/wpe
 nFrames = 10
 
 -- Resolution, time-stepping etc.
-NX = 100
-NV = 32
+NX = 64
+NV = 16
 polyOrder = 2
 
 cfl = 0.5/(2*polyOrder+1)
@@ -67,7 +67,7 @@ log(string.format("Ion domain extents = [%g,%g]", VL_ION, VU_ION))
 -- COMPUTATIONAL DOMAIN, DATA STRUCTURE, ETC. --
 ------------------------------------------------
 -- decomposition object
-phaseDecomp = DecompRegionCalc2D.CartProd { cuts = {1,1} }
+phaseDecomp = DecompRegionCalc2D.CartProd { cuts = {2,1} }
 confDecomp = DecompRegionCalc1D.SubCartProd2D {
    decomposition = phaseDecomp,
    collectDirections = {0},
