@@ -9,6 +9,7 @@ log = Lucee.logInfo
 polyOrder = 2 -- polynomial order
 epsilon0 = 1.0 -- permittivity of free space
 mu0 = 1.0 -- pemiability of free space
+lightSpeed = 1/math.sqrt(mu0*epsilon0) -- speed of light
 
 Te_Ti = 9.0 -- ratio of electron to ion temperature
 machNum = 1.5 -- Mach number computed from ion thermal speed
@@ -27,6 +28,7 @@ vtElc = math.sqrt(elcTemp/elcMass)
 vtIon = math.sqrt(ionTemp/ionMass)
 -- plasma frequency and Debye length
 wpe = math.sqrt(elcCharge^2*n0/(epsilon0*elcMass))
+wpi = math.sqrt(ionCharge^2*n0/(epsilon0*ionMass))
 lambdaD = vtElc/wpe
 
 -- electron and ion drift speeds
@@ -34,15 +36,14 @@ elcDrift = machNum*cs
 ionDrift = elcDrift -- no net current
 
 -- domain size and simulation time
-LX = 200*lambdaD
+LX = 20*lightSpeed/wpe
 tStart = 0.0 -- start time 
 tEnd = 500.0/wpe
-nFrames = 10
+nFrames = 50
 
 -- Resolution, time-stepping etc.
 NX = 64
 NV = 16
-polyOrder = 2
 
 cfl = 0.5/(2*polyOrder+1)
 
@@ -57,11 +58,17 @@ log(string.format("Mach number=%g", machNum))
 log(string.format("Electron thermal speed=%g", vtElc))
 log(string.format("Plasma frequency=%g", wpe))
 log(string.format("Debye length=%g", lambdaD))
+log(string.format("Ion inertial lenght=%g", lightSpeed/wpe*math.sqrt(ionMass/elcMass)))
+log(string.format("Electron inertial lenght=%g", lightSpeed/wpe))
+log(string.format("Domain size=%g", LX))
 log(string.format("Cell size=%g", LX/NX))
+log(string.format("Number of Debye Lengths per grid point=%g", (LX/lambdaD)/NX))
 log(string.format("Ion thermal speed=%g", vtIon))
 log(string.format("Electron/Ion drift speed=%g", elcDrift))
 log(string.format("Electron domain extents = [%g,%g]", VL_ELC, VU_ELC))
 log(string.format("Ion domain extents = [%g,%g]", VL_ION, VU_ION))
+log(string.format("Edge of velocity space/speed of light = %g", VU_ELC))
+log("\n")
 
 ------------------------------------------------
 -- COMPUTATIONAL DOMAIN, DATA STRUCTURE, ETC. --

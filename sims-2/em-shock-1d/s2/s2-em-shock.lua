@@ -42,7 +42,7 @@ elcDrift = machNum*cs
 ionDrift = elcDrift -- no net current
 
 -- domain size and simulation time
-LX = lightSpeed/wpi
+LX = 20*lightSpeed/wpe
 tStart = 0.0 -- start time 
 tEnd = 500.0/wpe
 nFrames = 50
