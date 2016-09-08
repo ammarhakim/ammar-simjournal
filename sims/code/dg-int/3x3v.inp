@@ -1,0 +1,10 @@
+CDIM = 3
+VDIM = 3
+
+nloop = 1000
+
+NpVolForce = 256
+NqVolForce = 1728
+
+NpVolStream = 256
+NqVolStream = 729
