@@ -2,7 +2,8 @@ from pylab import *
 import gkedata
 import gkedgbasis
 
-for i in range(40,41):
+for i in range(0,41):
+    print("Working on %d ..." % i)
     d = gkedata.GkeData("s4-em-shock_distfElc_%d.h5" % i)
     dg = gkedgbasis.GkeDgSerendipNorm3DPolyOrder2Basis(d)
     X, Y, Z, fv = dg.project(0)
