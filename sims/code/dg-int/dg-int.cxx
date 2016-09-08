@@ -72,6 +72,7 @@ class NameValuePair {
 
 /** Store sim data */
 struct QuadData {
+    int NDIM; /* Number of dimensions */
     int Np, Nq; /* Number of basis, Number of quadrature points */
     void show() {
       std::cout << "Np: " << Np << " Nq: " << Nq << std::endl;
@@ -82,6 +83,7 @@ void
 vol(int nloop, const QuadData& qd)
 {
   int np = qd.Np, nq = qd.Nq;
+  int NDIM = qd.NDIM;
   
   Eigen::VectorXd f(np), alpha(np), result(np);
   Eigen::VectorXd fQuad(nq), alphaQuad(nq);
@@ -97,10 +99,13 @@ vol(int nloop, const QuadData& qd)
   {
 // interpolate to quadrature nodes    
     fQuad.noalias() = interpMatrix*f; // Np*Nq
-    alphaQuad.noalias() = interpMatrix*alpha; // Np*Nq
-    fQuad.cwiseProduct(alphaQuad); // Nq
+    for (unsigned d=0; d<NDIM; ++d)
+    {
+      alphaQuad.noalias() = interpMatrix*alpha; // Np*Nq
+      fQuad.cwiseProduct(alphaQuad); // Nq
 // compute updated solution
-    result.noalias() = bigMatrix*fQuad; // Np*Nq
+      result.noalias() = bigMatrix*fQuad; // Np*Nq
+    }
   }
 }
 
@@ -120,7 +125,7 @@ double run(int nloop, const QuadData& qd)
 
 void printInfo(const QuadData& qd, double tm)
 {
-  std::cout << qd.Np << " " << qd.Nq << " " << tm << std::endl;
+  std::cout << qd.NDIM << " " << qd.Np << " " << qd.Nq << " " << tm << std::endl;
 }
 
 int
@@ -139,28 +144,27 @@ main (int argc, char **argv)
 
 // initialize problem state from input file
   NameValuePair nvpair(inFile);
-  int CDIM = nvpair.getValue("CDIM");
-  int VDIM = nvpair.getValue("VDIM");
 
   QuadData forceVolQuad, streamVolQuad;
   forceVolQuad.Np = nvpair.getValue("NpVolForce");
   forceVolQuad.Nq = nvpair.getValue("NqVolForce");
+  forceVolQuad.NDIM = nvpair.getValue("VDIM");
 
   streamVolQuad.Np = nvpair.getValue("NpVolStream");
   streamVolQuad.Nq = nvpair.getValue("NqVolStream");
+  streamVolQuad.NDIM = nvpair.getValue("CDIM");
+  
   int nloop = nvpair.getValue("nloop");
 
   std::cout << "# Nloop  " << nloop << std::endl;
-  std::cout << "# Basis | Quadrature | Time " << std::endl;
+  std::cout << "# NDIM | Basis | Quadrature | Time " << std::endl;
 
 // force terms
   double tForce = run(nloop, forceVolQuad);
-  tForce = tForce*VDIM;
   printInfo(forceVolQuad, tForce);
 
 // stream terms
   double tStream = run(nloop, streamVolQuad);
-  tStream = tStream*CDIM;
   printInfo(streamVolQuad, tStream);
 
 // stats
