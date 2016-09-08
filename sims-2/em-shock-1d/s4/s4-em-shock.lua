@@ -53,7 +53,7 @@ NX = 64
 NVX = 16
 NVY = 16
 
-cfl = 0.5/(2*polyOrder+1)
+cfl = 0.3/(2*polyOrder+1)
 
 -- compute max thermal speed to set velocity space extents
 VL_ELC, VU_ELC = -6.0*vtElc, 6.0*vtElc
