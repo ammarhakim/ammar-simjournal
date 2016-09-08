@@ -11,7 +11,7 @@ epsilon0 = 1.0 -- permittivity of free space
 mu0 = 1.0 -- permiability of free space
 lightSpeed = 1/math.sqrt(mu0*epsilon0) -- speed of light
 
-Te_Ti = 9.0 -- ratio of electron to ion temperature
+Te_Ti = 1.0 -- ratio of electron to ion temperature
 machNum = 1.5 -- Mach number computed from ion thermal speed
 n0 = 1.0 -- initial number density
 elcTemp = 1.0e-2 -- electron temperature
