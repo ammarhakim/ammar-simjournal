@@ -98,11 +98,11 @@ vol(int nloop, const QuadData& qd)
   for (unsigned n=0; n<nloop; ++n)
   {
 // interpolate to quadrature nodes    
-    fQuad.noalias() = interpMatrix*f; // Np*Nq
+    fQuad.noalias() = interpMatrix*f; // Np*Nq (do this only once)
     for (unsigned d=0; d<NDIM; ++d)
     {
       alphaQuad.noalias() = interpMatrix*alpha; // Np*Nq
-      fQuad.cwiseProduct(alphaQuad); // Nq
+      alphaQuad.cwiseProduct(fQuad); // Nq
 // compute updated solution
       result.noalias() = bigMatrix*fQuad; // Np*Nq
     }
