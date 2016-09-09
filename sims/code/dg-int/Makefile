@@ -1,4 +1,9 @@
+EIGEN_INCLUDES=/Users/ahakim/gkylsoft/include/eigen3
+
 all: dg-int
 
 dg-int: dg-int.cxx
-	g++ -O3 dg-int.cxx -I/Users/ahakim/gkylsoft/include/eigen3 -o dg-int
+	g++ -O3 dg-int.cxx -I${EIGEN_INCLUDES} -o dg-int
+
+clean:
+	rm -rf dg-int
