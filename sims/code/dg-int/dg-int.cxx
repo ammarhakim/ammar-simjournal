@@ -79,6 +79,12 @@ struct QuadData {
     }
 };
 
+int cost(const QuadData& qd)
+{
+  int np = qd.Np, nq = qd.Nq, NDIM = qd.NDIM;
+  return np*nq + NDIM*(2*np*nq+nq);
+}
+
 void
 vol(int nloop, const QuadData& qd)
 {
@@ -109,12 +115,6 @@ vol(int nloop, const QuadData& qd)
   }
 }
 
-double cost(const QuadData& qd)
-{
-  int np = qd.Np, nq = qd.Nq;
-  return (double) (3*np*nq+nq);
-}
-
 double run(int nloop, const QuadData& qd)
 {
   clock_t t1 = clock();
@@ -128,23 +128,9 @@ void printInfo(const QuadData& qd, double tm)
   std::cout << qd.NDIM << " " << qd.Np << " " << qd.Nq << " " << tm << std::endl;
 }
 
-int
-main (int argc, char **argv)
+void
+runSimulation(const NameValuePair& nvpair)
 {
-  
-  if (argc != 2) {
-    std::cout << "Usage::" << std::endl;
-    std::cout << " dg-int <input-file>" << std::endl;
-    std::cout << "  input-file: Name of input file" << std::endl;
-
-    exit(1);
-  }
-// name of input file and output prefix
-  std::string inFile(argv[1]);
-
-// initialize problem state from input file
-  NameValuePair nvpair(inFile);
-
   QuadData forceVolQuad, streamVolQuad;
   forceVolQuad.Np = nvpair.getValue("NpVolForce");
   forceVolQuad.Nq = nvpair.getValue("NqVolForce");
@@ -156,6 +142,7 @@ main (int argc, char **argv)
   
   int nloop = nvpair.getValue("nloop");
 
+  std::cout << std::endl;
   std::cout << "# Nloop  " << nloop << std::endl;
   std::cout << "# NDIM | Basis | Quadrature | Time " << std::endl;
 
@@ -173,6 +160,28 @@ main (int argc, char **argv)
   double tm = (tForce+tStream)/nloop;
   double tmPerDof = tm/forceVolQuad.Np;
   std::cout << tm << " " << tmPerDof << std::endl;
-  
+
+// cost
+  std::cout << std::endl;
+  std::cout << "# Net Theoretical Cost (Arb. Units)" << std::endl;
+  std::cout << cost(forceVolQuad) + cost(streamVolQuad) << std::endl;
+
+  std::cout << std::endl;  
+}
+
+int
+main (int argc, char **argv)
+{
+  if (argc != 2) {
+    std::cout << "Usage::" << std::endl;
+    std::cout << " dg-int <input-file>" << std::endl;
+    std::cout << "  input-file: Name of input file" << std::endl;
+
+    exit(1);
+  }
+  std::string inFile(argv[1]); // input file
+  NameValuePair nvpair(inFile);
+  runSimulation(nvpair);
+
   return 0;
 }
