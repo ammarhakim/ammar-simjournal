@@ -144,12 +144,13 @@ runSimulation(const NameValuePair& nvpair)
 
   std::cout << std::endl;
   std::cout << "# Nloop  " << nloop << std::endl;
-  std::cout << "# NDIM | Basis | Quadrature | Time " << std::endl;
-
+  
+  std::cout << "# NDIM | Basis | Quadrature | Time (Force terms) " << std::endl;
 // force terms
   double tForce = run(nloop, forceVolQuad);
   printInfo(forceVolQuad, tForce);
 
+  std::cout << "# NDIM | Basis | Quadrature | Time (Streaming terms) " << std::endl;
 // stream terms
   double tStream = run(nloop, streamVolQuad);
   printInfo(streamVolQuad, tStream);
@@ -163,8 +164,10 @@ runSimulation(const NameValuePair& nvpair)
 
 // cost
   std::cout << std::endl;
-  std::cout << "# Net Theoretical Cost (Arb. Units)" << std::endl;
-  std::cout << cost(forceVolQuad) + cost(streamVolQuad) << std::endl;
+  std::cout << "# Theoretical Cost (Arb. Units)" << std::endl;
+  std::cout << "Force vol. terms " << cost(forceVolQuad) << std::endl;
+  std::cout << "Streaming vol. terms " << cost(streamVolQuad) << std::endl;  
+  std::cout << "Net: " << cost(forceVolQuad) + cost(streamVolQuad)  << std::endl;
 
   std::cout << std::endl;  
 }

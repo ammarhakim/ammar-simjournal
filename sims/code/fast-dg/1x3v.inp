@@ -1,0 +1,3 @@
+nloop = 500000
+dim = 4
+basis = 0 # 0 is Serendip and 1 Maxmimal order
