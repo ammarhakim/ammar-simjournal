@@ -1,4 +1,4 @@
-EIGEN_INCLUDES=/Users/ahakim/gkylsoft/include/eigen3
+EIGEN_INCLUDES=/Users/ahakim/gkylsoft/eigen/include/eigen3
 
 all: dg-int
 

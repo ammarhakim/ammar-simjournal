@@ -231,7 +231,7 @@ end
 myDt = 100.0 -- initial time-step to use (this will be discarded and adjusted to CFL value)
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 10.0
+tEnd = 4.0
 
 tCurr = tStart
 step = 1
