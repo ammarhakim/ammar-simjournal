@@ -13,3 +13,9 @@ sims-2/*/*/*.png
 sims-2/*/*/*.txt
 sims-2/*/*/*.rst
 sims-2/*/*/*.mov
+sims-g2/*/*/*.bp
+sims-g2/*/*/*.log
+sims-g2/*/*/*.png
+sims-g2/*/*/*.txt
+sims-g2/*/*/*.rst
+sims-g2/*/*/*.mov
