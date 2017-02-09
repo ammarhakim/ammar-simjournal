@@ -17,19 +17,19 @@ nMom = VDIM -- number of momentum component
 nPrs = VDIM*(VDIM+1)/2 -- number of pressure tensor component
 
 local phaseGrid = Grid.RectCart {
-   lower = {-1.0, -1.0, -6.0, -6.0, -6.0},
-   upper = {1.0, 1.0, 6.0, 6.0, 6.0},
-   cells = {16, 2, 8, 8, 8},
+   lower = {-1.0, -6.0, -6.0, -6.0},
+   upper = {1.0, 6.0, 6.0, 6.0},
+   cells = {16, 8, 8, 8},
 }
 local confGrid = Grid.RectCart {
-   lower = { phaseGrid:lower(1), phaseGrid:lower(2) },
-   upper = { phaseGrid:upper(1), phaseGrid:upper(2) },
-   cells = { phaseGrid:numCells(1), phaseGrid:numCells(2) },
+   lower = { phaseGrid:lower(1) },
+   upper = { phaseGrid:upper(1) },
+   cells = { phaseGrid:numCells(1) },
 }
 
 -- basis functions
-local phaseBasis = Basis.CartModalSerendipity { ndim = phaseGrid:ndim(), polyOrder = polyOrder }
-local confBasis = Basis.CartModalSerendipity { ndim = confGrid:ndim(), polyOrder = polyOrder }
+local phaseBasis = Basis.CartModalMaxOrder { ndim = phaseGrid:ndim(), polyOrder = polyOrder }
+local confBasis = Basis.CartModalMaxOrder { ndim = confGrid:ndim(), polyOrder = polyOrder }
 
 -- fields
 local distf = DataStruct.Field {
@@ -89,7 +89,7 @@ ptclEnergyCalc = Updater.DistFuncMomentCalc {
 }
 
 -- initial condition to apply
-function maxwellian(x,y,vx,vy,vz)
+function maxwellian(x,vx,vy,vz)
    local Pi = math.pi   
    local n = 1.0*math.sin(2*Pi*x)
    local ux = 0.1*math.cos(2*Pi*x)
@@ -119,22 +119,19 @@ local project = Updater.ProjectOnBasis {
    onGrid = phaseGrid,
    basis = phaseBasis,
    evaluate = function (t, xn)
-      return maxwellian(xn[1], xn[2], xn[3], xn[4], xn[5])
+      return maxwellian(xn[1], xn[2], xn[3], xn[4])
    end
 }
-local tStart = Time.clock()
 project:advance(0.0, 0.0, {}, {distf})
-local tEnd = Time.clock()
-print("Projection took", tEnd-tStart)
 distf:write("distf.bp", 0.0)
 
-tStart = Time.clock()
+local tStart = Time.clock()
 -- compute moments
 numDensityCalc:advance(0.0, 0.0, {distf}, {numDensity})
 momentumCalc:advance(0.0, 0.0, {distf}, {momentum})
 pressureTensorCalc:advance(0.0, 0.0, {distf}, {pressureTensor})
 ptclEnergyCalc:advance(0.0, 0.0, {distf}, {ptclEnergy})
-tEnd = Time.clock()
+local tEnd = Time.clock()
 print("Moment calculations took", tEnd-tStart)
 
 -- write data

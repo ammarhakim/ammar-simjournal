@@ -17,3 +17,6 @@ Serendipity element tests
 - m12: Serendipity, 2x3v. polyOrder=2 on 32x4x8x8x8 grid.
 - m13: Serendipity, 2x3v. polyOrder=3 on 32x4x8x8x8 grid.
 - m14: Serendipity, 2x3v. polyOrder=4 on 32x4x8x8x8 grid.
+
+Maximal-order element. Labelling is same as above: x1 corresponds to
+m1 etc.

@@ -28,8 +28,8 @@ local confGrid = Grid.RectCart {
 }
 
 -- basis functions
-local phaseBasis = Basis.CartModalSerendipity { ndim = phaseGrid:ndim(), polyOrder = polyOrder }
-local confBasis = Basis.CartModalSerendipity { ndim = confGrid:ndim(), polyOrder = polyOrder }
+local phaseBasis = Basis.CartModalMaxOrder { ndim = phaseGrid:ndim(), polyOrder = polyOrder }
+local confBasis = Basis.CartModalMaxOrder { ndim = confGrid:ndim(), polyOrder = polyOrder }
 
 -- fields
 local distf = DataStruct.Field {
