@@ -57,10 +57,10 @@ def getXv(Xc, Vc):
 
 # density
 d = postgkyl.GData("m14-2x3v-ser-mom_numDensity.bp")
-dg1Num = postgkyl.gInterp.GkeDgSerendipModal2DPolyOrder4Basis(d)
-Xc, Yc, num = dg1Num.project(0)
+dg1Num = postgkyl.gInterp.GInterpModalSerendipity(d,4)
+Xc, num = dg1Num.project(0)
 
-Xhr = linspace(Xc[0,0], Xc[-1,0], 200) # for plotting
+Xhr = linspace(Xc[0][0,0], Xc[0][-1,0], 200) # for plotting
 
 n = sin(2*pi*Xhr)
 ux = 0.1*cos(2*pi*Xhr)
@@ -75,7 +75,7 @@ Tyz = 0.125 + 0.1*sin(2*pi*Xhr)
 
 # density
 figure(cnt.bump())
-plot(Xc[:,0], num[:,0], 'ro-')
+plot(Xc[0][:,0], num[:,0], 'ro-')
 plot(Xhr, n, 'k-')
 axis('tight')
 xlabel('X')
@@ -87,11 +87,11 @@ savefig('s5-1x3v-num.png', bbox='tight')
 
 # momentum-x
 d = postgkyl.GData("m14-2x3v-ser-mom_momentum.bp")
-dg1Mom = postgkyl.gInterp.GkeDgSerendipModal2DPolyOrder4Basis(d)
-Xc, Yc, mom = dg1Mom.project(0)
+dg1Mom = postgkyl.gInterp.GInterpModalSerendipity(d,4)
+Xc, mom = dg1Mom.project(0)
 
 figure(cnt.bump())
-plot(Xc[:,0], mom[:,0], 'ro-')
+plot(Xc[0][:,0], mom[:,0], 'ro-')
 plot(Xhr, n*ux, 'k-')
 xlabel('X')
 ylabel('Momentum Density')
@@ -102,10 +102,10 @@ grid()
 savefig('s5-1x3v-momx.png', bbox='tight')
 
 # momentum-y
-Xc, Yc, mom = dg1Mom.project(1)
+Xc, mom = dg1Mom.project(1)
 
 figure(cnt.bump())
-plot(Xc[:,0], mom[:,0], 'ro-')
+plot(Xc[0][:,0], mom[:,0], 'ro-')
 plot(Xhr, n*uy, 'k-')
 axis('tight')
 xlabel('X')
@@ -116,10 +116,10 @@ grid()
 savefig('s5-1x3v-momy.png', bbox='tight')
 
 # momentum-z
-Xc, Yc, mom = dg1Mom.project(2)
+Xc, mom = dg1Mom.project(2)
 
 figure(cnt.bump())
-plot(Xc[:,0], mom[:,0], 'ro-')
+plot(Xc[0][:,0], mom[:,0], 'ro-')
 plot(Xhr, n*uz, 'k-')
 axis('tight')
 xlabel('X')
@@ -131,11 +131,11 @@ savefig('s5-1x3v-momz.png', bbox='tight')
 
 # total Pxx
 d = postgkyl.GData("m14-2x3v-ser-mom_pressureTensor.bp")
-dg1Pr = postgkyl.gInterp.GkeDgSerendipModal2DPolyOrder4Basis(d)
-Xc, Yc, pr = dg1Pr.project(0)
+dg1Pr = postgkyl.gInterp.GInterpModalSerendipity(d,4)
+Xc, pr = dg1Pr.project(0)
 
 figure(cnt.bump())
-plot(Xc[:,0], pr[:,0], 'ro-')
+plot(Xc[0][:,0], pr[:,0], 'ro-')
 plot(Xhr, n*Txx + n*ux*ux, 'k-')
 axis('tight')
 xlabel('X')
@@ -146,10 +146,10 @@ grid()
 savefig('s5-1x3v-pxx.png', bbox='tight')
 
 # total Pxy
-Xc, Yc, pr = dg1Pr.project(1)
+Xc, pr = dg1Pr.project(1)
 
 figure(cnt.bump())
-plot(Xc[:,0], pr[:,0], 'ro-')
+plot(Xc[0][:,0], pr[:,0], 'ro-')
 plot(Xhr, n*Txy + n*ux*uy, 'k-')
 axis('tight')
 xlabel('X')
@@ -160,10 +160,10 @@ grid()
 savefig('s5-1x3v-pxy.png', bbox='tight')
 
 # total Pxz
-Xc, Yc, pr = dg1Pr.project(2)
+Xc, pr = dg1Pr.project(2)
 
 figure(cnt.bump())
-plot(Xc[:,0], pr[:,0], 'ro-')
+plot(Xc[0][:,0], pr[:,0], 'ro-')
 plot(Xhr, n*Txz + n*ux*uz, 'k-')
 axis('tight')
 xlabel('X')
@@ -174,10 +174,10 @@ grid()
 savefig('s5-1x3v-pxz.png', bbox='tight')
 
 # total Pyy
-Xc, Yc, pr = dg1Pr.project(3)
+Xc, pr = dg1Pr.project(3)
 
 figure(cnt.bump())
-plot(Xc[:,0], pr[:,0], 'ro-')
+plot(Xc[0][:,0], pr[:,0], 'ro-')
 plot(Xhr, n*Tyy + n*uy*uy, 'k-')
 axis('tight')
 xlabel('X')
@@ -188,10 +188,10 @@ grid()
 savefig('s5-1x3v-pyy.png', bbox='tight')
 
 # total Pyz
-Xc, Yc, pr = dg1Pr.project(4)
+Xc, pr = dg1Pr.project(4)
 
 figure(cnt.bump())
-plot(Xc[:,0], pr[:,0], 'ro-')
+plot(Xc[0][:,0], pr[:,0], 'ro-')
 plot(Xhr, n*Tyz + n*uy*uz, 'k-')
 axis('tight')
 xlabel('X')
@@ -202,10 +202,10 @@ grid()
 savefig('s5-1x3v-pyz.png', bbox='tight')
 
 # total Pzz
-Xc, Yc, pr = dg1Pr.project(5)
+Xc, pr = dg1Pr.project(5)
 
 figure(cnt.bump())
-plot(Xc[:,0], pr[:,0], 'ro-')
+plot(Xc[0][:,0], pr[:,0], 'ro-')
 plot(Xhr, n*Tzz + n*uz*uz, 'k-')
 axis('tight')
 xlabel('X')
@@ -217,13 +217,13 @@ savefig('s5-1x3v-pzz.png', bbox='tight')
 
 # ptcl energy
 d = postgkyl.GData("m14-2x3v-ser-mom_ptclEnergy.bp")
-dg1Eg = postgkyl.gInterp.GkeDgSerendipModal2DPolyOrder4Basis(d)
-Xc, Yc, Eg = dg1Eg.project(0)
+dg1Eg = postgkyl.gInterp.GInterpModalSerendipity(d,4)
+Xc, Eg = dg1Eg.project(0)
 
 Er = 0.5*(n*(Txx+Tyy+Tzz) + n*(ux*ux+uy*uy+uz*uz))
 
 figure(cnt.bump())
-plot(Xc[:,0], Eg[:,0], 'ro-')
+plot(Xc[0][:,0], Eg[:,0], 'ro-')
 plot(Xhr, Er, 'k-')
 axis('tight')
 xlabel('X')

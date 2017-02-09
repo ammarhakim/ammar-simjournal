@@ -11,7 +11,7 @@ local Basis = require "Basis"
 local Updater = require "Updater"
 
 
-polyOrder = 4 -- polynomial order
+polyOrder = 2 -- polynomial order
 VDIM = 3 -- velocity dimensions
 nMom = VDIM -- number of momentum component
 nPrs = VDIM*(VDIM+1)/2 -- number of pressure tensor component
@@ -28,8 +28,8 @@ local confGrid = Grid.RectCart {
 }
 
 -- basis functions
-local phaseBasis = Basis.CartModalSerendipity { ndim = phaseGrid:ndim(), polyOrder = polyOrder }
-local confBasis = Basis.CartModalSerendipity { ndim = confGrid:ndim(), polyOrder = polyOrder }
+local phaseBasis = Basis.CartModalMaxOrder { ndim = phaseGrid:ndim(), polyOrder = polyOrder }
+local confBasis = Basis.CartModalMaxOrder { ndim = confGrid:ndim(), polyOrder = polyOrder }
 
 -- fields
 local distf = DataStruct.Field {
@@ -122,19 +122,16 @@ local project = Updater.ProjectOnBasis {
       return maxwellian(xn[1], xn[2], xn[3], xn[4], xn[5])
    end
 }
-local tStart = Time.clock()
 project:advance(0.0, 0.0, {}, {distf})
-local tEnd = Time.clock()
-print("Projection took", tEnd-tStart)
 distf:write("distf.bp", 0.0)
 
-tStart = Time.clock()
+local tStart = Time.clock()
 -- compute moments
 numDensityCalc:advance(0.0, 0.0, {distf}, {numDensity})
 momentumCalc:advance(0.0, 0.0, {distf}, {momentum})
 pressureTensorCalc:advance(0.0, 0.0, {distf}, {pressureTensor})
 ptclEnergyCalc:advance(0.0, 0.0, {distf}, {ptclEnergy})
-tEnd = Time.clock()
+local tEnd = Time.clock()
 print("Moment calculations took", tEnd-tStart)
 
 -- write data

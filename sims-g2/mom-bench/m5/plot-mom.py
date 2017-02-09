@@ -43,15 +43,15 @@ class Counter:
     def bump(self):
         self.count = self.count+1
         return self.count
-        
+
 cnt = Counter()
 
 # density
 d = postgkyl.GData("m5-1x2v-ser-mom_numDensity.bp")
-dg1Num = postgkyl.gInterp.GkeDgSerendipModal1DPolyOrder3Basis(d)
+dg1Num = postgkyl.gInterp.GInterpModalSerendipity(d, 3)
 Xc, num = dg1Num.project(0)
 
-Xhr = linspace(Xc[0], Xc[-1], 200) # for plotting
+Xhr = linspace(Xc[0][0], Xc[0][-1], 200) # for plotting
 
 n = sin(2*pi*Xhr)
 ux = 0.1*cos(2*pi*Xhr)
@@ -62,7 +62,7 @@ Tyy = 0.75 + 0.25*sin(2*pi*Xhr)
 
 # density
 figure(cnt.bump())
-plot(Xc, num, 'ro-')
+plot(Xc[0], num, 'ro-')
 plot(Xhr, n, 'k-')
 axis('tight')
 xlabel('X')
@@ -74,11 +74,11 @@ savefig('m5-1x2v-ser-num.png', bbox='tight')
 
 # momentum-x
 d = postgkyl.GData("m5-1x2v-ser-mom_momentum.bp")
-dg1Mom = postgkyl.gInterp.GkeDgSerendipModal1DPolyOrder3Basis(d)
+dg1Mom = postgkyl.gInterp.GInterpModalSerendipity(d, 3)
 Xc, mom = dg1Mom.project(0)
 
 figure(cnt.bump())
-plot(Xc, mom, 'ro-')
+plot(Xc[0], mom, 'ro-')
 plot(Xhr, n*ux, 'k-')
 xlabel('X')
 ylabel('Momentum Density')
@@ -92,7 +92,7 @@ savefig('m5-1x2v-ser-momx.png', bbox='tight')
 Xc, mom = dg1Mom.project(1)
 
 figure(cnt.bump())
-plot(Xc, mom, 'ro-')
+plot(Xc[0], mom, 'ro-')
 plot(Xhr, n*uy, 'k-')
 axis('tight')
 xlabel('X')
@@ -104,11 +104,11 @@ savefig('m5-1x2v-ser-momy.png', bbox='tight')
 
 # total Pxx
 d = postgkyl.GData("m5-1x2v-ser-mom_pressureTensor.bp")
-dg1Pr = postgkyl.gInterp.GkeDgSerendipModal1DPolyOrder3Basis(d)
+dg1Pr = postgkyl.gInterp.GInterpModalSerendipity(d, 3)
 Xc, pr = dg1Pr.project(0)
 
 figure(cnt.bump())
-plot(Xc, pr, 'ro-')
+plot(Xc[0], pr, 'ro-')
 plot(Xhr, n*Txx + n*ux*ux, 'k-')
 axis('tight')
 xlabel('X')
@@ -122,7 +122,7 @@ savefig('m5-1x2v-ser-pxx.png', bbox='tight')
 Xc, pr = dg1Pr.project(2)
 
 figure(cnt.bump())
-plot(Xc, pr, 'ro-')
+plot(Xc[0], pr, 'ro-')
 plot(Xhr, n*Tyy + n*uy*uy, 'k-')
 axis('tight')
 xlabel('X')
@@ -136,7 +136,7 @@ savefig('m5-1x2v-ser-pyy.png', bbox='tight')
 Xc, pr = dg1Pr.project(1)
 
 figure(cnt.bump())
-plot(Xc, pr, 'ro-')
+plot(Xc[0], pr, 'ro-')
 plot(Xhr, n*Txy + n*ux*uy, 'k-')
 axis('tight')
 xlabel('X')
@@ -148,12 +148,12 @@ savefig('m5-1x2v-ser-pxy.png', bbox='tight')
 
 # ptcl energy
 d = postgkyl.GData("m5-1x2v-ser-mom_ptclEnergy.bp")
-dg1Eg = postgkyl.gInterp.GkeDgSerendipModal1DPolyOrder3Basis(d)
+dg1Eg = postgkyl.gInterp.GInterpModalSerendipity(d, 3)
 Xc, Eg = dg1Eg.project(0)
 
 Er = 0.5*(n*(Txx+Tyy) + n*(ux*ux+uy*uy))
 figure(cnt.bump())
-plot(Xc, Eg, 'ro-')
+plot(Xc[0], Eg, 'ro-')
 plot(Xhr, Er, 'k-')
 axis('tight')
 xlabel('X')

@@ -46,23 +46,36 @@ class Counter:
         
 cnt = Counter()
 
+def getXv(Xc, Vc):
+    dx = (Xc[0,-1]-Xc[0,0])/(Xc.shape[1]-1)
+    dv = (Vc[-1,0]-Vc[0,0])/(Vc.shape[0]-1)
+
+    X1 = linspace(Xc[0,0]+0.5*dx, Xc[0,-1]-0.5*dx, Xc.shape[1]-1)
+    V1 = linspace(Vc[0,0]+0.5*dv, Vc[-1,0]-0.5*dv, Vc.shape[0]-1)
+
+    return X1, V1
+
 # density
-d = postgkyl.GData("m3-1x2v-ser-mom_numDensity.bp")
-dg1Num = postgkyl.gInterp.GInterpModalSerendipity(d, 1)
+d = postgkyl.GData("x12-2x3v-max-mom_numDensity.bp")
+dg1Num = postgkyl.gInterp.GInterpModalMaxOrder(d, 2)
 Xc, num = dg1Num.project(0)
 
-Xhr = linspace(Xc[0][0], Xc[0][-1], 200) # for plotting
+Xhr = linspace(Xc[0][0,0], Xc[0][-1,0], 200) # for plotting
 
 n = sin(2*pi*Xhr)
 ux = 0.1*cos(2*pi*Xhr)
 uy = 0.2*sin(2*pi*Xhr)
+uz = 0.1*cos(2*pi*Xhr)
 Txx = 0.75 + 0.25*cos(2*pi*Xhr)
-Txy = 0.1 + 0.01*sin(2*pi*Xhr)*cos(2*pi*Xhr)
 Tyy = 0.75 + 0.25*sin(2*pi*Xhr)
+Tzz = 0.75 + 0.1*sin(2*pi*Xhr)
+Txy = 0.5 + 0.1*sin(2*pi*Xhr)
+Txz = 0.25 + 0.1*sin(2*pi*Xhr)
+Tyz = 0.125 + 0.1*sin(2*pi*Xhr)
 
 # density
 figure(cnt.bump())
-plot(Xc[0], num, 'ro-')
+plot(Xc[0][:,0], num[:,0], 'ro-')
 plot(Xhr, n, 'k-')
 axis('tight')
 xlabel('X')
@@ -70,15 +83,15 @@ ylabel('Number Density')
 title('Number Density')
 minorticks_on()
 grid()
-savefig('m3-1x2v-ser-num.png', bbox='tight')
+savefig('s5-1x3v-num.png', bbox='tight')
 
 # momentum-x
-d = postgkyl.GData("m3-1x2v-ser-mom_momentum.bp")
-dg1Mom = postgkyl.gInterp.GInterpModalSerendipity(d, 1)
+d = postgkyl.GData("x12-2x3v-max-mom_momentum.bp")
+dg1Mom = postgkyl.gInterp.GInterpModalMaxOrder(d, 2)
 Xc, mom = dg1Mom.project(0)
 
 figure(cnt.bump())
-plot(Xc[0], mom, 'ro-')
+plot(Xc[0][:,0], mom[:,0], 'ro-')
 plot(Xhr, n*ux, 'k-')
 xlabel('X')
 ylabel('Momentum Density')
@@ -86,13 +99,13 @@ title('Momentum Density in X')
 axis('tight')
 minorticks_on()
 grid()
-savefig('m3-1x2v-ser-momx.png', bbox='tight')
+savefig('s5-1x3v-momx.png', bbox='tight')
 
 # momentum-y
 Xc, mom = dg1Mom.project(1)
 
 figure(cnt.bump())
-plot(Xc[0], mom, 'ro-')
+plot(Xc[0][:,0], mom[:,0], 'ro-')
 plot(Xhr, n*uy, 'k-')
 axis('tight')
 xlabel('X')
@@ -100,15 +113,29 @@ ylabel('Momentum Density')
 title('Momentum Density in Y')
 minorticks_on()
 grid()
-savefig('m3-1x2v-ser-momy.png', bbox='tight')
+savefig('s5-1x3v-momy.png', bbox='tight')
+
+# momentum-z
+Xc, mom = dg1Mom.project(2)
+
+figure(cnt.bump())
+plot(Xc[0][:,0], mom[:,0], 'ro-')
+plot(Xhr, n*uz, 'k-')
+axis('tight')
+xlabel('X')
+ylabel('Momentum Density')
+title('Momentum Density in Z')
+minorticks_on()
+grid()
+savefig('s5-1x3v-momz.png', bbox='tight')
 
 # total Pxx
-d = postgkyl.GData("m3-1x2v-ser-mom_pressureTensor.bp")
-dg1Pr = postgkyl.gInterp.GInterpModalSerendipity(d, 1)
+d = postgkyl.GData("x12-2x3v-max-mom_pressureTensor.bp")
+dg1Pr = postgkyl.gInterp.GInterpModalMaxOrder(d, 2)
 Xc, pr = dg1Pr.project(0)
 
 figure(cnt.bump())
-plot(Xc[0], pr, 'ro-')
+plot(Xc[0][:,0], pr[:,0], 'ro-')
 plot(Xhr, n*Txx + n*ux*ux, 'k-')
 axis('tight')
 xlabel('X')
@@ -116,27 +143,13 @@ ylabel(r'$P_{xx}$')
 title(r'$P_{xx}$')
 minorticks_on()
 grid()
-savefig('m3-1x2v-ser-pxx.png', bbox='tight')
-
-# total Pyy
-Xc, pr = dg1Pr.project(2)
-
-figure(cnt.bump())
-plot(Xc[0], pr, 'ro-')
-plot(Xhr, n*Tyy + n*uy*uy, 'k-')
-axis('tight')
-xlabel('X')
-ylabel(r'$P_{yy}$')
-title(r'$P_{yy}$')
-minorticks_on()
-grid()
-savefig('m3-1x2v-ser-pyy.png', bbox='tight')
+savefig('s5-1x3v-pxx.png', bbox='tight')
 
 # total Pxy
 Xc, pr = dg1Pr.project(1)
 
 figure(cnt.bump())
-plot(Xc[0], pr, 'ro-')
+plot(Xc[0][:,0], pr[:,0], 'ro-')
 plot(Xhr, n*Txy + n*ux*uy, 'k-')
 axis('tight')
 xlabel('X')
@@ -144,16 +157,73 @@ ylabel(r'$P_{xy}$')
 title(r'$P_{xy}$')
 minorticks_on()
 grid()
-savefig('m3-1x2v-ser-pxy.png', bbox='tight')
+savefig('s5-1x3v-pxy.png', bbox='tight')
+
+# total Pxz
+Xc, pr = dg1Pr.project(2)
+
+figure(cnt.bump())
+plot(Xc[0][:,0], pr[:,0], 'ro-')
+plot(Xhr, n*Txz + n*ux*uz, 'k-')
+axis('tight')
+xlabel('X')
+ylabel(r'$P_{xz}$')
+title(r'$P_{xz}$')
+minorticks_on()
+grid()
+savefig('s5-1x3v-pxz.png', bbox='tight')
+
+# total Pyy
+Xc, pr = dg1Pr.project(3)
+
+figure(cnt.bump())
+plot(Xc[0][:,0], pr[:,0], 'ro-')
+plot(Xhr, n*Tyy + n*uy*uy, 'k-')
+axis('tight')
+xlabel('X')
+ylabel(r'$P_{yy}$')
+title(r'$P_{yy}$')
+minorticks_on()
+grid()
+savefig('s5-1x3v-pyy.png', bbox='tight')
+
+# total Pyz
+Xc, pr = dg1Pr.project(4)
+
+figure(cnt.bump())
+plot(Xc[0][:,0], pr[:,0], 'ro-')
+plot(Xhr, n*Tyz + n*uy*uz, 'k-')
+axis('tight')
+xlabel('X')
+ylabel(r'$P_{yz}$')
+title(r'$P_{yz}$')
+minorticks_on()
+grid()
+savefig('s5-1x3v-pyz.png', bbox='tight')
+
+# total Pzz
+Xc, pr = dg1Pr.project(5)
+
+figure(cnt.bump())
+plot(Xc[0][:,0], pr[:,0], 'ro-')
+plot(Xhr, n*Tzz + n*uz*uz, 'k-')
+axis('tight')
+xlabel('X')
+ylabel(r'$P_{zz}$')
+title(r'$P_{zz}$')
+minorticks_on()
+grid()
+savefig('s5-1x3v-pzz.png', bbox='tight')
 
 # ptcl energy
-d = postgkyl.GData("m3-1x2v-ser-mom_ptclEnergy.bp")
-dg1Eg = postgkyl.gInterp.GInterpModalSerendipity(d, 1)
+d = postgkyl.GData("x12-2x3v-max-mom_ptclEnergy.bp")
+dg1Eg = postgkyl.gInterp.GInterpModalMaxOrder(d, 2)
 Xc, Eg = dg1Eg.project(0)
 
-Er = 0.5*(n*(Txx+Tyy) + n*(ux*ux+uy*uy))
+Er = 0.5*(n*(Txx+Tyy+Tzz) + n*(ux*ux+uy*uy+uz*uz))
+
 figure(cnt.bump())
-plot(Xc[0], Eg, 'ro-')
+plot(Xc[0][:,0], Eg[:,0], 'ro-')
 plot(Xhr, Er, 'k-')
 axis('tight')
 xlabel('X')
@@ -161,6 +231,6 @@ ylabel(r'$Energy$')
 title(r'Particle Energy')
 minorticks_on()
 grid()
-savefig('m3-1x2v-ser-Eg.png', bbox='tight')
+savefig('s5-1x3v-Eg.png', bbox='tight')
 
 show()

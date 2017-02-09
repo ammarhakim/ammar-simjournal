@@ -11,25 +11,25 @@ local Basis = require "Basis"
 local Updater = require "Updater"
 
 
-polyOrder = 4 -- polynomial order
-VDIM = 3 -- velocity dimensions
+polyOrder = 2 -- polynomial order
+VDIM = 2 -- velocity dimensions
 nMom = VDIM -- number of momentum component
 nPrs = VDIM*(VDIM+1)/2 -- number of pressure tensor component
 
 local phaseGrid = Grid.RectCart {
-   lower = {-1.0, -1.0, -6.0, -6.0, -6.0},
-   upper = {1.0, 1.0, 6.0, 6.0, 6.0},
-   cells = {16, 2, 8, 8, 8},
+   lower = {-1.0, -6.0, -6.0},
+   upper = {1.0, 6.0, 6.0},
+   cells = {16, 8, 8},
 }
 local confGrid = Grid.RectCart {
-   lower = { phaseGrid:lower(1), phaseGrid:lower(2) },
-   upper = { phaseGrid:upper(1), phaseGrid:upper(2) },
-   cells = { phaseGrid:numCells(1), phaseGrid:numCells(2) },
+   lower = { phaseGrid:lower(1) },
+   upper = { phaseGrid:upper(1) },
+   cells = { phaseGrid:numCells(1) },
 }
 
 -- basis functions
-local phaseBasis = Basis.CartModalSerendipity { ndim = phaseGrid:ndim(), polyOrder = polyOrder }
-local confBasis = Basis.CartModalSerendipity { ndim = confGrid:ndim(), polyOrder = polyOrder }
+local phaseBasis = Basis.CartModalMaxOrder { ndim = phaseGrid:ndim(), polyOrder = polyOrder }
+local confBasis = Basis.CartModalMaxOrder { ndim = confGrid:ndim(), polyOrder = polyOrder }
 
 -- fields
 local distf = DataStruct.Field {
@@ -89,29 +89,21 @@ ptclEnergyCalc = Updater.DistFuncMomentCalc {
 }
 
 -- initial condition to apply
-function maxwellian(x,y,vx,vy,vz)
+function maxwellian(x,vx,vy)
    local Pi = math.pi   
    local n = 1.0*math.sin(2*Pi*x)
    local ux = 0.1*math.cos(2*Pi*x)
    local uy = 0.2*math.sin(2*Pi*x)
-   local uz = 0.1*math.cos(2*Pi*x)
-
    local Txx = 0.75 + 0.25*math.cos(2*Pi*x)
    local Tyy = 0.75 + 0.25*math.sin(2*Pi*x)
-   local Tzz = 0.75 + 0.1*math.sin(2*Pi*x)
-   local Txy = 0.5 + 0.1*math.sin(2*Pi*x)
-   local Txz = 0.25 + 0.1*math.sin(2*Pi*x)
-   local Tyz = 0.125 + 0.1*math.sin(2*Pi*x)   
+   local Txy = 0.1 + 0.01*math.sin(2*Pi*x)*math.cos(2*Pi*x)
 
+   local detT = Txx*Tyy-Txy^2
    local cx = vx-ux
    local cy = vy-uy
-   local cz = vz-uz
 
-   local detT = Txx*(Tyy*Tzz-Tyz^2)-Txy*(Txy*Tzz-Txz*Tyz)+Txz*(Txy*Tyz-Txz*Tyy)
-   local u2 = cx*(cx*(Tyy*Tzz-Tyz^2)+cy*(Txz*Tyz-Txy*Tzz)+cz*(Txy*Tyz-Txz*Tyy))+cy*(cx*(Txz*Tyz-Txy*Tzz)+cy*(Txx*Tzz-Txz^2)+cz*(Txy*Txz-Txx*Tyz))+cz*(cx*(Txy*Tyz-Txz*Tyy)+cy*(Txy*Txz-Txx*Tyz)+cz*(Txx*Tyy-Txy^2))
-   u2 = u2/(2*detT)
-
-   return n/(math.pow(2*Pi, VDIM/2)*math.sqrt(detT))*math.exp(-u2)
+   local u2 = (cx*(cx*Tyy-cy*Txy)+cy*(cy*Txx-cx*Txy))/(2*detT)
+   return n/(math.pow(2*Pi,VDIM/2)*math.sqrt(detT))*math.exp(-u2)
 end
 
 -- updater to initialize distribution function
@@ -119,22 +111,19 @@ local project = Updater.ProjectOnBasis {
    onGrid = phaseGrid,
    basis = phaseBasis,
    evaluate = function (t, xn)
-      return maxwellian(xn[1], xn[2], xn[3], xn[4], xn[5])
+      return maxwellian(xn[1], xn[2], xn[3])
    end
 }
-local tStart = Time.clock()
 project:advance(0.0, 0.0, {}, {distf})
-local tEnd = Time.clock()
-print("Projection took", tEnd-tStart)
 distf:write("distf.bp", 0.0)
 
-tStart = Time.clock()
+local tStart = Time.clock()
 -- compute moments
 numDensityCalc:advance(0.0, 0.0, {distf}, {numDensity})
 momentumCalc:advance(0.0, 0.0, {distf}, {momentum})
 pressureTensorCalc:advance(0.0, 0.0, {distf}, {pressureTensor})
 ptclEnergyCalc:advance(0.0, 0.0, {distf}, {ptclEnergy})
-tEnd = Time.clock()
+local tEnd = Time.clock()
 print("Moment calculations took", tEnd-tStart)
 
 -- write data

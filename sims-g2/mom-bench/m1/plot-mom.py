@@ -47,10 +47,10 @@ def getXv(Xc, Vc):
 
 # density
 d = postgkyl.GData("m1-1x1v-ser-mom_numDensity.bp")
-dg1Num = postgkyl.gInterp.GkeDgSerendipModal1DPolyOrder1Basis(d)
+dg1Num = postgkyl.gInterp.GInterpModalSerendipity(d, 1)
 Xc, num = dg1Num.project(0)
 
-Xhr = linspace(Xc[0], Xc[-1], 200) # for plotting
+Xhr = linspace(Xc[0][0], Xc[0][-1], 200) # for plotting
 
 n = sin(2*pi*Xhr)
 ux = 0.1*cos(2*pi*Xhr)
@@ -58,7 +58,7 @@ Txx = 0.75 + 0.25*cos(2*pi*Xhr)
 
 # density
 figure(1)
-plot(Xc, num, 'ro-')
+plot(Xc[0], num, 'ro-')
 plot(Xhr, n, 'k-')
 axis('tight')
 xlabel('X')
@@ -70,11 +70,11 @@ savefig('m1-1x1v-ser-num.png', bbox='tight')
 
 # momentum
 d = postgkyl.GData("m1-1x1v-ser-mom_momentum.bp")
-dg1Mom = postgkyl.gInterp.GkeDgSerendipModal1DPolyOrder1Basis(d)
+dg1Mom = postgkyl.gInterp.GInterpModalSerendipity(d, 1)
 Xc, mom = dg1Mom.project(0)
 
 figure(2)
-plot(Xc, mom, 'ro-')
+plot(Xc[0], mom, 'ro-')
 plot(Xhr, n*ux, 'k-')
 axis('tight')
 xlabel('X')
@@ -86,11 +86,11 @@ savefig('m1-1x1v-ser-mom.png', bbox='tight')
 
 # total Pxx
 d = postgkyl.GData("m1-1x1v-ser-mom_pressureTensor.bp")
-dg1Pr = postgkyl.gInterp.GkeDgSerendipModal1DPolyOrder1Basis(d)
+dg1Pr = postgkyl.gInterp.GInterpModalSerendipity(d, 1)
 Xc, pr = dg1Pr.project(0)
 
 figure(3)
-plot(Xc, pr, 'ro-')
+plot(Xc[0], pr, 'ro-')
 plot(Xhr, n*Txx + n*ux*ux, 'k-')
 axis('tight')
 xlabel('X')
@@ -102,11 +102,11 @@ savefig('m1-1x1v-ser-pr.png', bbox='tight')
 
 # ptcl energy
 d = postgkyl.GData("m1-1x1v-ser-mom_ptclEnergy.bp")
-dg1Eg = postgkyl.gInterp.GkeDgSerendipModal1DPolyOrder1Basis(d)
+dg1Eg = postgkyl.gInterp.GInterpModalSerendipity(d, 1)
 Xc, Eg = dg1Eg.project(0)
 
 figure(4)
-plot(Xc, Eg, 'ro-')
+plot(Xc[0], Eg, 'ro-')
 plot(Xhr, 0.5*(n*Txx + n*ux*ux), 'k-')
 axis('tight')
 xlabel('X')
