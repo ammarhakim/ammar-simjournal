@@ -527,9 +527,9 @@ end
 
 -- function to compute diagnostics
 function calcDiagnostics(curr, dt)
-   runUpdater(totalPtclCalcElc, curr, dt, {numDensityElc}, {totalPtclElc})
-   runUpdater(totalPtclCalcIon, curr, dt, {numDensityIon}, {totalPtclIon})
-   runUpdater(fieldEnergyCalc, curr, dt, {phi1d}, {fieldEnergy})
+   --runUpdater(totalPtclCalcElc, curr, dt, {numDensityElc}, {totalPtclElc})
+   --runUpdater(totalPtclCalcIon, curr, dt, {numDensityIon}, {totalPtclIon})
+   --runUpdater(fieldEnergyCalc, curr, dt, {phi1d}, {fieldEnergy})
 end
 
 ----------------------------
