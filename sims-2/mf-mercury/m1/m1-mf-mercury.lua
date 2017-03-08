@@ -12,6 +12,9 @@ swNumDensity = 40e6 -- [#/m^3]
 swDensity = swNumDensity*ionMass -- [kg/m^3]
 swPressure = swNumDensity*Lucee.BoltzmannConstant*swTemp -- [Pa]
 swSpeed = {-400e3, 50e3, 0.0 } -- [m/s]
+--swSpeed = {-400e3, 0.0, 0.0 } -- [m/s]
+swDynPressure = swDensity*(swSpeed[1]^2 + swSpeed[2]^2 + swSpeed[3]^2) -- [Pa]
+swEnergy = swPressure/(gasGamma-1) + 0.5*swDynPressure
 
 -- Radius of Mercury (used as lenght scale)
 Rm = 2439.7e3 -- [m]
@@ -20,21 +23,21 @@ Rm = 2439.7e3 -- [m]
 --LY = {-32.0*Rm, 32.0*Rm} -- [m]
 
 LX = {-10.0*Rm, 10.0*Rm} -- [m]
-LY = {-10.0*Rm, 10.0*Rm} -- [m]
+LY = {-15.0*Rm, 15.0*Rm} -- [m]
 
 -- Transit time for solar wind across domain
 tSwTransit = (LX[2]-LX[1])/math.abs(swSpeed[1])
 
 -- Resolution, time-stepping
 NX = 10*10
-NY = 10*10
+NY = 15*10
 cfl = 0.9
 tStart = 0.0
 tEnd = 4*tSwTransit
 nFrames = 20
 
--- print some diagnostics (seems Jia et. al. define it without the 0.5)
-swDynPressure = 0.5*swDensity*(swSpeed[1]^2 + swSpeed[2]^2 + swSpeed[3]^2)
+-- print some diagnostics
+swDynPressure = swDensity*(swSpeed[1]^2 + swSpeed[2]^2 + swSpeed[3]^2)
 swSoundSpeed = math.sqrt(gasGamma*swPressure/swDensity)
 cellSz = (LX[2]-LX[1])/NX/Rm
 
@@ -124,7 +127,7 @@ inOut:write("inOut.h5")
 -----------------------
 -- initial conditions
 function init(x,y,z)
-   local rho, u, v, w, pr =  swDensity, swSpeed[1], 0.0, 0.0, swPressure
+   local rho, u, v, w, pr =  swDensity, swSpeed[1], swSpeed[2], swSpeed[3], swPressure
    local ke = 0.5*rho*(u^2+v^2+w^2)
    return rho, rho*u, rho*v, rho*w, pr/(gasGamma-1)+ke
 end
@@ -137,25 +140,38 @@ end
 -- wall BC
 bcFluidCopy = BoundaryCondition.Copy { components = {0, 4} }
 bcFluidWall = BoundaryCondition.ZeroNormal { components = {1, 2, 3} }
-
--- set lower and upper boundaries to walls
-bcLowerWallUpdater = Updater.Bc2D {
-   onGrid = grid,
-   -- boundary conditions to apply
-   boundaryConditions = {bcFluidWall, bcFluidCopy},
-   -- direction to apply
-   dir = 1,
-   -- edge to apply on
-   edge = "lower",
+bcInflow = BoundaryCondition.Const { 
+   components = {0, 1, 2, 3, 4},
+   values = {swDensity, swDensity*swSpeed[1], swDensity*swSpeed[2], swDensity*swSpeed[3], swEnergy},
 }
-bcUpperWallUpdater = Updater.Bc2D {
+
+-- set right, top and bottom to inflow conditions
+bcRightUpdater = Updater.Bc2D {
    onGrid = grid,
    -- boundary conditions to apply
-   boundaryConditions = {bcFluidWall, bcFluidCopy},
+   boundaryConditions = {bcInFlow},
+   -- direction to apply
+   dir = 0,
+   -- edge to apply on
+   edge = "upper",
+}
+bcTopUpdater = Updater.Bc2D {
+   onGrid = grid,
+   -- boundary conditions to apply
+   boundaryConditions = {bcInFlow},
    -- direction to apply
    dir = 1,
    -- edge to apply on
    edge = "upper",
+}
+bcBottomUpdater = Updater.Bc2D {
+   onGrid = grid,
+   -- boundary conditions to apply
+   boundaryConditions = {bcInFlow},
+   -- direction to apply
+   dir = 1,
+   -- edge to apply on
+   edge = "lower",
 }
 
 -- updater for embedded BC (solid wall)
@@ -169,14 +185,13 @@ embeddedBcUpdater = Updater.StairSteppedBc2D {
 
 -- function to apply boundary conditions to specified field
 function applyBc(fld, tCurr, myDt, dir)
-   local bcList = {bcLowerWallUpdater, bcUpperWallUpdater}
+   local bcList = {bcRightUpdater, bcTopUpdater, bcBottomUpdater}
    for i,bc in ipairs(bcList) do
       bc:setOut( {fld} )
       bc:advance(tCurr+myDt)
    end
 
    fld:applyCopyBc(0, "upper")
-   fld:applyCopyBc(0, "lower")
 
    -- apply BCs on embedded boundary
    embeddedBcUpdater:setDir(dir)
