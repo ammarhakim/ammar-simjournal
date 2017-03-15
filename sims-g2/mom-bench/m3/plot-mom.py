@@ -1,5 +1,4 @@
 import postgkyl
-import postgkyl.gInterp
 from pylab import *
 
 import pylab
@@ -48,7 +47,7 @@ cnt = Counter()
 
 # density
 d = postgkyl.GData("m3-1x2v-ser-mom_numDensity.bp")
-dg1Num = postgkyl.gInterp.GInterpModalSerendipity(d, 1)
+dg1Num = postgkyl.GInterpModalSerendipity(d, 1)
 Xc, num = dg1Num.project(0)
 
 Xhr = linspace(Xc[0][0], Xc[0][-1], 200) # for plotting
@@ -74,7 +73,7 @@ savefig('m3-1x2v-ser-num.png', bbox='tight')
 
 # momentum-x
 d = postgkyl.GData("m3-1x2v-ser-mom_momentum.bp")
-dg1Mom = postgkyl.gInterp.GInterpModalSerendipity(d, 1)
+dg1Mom = postgkyl.GInterpModalSerendipity(d, 1)
 Xc, mom = dg1Mom.project(0)
 
 figure(cnt.bump())
@@ -104,7 +103,7 @@ savefig('m3-1x2v-ser-momy.png', bbox='tight')
 
 # total Pxx
 d = postgkyl.GData("m3-1x2v-ser-mom_pressureTensor.bp")
-dg1Pr = postgkyl.gInterp.GInterpModalSerendipity(d, 1)
+dg1Pr = postgkyl.GInterpModalSerendipity(d, 1)
 Xc, pr = dg1Pr.project(0)
 
 figure(cnt.bump())
@@ -148,7 +147,7 @@ savefig('m3-1x2v-ser-pxy.png', bbox='tight')
 
 # ptcl energy
 d = postgkyl.GData("m3-1x2v-ser-mom_ptclEnergy.bp")
-dg1Eg = postgkyl.gInterp.GInterpModalSerendipity(d, 1)
+dg1Eg = postgkyl.GInterpModalSerendipity(d, 1)
 Xc, Eg = dg1Eg.project(0)
 
 Er = 0.5*(n*(Txx+Tyy) + n*(ux*ux+uy*uy))

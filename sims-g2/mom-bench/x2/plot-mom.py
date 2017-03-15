@@ -1,5 +1,5 @@
 import postgkyl
-import postgkyl.gInterp
+import postgkyl
 from pylab import *
 
 import pylab
@@ -47,7 +47,7 @@ def getXv(Xc, Vc):
 
 # density
 d = postgkyl.GData("x2-1x1v-max-mom_numDensity.bp")
-dg1Num = postgkyl.gInterp.GInterpModalMaxOrder(d, 2)
+dg1Num = postgkyl.GInterpModalMaxOrder(d, 2)
 Xc, num = dg1Num.project(0)
 
 Xhr = linspace(Xc[0][0], Xc[0][-1], 200) # for plotting
@@ -70,7 +70,7 @@ savefig('x2-1x1v-max-num.png', bbox='tight')
 
 # momentum
 d = postgkyl.GData("x2-1x1v-max-mom_momentum.bp")
-dg1Mom = postgkyl.gInterp.GInterpModalMaxOrder(d, 2)
+dg1Mom = postgkyl.GInterpModalMaxOrder(d, 2)
 Xc, mom = dg1Mom.project(0)
 
 figure(2)
@@ -86,7 +86,7 @@ savefig('x2-1x1v-max-mom.png', bbox='tight')
 
 # total Pxx
 d = postgkyl.GData("x2-1x1v-max-mom_pressureTensor.bp")
-dg1Pr = postgkyl.gInterp.GInterpModalMaxOrder(d, 2)
+dg1Pr = postgkyl.GInterpModalMaxOrder(d, 2)
 Xc, pr = dg1Pr.project(0)
 
 figure(3)
@@ -102,7 +102,7 @@ savefig('x2-1x1v-max-pr.png', bbox='tight')
 
 # ptcl energy
 d = postgkyl.GData("x2-1x1v-max-mom_ptclEnergy.bp")
-dg1Eg = postgkyl.gInterp.GInterpModalMaxOrder(d, 2)
+dg1Eg = postgkyl.GInterpModalMaxOrder(d, 2)
 Xc, Eg = dg1Eg.project(0)
 
 figure(4)
