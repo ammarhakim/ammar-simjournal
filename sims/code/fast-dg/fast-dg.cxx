@@ -181,9 +181,9 @@ class Update1x3vSerendip {
       for (unsigned i=0; i<nloop; ++i)
       {
         calcDirectStreamVol(w, f, fOut);
-        calcDirectForceVol(w, f, EB, fOut);
-        calcDirectForceVol(w, f, EB, fOut);
-        calcDirectForceVol(w, f, EB, fOut);
+        // calcDirectForceVol(w, f, EB, fOut);
+        // calcDirectForceVol(w, f, EB, fOut);
+        // calcDirectForceVol(w, f, EB, fOut);
       }
     }
 };
@@ -349,7 +349,8 @@ main (int argc, char **argv)
   int nloop = nvpair.getValue("nloop");
   double ndof = 1.0*getNumDof(nvpair);
   std::cout << "Update took " << tm << std::endl;
-  std::cout << "Cost per DOF " << tm/nloop/ndof << std::endl;
+  //std::cout << "Cost per DOF " << tm/nloop/ndof << std::endl;
+  std::cout << "Cost per cell " << tm/nloop << std::endl;
   
   return 1;
 }

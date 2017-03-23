@@ -28,3 +28,20 @@ Two-stream instability problem.
     - Description
   * - ${mdl("s1")}
     - :math:`k\lambda_D=0.5`.
+
+Two-stream as a test for positivity fixes
+
+.. list-table::
+  :header-rows: 1
+  :widths: 10,90
+
+  * - Number
+    - Description
+  * - ${mdl("m1")}
+    - :math:`k\lambda_D=0.5`. polyOrder=2, :math:`64\times 16` mesh.
+  * - ${mdl("p1s")}
+    - Same as m1, except with scaling positivity limiter
+  * - ${mdl("m2")}
+    - Same as m1, except with NV=32
+  * - ${mdl("p2s")}
+    - Same as m2, except with scaling positivity limiter
