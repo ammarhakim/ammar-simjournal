@@ -6,7 +6,7 @@
 
 log = Lucee.logInfo
 
-polyOrder = 2 -- polynomial order
+polyOrder = 1 -- polynomial order
 knumber = 0.5 -- wave-number
 elcCharge = -1.0 -- signed electron charge
 elcMass = 1.0 -- electron mass
@@ -18,9 +18,9 @@ perturbation = 1.0e-6 -- distribution function perturbation
 -- resolution and time-stepping
 XL, XU = -Lucee.Pi/knumber, Lucee.Pi/knumber -- configuration space extents
 VL, VU = -6.0, 6.0 -- velocity space extents (this is in units of vthermal for electrons)
-NX, NV = 64, 16 -- mesh size
+NX, NV = 32, 32 -- mesh size
 
-cfl = 0.2 -- CFL number
+cfl = 0.05  --/(2*polyOrder+1) -- CFL number
 tStart = 0.0 -- start time 
 tEnd = 50 -- end time
 nFrames = 10 -- number of output frames to write
@@ -199,7 +199,7 @@ pbSlvr = Updater.PoissonBracket {
    fluxType = "upwind",
    hamilNodesShared = false, -- Hamiltonian is not continuous
    zeroFluxDirections = {1},
-   applyPositivityFix = true, -- apply positivity fix at edges?
+   applyPositivityFix = true, -- apply positivity fix
 }
 
 -- updater to compute phi from number density

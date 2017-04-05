@@ -18,7 +18,7 @@ perturbation = 1.0e-6 -- distribution function perturbation
 -- resolution and time-stepping
 XL, XU = -Lucee.Pi/knumber, Lucee.Pi/knumber -- configuration space extents
 VL, VU = -6.0, 6.0 -- velocity space extents (this is in units of vthermal for electrons)
-NX, NV = 64, 16 -- mesh size
+NX, NV = 64, 32 -- mesh size
 
 cfl = 0.2 -- CFL number
 tStart = 0.0 -- start time 
