@@ -37,6 +37,7 @@ Two-stream as a test for positivity fixes
 
   * - Number
     - Description
+
   * - ${mdl("m1")}
     - :math:`k\lambda_D=0.5`. polyOrder=2, :math:`64\times 16` mesh.
   * - ${mdl("p1s")}
@@ -45,3 +46,19 @@ Two-stream as a test for positivity fixes
     - Same as m1, except with NV=32
   * - ${mdl("p2s")}
     - Same as m2, except with scaling positivity limiter
+  * - ${mdl("p1f")}
+    - Same as m1, except with flux limiting
+  * - ${mdl("p2f")}
+    - Same as m2, except with flux limiting
+
+Advection as a test for positivity fixes
+
+.. list-table::
+  :header-rows: 1
+  :widths: 10,90
+
+  * - Number
+    - Description
+  * - ${mdl("a1f")}
+    - Linear advection test, NX=32. Flux limiting
+

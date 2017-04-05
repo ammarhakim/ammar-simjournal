@@ -6,7 +6,7 @@
 
 log = Lucee.logInfo
 
-polyOrder = 2 -- polynomial order
+polyOrder = 1 -- polynomial order
 knumber = 0.5 -- wave-number
 elcCharge = -1.0 -- signed electron charge
 elcMass = 1.0 -- electron mass
@@ -17,13 +17,15 @@ perturbation = 1.0e-6 -- distribution function perturbation
 
 -- resolution and time-stepping
 XL, XU = -Lucee.Pi/knumber, Lucee.Pi/knumber -- configuration space extents
-VL, VU = -6.0, 6.0 -- velocity space extents (this is in units of vthermal for electrons)
-NX, NV = 64, 16 -- mesh size
+VL, VU = -Lucee.Pi/knumber, Lucee.Pi/knumber -- velocity space extents (this is in units of vthermal for electrons)
+NX, NV = 32, 2 -- mesh size
 
-cfl = 0.2 -- CFL number
+cfl = 0.5*1.0/3.0 --0.5/(2*polyOrder+1) -- CFL number
 tStart = 0.0 -- start time 
-tEnd = 50 -- end time
-nFrames = 10 -- number of output frames to write
+tEnd = 1.5 -- end time
+nFrames = 1 -- number of output frames to write
+
+dx = (XU-XL)/NX -- cell-space
 
 ------------------------------------------------
 -- COMPUTATIONAL DOMAIN, DATA STRUCTURE, ETC. --
@@ -166,9 +168,13 @@ initDistf = Updater.EvalOnNodes2D {
    shareCommonNodes = false, -- In DG, common nodes are not shared
    -- function to use for initialization
    evaluate = function(x,y,z,t)
-      local alpha = perturbation
-      local k = knumber
-      return (1+alpha*math.cos(k*x))*twoStreamDistf(elVTerm, vDrift, x, y)
+      --return math.exp(-x^2/2)
+      
+      local f = 0.0
+      if x <= 2 and x >= -2 then
+      	 f = 1.0
+      end
+      return f
    end
 }
 
@@ -182,7 +188,7 @@ initHamilKE = Updater.EvalOnNodes2D {
    -- function to use for initialization
    evaluate = function (x,y,z,t)
       local v = y
-      return v^2/2
+      return v
    end
 }
 
@@ -199,7 +205,7 @@ pbSlvr = Updater.PoissonBracket {
    fluxType = "upwind",
    hamilNodesShared = false, -- Hamiltonian is not continuous
    zeroFluxDirections = {1},
-   applyPositivityFix = true, -- apply positivity fix at edges?
+   applyPositivityFix = true, -- apply positivity fix
 }
 
 -- updater to compute phi from number density
@@ -350,10 +356,8 @@ end
 -- compute hamiltonian
 function calcHamiltonian(curr, dt, distIn, hamilOut)
    calcMoments(curr, dt, distIn)
-   calcPhiFromNumDensity(curr, dt, numDensity, phi1d)
+   --calcPhiFromNumDensity(curr, dt, numDensity, phi1d)
    hamilOut:clear(0.0)
-   copyPhi(curr, dt, phi1d, hamilOut) -- potential energy contribution
-   hamilOut:scale(elcCharge/elcMass)
    hamilOut:accumulate(1.0, hamilKE)
    hamilOut:sync()
 end
@@ -412,6 +416,20 @@ function rk3(tCurr, myDt)
    return status, dtSuggested
 end
 
+function fowardEuler(tCurr, myDt)
+   local status, dtSuggested
+   -- RK stage 1
+   status, dtSuggested = poissonBracket(tCurr, myDt, distf, hamil, distf1)
+   if (status == false) then
+      return status, dtSuggested
+   end
+   applyPhaseBc(distf1)
+   distf:copy(distf1)
+   calcHamiltonian(tCurr, myDt, distf, hamil)
+
+   return status, dtSuggested
+end
+
 -- function to advance solution from tStart to tEnd
 function runSimulation(tStart, tEnd, nFrames, initDt)
    local frame = 1
@@ -432,7 +450,7 @@ function runSimulation(tStart, tEnd, nFrames, initDt)
 
       -- advance particles and fields
       log (string.format(" Taking step %5d at time %6g with dt %g", step, tCurr, myDt))
-      status, dtSuggested = rk3(tCurr, myDt)
+      status, dtSuggested = rk3(tCurr, myDt) -- fowardEuler(tCurr, myDt) -- rk3(tCurr, myDt)
       if (status == false) then
 	 -- time-step too large
 	 log (string.format(" ** Time step %g too large! Will retake with dt %g", myDt, dtSuggested))
