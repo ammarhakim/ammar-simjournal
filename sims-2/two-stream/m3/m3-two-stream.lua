@@ -22,8 +22,8 @@ NX, NV = 64, 64 -- mesh size
 
 cfl = 0.2 -- CFL number
 tStart = 0.0 -- start time 
-tEnd = 50 -- end time
-nFrames = 10 -- number of output frames to write
+tEnd = 100 -- end time
+nFrames = 20 -- number of output frames to write
 
 ------------------------------------------------
 -- COMPUTATIONAL DOMAIN, DATA STRUCTURE, ETC. --
@@ -477,6 +477,7 @@ applyPhaseBc(hamilKE)
 
 -- compute number density of ions
 calcNumDensity(0.0, 0.0, distfIon, numDensityIon)
+numDensityIon:write("numDensityIon.h5")
 
 -- calculate initial Hamiltonian
 calcHamiltonian(0.0, 0.0, distf, hamil)
