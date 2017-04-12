@@ -35,7 +35,7 @@ rcParams['mathtext.default'] = 'regular' # match the font used for regular text
 import tables
 from pylab import *
 
-for i in range(0, 101):
+for i in range(20, 31):
     print("Working on %d ..." % i)
     d = tables.open_file("f3-5m-two-stream_q_%d.h5" % i)
     q = d.root.StructGridField
