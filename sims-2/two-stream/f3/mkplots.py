@@ -35,16 +35,19 @@ rcParams['mathtext.default'] = 'regular' # match the font used for regular text
 import tables
 from pylab import *
 
-for i in range(20, 31):
+for i in range(0, 101):
     print("Working on %d ..." % i)
     d = tables.open_file("f3-5m-two-stream_q_%d.h5" % i)
     q = d.root.StructGridField
     figure()
-    plot(q[:,0,1]/q[:,0,0], '-r')
-    plot(q[:,0,6]/q[:,0,5], '-k')
-    #plot(q[:,0,0], '-r')
-    #plot(q[:,0,5], '-k')    
-    savefig('f3-5m-two-stream_u_%03d.png' % i)
+    subplot(2,1,1)
+    plot(q[:,0,1]/q[:,0,0], '-r', label='ux1')
+    plot(q[:,0,6]/q[:,0,5], '-k', label='ux2')
+    ylabel('Ux')
+    subplot(2,1,2)
+    plot(-q[:,0,10], '-k', label='Ex')
+    ylabel('Fx')
+    savefig('f3-5m-two-stream_u_%05d.png' % i, dpi=300)
     close()
     
     
