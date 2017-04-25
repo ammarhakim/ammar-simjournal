@@ -1,0 +1,23 @@
+mi : 1.0;
+vthi : 1.0;
+wpi : 1.0;
+Ti_Te : 0.1;
+gasGamma : 3.0;
+k : 0.5;
+
+Ti : mi*vthi^2;
+Te : Ti/Ti_Te;
+ionSound : sqrt((gasGamma*Te + 3*Ti)/mi);
+
+me : mi/1836.2;
+mu : me/mi;
+
+wpe : wpi/sqrt(mu);
+cse : sqrt(gasGamma)*vthi/sqrt(Ti_Te)/sqrt(mu);
+csi : sqrt(3)*vthi;
+
+D(w,k) := 1 - wpi^2/(w^2-csi^2*k^2) - wpe^2/(w^2-cse^2*k^2);
+r : float(realroots(D(w,k)));
+
+wEa : sqrt(wpe^2 + k^2*cse^2);
+wIa : sqrt(wpi^2 + k^2*csi^2);
