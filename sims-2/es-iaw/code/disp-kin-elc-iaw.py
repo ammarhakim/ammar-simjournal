@@ -13,14 +13,13 @@ parser = OptionParser()
 parser.add_option('-k', '--wnumber', action = 'store',
                   dest = 'kInp', help = 'Wave number')
 parser.add_option('-r', '--wR', action = 'store',
-                  dest = 'wR', help = 'Maximum real extent')
+                  dest = 'wR', help = 'Real extent (l,u)')
 parser.add_option('-T', '--TiTe', action = 'store',
                   dest = 'TiTe', help = 'Ti/Te')
 parser.add_option('-i', '--wI', action = 'store',
-                  dest = 'wI', help = 'Maximum imag extent')
-
-parser.add_option('-f', action = 'store',
-                  dest = 'f', help = 'Maximum imag extent')
+                  dest = 'wI', help = 'Imag extent (l,u)')
+parser.add_option('-g', '--gamma', action = 'store',
+                  dest = 'gamma', help = 'Gas gamma')
 
 (options, args) = parser.parse_args()
 
@@ -42,6 +41,9 @@ vthi = 1.0
 wpi = 1.0
 Ti_Te = float(options.TiTe)
 gasGamma = 3.0
+if options.gamma:
+    gasGamma = float(options.gamma)
+
 k = float(options.kInp)
 
 Ti = mi*vthi**2
