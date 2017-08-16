@@ -25,6 +25,7 @@ html:
 	cd sims-2/boltz-bgk; ${PYTHON} ./makesimindex.py; cd ../..
 	cd sims-2/es-shock-1d; ${PYTHON} ../../sims/code/mkluarst.py; cd ../..
 	cd sims-2/es-shock-1d; ${PYTHON} ./makesimindex.py; cd ../..
+	cd sims-2/coupled-hw; ${PYTHON} ../../sims/code/mkluarst.py; cd ../..
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."

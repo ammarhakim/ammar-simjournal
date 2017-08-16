@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 #
 # iAmmar documentation build configuration file, created by
-# sphinx-quickstart on Thu Jul 29 15:15:26 2010.
 #
 # This file is execfile()d with the current directory set to its containing dir.
 #
@@ -38,7 +37,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'SimJournal'
-copyright = u'2011, Ammar Hakim'
+copyright = u'2017, Ammar Hakim'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

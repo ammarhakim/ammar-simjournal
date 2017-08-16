@@ -380,6 +380,8 @@ function advanceFrame(tStart, tEnd, initDt)
 	 end
       end
 
+      myDt = math.min(myDt, 0.01)
+      
    end
 
    return lastGood
@@ -398,7 +400,7 @@ writeFields(0)
 -- parameters to control time-stepping
 tStart = 0.0
 tEnd = 100.0
-dtSuggested = 0.1*tEnd -- initial time-step to use (will be adjusted)
+dtSuggested = 0.01 -- initial time-step to use (will be adjusted)
 nFrames = 10
 tFrame = (tEnd-tStart)/nFrames -- time between frames
 
