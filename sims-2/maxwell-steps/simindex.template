@@ -27,6 +27,6 @@ Maxwell on stair-stepped boundaries.
   * - Number
     - Description
   * - ${mdl("s1")}
-    - Scattering of cylinder. Radius twice the wavelength.
+    - Scattering off cylinder. Radius twice the wavelength.
   * - ${mdl("s2")}
-    - Scattering of cylinder. Radius :math:`10\times` the wavelength. 
+    - Scattering off cylinder. Radius :math:`10\times` the wavelength. 

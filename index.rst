@@ -3,23 +3,6 @@
 SimJournal: Ammar Hakim's Simulation Journal
 ============================================
 
-.. warning::
-
-  **PLEASE READ FIRST**
-
-  The results presented below are **preliminary** and for **my
-  personal use** only. My intent is to use these notes to communicate
-  with my close colleagues.
-
-  It is likely that the text of my notes **may undergo significant
-  revisions**. Although I have taken care, **many results might be
-  wrong**. That is just the nature of scientific work. If in doubt
-  please talk to me directly or send me an email to discuss.
-
-  If you are not a part of the Gkeyll project, please do not share or
-  use these results in any form whatsoever **without my explicit
-  permission**.
-
 .. note::
 
   Each note below also has links to the Lua script used to run the
@@ -90,5 +73,5 @@ Gkeyll Simulation Journal
   je/je26/je26-dg-maxwell.rst
   je/je28/je28-boltz-bgk.rst
   je/je29/je29-es-shock.rst
-  je/je30/je30-vlas-mom.rst  
+  je/je30/je30-coupled-hw.rst
 
