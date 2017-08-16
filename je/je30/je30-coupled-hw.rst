@@ -1,6 +1,6 @@
 :Author: Ammar Hakim
 :Date: 16th August 2017
-:Completed: 
+:Completed: 16th August 2017
 :Last Updated:
 
 JE30: Solving the Hasegawa-Wakatani equations on overlapping domains
@@ -20,7 +20,7 @@ Introduction
 
 Plasma dynamics occurs on a vast range of spatial and temporal
 scales. Often, specialized tools are developed to study one aspect of
-plasma physics, treating other aspects usings simplified models or
+plasma physics, treating other aspects using simplified models or
 boundary conditions. One way to reuse existing tools to simulate more
 complete physics is to couple solvers (codes) together, each solver
 working on a different region, the coupling between them provided by
@@ -58,7 +58,7 @@ In these equations, :math:`\alpha` is a constant, making the problem
 2D. The goal of this note is to solve the H-W equations on two
 overlapping domains and compare the results with a global, single
 domain result. This will allow studying stability and effectiveness of
-proposed couplig schemes, giving guidance on how to proceed with the
+proposed coupling schemes, giving guidance on how to proceed with the
 more complex case of coupling the two gyrokinetic codes together.
 
 Coupling Scheme
@@ -86,7 +86,7 @@ coupling algorithm has the following steps: In *each* RK stage do
   domain are filled with the appropriate interior values from the
   other domain.
 
-- From the updated vorticity compute a global voriticity that takes
+- From the updated vorticity compute a global vorticity that takes
   the left/right domain values in the non-overlapping region, and
   takes average values in the overlapping region.
 
@@ -97,7 +97,7 @@ coupling algorithm has the following steps: In *each* RK stage do
   local fields stored on each sub-domain.
 
 For completeness: I use a piecewise quadratic Serendipity basis
-discontinous Galerkin scheme to evolve the vorticity and
+discontinuous Galerkin scheme to evolve the vorticity and
 number-density, and a :math:`C^0` finite-element method to update the
 potential. For time-stepping I use a strong-stability preserving third
 order Runge-Kutta (SSP-RK3) scheme. The coupling is performed after
@@ -135,7 +135,7 @@ roundoff errors in the sequence of steps (i.e. in finite precision,
 for example, operators that otherwise commute, don't) can eventually
 add up, leading to a different turbulent realization. Note that for a
 turbulent simulation this is to be expected. What we want is to
-recover the *statistical behaviour*, even though the exact
+recover the *statistical behavior*, even though the exact
 realizations of the turbulent flow field may be different.
 
 Early in time, drift wave turbulence is developing the global and
@@ -171,7 +171,7 @@ if this is really a problem. For turbulent flows, it is likely that
 any errors (even machine-precision errors) will eventually build up
 enough to lead to a different realization of the flow. The question we
 must ask: **what are metrics for comparing results of turbulent
-flows?** Perhaps one should look at time-average fluxes or tubulent
+flows?** Perhaps one should look at time-average fluxes or turbulent
 spectra etc. 
 
 Results: 10% noise at coupling boundaries
@@ -209,7 +209,6 @@ the differences in the solution more clearly:
   at which coupling boundary conditions are applied, and the region
   between them is the overlap region. The global and coupled
   simulations show *different* realizations of the flow.
-  perturbations lead to different realizations of the flow.
 
 Late in time when the system has become turbulent the solutions look
 visually different, but seem to be statistically similar. See below:
@@ -222,8 +221,8 @@ visually different, but seem to be statistically similar. See below:
   Vorticity at :math:`t=5` from global (left) and coupled (right)
   simulations. White vertical lines represent locations at which
   coupling boundary conditions are applied, and the region between
-  them is the overlap region. Even though early in time, the random
-  perturbations lead to different realizations of the flow.
+  them is the overlap region. The random perturbations lead to
+  different realizations of the flow.
 
 Conclusions (provisional)
 -------------------------
@@ -236,7 +235,7 @@ itself is turbulent. This will be case in the case of the gyrokinetic
 coupling also as the system is inherently turbulent.
 
 Solving the potential equation globally may not be the best way to
-move formward. Note that as the potential evolves in configuration
+move forward. Note that as the potential evolves in configuration
 space (and not phase-space) it is very cheap to update (compared to
 updating the distribution function). However, the software mechanisms
 to move number density and currents (and potential) between two codes
