@@ -49,10 +49,11 @@ X1 = linspace(-20, 20, 96)
 f = figure(3)
 plot(X1, chiS[:,96/2], 'm-', X1, chiC[:,96/2], 'k-', linewidth=2)
 yl = gca().get_ylim()
+autoscale(False, tight=True)
 plot([0,0], yl, 'b--')
 plot([5,5], yl, 'b--')
 title('Vorticity lineout at Y=0. Global (magenta), Coupled (black). T=5')
-
+tight_layout()
 savefig('c3-coupled-chi-1d-cmp-t5.png', dpi=300, layout='tight')
 
 # Late time
