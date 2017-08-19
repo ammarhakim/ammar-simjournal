@@ -49,7 +49,7 @@ field-free equilibirum to write
 
 .. math::
 
-  H &= H_0 + H_1.
+  H = H_0 + H_1.
 
 Here :math:`H` is the linearized Hamiltonian. The zeroth-order
 Hamiltonian describes free-streaming
