@@ -33,9 +33,11 @@ Technical Notes
 
   maxwell-eigensystem
   euler-eigensystem
-  hancock-muscl
   tenmom-eigensystem
   twofluid-sources
+  hancock-muscl
+  noncanonical-hamiltonian
+  multifluid-equilibrium
 
 Gkeyll Simulation Journal
 -------------------------

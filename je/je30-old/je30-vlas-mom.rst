@@ -50,7 +50,7 @@ where
 
 .. math::
 
-   {P}_{ij} &= \int_{-\infty}^{\infty} (v_i-u_i) (v_j-u_j)
+   {P}_{ij} = \int_{-\infty}^{\infty} (v_i-u_i) (v_j-u_j)
    f(\mathbf{v}) d\mathbf{v}
 
 is the pressure tensor in the fluid frame.   

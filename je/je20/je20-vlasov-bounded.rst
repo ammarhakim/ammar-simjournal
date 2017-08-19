@@ -87,7 +87,7 @@ results are shown below.
 
 ..   .. math::
 
-..     f(0,v,t) &= \int_0^\infty dv' \int_0^t dt'\thinspace K(v,v') T(t-t')f(0,-v',t')
+..     f(0,v,t) = \int_0^\infty dv' \int_0^t dt'\thinspace K(v,v') T(t-t')f(0,-v',t')
 
 ..   for :math:`v>0`, where :math:`K(v,v')` is a particle reflection
 ..   kernel and :math:`T(t-t')` is a time-delay kernel. Similar
