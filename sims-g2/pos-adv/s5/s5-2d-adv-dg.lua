@@ -18,9 +18,9 @@ yvel = 1.0 -- y-direction velocity
 cfl = 0.1 -- CFL number
 tEnd = 1.0
 useAntiLimiter = true -- if we should use anti-limiters
-rescaleSolution = true -- if we should rescale solution
-extraType = "patch-fit" -- one of "none", "linear", "exp", "exp0", "patch-fit"
-initProfile = "gaussian" -- one of "gaussian", "step", "cylinder", "expTent", "square-hat"
+rescaleSolution = false -- if we should rescale solution
+extraType = "none" -- one of "none", "linear", "exp", "exp0", "patch-fit"
+initProfile = "square-hat" -- one of "gaussian", "step", "cylinder", "expTent", "square-hat"
 
 rMax = 5.0/3.0 -- maximum slope/mean-value ratio allowed
 cflAL = cfl -- CFL number to use in anti-limiter
