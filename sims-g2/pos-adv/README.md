@@ -1,0 +1,17 @@
+Tests for a enhancer based positivity scheme for 2D advection
+equation. All tests use polyOrder=1 and are run on periodic domain,
+using a RK3 stepper.
+
+"s" series of simulations are "vanilla" DG and "m" series are various
+enhancer based DG schemes.
+
+- s1: Gaussian initial condition; no sub-cell diffusion.
+- s2: Gaussian initial condition; with sub-cell diffusion.
+- s3: Cylinder initial condition; no sub-cell diffusion.
+- s4: Cylinder initial condition; with sub-cell diffusion.
+
+- m1: Gaussian initial condition; no sub-cell diffusion.
+- m2: Gaussian initial condition; with sub-cell diffusion.
+- m3: Cylinder initial condition; no sub-cell diffusion.
+- m4: Cylinder initial condition; with sub-cell diffusion.
+
