@@ -20,7 +20,7 @@ tEnd = 1.0
 useAntiLimiter = true -- if we should use anti-limiters
 rescaleSolution = false -- if we should rescale solution
 extraType = "patch-fit" -- one of "none", "linear", "exp", "exp0", "patch-fit"
-initProfile = "cylinder" -- one of "gaussian", "step", "cylinder", "expTent"
+initProfile = "cylinder" -- one of "gaussian", "step", "cylinder", "expTent", "square-hat"
 
 rMax = 5.0/3.0 -- maximum slope/mean-value ratio allowed
 cflAL = cfl -- CFL number to use in anti-limiter
@@ -98,6 +98,13 @@ function step(t, xn)
    end
    return 1.0e-5
 end
+function squareHat(t, xn)
+   local rx2, ry2 = (xn[1]-0.5)^2, (xn[2]-0.5)^2
+   if rx2 < 0.25^2 and ry2 < 0.25^2 then
+      return 1.0
+   end
+   return 1.0e-5
+end
 function expTent(t, xn)
    local r = math.sqrt((xn[1]-0.5)^2 + (xn[2]-0.5)^2)
    return math.exp(-10*r)
@@ -114,6 +121,8 @@ elseif initProfile == "step" then
    initFunc = step
 elseif initProfile == "expTent" then
    initFunc = expTent
+elseif initProfile == "square-hat" then
+   initFunc = squareHat
 else
    initFunc = nil
 end
@@ -184,6 +193,25 @@ function reconsSurfExpansion(mu1, mu2, v1, v2, out)
    out[2] = (1.414213562373095*v1-1.414213562373095*v2)/(1.732050807568877*mu1-1.732050807568877*mu2)
 end
 
+function patchFit(f0, f1, x, CFL)
+   local r = f1/(f0 + GKYL_EPSILON)
+   local val = 0.0
+   if x > 0 then
+      if r<2.2 then
+	 val = math.max(0, math.min(1.0/CFL, math.exp(2*r*x/3)*(1+r*x/3)))
+      else
+	 val = math.min(1.0/CFL, 6/(3-math.min(2.999, math.abs(r))))
+      end
+   else
+      if r>-2.2 then
+	 val = math.max(0, math.min(1.0/CFL, math.exp(2*r*x/3)*(1+r*x/3)))
+      else
+	 val = math.min(1.0/CFL, 6/(3+math.min(2.999, math.abs(r))))
+      end	 
+   end
+   return val
+end
+
 -- anti-limiter function
 function limTheta(f0, f1, x, CFL)
    local r = f1/(f0 + GKYL_EPSILON)
@@ -197,19 +225,7 @@ function limTheta(f0, f1, x, CFL)
    elseif extraType == "exp0" then
       val = math.max(0, math.min(1.0/CFL, math.exp(2*r*x/3)*(1+r*x/3)))
    elseif extraType == "patch-fit" then
-      if x > 0 then
-	 if r<2.2 then
-	    val = math.max(0, math.min(1.0/CFL, math.exp(2*r*x/3)*(1+r*x/3)))
-	 else
-	    val = 6/(3-r)
-	 end
-      else
-	 if r>-2.2 then
-	    val = math.max(0, math.min(1.0/CFL, math.exp(2*r*x/3)*(1+r*x/3)))
-	 else
-	    val = 6/(3+r)
-	 end	 
-      end
+      val = patchFit(f0, f1, x, CFL)
    else
       val = 0.0
    end

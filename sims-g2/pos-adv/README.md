@@ -9,9 +9,13 @@ enhancer based DG schemes.
 - s2: Gaussian initial condition; with sub-cell diffusion.
 - s3: Cylinder initial condition; no sub-cell diffusion.
 - s4: Cylinder initial condition; with sub-cell diffusion.
+- s5: Square-hat initial condition; no sub-cell diffusion.
+- s6: Square-hat initial condition; with sub-cell diffusion.
 
 - m1: Gaussian initial condition; no sub-cell diffusion.
 - m2: Gaussian initial condition; with sub-cell diffusion.
 - m3: Cylinder initial condition; no sub-cell diffusion.
 - m4: Cylinder initial condition; with sub-cell diffusion.
+- m5: Square-hat initial condition; no sub-cell diffusion.
+- m6: Square-hat initial condition; with sub-cell diffusion.
 
