@@ -76,4 +76,5 @@ Gkeyll Simulation Journal
   je/je28/je28-boltz-bgk.rst
   je/je29/je29-es-shock.rst
   je/je30/je30-coupled-hw.rst
+  je/je31/je31-antilim-adv.rst
 
