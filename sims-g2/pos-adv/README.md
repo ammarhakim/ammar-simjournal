@@ -19,3 +19,12 @@ enhancer based DG schemes.
 - m5: Square-hat initial condition; no sub-cell diffusion.
 - m6: Square-hat initial condition; with sub-cell diffusion.
 
+Convergence tests
+
+- c-s1: Gaussian initial condition; no sub-cell diffusion. 8 \times 8
+- c-s2: Gaussian initial condition; no sub-cell diffusion. 16 \times 16
+- c-s3: Gaussian initial condition; no sub-cell diffusion. 32 \times 32
+
+- c-m1: Gaussian initial condition; no sub-cell diffusion. 8 \times 8
+- c-m2: Gaussian initial condition; no sub-cell diffusion. 16 \times 16
+- c-m3: Gaussian initial condition; no sub-cell diffusion. 32 \times 32

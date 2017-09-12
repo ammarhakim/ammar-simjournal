@@ -162,7 +162,7 @@ following table.
   * - :math:`1/128`
     - :math:`4.6609\times 10^{-5}`
     - 2.17
-    - :doc:`s114 <../../sims/s114/s114-pb-advection-2d>`
+    - :doc:`s114 <../../sims/s114/s114-pb-advection-2d>`x
 
 The solution computed on the :math:`32\times 32` grid is shown below.
 

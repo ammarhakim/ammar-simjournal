@@ -23,11 +23,38 @@ property. In the discontinuous Galerkin (DG) scheme the distribution
 function in each cell is expanded in polynomial basis
 functions. Standard DG scheme does not guarantee that the value of the
 distribution function inside all cells remains positive. Even the
-positivity of the cell average is not guaranteed for higher than
-piecewise constant basis functions, unless significant care is
-taken. In this note we show how one can obtain a positivity preserving
-DG scheme (defined precisely below), significantly improving
-robustness of algorithms for gyrokinetic and fully kinetic DG solvers.
+positivity of the cell average is not guaranteed (for higher than
+piecewise constant basis functions) unless significant care is
+taken.
+
+Standard positivity limiting, for example, the Zhang-Shu algorithm
+described in [Zhang2011]_, can't be used for evolution of kinetic
+equations, when applied as a post-processing step. The reason for this
+is that the algorithms that change the moments of the distribution
+function (while maintaining cell averages) will change the particle
+energy. (The energy conservation in kinetic system is indirect, unlike
+fluid systems in which one evolves an explicit energy
+equation). Hence, use of such "sub-diffusion" based positivity schemes
+should be minimized or avoided altogether, if possible.
+
+In the original Zhang-Shu algorithm, in which sub-cell diffusion is
+added in the spatial operator only, unless something is done to bound
+slopes (like monotonicity limiters) the slopes will grow in an
+unbounded manner. Hence, the Zhang-Shu algorithm needs an additional
+monotonicity or sub-cell diffusion post-processing step, again
+changing the particle energy.
+
+In this note we show how one can obtain a positivity preserving DG
+scheme (defined precisely below), significantly improving robustness
+of algorithms for gyrokinetic and fully kinetic DG solvers. Although
+the use of anti-limiters does not completely eliminate the need to
+apply additional sub-cell diffusion, it significantly reduces the need
+for such additional corrections, dramatically improving the energy
+conservation property of the scheme.
+
+(As additional diffusion can be applied to volume integrals also, in
+which case it may be possible to *completely eliminate* the need to
+apply sub-cell diffusion).
 
 
 Exponential reconstruction
@@ -196,8 +223,8 @@ as
    \hat{f}_{j-1/2} = g_L , \qquad \hat{f}_{j+1/2} = g_R
 
 where :math:`g_L` and :math:`g_R` are the edge values computed from an
-exponential reconstruction (or an approximation to it). **Need to
-explain why enhancement is better than standard DG scheme**.
+exponential reconstruction (or an approximation to it). (**Need to
+explain why enhancement is better than standard DG scheme**.)
 
 The complete 1D scheme is hence:
 
@@ -215,3 +242,139 @@ The complete 1D scheme is hence:
 positive, however, does not guarantee that the cell slope bound of**
 :math:`|f_1|/f_0 \le 3` **will be maintained.**
 
+Extension to multiple dimensions
+--------------------------------
+
+In higher dimensions we can take one of two approaches to construct an
+anti-limiter. Either we can attempt to reconstruct a multi-dimensional
+exponential function from the expansion coefficients, or use a
+dimension-by-dimension reconstruction, reusing the 1D reconstruction
+scheme multiple times. We use the latter appoarch in the following
+tests.
+
+(**Need to explain the 2D algorithm in detail, and why it seems to
+work so well**)
+
+Sub-cell diffusion
+------------------
+
+Even with anti-limiters the scheme does not guarantee that the slope
+bounds will be preserved, even in 1D. In 2 or higher dimensions
+determining slope bounds is a very hard problem and hence, instead,
+some other means are needed to ensure slope bounds are
+maintained. (**Description of sub-cell diffusion scheme**)
+
+
+Convergence tests in 2D
+-----------------------
+
+To check convergence of the scheme, I initialize a simulation with a
+Gaussian initial condition
+
+.. math::
+
+   f(x,y) = e^{-50r^2}
+
+where :math:`r^2 = (x-x_c)^2+(y-y_c)^2` and :math:`x_c, y_c` is the
+domain center coordinates. Simulations are performed with polyOrder 1
+basis functions on :math:`1\times 1` domain with a sequence of grids
+with :math:`8\times 8`, :math:`16\times 16` and :math:`32\times 32`
+resolution. The time-step for each simulation is held fixed. The
+Gaussian propagates diagonally and, due to periodic boundary
+conditions, returns back to the origin at the end of simulation.
+
+To compute error I use two measures. First, the :math:`L_2` difference
+between the initial and final distribution function:
+
+.. math::
+
+   E = \sqrt{\int |f(x,y,1) - f(x,y,0)|^2 dx\thinspace dy}
+
+and the second the :math:`L_2` difference between the *interpolation*
+of the initial and final distribution function. Note that in DG scheme
+will demonstrate super-convergence in the first norm. The second norm
+is used to simply illustrate naive projections/interpolations are not
+a good way to extra information available in a DG expansion.
+
+.. list-table:: Convergence of naive DG (no anti-limiters)
+  :header-rows: 1
+  :widths: 20,40,20,40,20
+
+  * - Cell size
+    - :math:`L_2` Error
+    - :math:`L_2` Order
+    - Projected Error
+    - Projected Order      
+  * - :math:`1/8`
+    - :math:`2.6113 \times 10^{-3}`
+    -
+    - :math:`1.37211 \times 10^{-2}`
+    -
+  * - :math:`1/16`
+    - :math:`3.7873\times 10^{-5}`
+    - 6.1
+    - :math:`1.97533 \times 10^{-3}`
+    - 2.8
+  * - :math:`1/32`
+    - :math:`5.0805 \times 10^{-7}`
+    - 6.2
+    - :math:`1.70844 \times 10^{-4}`
+    - 3.5
+
+.. list-table:: Convergence of DG with anti-limiters
+  :header-rows: 1
+  :widths: 20,40,20,40,20
+
+  * - Cell size
+    - :math:`L_2` Error
+    - :math:`L_2` Order
+    - Projected Error
+    - Projected Order      
+  * - :math:`1/8`
+    - :math:`1.94458 \times 10^{-3}`
+    -
+    - :math:`9.73753 \times 10^{-3}`
+    -
+  * - :math:`1/16`
+    - :math:`2.47974\times 10^{-5}`
+    - 6.3
+    - :math:`9.51244 \times 10^{-4}`
+    - 3.4
+  * - :math:`1/32`
+    - :math:`1.57627 \times 10^{-7}`
+    - 7.3
+    - :math:`8.96466 \times 10^{-5}`
+    - 3.4
+
+Two observations:
+
+- The anti-limiters do not change the order of conservation
+- The anti-limiters based DG scheme has a smaller absolute error than
+  standard DG. This is because the anti-limiters act add
+  "anti-diffusion", reducing the diffusion in standard DG in capturing
+  the peak of the Gaussian.
+
+      
+Cylinder advection test
+-----------------------
+
+XYZ
+
+Square-top-hat advection test
+-----------------------------
+
+XYZ
+
+Conclusions
+-----------
+
+XYZ
+
+References
+----------
+
+.. [Zhang2011] X. Zhang and C.W Shu. (2011). "Maximum-principle-satisfying and
+    positivity-preserving high-order schemes for conservation laws:
+    survey and new developments", *Proceedings of the Royal Society a:
+    Mathematical, Physical and Engineering Sciences*, **467**(2134),
+    2752–2776. http://doi.org/10.1098/rspa.2011.0153
