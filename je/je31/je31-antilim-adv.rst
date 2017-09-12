@@ -1,6 +1,6 @@
 :Author: Ammar Hakim
 :Date: 11th September 2017
-:Completed: 
+:Completed: 12th September 2017
 :Last Updated:
 
 JE31: Enhancers or anti-limiters for robust evolution of distribution functions
@@ -46,7 +46,7 @@ changing the particle energy.
 
 In this note we show how one can obtain a positivity preserving DG
 scheme (defined precisely below), significantly improving robustness
-of algorithms for gyrokinetic and fully kinetic DG solvers. Although
+of algorithms for gyrokinetics and fully kinetic DG solvers. Although
 the use of anti-limiters does not completely eliminate the need to
 apply additional sub-cell diffusion, it significantly reduces the need
 for such additional corrections, dramatically improving the energy
@@ -54,7 +54,8 @@ conservation property of the scheme.
 
 (As additional diffusion can be applied to volume integrals also, in
 which case it may be possible to *completely eliminate* the need to
-apply sub-cell diffusion).
+apply sub-cell diffusion. This diffusion does not change the energy in
+gyrokinetic equations).
 
 
 Exponential reconstruction
@@ -249,7 +250,7 @@ In higher dimensions we can take one of two approaches to construct an
 anti-limiter. Either we can attempt to reconstruct a multi-dimensional
 exponential function from the expansion coefficients, or use a
 dimension-by-dimension reconstruction, reusing the 1D reconstruction
-scheme multiple times. We use the latter appoarch in the following
+scheme multiple times. We use the latter approach in the following
 tests.
 
 (**Need to explain the 2D algorithm in detail, and why it seems to
@@ -354,21 +355,206 @@ Two observations:
   "anti-diffusion", reducing the diffusion in standard DG in capturing
   the peak of the Gaussian.
 
+A comparison of the solutions along :math:`x` at :math:`y=1/2` of two
+schemes (naive DG and AL-DG) is shown below.
+
+.. figure:: s1-m1-cmp.png
+  :width: 100%
+  :align: center
+
+  Comparison of distribution function along :math:`y=1/2` between
+  standard DG (orange line) and anti-limiter based DG (blue line). The
+  initial condition is shown in black. Due to the anti-diffusive
+  property of the AL-DG, the solution matches exact results more
+  closely. The AL-DG scheme maintains positivity of cell averages as
+  well as at control points. Small negative errors are seen in the
+  standard DG scheme even for this smooth initial condition. See plot
+  below.
+
+To test if the schemes preserve positivity of cell averages, I compute
+
+.. math::
+
+   F = \sum | f_0 |
+
+the sum taken over all cells. This should remain constant if the
+scheme conserves positivity of cell averages. The figure below shows
+that even for this smooth initial condition, the standard DG scheme
+creates small amount of regions with negative cell averages.
+
+.. figure:: s1-m1-f0-cmp.png
+  :width: 100%
+  :align: center
+
+  Time history of :math:`\sum | f_0 |` for standard DG (orange) and
+  AL-DG (blue). The AL-DG scheme preserves positivity of the cell
+  averages exactly. In addition, though not obvious from this plot,
+  the solution is also positive at interior control nodes.
+  
       
 Cylinder advection test
 -----------------------
 
-XYZ
+In this test, I initialize the simulation with a cylindrical initial
+condition, that is
 
+.. math::
+
+   f(x,y,0) &= 1 \qquad \sqrt{(x-x_c)^2+(y-y_c)^2} < 1/4 \\
+            &= 10^{-5} \quad \textrm{otherwise}
+
+A :math:`16\times 16` grid is used and the simulation is till the
+cylinder, advecting diagonally. returns back to its initial position.
+
+A line-out of the solutions along X is shown below.
+
+.. figure:: s3-m3-cmp.png
+  :width: 100%
+  :align: center
+
+  Comparison of distribution function along :math:`y=1/2` between
+  standard DG (orange line) and anti-limiter based DG (blue line), for
+  cylindrical initial condition. The initial condition is shown in
+  black. The standard DG scheme shows severe positivity errors, while
+  the AL-DG scheme maintains positivity of cell-averages exactly. Due
+  to the anti-diffusive property of the AL-DG, the monotonicity of the
+  solution is violated more than in the standard DG scheme.
+
+The degree with which the schemes violate positivity of cell averages
+is shown below:
+
+.. figure:: s3-m3-f0-cmp.png
+  :width: 100%
+  :align: center
+
+  Time history of :math:`\sum | f_0 |` for standard DG (orange) and
+  AL-DG (blue), for cylindrical initial condition. The AL-DG scheme
+  preserves positivity of the cell averages exactly. Note that for
+  this case the AL-DG scheme does not enforce positivity at interior
+  control nodes.
+
+For this initial condition even the AL-DG scheme does not maintain
+positivity at interior control points. To check the impact of this, I
+re-run both the standard DG and AL-DG schemes with sub-cell diffusion
+applied as post-processing after each RK stage. To measure the amount
+of change I compute the following metric
+
+.. math::
+
+   \Delta f = \frac{1}{F}\sum \sum_k |f^k - f'^k|
+
+where :math:`F = \sum f_0` computed at :math:`t=0`, and :math:`f^k` and
+:math:`f'^k` are the values of the original and sub-cell diffusion
+corrected distribution function at the interior control nodes
+respectively. The outer sum is taken over all cells in the grid.
+
+The time-history of total modifications of the distribution function
+as well as the number of cells changed *per time-step* for the two
+schemes are shown below. Note that the anti-diffusion is applied per
+RK-stage.
+
+.. figure:: s4-m4-df-nc-cmp.png
+  :width: 100%
+  :align: center
+
+  Cylindrical initial conditions. Time history of :math:`\Delta f`
+  (top) for standard DG (orange) and AL-DG (blue) and of the total
+  number of cells changed per-step (bottom) for standard DG (orange)
+  and AL-DG (blue). The standard DG scheme needs constant correction
+  to about 65% of the cells in each RK stage, while the AL-DG scheme
+  needs far fewer corrections and only at the start of the
+  simulation. Once the cylinder diffuses a little, the amount of
+  correction in the AL-DG scheme drops to zero.
+
+  
 Square-top-hat advection test
 -----------------------------
 
-XYZ
+As a severe test of the algorithm I initialize the simulation with a
+"square top-hat", i.e.
+
+.. math::
+
+   f(x,y,0) &= 1 \qquad |x-x_c| < 1/4\ \textrm{and}\ |y-y_c| < 1/4 \\
+            &= 10^{-5} \quad \textrm{otherwise}
+
+
+A :math:`16\times 16` grid is used and the simulation is till the
+cylinder, advecting diagonally. returns back to its initial position.
+
+The figure below shows the final solutions computed with standard DG
+and AL-DG for this IC. The regions that are negative are masked out
+and appear as white patches.
+
+.. figure:: s5-m5-distf-cmp.png
+  :width: 100%
+  :align: center
+
+  Comparison of distribution function for square-top-hat initial
+  conditions with standard DG (left) and AL-DG (right). Regions where
+  the distribution function goes negative are masked out and appear as
+  white patches. Note the huge regions in which the standard DG shows
+  positivity violation. As is also seen below, at this time in the
+  simulation the AL-DG has no regions where the distribution function
+  is negative.
+
+A line-out of the solutions along X is shown below.
+  
+.. figure:: s5-m5-cmp.png
+  :width: 100%
+  :align: center
+
+  Comparison of distribution function along :math:`y=1/2` between
+  standard DG (orange line) and anti-limiter based DG (blue line), for
+  square-top-hat initial condition. The initial condition is shown in
+  black. The standard DG scheme shows severe positivity errors, while
+  the AL-DG scheme maintains positivity of cell-averages exactly. Due
+  to the anti-diffusive property of the AL-DG, the monotonicity of the
+  solution is violated more than in the standard DG scheme.
+
+The degree with which the schemes violate positivity of cell averages
+is shown below:
+
+.. figure:: s5-m5-f0-cmp.png
+  :width: 100%
+  :align: center
+
+  Time history of :math:`\sum | f_0 |` for standard DG (orange) and
+  AL-DG (blue), for square-top-hat initial condition. The AL-DG scheme
+  preserves positivity of the cell averages exactly. Note that for
+  this case the AL-DG scheme does not enforce positivity at interior
+  control nodes.
+
+For this initial condition even the AL-DG scheme does not maintain
+positivity at interior control points. To check the impact of this, I
+re-run both the standard DG and AL-DG schemes with sub-cell diffusion
+applied as post-processing after each RK stage.
+
+The time-history of total modifications of the distribution function
+as well as the number of cells changed *per time-step* for the two
+schemes are shown below. Note that the anti-diffusion is applied per
+RK-stage.
+
+.. figure:: s6-m6-df-nc-cmp.png
+  :width: 100%
+  :align: center
+
+  Square-top-hat initial conditions. Time history of :math:`\Delta f`
+  (top) for standard DG (orange) and AL-DG (blue) and of the total
+  number of cells changed per-step (bottom) for standard DG (orange)
+  and AL-DG (blue). The standard DG scheme needs constant correction
+  to about 65% of the cells in each RK stage, while the AL-DG scheme
+  needs far fewer corrections and only at the start of the
+  simulation. Once the cylinder diffuses a little, the amount of
+  correction in the AL-DG scheme drops to zero.
 
 Conclusions
 -----------
 
-XYZ
+We have presented an anti-limiter scheme based discontinuous Galerkin
+scheme to handle the problem of positivity in kinetic equations. These
+AL-DG will conserve energy much better, perhaps even exactly (in the
+continuous time-limit) with additional fixes to the volume terms.
 
 References
 ----------
