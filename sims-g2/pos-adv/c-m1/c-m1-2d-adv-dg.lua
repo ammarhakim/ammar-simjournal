@@ -15,12 +15,12 @@ local Updater = require "Updater"
 polyOrder = 1 -- polynomial order (DONT CHANGE THIS: WORKS ONLY FOR P=1)
 xvel = 1.0 -- x-direction velocity
 yvel = 1.0 -- y-direction velocity
-cfl = 0.1 -- CFL number
+cfl = 0.1/4 -- CFL number
 tEnd = 1.0
 useAntiLimiter = true -- if we should use anti-limiters
 rescaleSolution = false -- if we should rescale solution
 extraType = "patch-fit" -- one of "none", "linear", "exp", "exp0", "patch-fit"
-initProfile = "square-hat" -- one of "gaussian", "step", "cylinder", "expTent", "square-hat"
+initProfile = "gaussian" -- one of "gaussian", "step", "cylinder", "expTent", "square-hat"
 
 rMax = 5.0/3.0 -- maximum slope/mean-value ratio allowed
 cflAL = cfl -- CFL number to use in anti-limiter
@@ -33,7 +33,7 @@ singleStepSim = false
 grid = Grid.RectCart {
    lower = {0.0, 0.0},
    upper = {1.0, 1.0},
-   cells = {16, 16},
+   cells = {8, 8},
 }
 -- basis functions
 basis = Basis.CartModalSerendipity { ndim = grid:ndim(), polyOrder = polyOrder }
@@ -219,7 +219,7 @@ function limTheta(f0, f1, x, CFL)
    if extraType == "none" then
       val = 1+r*x
    elseif extraType == "linear" then
-      val = math.max(0, math.min(1.0/CFL, 1+r*x))
+      val = math.max(0, 1+r*x)
    elseif extraType == "exp" then
       val = math.min(1.0/CFL, math.exp(r*x))
    elseif extraType == "exp0" then

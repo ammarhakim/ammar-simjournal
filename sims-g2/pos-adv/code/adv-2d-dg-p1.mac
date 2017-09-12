@@ -1,0 +1,45 @@
+load("/Users/ahakim/research/gkyl-project/gkyl/cas-scripts/modal-basis.mac");
+
+vars : [x, y]$
+basis : [1, x, y, x*y]$
+f : [f00, f10, f01, f11]$
+l : [l00, l10, l01, l11]$
+b : [b00, b10, b01, b11]$
+
+mass : dx*dy/4*calcMassMatrix(vars, 1, basis)$
+invMass : invert(mass)$
+
+/* Volume term */
+gStiff_x : 2/dx*calcGradStiffMatrix(x, vars, basis)*dx*dy/4$
+gStiff_y : 2/dy*calcGradStiffMatrix(y, vars, basis)*dx*dy/4$
+VT : invMass. ( (u*gStiff_x + v*gStiff_y) . f)$
+
+/* Left/right surface terms */
+
+basisL : subst(x=-1, basis)$
+basisR : subst(x=1, basis)$
+varY : [y]$
+
+SS : dy/2*u*calcCrossMassMatrix(varY, basisL, varY, basisR, 1)$
+ST_L : invMass . (SS . l)$
+
+SS : dy/2*u*calcCrossMassMatrix(varY, basisR, varY, basisR, 1)$
+ST_R : invMass . (SS . f)$
+
+/* Top/bottom surface terms */
+basisB : subst(y=-1, basis)$
+basisT : subst(y=1, basis)$
+varX : [x]$
+
+SS : dx/2*v*calcCrossMassMatrix(varX, basisB, varX, basisT, 1)$
+ST_B : invMass . (SS . b)$
+
+SS : dx/2*v*calcCrossMassMatrix(varX, basisT, varX, basisT, 1)$
+ST_T : invMass . (SS . f)$
+
+/* Full update */
+dfdt : -( ST_R - ST_L + ST_T - ST_B - VT )$
+
+/* For clarity */
+SX : expand(ST_R - ST_L)$
+SY : expand(ST_T - ST_B)$

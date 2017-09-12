@@ -19,8 +19,8 @@ cfl = 0.1 -- CFL number
 tEnd = 1.0
 useAntiLimiter = true -- if we should use anti-limiters
 rescaleSolution = false -- if we should rescale solution
-extraType = "patch-fit" -- one of "none", "linear", "exp", "exp0", "patch-fit"
-initProfile = "square-hat" -- one of "gaussian", "step", "cylinder", "expTent", "square-hat"
+extraType = "none" -- one of "none", "linear", "exp", "exp0", "patch-fit"
+initProfile = "gaussian" -- one of "gaussian", "step", "cylinder", "expTent"
 
 rMax = 5.0/3.0 -- maximum slope/mean-value ratio allowed
 cflAL = cfl -- CFL number to use in anti-limiter
@@ -33,7 +33,7 @@ singleStepSim = false
 grid = Grid.RectCart {
    lower = {0.0, 0.0},
    upper = {1.0, 1.0},
-   cells = {16, 16},
+   cells = {32, 32},
 }
 -- basis functions
 basis = Basis.CartModalSerendipity { ndim = grid:ndim(), polyOrder = polyOrder }
@@ -98,13 +98,6 @@ function step(t, xn)
    end
    return 1.0e-5
 end
-function squareHat(t, xn)
-   local rx2, ry2 = (xn[1]-0.5)^2, (xn[2]-0.5)^2
-   if rx2 < 0.25^2 and ry2 < 0.25^2 then
-      return 1.0
-   end
-   return 1.0e-5
-end
 function expTent(t, xn)
    local r = math.sqrt((xn[1]-0.5)^2 + (xn[2]-0.5)^2)
    return math.exp(-10*r)
@@ -121,8 +114,6 @@ elseif initProfile == "step" then
    initFunc = step
 elseif initProfile == "expTent" then
    initFunc = expTent
-elseif initProfile == "square-hat" then
-   initFunc = squareHat
 else
    initFunc = nil
 end
@@ -193,25 +184,6 @@ function reconsSurfExpansion(mu1, mu2, v1, v2, out)
    out[2] = (1.414213562373095*v1-1.414213562373095*v2)/(1.732050807568877*mu1-1.732050807568877*mu2)
 end
 
-function patchFit(f0, f1, x, CFL)
-   local r = f1/(f0 + GKYL_EPSILON)
-   local val = 0.0
-   if x > 0 then
-      if r<2.2 then
-	 val = math.max(0, math.min(1.0/CFL, math.exp(2*r*x/3)*(1+r*x/3)))
-      else
-	 val = math.min(1.0/CFL, 6/(3-math.min(2.999, math.abs(r))))
-      end
-   else
-      if r>-2.2 then
-	 val = math.max(0, math.min(1.0/CFL, math.exp(2*r*x/3)*(1+r*x/3)))
-      else
-	 val = math.min(1.0/CFL, 6/(3+math.min(2.999, math.abs(r))))
-      end	 
-   end
-   return val
-end
-
 -- anti-limiter function
 function limTheta(f0, f1, x, CFL)
    local r = f1/(f0 + GKYL_EPSILON)
@@ -219,13 +191,25 @@ function limTheta(f0, f1, x, CFL)
    if extraType == "none" then
       val = 1+r*x
    elseif extraType == "linear" then
-      val = math.max(0, math.min(1.0/CFL, 1+r*x))
+      val = math.max(0, 1+r*x)
    elseif extraType == "exp" then
       val = math.min(1.0/CFL, math.exp(r*x))
    elseif extraType == "exp0" then
       val = math.max(0, math.min(1.0/CFL, math.exp(2*r*x/3)*(1+r*x/3)))
    elseif extraType == "patch-fit" then
-      val = patchFit(f0, f1, x, CFL)
+      if x > 0 then
+	 if r<2.2 then
+	    val = math.max(0, math.min(1.0/CFL, math.exp(2*r*x/3)*(1+r*x/3)))
+	 else
+	    val = 6/(3-r)
+	 end
+      else
+	 if r>-2.2 then
+	    val = math.max(0, math.min(1.0/CFL, math.exp(2*r*x/3)*(1+r*x/3)))
+	 else
+	    val = 6/(3+r)
+	 end	 
+      end
    else
       val = 0.0
    end

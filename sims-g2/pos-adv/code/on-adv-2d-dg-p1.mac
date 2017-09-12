@@ -1,0 +1,174 @@
+/* Orthonormal version of code */
+
+load("/Users/ahakim/research/gkyl-project/gkyl/cas-scripts/modal-basis.mac")$
+
+writeExprs(fh, rhs) := block([expr],
+  expr : float(expand(radcan(rhs))),
+  for i : 1 thru length(expr) do (
+    printf(fh, "   ~a = ~a ~%", out[i], expr[i])
+  )
+)$
+
+writeExprs2(fh, lhs, rhs) := block([expr],
+  expr : float(expand(radcan(rhs))),
+  printf(fh, "   ~a = ~a ~%", lhs, expr)
+)$
+
+vars : [x, y]$
+basis : gsOrthoNorm(vars, [1, x, y, x*y])$
+f : makelist(f[i], i, 1, 4)$
+l : makelist(l[i], i, 1, 4)$
+b : makelist(b[i], i, 1, 4)$
+
+fn : makelist(fn[i], i, 1, 2)$
+
+mass : dx*dy/4*calcMassMatrix(vars, 1, basis)$
+invMass : invert(mass)$
+
+/* Volume term */
+gStiff_x : 2/dx*calcGradStiffMatrix(x, vars, basis)*dx*dy/4$
+gStiff_y : 2/dy*calcGradStiffMatrix(y, vars, basis)*dx*dy/4$
+VT : invMass. ( (u*gStiff_x + v*gStiff_y) . f)$
+
+/* Open file and write code */
+fh1 : openw("~/max-out/2d-adv-vol.lua")$
+writeExprs(fh1, colVecToList(VT))$
+close(fh1)$
+
+/* Numerical flux at x = \pm 1 */
+varSurf : [y]$
+basisSurf : gsOrthoNorm(varSurf, makeSerendipBasis(varSurf, 1))$
+surfProjMatR : calcSurfExpansionMatrix(varSurf, x, 1, basisSurf, basis)$
+surfProjMatL : calcSurfExpansionMatrix(varSurf, x, -1, basisSurf, basis)$
+
+fh2 : openw("~/max-out/2d-adv-vol-surf-x.lua")$
+printf(fh2, "   ~% xR ~%")$
+writeExprs(fh2, colVecToList(vel*surfProjMatR . f))$
+
+printf(fh2, "   ~% xL ~%")$
+writeExprs(fh2, colVecToList(vel*surfProjMatL . f))$
+close(fh2)$
+
+/* Contribution of numerical flux to left/right cell */
+leftCellSurf: invMass. calcCrossMassMatrix(varSurf, subst(x=1, basis), varSurf, basisSurf, 1)*dy/2$
+rightCellSurf: invMass. calcCrossMassMatrix(varSurf, subst(x=-1, basis), varSurf, basisSurf, 1)*dy/2$
+
+fh2 : openw("~/max-out/2d-adv-vol-surf-cell-x.lua")$
+printf(fh2, "   ~% right-cell ~%")$
+writeExprs(fh2, colVecToList(-rightCellSurf . fn))$
+
+printf(fh2, "   ~% left-cell ~%")$
+writeExprs(fh2, colVecToList(leftCellSurf . fn))$
+close(fh2)$
+
+/* Numerical flux at y = \pm 1 */
+varSurf : [x]$
+basisSurf : gsOrthoNorm(varSurf, makeSerendipBasis(varSurf, 1))$
+surfProjMatT : calcSurfExpansionMatrix(varSurf, y, 1, basisSurf, basis)$
+surfProjMatB : calcSurfExpansionMatrix(varSurf, y, -1, basisSurf, basis)$
+
+fh2 : openw("~/max-out/2d-adv-vol-surf-y.lua")$
+printf(fh2, "   ~% xT ~%")$
+writeExprs(fh2, colVecToList(vel*surfProjMatT . f))$
+
+printf(fh2, "   ~% xB ~%")$
+writeExprs(fh2, colVecToList(vel*surfProjMatB . f))$
+close(fh2)$
+
+/* Contribution of numerical flux to top/bottom cell */
+bottomCellSurf: invMass. calcCrossMassMatrix(varSurf, subst(y=1, basis), varSurf, basisSurf, 1)*dx/2$
+topCellSurf: invMass. calcCrossMassMatrix(varSurf, subst(y=-1, basis), varSurf, basisSurf, 1)*dx/2$
+
+fh2 : openw("~/max-out/2d-adv-vol-surf-cell-y.lua")$
+printf(fh2, "   ~% top-cell ~%")$
+writeExprs(fh2, colVecToList(-topCellSurf . fn))$
+
+printf(fh2, "   ~% bottom-cell ~%")$
+writeExprs(fh2, colVecToList(bottomCellSurf . fn))$
+close(fh2)$
+
+/* Cross-check */
+numFluxRight : surfProjMatR . f$
+numFluxLeft : surfProjMatR . l$
+SX_R : leftCellSurf . numFluxRight$
+SX_L : rightCellSurf . numFluxLeft$
+
+numFluxTop : surfProjMatT . f$
+numFluxBottom : surfProjMatT . b$
+SX_T : bottomCellSurf . numFluxTop$
+SX_B : topCellSurf . numFluxBottom$
+
+/* Left/right surface terms */
+
+basisL : subst(x=-1, basis)$
+basisR : subst(x=1, basis)$
+varY : [y]$
+
+SS : dy/2*u*calcCrossMassMatrix(varY, basisL, varY, basisR, 1)$
+ST_L : invMass . (SS . l)$
+
+SS : dy/2*u*calcCrossMassMatrix(varY, basisR, varY, basisR, 1)$
+ST_R : invMass . (SS . f)$
+
+/* Top/bottom surface terms */
+basisB : subst(y=-1, basis)$
+basisT : subst(y=1, basis)$
+varX : [x]$
+
+SS : dx/2*v*calcCrossMassMatrix(varX, basisB, varX, basisT, 1)$
+ST_B : invMass . (SS . b)$
+
+SS : dx/2*v*calcCrossMassMatrix(varX, basisT, varX, basisT, 1)$
+ST_T : invMass . (SS . f)$
+
+/* Full update */
+dfdt : -( ST_R - ST_L + ST_T - ST_B - VT )$
+
+/* For clarity */
+SX : expand(ST_R - ST_L)$
+SY : expand(ST_T - ST_B)$
+
+checkAllZeros(v) := if sum(if v[i] = 0 then 0 else 1, i, 1, length(v)) = 0 then true else false$
+
+/* Should be zeros */
+checkAllZeros(colVecToList(fullratsimp( u*(SX_R-SX_L) - SX)));
+checkAllZeros(colVecToList(fullratsimp( v*(SX_T-SX_B) - SY)));
+
+
+/* Stuff for anti-limiters */
+projectOnLinear(foo, v) := block([],
+   return (fullratsimp([1/2*integrate(foo, v, -1, 1), 3/2*integrate(v*foo, v, -1, 1)]))
+)$
+doExpand(f) := sum(f[i]*basis[i], i, 1, 4)$
+
+fh1 : openw("~/max-out/2d-adv-ev-at-quad-x.lua")$
+
+r : float(expand(radcan( subst([x=1, y=-1/sqrt(3)], doExpand(makelist(fl[i], i, 1, 4))) )))$
+printf(fh1, "   ~a = ~a ~%", fq1_L, r)$
+r : float(expand(radcan( subst([x=-1, y=-1/sqrt(3)], doExpand(makelist(fr[i], i, 1, 4))) )))$
+printf(fh1, "   ~a = ~a ~%", fq1_R, r)$
+
+r : float(expand(radcan( subst([x=1, y=1/sqrt(3)], doExpand(makelist(fl[i], i, 1, 4))) )))$
+printf(fh1, "   ~a = ~a ~%", fq2_L, r)$
+r : float(expand(radcan( subst([x=-1, y=1/sqrt(3)], doExpand(makelist(fr[i], i, 1, 4))) )))$
+printf(fh1, "   ~a = ~a ~%", fq2_R, r)$
+
+close(fh1)$
+
+fh1 : openw("~/max-out/2d-adv-ev-at-xy.lua")$
+r : float(expand(radcan( doExpand(makelist(f[i], i, 1, 4))) ))$
+printf(fh1, "   return ~a ~%", r)$
+close(fh1)$
+
+/* Average and slope for give x/y lines */
+ff : doExpand(f)$
+
+r : float(expand(projectOnLinear(ff, y)))$
+fh1 : openw("~/max-out/2d-adv-f0-f1-y.lua")$
+printf(fh1, "   return ~a, ~a ~%", r[1], r[2])$
+close(fh1)$
+
+r : float(expand(projectOnLinear(ff, x)))$
+fh1 : openw("~/max-out/2d-adv-f0-f1-x.lua")$
+printf(fh1, "   return ~a, ~a ~%", r[1], r[2])$
+close(fh1)$
