@@ -70,8 +70,8 @@ by definition, is positive. Hence, one can take the moments (expansion
 coefficients) from a DG scheme and construct a positive function
 (exponential) with the same moments, and treat that as the
 solution. This can be thought of as a *definition* of a positivity
-preserving scheme: i.e. *if a function that is positive everywhere in
-the cell can be constructed, then the scheme is called positivity
+preserving scheme: i.e. *if one can construct a function that is
+positive everywhere in the cell, then the scheme is called positivity
 preserving*. Note that we do not actually need to construct the
 positive function, but simply show that some such function exists.
 
@@ -284,72 +284,53 @@ resolution. The time-step for each simulation is held fixed. The
 Gaussian propagates diagonally and, due to periodic boundary
 conditions, returns back to the origin at the end of simulation.
 
-To compute error I use two measures. First, the :math:`L_2` difference
-between the initial and final distribution function:
+To compute error we use the measure
 
 .. math::
 
    E = \sqrt{\int |f(x,y,1) - f(x,y,0)|^2 dx\thinspace dy}
 
-and the second the :math:`L_2` difference between the *interpolation*
-of the initial and final distribution function. Note that in DG scheme
-will demonstrate super-convergence in the first norm. The second norm
-is used to simply illustrate naive projections/interpolations are not
-a good way to extra information available in a DG expansion.
+As seen below DG scheme demonstrates super-convergence in this
+norm.
 
 .. list-table:: Convergence of naive DG (no anti-limiters)
   :header-rows: 1
-  :widths: 20,40,20,40,20
+  :widths: 20,40,20
 
   * - Cell size
     - :math:`L_2` Error
     - :math:`L_2` Order
-    - Projected Error
-    - Projected Order      
   * - :math:`1/8`
-    - :math:`2.6113 \times 10^{-3}`
-    -
-    - :math:`1.37211 \times 10^{-2}`
+    - :math:`4.17808 \times 10^{-2}`
     -
   * - :math:`1/16`
-    - :math:`3.7873\times 10^{-5}`
-    - 6.1
-    - :math:`1.97533 \times 10^{-3}`
-    - 2.8
+    - :math:`1.21194\times 10^{-3}`
+    - 5.1
   * - :math:`1/32`
-    - :math:`5.0805 \times 10^{-7}`
-    - 6.2
-    - :math:`1.70844 \times 10^{-4}`
-    - 3.5
+    - :math:`3.25152 \times 10^{-5}`
+    - 5.2
 
 .. list-table:: Convergence of DG with anti-limiters
   :header-rows: 1
-  :widths: 20,40,20,40,20
+  :widths: 20,40,20
 
   * - Cell size
     - :math:`L_2` Error
     - :math:`L_2` Order
-    - Projected Error
-    - Projected Order      
   * - :math:`1/8`
-    - :math:`1.94458 \times 10^{-3}`
-    -
-    - :math:`9.73753 \times 10^{-3}`
+    - :math:`3.11133 \times 10^{-2}`
     -
   * - :math:`1/16`
-    - :math:`2.47974\times 10^{-5}`
-    - 6.3
-    - :math:`9.51244 \times 10^{-4}`
-    - 3.4
+    - :math:`7.93518\times 10^{-4}`
+    - 5.3
   * - :math:`1/32`
-    - :math:`1.57627 \times 10^{-7}`
-    - 7.3
-    - :math:`8.96466 \times 10^{-5}`
-    - 3.4
+    - :math:`1.00881 \times 10^{-5}`
+    - 6.3
 
+      
 Two observations:
 
-- The anti-limiters do not change the order of conservation
+- The anti-limiters do not change the order of convergence
 - The anti-limiters based DG scheme has a smaller absolute error than
   standard DG. This is because the anti-limiters act add
   "anti-diffusion", reducing the diffusion in standard DG in capturing
@@ -371,31 +352,32 @@ schemes (naive DG and AL-DG) is shown below.
   standard DG scheme even for this smooth initial condition. See plot
   below.
 
-To test if the schemes preserve positivity of cell averages, I compute
+To test if the schemes preserve positivity of cell averages, we compute
 
 .. math::
 
-   F = \sum | f_0 |
+   F = \frac{1}{N_0} \int | f_0 | dx\thinspace dy
 
-the sum taken over all cells. This should remain constant if the
-scheme conserves positivity of cell averages. The figure below shows
-that even for this smooth initial condition, the standard DG scheme
-creates small amount of regions with negative cell averages.
+where :math:`N_0` is the total number of particles in the domain at
+:math:`t=0`. This should remain constant if the scheme conserves
+positivity of cell averages. The figure below shows that even for this
+smooth initial condition, the standard DG scheme creates small amount
+of regions with negative cell averages.
 
 .. figure:: s1-m1-f0-cmp.png
   :width: 100%
   :align: center
 
-  Time history of :math:`\sum | f_0 |` for standard DG (orange) and
-  AL-DG (blue). The AL-DG scheme preserves positivity of the cell
-  averages exactly. In addition, though not obvious from this plot,
-  the solution is also positive at interior control nodes.
+  Time history of :math:`\int f_0 d\mathbf{x}` for standard DG
+  (orange) and AL-DG (blue). The AL-DG scheme preserves positivity of
+  the cell averages exactly. In addition, though not obvious from this
+  plot, the solution is also positive at interior control nodes.
   
       
 Cylinder advection test
 -----------------------
 
-In this test, I initialize the simulation with a cylindrical initial
+In this test, we initialize the simulation with a cylindrical initial
 condition, that is
 
 .. math::
@@ -427,26 +409,24 @@ is shown below:
   :width: 100%
   :align: center
 
-  Time history of :math:`\sum | f_0 |` for standard DG (orange) and
-  AL-DG (blue), for cylindrical initial condition. The AL-DG scheme
-  preserves positivity of the cell averages exactly. Note that for
-  this case the AL-DG scheme does not enforce positivity at interior
-  control nodes.
+  Time history of :math:`\int f_0 d\mathbf{x}` for standard DG
+  (orange) and AL-DG (blue), for cylindrical initial condition. The
+  AL-DG scheme preserves positivity of the cell averages exactly. Note
+  that for this case the AL-DG scheme does not enforce positivity at
+  interior control nodes.
 
 For this initial condition even the AL-DG scheme does not maintain
-positivity at interior control points. To check the impact of this, I
+positivity at interior control points. To check the impact of this, we
 re-run both the standard DG and AL-DG schemes with sub-cell diffusion
 applied as post-processing after each RK stage. To measure the amount
-of change I compute the following metric
+of change we compute the following metric
 
 .. math::
 
-   \Delta f = \frac{1}{F}\sum \sum_k |f^k - f'^k|
+   \Delta f = \frac{1}{N_0}\sqrt{\int (f^* - f)^2 dx\thinspace dy}
 
-where :math:`F = \sum f_0` computed at :math:`t=0`, and :math:`f^k` and
-:math:`f'^k` are the values of the original and sub-cell diffusion
-corrected distribution function at the interior control nodes
-respectively. The outer sum is taken over all cells in the grid.
+where :math:`f^*` is the sub-cell diffusion corrected distribution
+function.
 
 The time-history of total modifications of the distribution function
 as well as the number of cells changed *per time-step* for the two
@@ -470,7 +450,7 @@ RK-stage.
 Square-top-hat advection test
 -----------------------------
 
-As a severe test of the algorithm I initialize the simulation with a
+As a severe test of the algorithm we initialize the simulation with a
 "square top-hat", i.e.
 
 .. math::
@@ -519,14 +499,14 @@ is shown below:
   :width: 100%
   :align: center
 
-  Time history of :math:`\sum | f_0 |` for standard DG (orange) and
-  AL-DG (blue), for square-top-hat initial condition. The AL-DG scheme
-  preserves positivity of the cell averages exactly. Note that for
-  this case the AL-DG scheme does not enforce positivity at interior
-  control nodes.
+  Time history of :math:`\int f_0 d\mathbf{x}` for standard DG
+  (orange) and AL-DG (blue), for square-top-hat initial condition. The
+  AL-DG scheme preserves positivity of the cell averages exactly. Note
+  that for this case the AL-DG scheme does not enforce positivity at
+  interior control nodes.
 
 For this initial condition even the AL-DG scheme does not maintain
-positivity at interior control points. To check the impact of this, I
+positivity at interior control points. To check the impact of this, we
 re-run both the standard DG and AL-DG schemes with sub-cell diffusion
 applied as post-processing after each RK stage.
 
@@ -548,6 +528,29 @@ RK-stage.
   simulation. Once the cylinder diffuses a little, the amount of
   correction in the AL-DG scheme drops to zero.
 
+Convergence of corrections with time-step
+-----------------------------------------
+
+The anti-limiter caps the extrapolated values to :math:`1/\sigma`,
+where the CFL number :math:`\sigma` is proportional to :math:`\Delta
+t`. Hence, reducing the time-step will reduce the amount of sub-cell
+diffusion corrections that are needed as the extra enhancements with
+maintain slope bounds better. To test this, we ran the square-top-hat
+simulation with :math:`1/2` and :math:`1/4` of the time-step. The
+ratio of the corrections, :math:`\Delta f`, to the smallest time-step
+values are shown below. As is clear, the errors reduce linearly with
+:math:`1/\Delta t`, consistent with the amount of enhancement added by
+the anti-limiter.
+
+.. figure:: m8-m7-m6-df-cmp.png
+  :width: 100%
+  :align: center
+
+  Ratio of sub-cell diffusion corrections, :math:`\Delta f` as a
+  function of time. The amount of correction needed reduces as the
+  time-step is reduced, consistent with the property that the amount
+  of enhancement allowed increases as the time-step is reduced.
+  
 Conclusions
 -----------
 
@@ -559,8 +562,9 @@ continuous time-limit) with additional fixes to the volume terms.
 References
 ----------
 
-.. [Zhang2011] X. Zhang and C.W Shu. (2011). "Maximum-principle-satisfying and
-    positivity-preserving high-order schemes for conservation laws:
-    survey and new developments", *Proceedings of the Royal Society a:
-    Mathematical, Physical and Engineering Sciences*, **467**(2134),
-    2752–2776. http://doi.org/10.1098/rspa.2011.0153
+.. [Zhang2011] X. Zhang and C.W
+   Shu. (2011). "Maximum-principle-satisfying and
+   positivity-preserving high-order schemes for conservation laws:
+   survey and new developments", *Proceedings of the Royal Society a:
+   Mathematical, Physical and Engineering Sciences*, **467** (2134),
+   2752–2776. http://doi.org/10.1098/rspa.2011.0153

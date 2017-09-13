@@ -8,11 +8,14 @@ style.use('../code/postgkyl.mplstyle')
 maf = loadtxt("m4-2d-adv-dg_deltaChange.txt")
 saf = loadtxt("../s4/s4-2d-adv-dg_deltaChange.txt")
 
+mad = loadtxt("m4-2d-adv-dg_density.txt")
+N0 = mad[0,1] # initial density
+
 figure(1)
 subplot(2,1,1)
-plot(maf[:,0], maf[:,1], label='AL')
-plot(saf[:,0], saf[:,1], label='NL')
-ylabel(r'$\Delta f$')
+plot(maf[:,0], maf[:,1]/N0, label='AL')
+plot(saf[:,0], saf[:,1]/N0, label='NL')
+ylabel(r'$\frac{1}{N_0}\Delta f$')
 legend(loc='best')
 grid()
 

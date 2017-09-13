@@ -29,15 +29,20 @@ grid()
 savefig('s3-m3-cmp.png', dpi=150)
 
 # total |f0|
+dx = (d.upperBounds[0]-d.lowerBounds[0])/d.numCells[0]
+dy = (d.upperBounds[1]-d.lowerBounds[1])/d.numCells[1]
+fact = dx*dy
 
 maf = loadtxt("m3-2d-adv-dg_absDist.txt")
 saf = loadtxt("../s3/s3-2d-adv-dg_absDist.txt")
 
+N0 = maf[0,1]
+
 figure(2)
-plot(maf[:,0], maf[:,1])
-plot(saf[:,0], saf[:,1])
+plot(maf[:,0], maf[:,1]/N0)
+plot(saf[:,0], saf[:,1]/N0)
 xlabel('Time [s]')
-ylabel('sum |f_0| ')
+ylabel(r'$\frac{1}{N_0}\int |f_0| d\mathbf{x}$')
 grid()
 
 savefig('s3-m3-f0-cmp.png', dpi=150)

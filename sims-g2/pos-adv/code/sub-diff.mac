@@ -1,0 +1,10 @@
+load("/Users/ahakim/research/gkyl-project/gkyl/cas-scripts/modal-basis.mac")$
+
+vars : [x, y]$
+basis : gsOrthoNorm(vars, [1, x, y, x*y])$
+doExpand(f) := sum(f[i]*basis[i], i, 1, 4)$
+
+ff : doExpand([f[0], f[1], f[2], f[3]])$
+gg : doExpand([f[0], T*f[1], T*f[2], T*f[3]])$
+
+delDiff : innerProd(vars, 1, 1, (ff-gg)^2)$

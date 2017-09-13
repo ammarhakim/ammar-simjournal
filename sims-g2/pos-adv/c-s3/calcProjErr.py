@@ -12,10 +12,9 @@ X, v1 = dg.interpolate(0)
 dv = v1-v0
 err = dv**2
 
-dx = (d.upperBounds[0]-d.lowerBounds[0])/d.numCells[0]
-dy = (d.upperBounds[1]-d.lowerBounds[1])/d.numCells[1]
-vol = dx*dy
+dx = X[0][1]-X[0][0]
+dy = X[1][1]-X[1][0]
 
-totalErr = sqrt(sum(err))/(d.numCells[0]*d.numCells[1])
+totalErr = sqrt(dx*dy*sum(err))
 print("dx = %g; err = %g" % (dx, totalErr))
 

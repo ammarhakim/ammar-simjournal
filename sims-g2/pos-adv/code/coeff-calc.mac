@@ -1,0 +1,13 @@
+load("/Users/ahakim/research/gkyl-project/gkyl/cas-scripts/modal-basis.mac")$
+
+vars : [x, y]$
+basis : gsOrthoNorm(vars, [1, x, y, x*y])$
+doExpand(f) := sum(f[i]*basis[i], i, 1, 4)$
+ff : doExpand(f)$
+
+eq1 : subst([x=-mu1, y=-mu1], ff) = 0$
+eq2 : subst([x=-mu1, y=mu1], ff) = 0$
+eq3 : subst([x=mu1, y=-mu1], ff) =0$
+eq4 : f[1] = 2*favg$
+
+r : linsolve([eq1,eq2,eq3,eq4], [f[1],f[2],f[3],f[4]])$
