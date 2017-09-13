@@ -407,7 +407,7 @@ function rescaleSol(fIn)
    local localRange = fIn:localRange()
    local indexer = fIn:genIndexer()
    local mu1, mu2 = -1/rMax, 1/rMax
-   local dchange = 0.0
+   local d2 = 0.0
 
    local numRescaledCells = 0
    for idx in localRange:colMajorIter() do
@@ -420,26 +420,21 @@ function rescaleSol(fIn)
       evalFunc(fInPtr, mu2, mu2)
       local fm = math.min(v1, v2, v3, v4)
       local theta = math.min(1, f0/(f0-fm+GKYL_EPSILON))
+
+      -- compute diagnostics *before* applying change
+      local delChange = (1-theta)^2*(fInPtr[2]^2+fInPtr[3]^2+fInPtr[4]^2)
       
       -- modify moments
       fInPtr[2] = theta*fInPtr[2] -- (note no change to cell averages)
       fInPtr[3] = theta*fInPtr[3]
       fInPtr[4] = theta*fInPtr[4]
 
-      if theta < 1 then -- diagnostics
+      if theta < 1 then
 	 numRescaledCells = numRescaledCells+1
-	 
-	 local n1, n2, n3, n4 = evalFunc(fInPtr, mu1, mu1),
-	 evalFunc(fInPtr, mu2, mu1),
-	 evalFunc(fInPtr, mu1, mu2),
-	 evalFunc(fInPtr, mu2, mu2)
-	 -- dchange = dchange
-	 --    + (math.abs(v1-n1) + math.abs(v2-n2) + math.abs(v3-n3) + math.abs(v4-n4))/f0
-	 dchange = dchange
-	    + (math.abs(v1-n1) + math.abs(v2-n2) + math.abs(v3-n3) + math.abs(v4-n4))
+	 d2 = d2 + delChange
       end
    end
-   return numRescaledCells, dchange
+   return numRescaledCells, math.sqrt(d2)
 end
 
 -- compute sum abs(distf)
