@@ -15,14 +15,15 @@ local Updater = require "Updater"
 polyOrder = 1 -- polynomial order (DONT CHANGE THIS: WORKS ONLY FOR P=1)
 xvel = 1.0 -- x-direction velocity
 yvel = 1.0 -- y-direction velocity
-cfl = 0.1/2 -- CFL number
+cfl = 0.166 -- CFL number
 tEnd = 1.0
 useAntiLimiter = true -- if we should use anti-limiters
 rescaleSolution = true -- if we should rescale solution
 extraType = "patch-fit" -- one of "none", "linear", "exp", "exp0", "patch-fit"
 initProfile = "square-hat" -- one of "gaussian", "step", "cylinder", "expTent", "square-hat"
 
-rMax = 5.0/3.0 -- maximum slope/mean-value ratio allowed
+muQuad = 3.0/5.0 -- location of surface quadrature nodes
+rMax = 3.0 -- maximum slope/mean-value ratio allowed
 cflAL = cfl -- CFL number to use in anti-limiter
 singleStepSim = false
 
@@ -234,7 +235,7 @@ end
 
 -- x/y-direction numerical flux: anti-limiter version
 function numericalFluxX_AL(vel, fl, fr, out)
-   local mu1, mu2 = -1/rMax, 1/rMax
+   local mu1, mu2 = -muQuad, muQuad
    
    -- calculate left/right values at quadrature nodes
    local f0, f1 = averageSlopeX(mu1, fl)
@@ -258,7 +259,7 @@ function numericalFluxX_AL(vel, fl, fr, out)
    reconsSurfExpansion(mu1, mu2, fq1, fq2, out)
 end
 function numericalFluxY_AL(vel, fb, ft, out) -- SOMETHING BAD IS GOING ON HERE
-   local mu1, mu2 = -1/rMax, 1/rMax
+   local mu1, mu2 = -muQuad, muQuad
    
    -- calculate left/right values at quadrature nodes
    local f0, f1 = averageSlopeY(mu1, fb)
@@ -493,6 +494,8 @@ function rk3(tCurr, dt, fIn, fOut)
    -- Stage 1
    forwardEuler(dt, fIn, f1)
    local nrs, dc = applyRescaleLimiter(f1)
+   --print(string.format("N = %d; Del = %g", nrs, dc))
+   
    totalRescaledCells = totalRescaledCells + nrs
    totalDc = totalDc + dc
    applyBc(f1)
@@ -500,6 +503,8 @@ function rk3(tCurr, dt, fIn, fOut)
    -- Stage 2
    forwardEuler(dt, f1, fe)
    local nrs, dc = applyRescaleLimiter(fe)
+   --print(string.format("N = %d; Del = %g", nrs, dc))
+   
    totalRescaledCells = totalRescaledCells + nrs
    totalDc = totalDc + dc   
    f2:combine(3.0/4.0, fIn, 1.0/4.0, fe)
@@ -508,6 +513,8 @@ function rk3(tCurr, dt, fIn, fOut)
    -- Stage 3
    forwardEuler(dt, f2, fe)
    local nrs, dc = applyRescaleLimiter(fe)
+   --print(string.format("N = %d; Del = %g", nrs, dc))
+   
    totalRescaledCells = totalRescaledCells + nrs
    totalDc = totalDc + dc
    fOut:combine(1.0/3.0, fIn, 2.0/3.0, fe)
