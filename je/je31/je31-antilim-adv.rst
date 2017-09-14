@@ -442,9 +442,7 @@ RK-stage.
   number of cells changed per-step (bottom) for standard DG (orange)
   and AL-DG (blue). The standard DG scheme needs constant correction
   to about 65% of the cells in each RK stage, while the AL-DG scheme
-  needs far fewer corrections and only at the start of the
-  simulation. Once the cylinder diffuses a little, the amount of
-  correction in the AL-DG scheme drops to zero.
+  needs no corrections at all.
 
   
 Square-top-hat advection test
@@ -524,32 +522,8 @@ RK-stage.
   number of cells changed per-step (bottom) for standard DG (orange)
   and AL-DG (blue). The standard DG scheme needs constant correction
   to about 65% of the cells in each RK stage, while the AL-DG scheme
-  needs far fewer corrections and only at the start of the
-  simulation. Once the cylinder diffuses a little, the amount of
-  correction in the AL-DG scheme drops to zero.
+  needs no corrections.
 
-Convergence of corrections with time-step
------------------------------------------
-
-The anti-limiter caps the extrapolated values to :math:`1/\sigma`,
-where the CFL number :math:`\sigma` is proportional to :math:`\Delta
-t`. Hence, reducing the time-step will reduce the amount of sub-cell
-diffusion corrections that are needed as the extra enhancements with
-maintain slope bounds better. To test this, we ran the square-top-hat
-simulation with :math:`1/2` and :math:`1/4` of the time-step. The
-ratio of the corrections, :math:`\Delta f`, to the smallest time-step
-values are shown below. As is clear, the errors reduce linearly with
-:math:`1/\Delta t`, consistent with the amount of enhancement added by
-the anti-limiter.
-
-.. figure:: m8-m7-m6-df-cmp.png
-  :width: 100%
-  :align: center
-
-  Ratio of sub-cell diffusion corrections, :math:`\Delta f` as a
-  function of time. The amount of correction needed reduces as the
-  time-step is reduced, consistent with the property that the amount
-  of enhancement allowed increases as the time-step is reduced.
   
 Conclusions
 -----------

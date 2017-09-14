@@ -18,7 +18,8 @@ enhancer based DG schemes.
 - m4: Cylinder initial condition; with sub-cell diffusion.
 - m5: Square-hat initial condition; no sub-cell diffusion.
 - m6: Square-hat initial condition; with sub-cell diffusion.
-- m7: Same as m6, except dt increase
+- m7: Same as m6, except dt increasec
+- m8: IGNORE
 
 Convergence tests
 
