@@ -928,3 +928,5 @@ program for that simulation.
     - Five-moment LHDI simulation. Same as s441, except on a :math:`500\times 500` grid
   * - ${mdl("s448")}
     - Euler blast-wave simulation. Athena test case.
+  * - ${mdl("s449")}
+    - Same as s448, except on :math:`400\times 600` grid.
