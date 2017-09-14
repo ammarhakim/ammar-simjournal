@@ -22,7 +22,8 @@ rescaleSolution = true -- if we should rescale solution
 extraType = "patch-fit" -- one of "none", "linear", "exp", "exp0", "patch-fit"
 initProfile = "square-hat" -- one of "gaussian", "step", "cylinder", "expTent", "square-hat"
 
-rMax = 5.0/3.0 -- maximum slope/mean-value ratio allowed
+muQuad = 3.0/5.0 -- location of surface quadrature nodes
+rMax = 3.0 -- maximum slope/mean-value ratio allowed
 cflAL = cfl -- CFL number to use in anti-limiter
 singleStepSim = false
 
@@ -234,7 +235,7 @@ end
 
 -- x/y-direction numerical flux: anti-limiter version
 function numericalFluxX_AL(vel, fl, fr, out)
-   local mu1, mu2 = -1/rMax, 1/rMax
+   local mu1, mu2 = -muQuad, muQuad
    
    -- calculate left/right values at quadrature nodes
    local f0, f1 = averageSlopeX(mu1, fl)
@@ -258,7 +259,7 @@ function numericalFluxX_AL(vel, fl, fr, out)
    reconsSurfExpansion(mu1, mu2, fq1, fq2, out)
 end
 function numericalFluxY_AL(vel, fb, ft, out) -- SOMETHING BAD IS GOING ON HERE
-   local mu1, mu2 = -1/rMax, 1/rMax
+   local mu1, mu2 = -muQuad, muQuad
    
    -- calculate left/right values at quadrature nodes
    local f0, f1 = averageSlopeY(mu1, fb)
@@ -423,7 +424,7 @@ function rescaleSol(fIn)
    local localRange = fIn:localRange()
    local indexer = fIn:genIndexer()
    local mu1, mu2 = -1/rMax, 1/rMax
-   local dchange = 0.0
+   local d2 = 0.0
 
    local numRescaledCells = 0
    for idx in localRange:colMajorIter() do
@@ -436,26 +437,21 @@ function rescaleSol(fIn)
       evalFunc(fInPtr, mu2, mu2)
       local fm = math.min(v1, v2, v3, v4)
       local theta = math.min(1, f0/(f0-fm+GKYL_EPSILON))
+
+      -- compute diagnostics *before* applying change
+      local delChange = (1-theta)^2*(fInPtr[2]^2+fInPtr[3]^2+fInPtr[4]^2)
       
       -- modify moments
       fInPtr[2] = theta*fInPtr[2] -- (note no change to cell averages)
       fInPtr[3] = theta*fInPtr[3]
       fInPtr[4] = theta*fInPtr[4]
 
-      if theta < 1 then -- diagnostics
+      if theta < 1 then
 	 numRescaledCells = numRescaledCells+1
-	 
-	 local n1, n2, n3, n4 = evalFunc(fInPtr, mu1, mu1),
-	 evalFunc(fInPtr, mu2, mu1),
-	 evalFunc(fInPtr, mu1, mu2),
-	 evalFunc(fInPtr, mu2, mu2)
-	 -- dchange = dchange
-	 --    + (math.abs(v1-n1) + math.abs(v2-n2) + math.abs(v3-n3) + math.abs(v4-n4))/f0
-	 dchange = dchange
-	    + (math.abs(v1-n1) + math.abs(v2-n2) + math.abs(v3-n3) + math.abs(v4-n4))
+	 d2 = d2 + delChange
       end
    end
-   return numRescaledCells, dchange
+   return numRescaledCells, math.sqrt(d2)
 end
 
 -- compute sum abs(distf)
@@ -498,6 +494,8 @@ function rk3(tCurr, dt, fIn, fOut)
    -- Stage 1
    forwardEuler(dt, fIn, f1)
    local nrs, dc = applyRescaleLimiter(f1)
+   --print(string.format("N = %d; Del = %g", nrs, dc))
+   
    totalRescaledCells = totalRescaledCells + nrs
    totalDc = totalDc + dc
    applyBc(f1)
@@ -505,6 +503,8 @@ function rk3(tCurr, dt, fIn, fOut)
    -- Stage 2
    forwardEuler(dt, f1, fe)
    local nrs, dc = applyRescaleLimiter(fe)
+   --print(string.format("N = %d; Del = %g", nrs, dc))
+   
    totalRescaledCells = totalRescaledCells + nrs
    totalDc = totalDc + dc   
    f2:combine(3.0/4.0, fIn, 1.0/4.0, fe)
@@ -513,6 +513,8 @@ function rk3(tCurr, dt, fIn, fOut)
    -- Stage 3
    forwardEuler(dt, f2, fe)
    local nrs, dc = applyRescaleLimiter(fe)
+   --print(string.format("N = %d; Del = %g", nrs, dc))
+   
    totalRescaledCells = totalRescaledCells + nrs
    totalDc = totalDc + dc
    fOut:combine(1.0/3.0, fIn, 2.0/3.0, fe)

@@ -20,9 +20,10 @@ tEnd = 1.0
 useAntiLimiter = true -- if we should use anti-limiters
 rescaleSolution = true -- if we should rescale solution
 extraType = "none" -- one of "none", "linear", "exp", "exp0", "patch-fit"
-initProfile = "gaussian" -- one of "gaussian", "step", "cylinder", "expTent"
+initProfile = "gaussian" -- one of "gaussian", "step", "cylinder", "expTent", "square-hat"
 
-rMax = 5.0/3.0 -- maximum slope/mean-value ratio allowed
+muQuad = 3.0/5.0 -- location of surface quadrature nodes
+rMax = 3.0 -- maximum slope/mean-value ratio allowed
 cflAL = cfl -- CFL number to use in anti-limiter
 singleStepSim = false
 
@@ -98,6 +99,13 @@ function step(t, xn)
    end
    return 1.0e-5
 end
+function squareHat(t, xn)
+   local rx2, ry2 = (xn[1]-0.5)^2, (xn[2]-0.5)^2
+   if rx2 < 0.25^2 and ry2 < 0.25^2 then
+      return 1.0
+   end
+   return 1.0e-5
+end
 function expTent(t, xn)
    local r = math.sqrt((xn[1]-0.5)^2 + (xn[2]-0.5)^2)
    return math.exp(-10*r)
@@ -114,6 +122,8 @@ elseif initProfile == "step" then
    initFunc = step
 elseif initProfile == "expTent" then
    initFunc = expTent
+elseif initProfile == "square-hat" then
+   initFunc = squareHat
 else
    initFunc = nil
 end
@@ -184,6 +194,25 @@ function reconsSurfExpansion(mu1, mu2, v1, v2, out)
    out[2] = (1.414213562373095*v1-1.414213562373095*v2)/(1.732050807568877*mu1-1.732050807568877*mu2)
 end
 
+function patchFit(f0, f1, x, CFL)
+   local r = f1/(f0 + GKYL_EPSILON)
+   local val = 0.0
+   if x > 0 then
+      if r<2.2 then
+	 val = math.max(0, math.min(1.0/CFL, math.exp(2*r*x/3)*(1+r*x/3)))
+      else
+	 val = math.min(1.0/CFL, 6/(3-math.min(2.999, math.abs(r))))
+      end
+   else
+      if r>-2.2 then
+	 val = math.max(0, math.min(1.0/CFL, math.exp(2*r*x/3)*(1+r*x/3)))
+      else
+	 val = math.min(1.0/CFL, 6/(3+math.min(2.999, math.abs(r))))
+      end	 
+   end
+   return val
+end
+
 -- anti-limiter function
 function limTheta(f0, f1, x, CFL)
    local r = f1/(f0 + GKYL_EPSILON)
@@ -197,19 +226,7 @@ function limTheta(f0, f1, x, CFL)
    elseif extraType == "exp0" then
       val = math.max(0, math.min(1.0/CFL, math.exp(2*r*x/3)*(1+r*x/3)))
    elseif extraType == "patch-fit" then
-      if x > 0 then
-	 if r<2.2 then
-	    val = math.max(0, math.min(1.0/CFL, math.exp(2*r*x/3)*(1+r*x/3)))
-	 else
-	    val = 6/(3-r)
-	 end
-      else
-	 if r>-2.2 then
-	    val = math.max(0, math.min(1.0/CFL, math.exp(2*r*x/3)*(1+r*x/3)))
-	 else
-	    val = 6/(3+r)
-	 end	 
-      end
+      val = patchFit(f0, f1, x, CFL)
    else
       val = 0.0
    end
@@ -218,7 +235,7 @@ end
 
 -- x/y-direction numerical flux: anti-limiter version
 function numericalFluxX_AL(vel, fl, fr, out)
-   local mu1, mu2 = -1/rMax, 1/rMax
+   local mu1, mu2 = -muQuad, muQuad
    
    -- calculate left/right values at quadrature nodes
    local f0, f1 = averageSlopeX(mu1, fl)
@@ -242,7 +259,7 @@ function numericalFluxX_AL(vel, fl, fr, out)
    reconsSurfExpansion(mu1, mu2, fq1, fq2, out)
 end
 function numericalFluxY_AL(vel, fb, ft, out) -- SOMETHING BAD IS GOING ON HERE
-   local mu1, mu2 = -1/rMax, 1/rMax
+   local mu1, mu2 = -muQuad, muQuad
    
    -- calculate left/right values at quadrature nodes
    local f0, f1 = averageSlopeY(mu1, fb)
@@ -477,6 +494,8 @@ function rk3(tCurr, dt, fIn, fOut)
    -- Stage 1
    forwardEuler(dt, fIn, f1)
    local nrs, dc = applyRescaleLimiter(f1)
+   --print(string.format("N = %d; Del = %g", nrs, dc))
+   
    totalRescaledCells = totalRescaledCells + nrs
    totalDc = totalDc + dc
    applyBc(f1)
@@ -484,6 +503,8 @@ function rk3(tCurr, dt, fIn, fOut)
    -- Stage 2
    forwardEuler(dt, f1, fe)
    local nrs, dc = applyRescaleLimiter(fe)
+   --print(string.format("N = %d; Del = %g", nrs, dc))
+   
    totalRescaledCells = totalRescaledCells + nrs
    totalDc = totalDc + dc   
    f2:combine(3.0/4.0, fIn, 1.0/4.0, fe)
@@ -492,6 +513,8 @@ function rk3(tCurr, dt, fIn, fOut)
    -- Stage 3
    forwardEuler(dt, f2, fe)
    local nrs, dc = applyRescaleLimiter(fe)
+   --print(string.format("N = %d; Del = %g", nrs, dc))
+   
    totalRescaledCells = totalRescaledCells + nrs
    totalDc = totalDc + dc
    fOut:combine(1.0/3.0, fIn, 2.0/3.0, fe)
