@@ -1,31 +1,7 @@
-Convergence of corrections with time-step
------------------------------------------
+https://play-link.com/jen/msg.php?id=2Z8888591
+2Z8888591
 
-The anti-limiter caps the extrapolated values to :math:`1/\sigma`,
-where the CFL number :math:`\sigma` is proportional to :math:`\Delta
-t`. Hence, reducing the time-step will reduce the amount of sub-cell
-diffusion corrections that are needed as the extra enhancements with
-maintain slope bounds better. To test this, we ran the square-top-hat
-simulation with :math:`1/2` and :math:`1/4` of the time-step. The
-ratio of the corrections, :math:`\Delta f`, to the smallest time-step
-values are shown below. As is clear, the errors reduce linearly with
-:math:`1/\Delta t`, consistent with the amount of enhancement added by
-the anti-limiter.
-
-.. figure:: m8-m7-m6-df-cmp.png
-  :width: 100%
-  :align: center
-
-  Ratio of sub-cell diffusion corrections, :math:`\Delta f` as a
-  function of time. The amount of correction needed reduces as the
-  time-step is reduced, consistent with the property that the amount
-  of enhancement allowed increases as the time-step is reduced.
-
-
-
-Total number of rescaled cells	3824
-Total delta change	22.465016447245
-
-Expedia itinerary number: 7295693430862
-A confirmation email was sent to:a.hakim777@gmail.com
-Your Expedia+ account was created successfully.
+3960
+1420
+9325
+7930
