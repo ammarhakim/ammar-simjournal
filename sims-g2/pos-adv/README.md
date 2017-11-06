@@ -11,6 +11,7 @@ enhancer based DG schemes.
 - s4: Cylinder initial condition; with sub-cell diffusion.
 - s5: Square-hat initial condition; no sub-cell diffusion.
 - s6: Square-hat initial condition; with sub-cell diffusion.
+- s9: 5 cell sim with single non-zero cell
 
 - m1: Gaussian initial condition; no sub-cell diffusion.
 - m2: Gaussian initial condition; with sub-cell diffusion.
@@ -21,6 +22,7 @@ enhancer based DG schemes.
 - m7: Same as m6, except dt increased to 1/6
 - m8: IGNORE
 - m9: 5 cell sim with single non-zero cell
+- m10: Advection of cosine
 
 Convergence tests
 

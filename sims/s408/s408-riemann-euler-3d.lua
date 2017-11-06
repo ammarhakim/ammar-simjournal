@@ -26,7 +26,7 @@ decomp = DecompRegionCalc3D.CartGeneral {}
 grid = Grid.RectCart3D {
    lower = {0.0, 0.0, 0.0},
    upper = {Lx, Ly, Lz},
-   cells = {NX, NY, NX},
+   cells = {NX, NY, NZ},
    decomposition = decomp,
    periodicDirs = {},
 }
@@ -495,4 +495,6 @@ writeFields(0, 0.0)
 initDt = 1.0
 runSimulation(tStart, tEnd, nFrames, initDt)
 
+slvrTime = fluidSlvrDir0:totalAdvanceTime()+fluidSlvrDir1:totalAdvanceTime()+fluidSlvrDir2:totalAdvanceTime()
+log(string.format("WavePropagation updaters took: %g sec", slvrTime))
 
