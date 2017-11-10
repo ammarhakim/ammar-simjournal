@@ -1,11 +1,12 @@
 -- Gkyl ------------------------------------------------------------------------
-local Euler = require "Sim.EulerOnCartGrid"
+local Hyper = require "Sim.HyperEqnOnCartGrid"
+local Euler = require "Eq.Euler"
 
 -- gas adiabatic index
 gasGamma = 1.4
 
 -- create sim
-eulerSim = Euler.Sim {
+eulerSim = Hyper.Sim {
    logToFile = true, -- false if no log file is desired
 
    -- basic parameters
@@ -16,7 +17,7 @@ eulerSim = Euler.Sim {
    cells = {400, 400}, -- number of cells
    cfl = 0.9, -- CFL number
    limiter = "monotonized-centered", -- limiter
-   gasGamma = gasGamma, -- gas adiabatic index
+   equation = Euler { gasGamma = gasGamma }, -- equation to solve
 
    -- decomposition stuff
    decompCuts = {1, 1}, -- cuts in each direction
@@ -50,8 +51,8 @@ eulerSim = Euler.Sim {
    
    -- boundary conditions
    periodicDirs = {}, -- periodic directions
-   bcx = { Euler.bcCopy, Euler.bcCopy }, -- boundary conditions in X
-   bcy = { Euler.bcCopy, Euler.bcCopy }, -- boundary conditions in Y
+   bcx = { Hyper.bcCopy, Hyper.bcCopy }, -- boundary conditions in X
+   bcy = { Hyper.bcCopy, Hyper.bcCopy }, -- boundary conditions in Y
 
    -- diagnostics
    diagnostics = { }
