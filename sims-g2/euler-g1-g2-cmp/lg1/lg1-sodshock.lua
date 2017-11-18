@@ -1,12 +1,12 @@
 -- Gkyl ------------------------------------------------------------------------
-local Hyper = require "Sim.HyperEqnOnCartGrid"
+local Hyper = require "App.HyperEqnOnCartGrid"
 local Euler = require "Eq.Euler"
 
 -- gas adiabatic index
 gasGamma = 1.4
 
--- create sim
-eulerSim = Hyper.Sim {
+-- create app
+eulerApp = Hyper.App {
    logToFile = true,
 
    tEnd = 0.1, -- end time
@@ -43,4 +43,4 @@ eulerSim = Hyper.Sim {
    bcx = { Hyper.bcCopy, Hyper.bcCopy }, -- boundary conditions in X
 }
 -- run simulation
-eulerSim:run()
+eulerApp:run()

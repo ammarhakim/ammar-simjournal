@@ -1,5 +1,5 @@
 -- Gkyl ------------------------------------------------------------------------
-local Hyper = require "Sim.HyperEqnOnCartGrid"
+local Hyper = require "App.HyperEqnOnCartGrid"
 local Euler = require "Eq.Euler"
 
 -- gas adiabatic index
@@ -7,8 +7,8 @@ gasGamma = 1.4
 -- wall BCs (these are custom wall BCs for Euler equations)
 bcWall = Hyper.bcCustom(Euler.bcWall)
 
--- create sim
-eulerSim = Hyper.Sim {
+-- create app
+eulerApp = Hyper.App {
    logToFile = true, -- false if no log file is desired
 
    -- basic parameters
@@ -49,5 +49,5 @@ eulerSim = Hyper.Sim {
    -- diagnostics
    diagnostics = { }
 }
--- run simulation
-eulerSim:run()
+-- run application
+eulerApp:run()
