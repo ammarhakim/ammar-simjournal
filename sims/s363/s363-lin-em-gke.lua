@@ -39,7 +39,7 @@ grid = Grid.RectCart2D {
 }
 
 -- create FEM nodal basis
-basis = NodalFiniteElement2D.Serendipity {
+basis = NodalFiniteElement2D.SerendipityElement {
    onGrid = grid,
    polyOrder = polyOrder,
 }

@@ -1,7 +1,7 @@
 -- Gkyl ------------------------------------------------------------------------
 local Hyper = require "App.HyperEqnOnCartGrid"
 local Euler = require "Eq.Euler"
-
+   
 -- gas adiabatic index
 gasGamma = 1.4
 
