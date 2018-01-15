@@ -11,7 +11,7 @@ freq = 2*Lucee.Pi/L*math.sqrt(kwave^2+lwave^2)*Lucee.SpeedOfLight
 tperiod = 2*Lucee.Pi/freq
 
 -- resolution and time-stepping
-NX = 40
+NX = 16
 NY = 2
 polyOrder = 1 -- DG polynomial order
 cfl = 0.5/(2*polyOrder+1)/4
@@ -34,7 +34,7 @@ grid = Grid.RectCart2D {
 }
 
 -- create FEM nodal basis
-basis = NodalFiniteElement2D.Serendipity {
+basis = NodalFiniteElement2D.SerendipityElement {
    -- grid on which elements should be constructured
    onGrid = grid,
    -- polynomial order in each cell
@@ -87,8 +87,8 @@ function init(x,y,z)
    local E0 = 1.0
    local Ex, Ey = 0.0, 0.0
    local Ez = E0*cos(phi)
-   local Bx = E0/c*cos(phi)*2*pi/L*lwave
-   local By = -E0/c*cos(phi)*2*pi/L*kwave
+   local Bx = E0/c*cos(phi)
+   local By = -E0/c*cos(phi)
    local Bz = .0
    return Ex, Ey, Ez, Bx, By, Bz, 0.0, 0.0
 end

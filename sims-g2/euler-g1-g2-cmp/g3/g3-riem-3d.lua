@@ -44,7 +44,7 @@ eulerApp = Hyper.App {
    periodicDirs = {}, -- periodic directions
    bcx = { bcWall, Hyper.bcCopy }, -- boundary conditions in X
    bcy = { bcWall, Hyper.bcCopy }, -- boundary conditions in Y
-   bcz = { bcWall, bcWall }, -- boundary conditions in Y   
+   bcz = { bcWall, bcWall }, -- boundary conditions in Z
 
    -- diagnostics
    diagnostics = { }
