@@ -47,8 +47,8 @@ def getXv(Xc, Vc):
 
 # density
 d = postgkyl.GData("x1-1x1v-max-mom_numDensity.bp")
-dg1Num = postgkyl.GInterpModalMaxOrder(d, 1)
-Xc, num = dg1Num.project(0)
+dg1Num = postgkyl.GInterpModa(d, 1, "mo")
+Xc, num = dg1Num.interpolate(0)
 
 Xhr = linspace(Xc[0][0], Xc[0][-1], 200) # for plotting
 
@@ -70,8 +70,8 @@ savefig('x1-1x1v-max-num.png', bbox='tight')
 
 # momentum
 d = postgkyl.GData("x1-1x1v-max-mom_momentum.bp")
-dg1Mom = postgkyl.GInterpModalMaxOrder(d, 1)
-Xc, mom = dg1Mom.project(0)
+dg1Mom = postgkyl.GInterpModa(d, 1, "mo")
+Xc, mom = dg1Mom.interpolate(0)
 
 figure(2)
 plot(Xc[0], mom, 'ro-')
@@ -86,8 +86,8 @@ savefig('x1-1x1v-max-mom.png', bbox='tight')
 
 # total Pxx
 d = postgkyl.GData("x1-1x1v-max-mom_pressureTensor.bp")
-dg1Pr = postgkyl.GInterpModalMaxOrder(d, 1)
-Xc, pr = dg1Pr.project(0)
+dg1Pr = postgkyl.GInterpModa(d, 1, "mo")
+Xc, pr = dg1Pr.interpolate(0)
 
 figure(3)
 plot(Xc[0], pr, 'ro-')
@@ -102,12 +102,12 @@ savefig('x1-1x1v-max-pr.png', bbox='tight')
 
 # ptcl energy
 d = postgkyl.GData("x1-1x1v-max-mom_ptclEnergy.bp")
-dg1Eg = postgkyl.GInterpModalMaxOrder(d, 1)
-Xc, Eg = dg1Eg.project(0)
+dg1Eg = postgkyl.GInterpModa(d, 1, "mo")
+Xc, Eg = dg1Eg.interpolate(0)
 
 figure(4)
 plot(Xc[0], Eg, 'ro-')
-plot(Xhr, 0.5*(n*Txx + n*ux*ux), 'k-')
+plot(Xhr, (n*Txx + n*ux*ux), 'k-')
 axis('tight')
 xlabel('X')
 ylabel(r'$Energy$')

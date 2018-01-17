@@ -49,7 +49,7 @@ cnt = Counter()
 # density
 d = postgkyl.GData("m6-1x2v-ser-mom_numDensity.bp")
 dg1Num = postgkyl.GInterpModalSerendipity(d, 4)
-Xc, num = dg1Num.project(0)
+Xc, num = dg1Num.interpolate(0)
 
 Xhr = linspace(Xc[0][0], Xc[0][-1], 200) # for plotting
 
@@ -75,7 +75,7 @@ savefig('m6-1x2v-ser-num.png', bbox='tight')
 # momentum-x
 d = postgkyl.GData("m6-1x2v-ser-mom_momentum.bp")
 dg1Mom = postgkyl.GInterpModalSerendipity(d, 4)
-Xc, mom = dg1Mom.project(0)
+Xc, mom = dg1Mom.interpolate(0)
 
 figure(cnt.bump())
 plot(Xc[0], mom, 'ro-')
@@ -89,7 +89,7 @@ grid()
 savefig('m6-1x2v-ser-momx.png', bbox='tight')
 
 # momentum-y
-Xc, mom = dg1Mom.project(1)
+Xc, mom = dg1Mom.interpolate(1)
 
 figure(cnt.bump())
 plot(Xc[0], mom, 'ro-')
@@ -105,7 +105,7 @@ savefig('m6-1x2v-ser-momy.png', bbox='tight')
 # total Pxx
 d = postgkyl.GData("m6-1x2v-ser-mom_pressureTensor.bp")
 dg1Pr = postgkyl.GInterpModalSerendipity(d, 4)
-Xc, pr = dg1Pr.project(0)
+Xc, pr = dg1Pr.interpolate(0)
 
 figure(cnt.bump())
 plot(Xc[0], pr, 'ro-')
@@ -119,7 +119,7 @@ grid()
 savefig('m6-1x2v-ser-pxx.png', bbox='tight')
 
 # total Pyy
-Xc, pr = dg1Pr.project(2)
+Xc, pr = dg1Pr.interpolate(2)
 
 figure(cnt.bump())
 plot(Xc[0], pr, 'ro-')
@@ -133,7 +133,7 @@ grid()
 savefig('m6-1x2v-ser-pyy.png', bbox='tight')
 
 # total Pxy
-Xc, pr = dg1Pr.project(1)
+Xc, pr = dg1Pr.interpolate(1)
 
 figure(cnt.bump())
 plot(Xc[0], pr, 'ro-')
@@ -149,9 +149,9 @@ savefig('m6-1x2v-ser-pxy.png', bbox='tight')
 # ptcl energy
 d = postgkyl.GData("m6-1x2v-ser-mom_ptclEnergy.bp")
 dg1Eg = postgkyl.GInterpModalSerendipity(d, 4)
-Xc, Eg = dg1Eg.project(0)
+Xc, Eg = dg1Eg.interpolate(0)
 
-Er = 0.5*(n*(Txx+Tyy) + n*(ux*ux+uy*uy))
+Er = (n*(Txx+Tyy) + n*(ux*ux+uy*uy))
 figure(cnt.bump())
 plot(Xc[0], Eg, 'ro-')
 plot(Xhr, Er, 'k-')

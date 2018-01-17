@@ -67,25 +67,25 @@ numDensityCalc = Updater.DistFuncMomentCalc {
    onGrid = phaseGrid,
    phaseBasis = phaseBasis,
    confBasis = confBasis,
-   moment = "number-density",
+   moment = "M0",
 }
 momentumCalc = Updater.DistFuncMomentCalc {
    onGrid = phaseGrid,
    phaseBasis = phaseBasis,
    confBasis = confBasis,
-   moment = "momentum",
+   moment = "M1i",
 }		
 pressureTensorCalc = Updater.DistFuncMomentCalc {
    onGrid = phaseGrid,
    phaseBasis = phaseBasis,
    confBasis = confBasis,
-   moment = "pressure-tensor",
+   moment = "M2ij",
 }
 ptclEnergyCalc = Updater.DistFuncMomentCalc {
    onGrid = phaseGrid,
    phaseBasis = phaseBasis,
    confBasis = confBasis,
-   moment = "energy",
+   moment = "M2",
 }
 
 -- initial condition to apply
