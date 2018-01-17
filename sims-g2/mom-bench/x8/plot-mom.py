@@ -48,8 +48,8 @@ cnt = Counter()
 
 # density
 d = postgkyl.GData("x8-1x3v-max-mom_numDensity.bp")
-dg1Num = postgkyl.GInterpModalMaxOrder(d, 2)
-Xc, num = dg1Num.project(0)
+dg1Num = postgkyl.GInterpModal(d, 2, "mo")
+Xc, num = dg1Num.interpolate(0)
 
 Xhr = linspace(Xc[0][0], Xc[0][-1], 200) # for plotting
 
@@ -78,8 +78,8 @@ savefig('s5-1x3v-num.png', bbox='tight')
 
 # momentum-x
 d = postgkyl.GData("x8-1x3v-max-mom_momentum.bp")
-dg1Mom = postgkyl.GInterpModalMaxOrder(d, 2)
-Xc, mom = dg1Mom.project(0)
+dg1Mom = postgkyl.GInterpModal(d, 2, "mo")
+Xc, mom = dg1Mom.interpolate(0)
 
 figure(cnt.bump())
 plot(Xc[0], mom, 'ro-')
@@ -93,7 +93,7 @@ grid()
 savefig('s5-1x3v-momx.png', bbox='tight')
 
 # momentum-y
-Xc, mom = dg1Mom.project(1)
+Xc, mom = dg1Mom.interpolate(1)
 
 figure(cnt.bump())
 plot(Xc[0], mom, 'ro-')
@@ -107,7 +107,7 @@ grid()
 savefig('s5-1x3v-momy.png', bbox='tight')
 
 # momentum-z
-Xc, mom = dg1Mom.project(2)
+Xc, mom = dg1Mom.interpolate(2)
 
 figure(cnt.bump())
 plot(Xc[0], mom, 'ro-')
@@ -122,8 +122,8 @@ savefig('s5-1x3v-momz.png', bbox='tight')
 
 # total Pxx
 d = postgkyl.GData("x8-1x3v-max-mom_pressureTensor.bp")
-dg1Pr = postgkyl.GInterpModalMaxOrder(d, 2)
-Xc, pr = dg1Pr.project(0)
+dg1Pr = postgkyl.GInterpModal(d, 2, "mo")
+Xc, pr = dg1Pr.interpolate(0)
 
 figure(cnt.bump())
 plot(Xc[0], pr, 'ro-')
@@ -137,7 +137,7 @@ grid()
 savefig('s5-1x3v-pxx.png', bbox='tight')
 
 # total Pxy
-Xc, pr = dg1Pr.project(1)
+Xc, pr = dg1Pr.interpolate(1)
 
 figure(cnt.bump())
 plot(Xc[0], pr, 'ro-')
@@ -151,7 +151,7 @@ grid()
 savefig('s5-1x3v-pxy.png', bbox='tight')
 
 # total Pxz
-Xc, pr = dg1Pr.project(2)
+Xc, pr = dg1Pr.interpolate(2)
 
 figure(cnt.bump())
 plot(Xc[0], pr, 'ro-')
@@ -165,7 +165,7 @@ grid()
 savefig('s5-1x3v-pxz.png', bbox='tight')
 
 # total Pyy
-Xc, pr = dg1Pr.project(3)
+Xc, pr = dg1Pr.interpolate(3)
 
 figure(cnt.bump())
 plot(Xc[0], pr, 'ro-')
@@ -179,7 +179,7 @@ grid()
 savefig('s5-1x3v-pyy.png', bbox='tight')
 
 # total Pyz
-Xc, pr = dg1Pr.project(4)
+Xc, pr = dg1Pr.interpolate(4)
 
 figure(cnt.bump())
 plot(Xc[0], pr, 'ro-')
@@ -193,7 +193,7 @@ grid()
 savefig('s5-1x3v-pyz.png', bbox='tight')
 
 # total Pzz
-Xc, pr = dg1Pr.project(5)
+Xc, pr = dg1Pr.interpolate(5)
 
 figure(cnt.bump())
 plot(Xc[0], pr, 'ro-')
@@ -208,10 +208,10 @@ savefig('s5-1x3v-pzz.png', bbox='tight')
 
 # ptcl energy
 d = postgkyl.GData("x8-1x3v-max-mom_ptclEnergy.bp")
-dg1Eg = postgkyl.GInterpModalMaxOrder(d, 2)
-Xc, Eg = dg1Eg.project(0)
+dg1Eg = postgkyl.GInterpModal(d, 2, "mo")
+Xc, Eg = dg1Eg.interpolate(0)
 
-Er = 0.5*(n*(Txx+Tyy+Tzz) + n*(ux*ux+uy*uy+uz*uz))
+Er = n*(Txx+Tyy+Tzz) + n*(ux*ux+uy*uy+uz*uz)
 
 figure(cnt.bump())
 plot(Xc[0], Eg, 'ro-')

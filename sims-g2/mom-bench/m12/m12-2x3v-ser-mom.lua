@@ -67,25 +67,25 @@ numDensityCalc = Updater.DistFuncMomentCalc {
    onGrid = phaseGrid,
    phaseBasis = phaseBasis,
    confBasis = confBasis,
-   moment = "number-density",
+   moment = "M0",
 }
 momentumCalc = Updater.DistFuncMomentCalc {
    onGrid = phaseGrid,
    phaseBasis = phaseBasis,
    confBasis = confBasis,
-   moment = "momentum",
+   moment = "M1i",
 }		
 pressureTensorCalc = Updater.DistFuncMomentCalc {
    onGrid = phaseGrid,
    phaseBasis = phaseBasis,
    confBasis = confBasis,
-   moment = "pressure-tensor",
+   moment = "M2ij",
 }
 ptclEnergyCalc = Updater.DistFuncMomentCalc {
    onGrid = phaseGrid,
    phaseBasis = phaseBasis,
    confBasis = confBasis,
-   moment = "energy",
+   moment = "M2",
 }
 
 -- initial condition to apply
@@ -122,8 +122,12 @@ local project = Updater.ProjectOnBasis {
       return maxwellian(xn[1], xn[2], xn[3], xn[4], xn[5])
    end
 }
+
+local tStart = Time.clock()
 project:advance(0.0, 0.0, {}, {distf})
 distf:write("distf.bp", 0.0)
+local tEnd = Time.clock()
+print("Projections took", tEnd-tStart)
 
 local tStart = Time.clock()
 -- compute moments
