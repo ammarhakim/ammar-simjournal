@@ -220,7 +220,7 @@ d = postgkyl.GData("x12-2x3v-max-mom_ptclEnergy.bp")
 dg1Eg = postgkyl.GInterpModal(d, 2, "mo")
 Xc, Eg = dg1Eg.interpolate(0)
 
-Er = *(n*(Txx+Tyy+Tzz) + n*(ux*ux+uy*uy+uz*uz))
+Er = (n*(Txx+Tyy+Tzz) + n*(ux*ux+uy*uy+uz*uz))
 
 figure(cnt.bump())
 plot(Xc[0][:,0], Eg[:,0], 'ro-')
