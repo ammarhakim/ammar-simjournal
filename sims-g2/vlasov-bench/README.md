@@ -4,9 +4,6 @@ Free Streaming
 --------------
 
 - f1: Free-streaming, 1x1v, Serendipity p=1
-- f2: Free-streaming, 1x1v, Serendipity p=2
-- f1: Free-streaming, 1x1v, Max-order p=1
-- f2: Free-streaming, 1x1v, Max-order p=2
 
 Stand-alone Maxwell
 -------------------
