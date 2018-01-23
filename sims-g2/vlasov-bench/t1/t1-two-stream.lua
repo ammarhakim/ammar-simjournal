@@ -2,10 +2,7 @@
 local Vlasov = require "App.VlasovOnCartGrid"
 
 knumber = 0.5 -- wave-number
-elcCharge = -1.0 -- signed electron charge
-elcMass = 1.0 -- electron mass
 elVTerm = 0.25 -- electron thermal velocity
-epsilon0 = 1.0 -- permittivity of free space
 vDrift = 1.0 -- drift velocity
 perturbation = 1.0e-6 -- distribution function perturbation
 
@@ -56,7 +53,9 @@ vlasovApp = Vlasov.App {
    field = Vlasov.EmField {
       epsilon0 = 1.0, mu0 = 1.0,
       init = function (t, xn)
-	 return 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+	 local alpha = perturbation
+	 local k = knumber
+	 return -alpha*math.sin(k*xn[1])/k, 0.0, 0.0, 0.0, 0.0, 0.0
       end,
       evolve = true, -- evolve field?
    },
