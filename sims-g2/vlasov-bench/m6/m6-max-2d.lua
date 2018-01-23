@@ -23,9 +23,9 @@ vlasovApp = Vlasov.App {
    nFrame = 2, -- number of output frames
    lower = {0.0, 0.0}, -- configuration space lower left
    upper = {L, L}, -- configuration space upper right
-   cells = {16, 16}, -- configuration space cells
+   cells = {8, 8}, -- configuration space cells
    basis = "maximal-order", -- one of "serendipity" or "maximal-order"
-   polyOrder = 1, -- polynomial order
+   polyOrder = 2, -- polynomial order
    timeStepper = "rk3", -- one of "rk2", "rk3" or "rk3s4"
 
    -- decomposition for configuration space

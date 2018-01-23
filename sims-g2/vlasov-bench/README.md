@@ -3,7 +3,8 @@ Benchmark problems for Vlasov-Maxwell solver.
 Free Streaming
 --------------
 
-- f1: Free-streaming, 1x1v, Serendipity p=1
+- f1: Free-streaming, 1x1v, Serendipity, 32x16. p=1
+- f2: Free-streaming, 1x1v, Serendipity, 32x16. p=2
 
 Stand-alone Maxwell
 -------------------
@@ -18,3 +19,15 @@ Stand-alone Maxwell
 - m8: Plane-wave in 3D. Max-order p=1. 16x16x16 grid.
 - m9: Plane-wave in 3D. Serendipity p=2. 8x8x8 grid.
 - m10: Plane-wave in 3D. Max-order p=2. 8x8x8 grid.
+
+Potential Well
+--------------
+
+- p1: Potential well, Serendipity 1x1v, p=1
+- p2: Potential well, Serendipity 1x1v, p=2
+- p3: Potential well, Maximal-order 1x1v, p=1
+
+Two-stream instability
+----------------------
+
+- t1: Two-stream instability. Serendipity 1x1v, p=2

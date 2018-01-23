@@ -13,7 +13,8 @@ lightSpeed = Constants.SPEED_OF_LIGHT
 L = 1.0
 kwave = 2
 lwave = 2
-freq = 2*math.pi/L*math.sqrt(kwave^2+lwave^2)*lightSpeed
+mwave = 2
+freq = 2*math.pi/L*math.sqrt(kwave^2+lwave^2+mwave^2)*lightSpeed
 tperiod = 2*math.pi/freq
 
 vlasovApp = Vlasov.App {
@@ -21,19 +22,19 @@ vlasovApp = Vlasov.App {
 
    tEnd = tperiod, -- end time
    nFrame = 2, -- number of output frames
-   lower = {0.0, 0.0}, -- configuration space lower left
-   upper = {L, L}, -- configuration space upper right
-   cells = {16, 16}, -- configuration space cells
-   basis = "maximal-order", -- one of "serendipity" or "maximal-order"
+   lower = {0.0, 0.0, 0.0}, -- configuration space lower left
+   upper = {L, L, L}, -- configuration space upper right
+   cells = {16, 16, 16}, -- configuration space cells
+   basis = "serendipity", -- one of "serendipity" or "maximal-order"
    polyOrder = 1, -- polynomial order
    timeStepper = "rk3", -- one of "rk2", "rk3" or "rk3s4"
 
    -- decomposition for configuration space
-   decompCuts = {1, 1}, -- cuts in each configuration direction
+   decompCuts = {1, 1, 1}, -- cuts in each configuration direction
    useShared = false, -- if to use shared memory
 
    -- boundary conditions for configuration space
-   periodicDirs = {1, 2}, -- periodic directions
+   periodicDirs = {1, 2, 3}, -- periodic directions
 
    -- field solver
    field = Vlasov.EmField {
@@ -42,13 +43,13 @@ vlasovApp = Vlasov.App {
       mgnErrorSpeedFactor = 0,
       
       init = function (t, xn)
-	 local x, y = xn[1], xn[2]
+	 local x, y, z = xn[1], xn[2], xn[3]
 	 local cos = math.cos
 	 local pi = math.pi
 	 local c = lightSpeed
-	 local phi = 2*pi/L*(kwave*x+lwave*y)
-	 local knorm = math.sqrt(kwave^2+lwave^2)
-	 local kxn, kyn = kwave/knorm, lwave/knorm
+	 local phi = 2*pi/L*(kwave*x+lwave*y+mwave*z)
+	 local knorm = math.sqrt(kwave^2+lwave^2+mwave^2)
+	 local kxn, kyn, kzn = kwave/knorm, lwave/knorm, mwave/knorm
 	 local E0 = 1.0
 	 local Ex, Ey = 0.0, 0.0
 	 local Ez = E0*cos(phi)
