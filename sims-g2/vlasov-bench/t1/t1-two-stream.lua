@@ -16,7 +16,7 @@ vlasovApp = Vlasov.App {
    cells = {64}, -- configuration space cells
    basis = "serendipity", -- one of "serendipity" or "maximal-order"
    polyOrder = 2, -- polynomial order
-   timeStepper = "rk3", -- one of "rk2" or "rk3"
+   timeStepper = "rk3s4", -- one of "rk2" or "rk3"
 
    -- decomposition for configuration space
    decompCuts = {1}, -- cuts in each configuration direction
@@ -46,7 +46,7 @@ vlasovApp = Vlasov.App {
       end,
       evolve = true, -- evolve species?
 
-      diagnosticMoments = { "M0", "M2" }
+      diagnosticMoments = { "M0", "M1i", "M2" }
    },
 
    -- field solver

@@ -30,4 +30,4 @@ Potential Well
 Two-stream instability
 ----------------------
 
-- t1: Two-stream instability. Serendipity 1x1v, p=2
+- t1: Two-stream instability. Serendipity 1x1v, 64x16 p=2
