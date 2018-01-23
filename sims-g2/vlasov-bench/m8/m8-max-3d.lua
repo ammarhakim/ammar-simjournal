@@ -1,6 +1,5 @@
 -- Gkyl ------------------------------------------------------------------------
 --
--- See http://gkyl.readthedocs.io/en/latest/VlasovOnCartGrid.html
 -- 
 
 local Vlasov = require "App.VlasovOnCartGrid"
