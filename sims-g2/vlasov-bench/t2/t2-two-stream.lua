@@ -2,7 +2,7 @@
 local Vlasov = require "App.VlasovOnCartGrid"
 
 knumber = 0.5 -- wave-number
-elVTerm = 0.25 -- electron thermal velocity
+elVTerm = 0.2 -- electron thermal velocity
 vDrift = 1.0 -- drift velocity
 perturbation = 1.0e-6 -- distribution function perturbation
 
