@@ -31,4 +31,6 @@ Two-stream instability
 ----------------------
 
 - t1: Two-stream instability. Serendipity 1x1v, 64x16 p=2
-- t1: Two-stream instability. Serendipity 1x1v, 64x32 p=2
+- t2: Two-stream instability. Serendipity 1x1v, 64x32 p=2
+- t3: Two-stream instability. Serendipity 1x1v, 32x24 p=3
+- t4: Two-stream instability. Max-order 1x1v, 32x24 p=3

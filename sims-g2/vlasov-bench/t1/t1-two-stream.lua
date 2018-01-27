@@ -28,6 +28,8 @@ vlasovApp = Vlasov.App {
 
    -- electrons
    elc = Vlasov.Species {
+      nDistFuncFrame = 2,
+      
       charge = -1.0, mass = 1.0,
       -- velocity space grid
       lower = {-6.0},
