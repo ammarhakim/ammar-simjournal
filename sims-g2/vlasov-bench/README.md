@@ -34,3 +34,11 @@ Two-stream instability
 - t2: Two-stream instability. Serendipity 1x1v, 64x32 p=2
 - t3: Two-stream instability. Serendipity 1x1v, 32x24 p=3
 - t4: Two-stream instability. Max-order 1x1v, 32x24 p=3
+
+Weibel instability
+------------------
+
+- w1: Serendipity, 64x16^2, p=1
+- w2: Max-order, 64x16^2, p=1
+- w3: Serendipity, 64x16^2, p=2
+- w4: Max-order, 64x16^2, p=2

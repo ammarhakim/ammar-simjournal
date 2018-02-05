@@ -912,3 +912,7 @@ program for that simulation.
     - Same as s443, :math:`200\times 600\times 200` grid
   * - :doc:`s447 <s447/s447-5m-lhdi>` 
     - Five-moment LHDI simulation. Same as s441, except on a :math:`500\times 500` grid
+  * - :doc:`s448 <s448/s448-blast-2d>` 
+    - Euler blast-wave simulation. Athena test case.
+  * - :doc:`s449 <s449/s449-blast-2d>` 
+    - Same as s448, except on :math:`400\times 600` grid.
