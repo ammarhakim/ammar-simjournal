@@ -34,7 +34,6 @@ vlasovApp = Vlasov.App {
 
    -- boundary conditions for configuration space
    periodicDirs = {1}, -- periodic directions
-   bcx = { }, -- boundary conditions in X
 
    -- field solver
    field = Vlasov.EmField {

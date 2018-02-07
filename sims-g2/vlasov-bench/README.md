@@ -6,6 +6,12 @@ Free Streaming
 - f1: Free-streaming, 1x1v, Serendipity, 32x16. p=1
 - f2: Free-streaming, 1x1v, Serendipity, 32x16. p=2
 
+Free Streaming on open domain
+-----------------------------
+
+- o1: Free-streaming, 1x1v, Serendipity, 32x16. p=1
+- o1: Free-streaming, 1x1v, Serendipity, 32x16. p=2
+
 Stand-alone Maxwell
 -------------------
 
@@ -34,6 +40,14 @@ Two-stream instability
 - t2: Two-stream instability. Serendipity 1x1v, 64x32 p=2
 - t3: Two-stream instability. Serendipity 1x1v, 32x24 p=3
 - t4: Two-stream instability. Max-order 1x1v, 32x24 p=3
+
+Advection in a constant magnetic field
+--------------------------------------
+
+- c1: Constant magnetic field, Serendipity 1x2v, 4x16^2 p=1
+- c2: Same as c1, except p=2
+- c3: Constant magnetic field, Max-order 1x2v, 4x16^2 p=1
+- c4: Same as c3, except p=2
 
 Weibel instability
 ------------------

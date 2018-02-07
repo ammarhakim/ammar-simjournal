@@ -5,7 +5,6 @@ local Vlasov = require "App.VlasovOnCartGrid"
 chargeElc = -1.0
 chargeIon = 1.0
 massElc = 1.0
-massIon = 1836.0
 
 -- Initial conditions
 nElc10 = 0.5
@@ -19,21 +18,14 @@ uzElc20 = 0.0
 TElc10 = 0.01
 TElc20 = 0.01
 nIon0 = 1.0
-uxIon0 = 0.0
-uyIon0 = 0.0
-uzIon0 = 0.0
-TIon0 = 0.01
-k0 = 0.4
-perturb = 1e-3
 -- IC automatically calculated
 vthElc10 = math.sqrt(TElc10/massElc)
 vthElc20 = math.sqrt(TElc20/massElc)
-vthIon0 = math.sqrt(TIon0/massIon)
 
 knumber = 0.5 -- wave-number
 elVTerm = 0.2 -- electron thermal velocity
 vDrift = 1.0 -- drift velocity
-perturbation = 1.0e-6 -- distribution function perturbation
+B0 = 0.1 -- magnetic field
 
 -- Maxwellian in 1x2v
 local function maxwellian2D(n, vx, vy, ux, uy, vth)
@@ -44,14 +36,14 @@ end
 vlasovApp = Vlasov.App {
    logToFile = true,
 
-   tEnd = 150.0, -- end time
+   tEnd = 2*2*math.pi/B0, -- end time
    nFrame = 10, -- number of output frames
-   lower = { 0.0 }, -- configuration space lower left
-   upper = { 2*math.pi/k0 }, -- configuration space upper right
-   cells = {64}, -- configuration space cells
-   basis = "maximal-order", -- one of "serendipity" or "maximal-order"
+   lower = { -1.0 }, -- configuration space lower left
+   upper = { 1.0 }, -- configuration space upper right
+   cells = {4}, -- configuration space cells
+   basis = "serendipity", -- one of "serendipity" or "maximal-order"
    polyOrder = 2, -- polynomial order
-   timeStepper = "rk3s4", -- one of "rk2" or "rk3"
+   timeStepper = "rk3", -- one of "rk2" or "rk3"
 
    -- decomposition for configuration space
    decompCuts = {1}, -- cuts in each configuration direction
@@ -84,10 +76,9 @@ vlasovApp = Vlasov.App {
       epsilon0 = 1.0, mu0 = 1.0,
       init = function (t, xn)
 	 local x = xn[1]
-	 local Bz = perturb*math.sin(k0*x)
-	 return 0.0, 0.0, 0.0, 0.0, 0.0, Bz
+	 return 0.0, 0.0, 0.0, 0.0, 0.0, B0
       end,
-      evolve = true, -- evolve field?
+      evolve = false, -- evolve field?
    },
 }
 -- run application
