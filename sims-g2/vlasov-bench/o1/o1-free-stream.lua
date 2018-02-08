@@ -1,19 +1,18 @@
 -- Gkyl ------------------------------------------------------------------------
 --
---
-
+-- 
 local Vlasov = require "App.VlasovOnCartGrid"
 
 vlasovApp = Vlasov.App {
    logToFile = true,
 
-   tEnd = 20.0, -- end time
+   tEnd = 30.0, -- end time
    nFrame = 2, -- number of frames to write
    lower = {0.0}, -- configuration space lower left
    upper = {2*math.pi}, -- configuration space upper right
    cells = {32}, -- configuration space cells
    basis = "serendipity", -- one of "serendipity" or "maximal-order"
-   polyOrder = 2, -- polynomial order
+   polyOrder = 1, -- polynomial order
    timeStepper = "rk3", -- one of "rk2", "rk3" or "rk3s4"
 
    -- decomposition for configuration space
@@ -21,7 +20,7 @@ vlasovApp = Vlasov.App {
    useShared = false, -- if to use shared memory
 
    -- boundary conditions for configuration space
-   periodicDirs = {}, -- periodic directions
+   periodicDirs = { }, -- periodic directions
 
    -- electrons
    elc = Vlasov.Species {
