@@ -6,7 +6,7 @@ local Vlasov = require "App.VlasovOnCartGrid"
 vlasovApp = Vlasov.App {
    logToFile = true,
 
-   tEnd = 30.0, -- end time
+   tEnd = 20.0, -- end time
    nFrame = 2, -- number of frames to write
    lower = {0.0}, -- configuration space lower left
    upper = {2*math.pi}, -- configuration space upper right
