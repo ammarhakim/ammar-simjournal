@@ -41,6 +41,11 @@ Two-stream instability
 - t3: Two-stream instability. Serendipity 1x1v, 32x24 p=3
 - t4: Two-stream instability. Max-order 1x1v, 32x24 p=3
 
+Electrostatic Sod-shock problem
+-------------------------------
+
+- esss1: Electrostatic Sod-shock. mi=25, Te/T1=1
+
 Advection in a constant magnetic field
 --------------------------------------
 
