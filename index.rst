@@ -77,4 +77,5 @@ Gkeyll Simulation Journal
   je/je29/je29-es-shock.rst
   je/je30/je30-coupled-hw.rst
   je/je31/je31-antilim-adv.rst
+  je/je32/je32-vlasov-test-ptcl.rst
 
