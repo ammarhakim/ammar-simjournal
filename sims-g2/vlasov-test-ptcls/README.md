@@ -11,4 +11,9 @@ field.
 
 #c3
 
-Time-dependent electric field with constant magnetic field.
+Time-dependent electric field with constant magnetic
+field. Serendipity, p=2
+
+#c4
+
+Same as c3. Max-order, p=2

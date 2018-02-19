@@ -15,7 +15,7 @@ vlasovApp = Vlasov.App {
    lower = {0.0}, -- configuration space lower left
    upper = {2*math.pi}, -- configuration space upper right
    cells = {16}, -- configuration space cells
-   basis = "serendipity", -- one of "serendipity" or "maximal-order"
+   basis = "maximal-order", -- one of "serendipity" or "maximal-order"
    polyOrder = 2, -- polynomial order
    timeStepper = "rk3", -- one of "rk2" or "rk3"
 
