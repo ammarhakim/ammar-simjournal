@@ -4,8 +4,8 @@ import tables
 import matplotlib.transforms as mtransforms
 
 pylab.rc('text', usetex=True)
-pylab.subplots_adjust(left=0.125, bottom=0.1, right=0.9, top=0.9,
-                      wspace=0.2, hspace=0.2)
+pylab.subplots_adjust(left=0.14, bottom=0.09, right=0.54, top=0.9,
+                      wspace=0.0, hspace=0.11)
 for m in range(2):
     # open data file from Garcia & Siewert paper
     gsDatNm = "gs-radiances-m%d.csv" % m

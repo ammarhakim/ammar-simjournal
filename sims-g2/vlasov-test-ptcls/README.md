@@ -1,19 +1,7 @@
 Valsov for test-particle simulations
 
-#c1
+#c1 Constant electric field (quad potential case)
 
-Constant electric field (quad potential case)
+#c2 Time-dependent, but uniform electric field with constant magnetic
+field. w=0.5
 
-#c2
-
-Time-dependent, but uniform electric field with constant magnetic
-field.
-
-#c3
-
-Time-dependent electric field with constant magnetic
-field. Serendipity, p=2
-
-#c4
-
-Same as c3. Max-order, p=2
