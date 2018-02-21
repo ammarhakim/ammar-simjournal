@@ -73,8 +73,8 @@ For the resonant case, :math:`\omega =1`, these are given by
    w_x(t) &= \frac{E_0}{2}\left(t\cos(t)+\sin(t)\right) \\
    w_y(t) &= -\frac{E_0}{2} t\sin(t)
 
-As the Vlasov equation remains constant along characteristics, if
-initial distribution of the particles is given by
+As the distribution function remains constant along characteristics,
+if initial distribution of the particles is given by
 :math:`f_0(v_x,v_y)`, the distribution at any time is
 
 .. math::
@@ -105,6 +105,77 @@ which shows that the exact solution with an inital Maxwellian
 distribution is simply a drifting Maxwellian with drift velocity given
 by :math:`w_x(t), w_y(t)`.
 
+Non-resonant case
++++++++++++++++++
+
 In the first test I initialize a 1x2v simulation with :math:`\omega =
 0.5` and :math:`E_0 = 1.0` on a :math:`2\times 16\times 16` grid with
-Serendipity :math:`p=2` basis functions.
+Serendipity :math:`p=2` basis functions. The simulation is run to
+:math:`t=100`.
+
+For this case the phase-space orbits (starting at :math:`v_x=v_y=0.0`)
+are periodic and are shown as a thin white line in the figures and
+movie below.
+
+.. figure:: c2-oscc-E-cmp.png
+  :width: 100%
+  :align: center
+
+  Comparison of Gkeyll distribution function (left column) and exact
+  distribution function (right column) for test-particles in a
+  oscillating electric (but uniform) field. Magnetic field is
+  constant. The white line is the phase-space orbit starting at
+  :math:`v_x=v_y=0.0`. The orbit is periodic and the solution is a
+  drifting Maxwellian. This plot shows that Gkeyll solutions compares
+  very well with the exact solution. See movie of simulation.
+
+A more quantitative comparison can be made by plotting the drift
+velocities from the simulation and the exact result. This plot is
+shown below.
+
+.. figure:: c2-oscc-E-c-cmp.png
+  :width: 100%
+  :align: center
+
+  Comparison of x-componenet (top) and y-component (bottom) of drift
+  velocities from simulation (red dots) with exact solution (black
+  lines). The Gkeyll solutions compares very well with the exact
+  solution.
+
+Resonant case
++++++++++++++
+
+In the test I initialize a 1x2v simulation with :math:`\omega = 1.0`
+and :math:`E_0 = 0.5` on a :math:`2\times 20\times 20` grid with
+Serendipity :math:`p=2` basis functions. The simulation is run to
+:math:`t=20`.
+
+In the resonant case the velocity increases with time and the
+phase-space orbit is a spiral. Eventually the velocity increases to a
+point and the test-particle picture breaks down.
+
+
+.. figure:: c3-oscc-E-cmp.png
+  :width: 100%
+  :align: center
+
+  Comparison of Gkeyll distribution function (left column) and exact
+  distribution function (right column) for test-particles in a
+  oscillating electric (but uniform) field. Resonant case. Magnetic
+  field is constant. The white line is the phase-space orbit starting
+  at :math:`v_x=v_y=0.0`. The orbit is periodic and the solution is a
+  drifting Maxwellian. This plot shows that Gkeyll solutions compares
+  very well with the exact solution. See movie of simulation.
+
+A more quantitative comparison can be made by plotting the drift
+velocities from the simulation and the exact result. This plot is
+shown below.
+
+.. figure:: c3-oscc-E-c-cmp.png
+  :width: 100%
+  :align: center
+
+  Comparison of x-componenet (top) and y-component (bottom) of drift
+  velocities from simulation (red dots) with exact solution (black
+  lines). The Gkeyll solutions compares very well with the exact
+  solution.
