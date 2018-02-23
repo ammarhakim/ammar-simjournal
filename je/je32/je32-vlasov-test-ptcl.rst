@@ -47,7 +47,7 @@ described by two coupled ODEs:
 
 where I am assuming :math:`q = m = B_0 = 1`. (This means that
 :math:`\omega` is normalized to ion-cyclotron frequency and time is
-measured in its inverse). We can solve this sytem rather easily
+measured in its inverse). We can solve this system rather easily
 (convert to uncoupled second order ODEs and find particular solution
 for each) to get
 
@@ -101,7 +101,7 @@ Using the solution above we can show that
    =
    v_x(0)^2 + v_y(0)^2
 
-which shows that the exact solution with an inital Maxwellian
+which shows that the exact solution with an initial Maxwellian
 distribution is simply a drifting Maxwellian with drift velocity given
 by :math:`w_x(t), w_y(t)`.
 
@@ -115,7 +115,7 @@ Serendipity :math:`p=2` basis functions. The simulation is run to
 
 For this case the phase-space orbits (starting at :math:`v_x=v_y=0.0`)
 are periodic and are shown as a thin white line in the figures and
-movie below.
+`movie <../../_static/c2-oscc-E-vxvy.mov>`_ of distribution function.
 
 .. figure:: c2-oscc-E-cmp.png
   :width: 100%
@@ -127,7 +127,8 @@ movie below.
   constant. The white line is the phase-space orbit starting at
   :math:`v_x=v_y=0.0`. The orbit is periodic and the solution is a
   drifting Maxwellian. This plot shows that Gkeyll solutions compares
-  very well with the exact solution. See movie of simulation.
+  very well with the exact solution. See :doc:`vlasov-test-ptcls/c2
+  <c2-oscc-E>` for input file.
 
 A more quantitative comparison can be made by plotting the drift
 velocities from the simulation and the exact result. This plot is
@@ -137,10 +138,10 @@ shown below.
   :width: 100%
   :align: center
 
-  Comparison of x-componenet (top) and y-component (bottom) of drift
+  Comparison of x-component (top) and y-component (bottom) of drift
   velocities from simulation (red dots) with exact solution (black
   lines). The Gkeyll solutions compares very well with the exact
-  solution.
+  solution. 
 
 Resonant case
 +++++++++++++
@@ -151,8 +152,8 @@ Serendipity :math:`p=2` basis functions. The simulation is run to
 :math:`t=20`.
 
 In the resonant case the velocity increases with time and the
-phase-space orbit is a spiral. Eventually the velocity increases to a
-point and the test-particle picture breaks down.
+phase-space orbit is a spiral. Eventually the velocity increases so
+much that the test-particle picture breaks down.
 
 
 .. figure:: c3-oscc-E-cmp.png
@@ -163,9 +164,10 @@ point and the test-particle picture breaks down.
   distribution function (right column) for test-particles in a
   oscillating electric (but uniform) field. Resonant case. Magnetic
   field is constant. The white line is the phase-space orbit starting
-  at :math:`v_x=v_y=0.0`. The orbit is periodic and the solution is a
+  at :math:`v_x=v_y=0.0`. The orbit is a spiral and the solution is a
   drifting Maxwellian. This plot shows that Gkeyll solutions compares
-  very well with the exact solution. See movie of simulation.
+  very well with the exact solution. See :doc:`vlasov-test-ptcls/c3
+  <c3-oscc-E>` for input file.
 
 A more quantitative comparison can be made by plotting the drift
 velocities from the simulation and the exact result. This plot is
@@ -175,7 +177,154 @@ shown below.
   :width: 100%
   :align: center
 
-  Comparison of x-componenet (top) and y-component (bottom) of drift
+  Comparison of x-component (top) and y-component (bottom) of drift
   velocities from simulation (red dots) with exact solution (black
   lines). The Gkeyll solutions compares very well with the exact
   solution.
+
+Time- and spatially-dependent electric field
+--------------------------------------------
+
+Now consider the magnetic field is constant and pointing in the
+z-direction, :math:`\mathbf{B} = B_0 \mathbf{e}_z`. The electric field
+is given by
+
+.. math::
+
+   \mathbf{E}(x,t) = E_0 \cos(kx - \omega t) \mathbf{e}_x.
+
+The motion of ions in this field are given by three coupled ODEs
+
+.. math::
+
+   \dot{v}_x &= E_0 \cos(kx - \omega t) + v_y \\
+   \dot{v}_y &= -v_x   \\
+   \dot{x} &= v_x
+
+where I am assuming :math:`q = m = B_0 = 1`. (This means that
+:math:`\omega` is normalized to ion-cyclotron frequency and time is
+measured in its inverse). Note that we can eliminate :math:`v_y` using
+the third equation to get a set of two coupled equations
+
+.. math::
+
+   \dot{v}_x &= E_0 \cos(kx - \omega t) - x \\
+   \dot{x} &= v_x
+
+Low-amplitude, non-stochastic case
+++++++++++++++++++++++++++++++++++
+
+First, consider :math:`E_0 = 0.5` and :math:`\omega=0.4567`. In this
+low amplitude regime, the particle motion is regular. The domain is
+:math:`[0,2\pi] \times [-6,6]^2` and is discretized with a
+:math:`16\times 24^2` grid, using polyOrder 2 Serendipity basis
+functions. The simulation is run to :math:`t=100` with a Maxwellian
+initial condition with :math:`v_{th}= \sqrt{T/m} = 1`.
+
+In this non-stochastic case we do not expect any significant heating
+of the particles. To diagnose this I plot the distribution function
+integrated over a single wavelength:
+
+.. math::
+
+   f(v_x,v_y,t) = \frac{1}{2\pi}\int_0^{2\pi} f(x,v_x,v_y,t)
+   \thinspace dx
+
+The following figure shows the integrate distribution function at four
+different times.
+
+.. figure:: c4-vxvy-cmp.png
+  :width: 100%
+  :align: center
+
+  Integrated distribution function for time- and spatially dependent
+  electric field case, at :math:`t=0` (top-left), :math:`t=25`
+  (top-right), :math:`t=50` (bottom-left) and :math:`t=100`
+  (bottom-right). This case has regular (non-stochastic) orbits and
+  hence does not show any heating of the particles. Note that although
+  the distribution function is non-Maxwellian the temperature has not
+  changed significantly. See :doc:`vlasov-test-ptcls/c4 <c4-oscc-E>`
+  for input file.
+
+
+.. figure:: c4-vxvy-cmp-1d.png
+  :width: 100%
+  :align: center
+
+  One dimensional line-outs of the 2D integrated distribution
+  functions shown in the pervious plot. The particles slosh around in
+  the oscillating electric field, but the temperature has not changed
+  significantly.
+
+The thermal energy in the system, :math:`n v_{th}^2` is shown below. 
+
+.. figure:: c4-temp-cmp-1d.png
+  :width: 100%
+  :align: center
+
+  Thermal energy :math:`n v_{th}^2` at various times. Dashed lines
+  show the averaged thermal energy in the domain. This figure shows
+  that the thermal energy only increases modestly (about 10%),
+  indicating that the particles gains little energy from the fields.
+
+Large-amplitude, stochastic case
+++++++++++++++++++++++++++++++++
+
+Now consider :math:`E_0 = 0.95` and :math:`\omega=0.4567`. In this
+large amplitude regime, the particle motion is stochastic. The
+simulation is run with the same parameters as the previous
+calculations.
+
+The following figure shows the integrate distribution function at four
+different times.
+
+.. figure:: c5-vxvy-cmp.png
+  :width: 100%
+  :align: center
+
+  Integrated distribution function for time- and spatially dependent
+  electric field case, at :math:`t=0` (top-left), :math:`t=25`
+  (top-right), :math:`t=50` (bottom-left) and :math:`t=100`
+  (bottom-right). This case has stochastic orbits and hence has
+  significant stochastic heating of the particles. See
+  :doc:`vlasov-test-ptcls/c5 <c5-oscc-E>` for input file.
+
+
+.. figure:: c5-vxvy-cmp-1d.png
+  :width: 100%
+  :align: center
+
+  One dimensional line-outs of the 2D integrated distribution
+  functions shown in the previous plot. The distribution function is
+  significantly non-Maxwellian, showing flattening from stochastic
+  heating.
+
+The thermal energy in the system, :math:`n v_{th}^2` is shown below. 
+
+.. figure:: c5-temp-cmp-1d.png
+  :width: 100%
+  :align: center
+
+  Thermal energy :math:`n v_{th}^2` at various times. Dashed lines
+  show the averaged thermal energy in the domain. This figure shows
+  that the thermal energy increases significantly (almost 80%),
+  indicating that the particles gain significant energy from the
+  fields.
+
+Conclusion
+----------
+
+In this note I have tested some simple problems of test particle
+evolution in specified electromagnetic fields. The code is first
+benchmarked against exact solution and then two cases of motion in a
+time-dependent field are studies. In the low amplitude regime the
+particle motion is regular, with little heating of the particles. In
+the large amplitude case the particle orbits are stochastic and this
+leads to significant heating, leading to flattening of the
+distribution function.
+
+The questions remains: what is the signature of stochastic particle
+orbits on the distribution function?  Is it possible to develop
+Poincare type plots using the distribution function? Is there a
+self-consistent formulation, in which the distribution function feeds
+current to the fields? These topics will be explored later.
