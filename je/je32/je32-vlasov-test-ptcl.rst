@@ -1,6 +1,6 @@
 :Author: Ammar Hakim
 :Date: 18th Feb 2018
-:Completed: 
+:Completed: 23rd Feb 2018
 :Last Updated:
 
 JE32: Test particles in an electromagnetic field: stochastic heating
@@ -275,6 +275,11 @@ large amplitude regime, the particle motion is stochastic. The
 simulation is run with the same parameters as the previous
 calculations.
 
+See `movie <../../_static/c5-oscc-E-f.mov>`_ of distribution function,
+showing :math:`f(x=\pi,v_x,v_y)` and :math:`f(x,v_x,v_y=0)`. Complex
+phase-space structure is seen and also temperature increase is
+evident.
+
 The following figure shows the integrate distribution function at four
 different times.
 
@@ -323,8 +328,9 @@ the large amplitude case the particle orbits are stochastic and this
 leads to significant heating, leading to flattening of the
 distribution function.
 
-The questions remains: what is the signature of stochastic particle
-orbits on the distribution function?  Is it possible to develop
-Poincare type plots using the distribution function? Is there a
-self-consistent formulation, in which the distribution function feeds
-current to the fields? These topics will be explored later.
+Questions: What are the signatures of stochastic particle orbits on
+the distribution function?  Is it possible to develop Poincare type
+plots (or other unambiguous signatures) using the distribution
+function? Is there a self-consistent formulation, in which the
+distribution function feeds current to the fields? These topics will
+be explored later.
