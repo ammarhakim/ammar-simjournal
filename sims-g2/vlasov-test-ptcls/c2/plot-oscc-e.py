@@ -25,7 +25,7 @@ def plotFig(i,fr):
     #colorbar()
     plot(wx, wy, 'w', linewidth=1)
     axis('image')
-    savefig("oscc-E-%05d.png" % i, dpi=150)
+    savefig("oscc-E-%05d.png" % i)
     close()
 
 for i in range(101):
