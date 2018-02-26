@@ -203,13 +203,15 @@ The motion of ions in this field are given by three coupled ODEs
 
 where I am assuming :math:`q = m = B_0 = 1`. (This means that
 :math:`\omega` is normalized to ion-cyclotron frequency and time is
-measured in its inverse). Note that we can eliminate :math:`v_y` using
-the third equation to get a set of two coupled equations
+measured in its inverse).
 
-.. math::
+To understand the behavior of this system I solved it numerically
+using a time-centered scheme. The plots below shows the Poincare plot
+of the extended phase-space :math:`(v_x,x=0,t)`. The plots were made
+by evolving eight particles over a 1000 periods and then plotting a
+dot when the trajectory crosses the section (modulo
+:math:`2\pi/\omega`).
 
-   \dot{v}_x &= E_0 \cos(kx - \omega t) - x \\
-   \dot{x} &= v_x
 
 Low-amplitude, non-stochastic case
 ++++++++++++++++++++++++++++++++++
@@ -230,7 +232,7 @@ integrated over a single wavelength:
    f(v_x,v_y,t) = \frac{1}{2\pi}\int_0^{2\pi} f(x,v_x,v_y,t)
    \thinspace dx
 
-The following figure shows the integrate distribution function at four
+The following figure shows the integrated distribution function at four
 different times.
 
 .. figure:: c4-vxvy-cmp.png
@@ -280,8 +282,8 @@ showing :math:`f(x=\pi,v_x,v_y)` and :math:`f(x,v_x,v_y=0)`. Complex
 phase-space structure is seen and also temperature increase is
 evident.
 
-The following figure shows the integrate distribution function at four
-different times.
+The following figure shows the integrated distribution function at
+four different times.
 
 .. figure:: c5-vxvy-cmp.png
   :width: 100%
