@@ -209,8 +209,22 @@ To understand the behavior of this system I solved it numerically
 using a time-centered scheme. The plots below shows the Poincare plot
 of the extended phase-space :math:`(v_x,x=0,t)`. The plots were made
 by evolving eight particles over a 1000 periods and then plotting a
-dot when the trajectory crosses the section (modulo
-:math:`2\pi/\omega`).
+dot when the trajectory crosses the selected phase-space section
+(modulo :math:`2\pi/\omega`).
+
+.. figure:: ptcl-poincare-E0.png
+  :width: 100%
+  :align: center
+
+  Poincare plots for test-particle motion in time-dependent electric
+  field. The plots were made by tracing eight particles for hundreds
+  of cyclotron periods. This figure shows that as the electric field
+  strength increases the motion becomes stochastic. At first there are
+  few island chains, which open up to form more island chains,
+  eventually most low-energy particles become stochastic. Color
+  indicate value of the distribution function carried by that
+  particle. Given these plots one may conjecture that the distribution
+  function will flatten when the particle orbits are fully stochastic.
 
 
 Low-amplitude, non-stochastic case
@@ -254,7 +268,7 @@ different times.
   :align: center
 
   One dimensional line-outs of the 2D integrated distribution
-  functions shown in the pervious plot. The particles slosh around in
+  functions shown in the previous plot. The particles slosh around in
   the oscillating electric field, but the temperature has not changed
   significantly.
 
