@@ -17,7 +17,6 @@ field. w=1.0 (Resonant case)
 #c6. Time- and spatially-dependent electric field with constant
  magnetic field. E0=0.6
 
-Self-consistent versions
-
-#s2 Self-consisten version of c2
+Self-consistent versions are in the sN directories, and correspond to
+the test-distribution versions.
 
