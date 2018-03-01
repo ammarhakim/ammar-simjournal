@@ -45,7 +45,16 @@ vlasovApp = Vlasov.App {
       diagnosticMoments = { "M1i" }
    },
 
-   -- field solver
+   -- field solvers
+   field = Vlasov.EmField {
+      epsilon0 = 1.0, mu0 = 1.0,
+
+      init = function (t, xn)
+	 return 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+      end,
+      evolve = true, -- evolve field?
+   },   
+
    funcField = Vlasov.FuncField {
       emFunc = function (t, xn)
 	 local omega = 1.0

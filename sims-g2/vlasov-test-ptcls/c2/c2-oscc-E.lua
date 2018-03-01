@@ -46,7 +46,7 @@ vlasovApp = Vlasov.App {
    },
 
    -- field solver
-   field = Vlasov.FuncField {
+   funcField = Vlasov.FuncField {
       emFunc = function (t, xn)
 	 local omega = 0.5
 	 local B0 = 1.0
