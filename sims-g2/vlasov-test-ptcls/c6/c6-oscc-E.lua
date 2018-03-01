@@ -10,16 +10,16 @@ end
 vlasovApp = Vlasov.App {
    logToFile = true,
 
-   tEnd = 20.0, -- end time
-   nFrame = 20, -- number of output frames
+   tEnd = 100.0, -- end time
+   nFrame = 100, -- number of output frames
    lower = {0.0}, -- configuration space lower left
    upper = {2*math.pi}, -- configuration space upper right
-   cells = {2}, -- configuration space cells
-   cflFrac = 0.5,
+   cells = {16}, -- configuration space cells
    basis = "serendipity", -- one of "serendipity" or "maximal-order"
    polyOrder = 2, -- polynomial order
-   timeStepper = "rk3", -- one of "rk2" or "rk3"
+   timeStepper = "rk3s4", -- one of "rk2" or "rk3"
 
+   ioMethod = "POSIX",   
    -- decomposition for configuration space
    decompCuts = {1}, -- cuts in each configuration direction
    useShared = false, -- if to use shared memory
@@ -31,26 +31,26 @@ vlasovApp = Vlasov.App {
    ions = Vlasov.Species {
       charge = 1.0, mass = 1.0,
       -- velocity space grid
-      lower = {-8.0, -8.0},
-      upper = {8.0, 8.0},
-      cells = {20, 20},
+      lower = {-6.0, -6.0},
+      upper = {6.0, 6.0},
+      cells = {24, 24},
       decompCuts = {1, 1},
       -- initial conditions
       init = function (t, xn)
 	 local x, vx, vy = xn[1], xn[2], xn[3]
 	 return maxwellian2D(1.0, vx, vy, 0.0, 0.0, 1.0)
       end,
+      diagnosticMoments = { "M0", "M1i", "M2" },
       evolve = true, -- evolve species?
-
-      diagnosticMoments = { "M1i" }
    },
 
    -- field solver
    funcField = Vlasov.FuncField {
       emFunc = function (t, xn)
-	 local omega = 1.0
+	 local x = xn[1]
+	 local nu = 0.4567
 	 local B0 = 1.0
-	 local Ex = 0.5*math.cos(omega*t)
+	 local Ex = 0.6*math.sin(x-nu*t)
 	 return Ex, 0.0, 0.0, 0.0, 0.0, B0
       end,
       evolve = true, -- evolve field?

@@ -10,8 +10,8 @@ end
 vlasovApp = Vlasov.App {
    logToFile = true,
 
-   tEnd = 20.0, -- end time
-   nFrame = 20, -- number of output frames
+   tEnd = 100.0, -- end time
+   nFrame = 100, -- number of output frames
    lower = {0.0}, -- configuration space lower left
    upper = {2*math.pi}, -- configuration space upper right
    cells = {2}, -- configuration space cells
@@ -31,9 +31,9 @@ vlasovApp = Vlasov.App {
    ions = Vlasov.Species {
       charge = 1.0, mass = 1.0,
       -- velocity space grid
-      lower = {-8.0, -8.0},
-      upper = {8.0, 8.0},
-      cells = {20, 20},
+      lower = {-6.0, -6.0},
+      upper = {6.0, 6.0},
+      cells = {16, 16},
       decompCuts = {1, 1},
       -- initial conditions
       init = function (t, xn)
@@ -45,12 +45,21 @@ vlasovApp = Vlasov.App {
       diagnosticMoments = { "M1i" }
    },
 
-   -- field solver
+   -- field solvers
+   field = Vlasov.EmField {
+      epsilon0 = 1.0, mu0 = 1.0,
+
+      init = function (t, xn)
+	 return 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+      end,
+      evolve = true, -- evolve field?
+   },
+   
    funcField = Vlasov.FuncField {
       emFunc = function (t, xn)
-	 local omega = 1.0
+	 local omega = 0.5
 	 local B0 = 1.0
-	 local Ex = 0.5*math.cos(omega*t)
+	 local Ex = 1.0*math.cos(omega*t)
 	 return Ex, 0.0, 0.0, 0.0, 0.0, B0
       end,
       evolve = true, -- evolve field?

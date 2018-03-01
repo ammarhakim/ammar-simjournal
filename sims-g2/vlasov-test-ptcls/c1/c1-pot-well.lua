@@ -37,7 +37,7 @@ vlasovApp = Vlasov.App {
    },
 
    -- field solver
-   field = Vlasov.FuncField {
+   funcField = Vlasov.FuncField {
       emFunc = function (t, xn)
 	 local Ex = -math.sin(xn[1])
 	 return Ex, 0.0, 0.0, 0.0, 0.0, 0.0
