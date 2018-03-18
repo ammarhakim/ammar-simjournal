@@ -78,4 +78,5 @@ Gkeyll Simulation Journal
   je/je30/je30-coupled-hw.rst
   je/je31/je31-antilim-adv.rst
   je/je32/je32-vlasov-test-ptcl.rst
+  je/je33/je33-vlasov-self-consistent.rst
 
