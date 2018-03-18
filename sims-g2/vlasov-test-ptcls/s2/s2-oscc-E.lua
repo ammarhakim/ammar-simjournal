@@ -54,6 +54,7 @@ vlasovApp = Vlasov.App {
       end,
       evolve = true, -- evolve field?
    },
+
    
    funcField = Vlasov.FuncField {
       emFunc = function (t, xn)

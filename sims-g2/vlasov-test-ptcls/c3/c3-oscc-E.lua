@@ -15,11 +15,11 @@ vlasovApp = Vlasov.App {
    lower = {0.0}, -- configuration space lower left
    upper = {2*math.pi}, -- configuration space upper right
    cells = {2}, -- configuration space cells
-   cflFrac = 0.5,
    basis = "serendipity", -- one of "serendipity" or "maximal-order"
    polyOrder = 2, -- polynomial order
    timeStepper = "rk3", -- one of "rk2" or "rk3"
-
+   ioMethod = "POSIX",
+   
    -- decomposition for configuration space
    decompCuts = {1}, -- cuts in each configuration direction
    useShared = false, -- if to use shared memory

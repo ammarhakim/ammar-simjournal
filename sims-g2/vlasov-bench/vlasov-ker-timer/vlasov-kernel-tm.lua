@@ -73,7 +73,7 @@ function timeKernel(bnm, polyOrder, cdim, vdim, nloop)
    print(string.format("Surface-force %g secs", tmEnd-tmStart))
    print(string.format("Full force update should take %g secs", vf+vdim*sf))
 
-   print(string.format("Total update should take %g", vs+cdim*ss + vf+vdim*sf))
+   print(string.format("Total update should take %g per cell", (vs+cdim*ss + vf+vdim*sf)/nloop))
    print(string.format("Number of updates %d\n\n", nloop))
 end
 

@@ -3,8 +3,8 @@
 :Completed: 23rd Feb 2018
 :Last Updated:
 
-JE32: Test particles in an electromagnetic field: stochastic heating
-====================================================================
+JE32: Test distribution in an electromagnetic field: stochastic heating
+=======================================================================
 
 .. contents::
 
@@ -22,7 +22,7 @@ algorithms in Gkeyll are capable of handling these types of problems.
 Note that the fields are not self-consistently coupled to the
 particles. That is, even though the particles move in the specified
 fields, the currents do not modify the fields. Hence, these problems
-can be considered to belong to the class of "test particle"
+can be considered to belong to the class of "test distribution"
 simulations.
 
 Uniform time-dependent electric field
@@ -335,7 +335,7 @@ The thermal energy in the system, :math:`n v_{th}^2` is shown below.
 Conclusion
 ----------
 
-In this note I have tested some simple problems of test particle
+In this note I have tested some simple problems of test distribution
 evolution in specified electromagnetic fields. The code is first
 benchmarked against exact solution and then two cases of motion in a
 time-dependent field are studies. In the low amplitude regime the
