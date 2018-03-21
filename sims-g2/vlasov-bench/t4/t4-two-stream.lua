@@ -16,7 +16,7 @@ vlasovApp = Vlasov.App {
    cells = {32}, -- configuration space cells
    basis = "maximal-order", -- one of "serendipity" or "maximal-order"
    polyOrder = 3, -- polynomial order
-   timeStepper = "rk3s4", -- one of "rk2" or "rk3"
+   timeStepper = "rk3", -- one of "rk2" or "rk3"
 
    -- decomposition for configuration space
    decompCuts = {1}, -- cuts in each configuration direction
