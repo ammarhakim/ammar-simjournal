@@ -1,6 +1,6 @@
 local Lin = require "Lib.Linalg"
 local Time = require "Lib.Time"
-local VlasovModDecl = require "Updater.vlasovData.VlasovModDecl"
+local VlasovModDecl = require "Eq.vlasovData.VlasovModDecl"
 local ffi = require "ffi"
 local Basis = require "Basis"
 
@@ -77,16 +77,16 @@ function timeKernel(bnm, polyOrder, cdim, vdim, nloop)
    print(string.format("Number of updates %d\n\n", nloop))
 end
 
-timeKernel("ms", 2, 1, 1, 1e8)
---timeKernel("ms", 2, 1, 2, 1e6)
---timeKernel("ms", 2, 1, 3, 1e6)
---timeKernel("ms", 2, 2, 2, 1e6)
---timeKernel("ms", 2, 2, 3, 1e6)
+timeKernel("ms", 2, 1, 1, 1e6)
+timeKernel("ms", 2, 1, 2, 1e6)
+timeKernel("ms", 2, 1, 3, 1e6)
+timeKernel("ms", 2, 2, 2, 1e6)
+timeKernel("ms", 2, 2, 3, 1e6)
 
---timeKernel("mo", 2, 1, 1, 1e7)
---timeKernel("mo", 2, 1, 2, 1e7)
---timeKernel("mo", 2, 1, 3, 1e7)
---timeKernel("mo", 2, 2, 2, 1e7)
---timeKernel("mo", 2, 2, 3, 1e7)
+timeKernel("mo", 2, 1, 1, 1e7)
+timeKernel("mo", 2, 1, 2, 1e7)
+timeKernel("mo", 2, 1, 3, 1e7)
+timeKernel("mo", 2, 2, 2, 1e7)
+timeKernel("mo", 2, 2, 3, 1e7)
 
 
