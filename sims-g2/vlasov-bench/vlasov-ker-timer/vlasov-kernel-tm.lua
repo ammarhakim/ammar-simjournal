@@ -4,6 +4,9 @@ local VlasovModDecl = require "Eq.vlasovData.VlasovModDecl"
 local ffi = require "ffi"
 local Basis = require "Basis"
 
+local fl = io.open("vlasov-kernel-tm.out", "w")
+fl:write(string.format("basis, p, CDIM, VDIM, N, stream, accel, time, time-per-DOF\n"))
+
 function timeKernel(bnm, polyOrder, cdim, vdim, nloop)
    local ndim = cdim+vdim
 
@@ -73,20 +76,53 @@ function timeKernel(bnm, polyOrder, cdim, vdim, nloop)
    print(string.format("Surface-force %g secs", tmEnd-tmStart))
    print(string.format("Full force update should take %g secs", vf+vdim*sf))
 
+   local ts = (vs+cdim*ss)/nloop
+   local ta = (vf+vdim*sf)/nloop
+   local tt = (vs+cdim*ss + vf+vdim*sf)/nloop
    print(string.format("Total update should take %g per cell", (vs+cdim*ss + vf+vdim*sf)/nloop))
    print(string.format("Number of updates %d\n\n", nloop))
+   
+   fl:write(string.format("%s, %d, %d, %d, %d, %g, %g, %g, %g\n", bnm, polyOrder, cdim, vdim, nPhase, ts, ta, tt, tt/nPhase))
 end
 
-timeKernel("ms", 2, 1, 1, 1e6)
-timeKernel("ms", 2, 1, 2, 1e6)
-timeKernel("ms", 2, 1, 3, 1e6)
-timeKernel("ms", 2, 2, 2, 1e6)
-timeKernel("ms", 2, 2, 3, 1e6)
+for i = 1, 2 do
+   timeKernel("ms", i, 1, 1, 1e6)
+end
 
-timeKernel("mo", 2, 1, 1, 1e7)
-timeKernel("mo", 2, 1, 2, 1e7)
-timeKernel("mo", 2, 1, 3, 1e7)
-timeKernel("mo", 2, 2, 2, 1e7)
-timeKernel("mo", 2, 2, 3, 1e7)
+for i = 1, 2 do
+   timeKernel("ms", i, 1, 2, 1e6)
+end
+
+for i = 1, 2 do
+   timeKernel("ms", i, 1, 3, 1e6)
+end
+
+for i = 1, 2 do
+   timeKernel("ms", i, 2, 2, 1e6)
+end
+
+for i = 1, 2 do
+   timeKernel("ms", i, 2, 3, 1e6)
+end
+
+for i = 1, 4 do
+   timeKernel("mo", i, 1, 1, 1e7)
+end
+
+for i = 1, 4 do
+   timeKernel("mo", i, 1, 2, 1e7)
+end
+
+for i = 1, 4 do
+   timeKernel("mo", i, 1, 3, 1e7)
+end
+
+for i = 1, 4 do
+   timeKernel("mo", i, 2, 2, 1e7)
+end
+
+for i = 1, 4 do
+   timeKernel("mo", i, 2, 3, 1e7)
+end
 
 
