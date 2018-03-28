@@ -46,7 +46,9 @@ function timeKernel(bnm, polyOrder, cdim, vdim, nloop)
 
    tmStart = Time.clock()   
    for i = 1, nloop do
-      surfStreamUpdate[1](w:data(), dxv:data(), fInL:data(), fInR:data(), fOutL:data(), fOutR:data())
+      surfStreamUpdate[1](
+	 w:data(), w:data(), dxv:data(), dxv:data(),
+	 fInL:data(), fInR:data(), fOutL:data(), fOutR:data())
    end
    tmEnd = Time.clock()
    local ss = tmEnd-tmStart
@@ -68,7 +70,9 @@ function timeKernel(bnm, polyOrder, cdim, vdim, nloop)
 
    tmStart = Time.clock()
    for i = 1, nloop do
-      surfForceUpdate[1](w:data(), dxv:data(), 1.0, E:data(), fInL:data(), fInR:data(), fOutL:data(), fOutR:data())
+      surfForceUpdate[1](
+	 w:data(), w:data(), dxv:data(), dxv:data(),
+	 1.0, E:data(), fInL:data(), fInR:data(), fOutL:data(), fOutR:data())
    end
    tmEnd = Time.clock()
    local sf = tmEnd-tmStart
