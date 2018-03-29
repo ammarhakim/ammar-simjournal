@@ -25,6 +25,7 @@ Stand-alone Maxwell
 - m8: Plane-wave in 3D. Max-order p=1. 16x16x16 grid.
 - m9: Plane-wave in 3D. Serendipity p=2. 8x8x8 grid.
 - m10: Plane-wave in 3D. Max-order p=2. 8x8x8 grid.
+- m11: EM pulse in a box. Serendipity p=1, 32x32 grid
 
 Potential Well
 --------------
