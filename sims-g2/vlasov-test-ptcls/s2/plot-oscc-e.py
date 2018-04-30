@@ -17,7 +17,7 @@ wx, wy = wNR(T)
 def plotFig(i,fr):
     print("Working on %d ..." % i)
     figure(i)
-    data = pg.GData("s2-oscc-E_ions_%d.bp" % fr)x
+    data = pg.GData("s2-oscc-E_ions_%d.bp" % fr)
     dg = pg.data.GInterpModal(data, 2, "ms")
     XX, q = dg.interpolate()
 
