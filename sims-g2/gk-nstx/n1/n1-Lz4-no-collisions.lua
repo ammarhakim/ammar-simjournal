@@ -80,7 +80,6 @@ plasmaApp = Plasma.App {
    electron = Plasma.GkSpecies {
       charge = qe,
       mass = me,
-      -- velocity space grid
       lower = {-4*vte, 0},
       upper = {4*vte, 12*me*vte^2/(2*B0)},
       cells = {16, 8},
@@ -108,7 +107,7 @@ plasmaApp = Plasma.App {
                     return 20*eV
                  end
               end,
-             },
+      },
       source = {"maxwellian", density = sourceDensity, temperature = sourceTemperature},
       evolve = true, -- evolve species?
       diagnosticMoments = {"GkM0", "GkM1"}, 
@@ -158,12 +157,12 @@ plasmaApp = Plasma.App {
                     Te = 20*eV
                  end
                  if math.abs(z) <= Lz/4 then
-                   return z/(Lz/4)*math.sqrt(Te/mi)
+		    return z/(Lz/4)*math.sqrt(Te/mi)
                  else
-                   return z/math.abs(z)*math.sqrt(Te/mi)
+		    return z/math.abs(z)*math.sqrt(Te/mi)
                  end
               end,
-             },
+      },
       source = {"maxwellian", density = sourceDensity, temperature = sourceTemperature},
       evolve = true, -- evolve species?
       diagnosticMoments = {"GkM0", "GkM1"}, 
