@@ -82,7 +82,7 @@ function timeKernel(bnm, polyOrder, cdim, vdim, nloop)
 
    local ts = (vs+cdim*ss)/nloop
    local ta = (vf+vdim*sf)/nloop
-   local tt = (vs+cdim*ss + vf+vdim*sf)/nloop
+   local tt = ts+ta
    print(string.format("Total update should take %g per cell", (vs+cdim*ss + vf+vdim*sf)/nloop))
    print(string.format("Number of updates %d\n\n", nloop))
    
