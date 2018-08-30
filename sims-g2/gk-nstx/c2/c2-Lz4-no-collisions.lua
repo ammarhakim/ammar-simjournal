@@ -4,6 +4,7 @@ local Constants = require "Lib.Constants"
 local Mpi = require "Comm.Mpi"
 
 -- physical parameters
+eps0 = Constants.EPSILON0
 eV = Constants.ELEMENTARY_CHARGE
 qe = -eV
 qi = eV
@@ -21,6 +22,16 @@ P_SOL = 8.1e5 -- [W]
 S0 = 5.7691e23
 xSource = R - 0.05 -- [m], source start coordinate
 lambdaSource = 0.005 -- [m], characteristic length scale of density and temperature
+
+-- parameters for collisions
+nuFrac = 0.1
+logLambdaElc = 6.6 - 0.5*math.log(n0/1e20) + 1.5*math.log(Te0/eV)
+nuElc = nuFrac*logLambdaElc*eV^4*n0/(6*math.sqrt(2)*math.pi^(3/2)*eps0^2*math.sqrt(me)*(Te0)^(3/2))  --collision freq
+logLambdaIon = 6.6 - 0.5*math.log(n0/1e20) + 1.5*math.log(Ti0/eV)
+nuIon = nuFrac*logLambdaIon*eV^4*n0/(12*math.pi^(3/2)*eps0^2*math.sqrt(mi)*(Ti0)^(3/2))
+
+print(string.format("nuElc = %g. tauElc = %g", nuElc, 1/nuElc))
+
 -- derived parameters
 vti     = math.sqrt(Ti0/mi)
 vte  	= math.sqrt(Te0/me)
@@ -109,6 +120,7 @@ plasmaApp = Plasma.App {
                  end
               end,
       },
+      coll = Plasma.GkLBOCollisions { collFreq = nuElc },
       source = {"maxwellian", density = sourceDensity, temperature = sourceTemperature},
       evolve = true, -- evolve species?
       diagnosticMoments = {"GkM0", "GkM1"}, 
@@ -164,6 +176,7 @@ plasmaApp = Plasma.App {
                  end
               end,
       },
+      coll = Plasma.GkLBOCollisions { collFreq = nuIon },
       source = {"maxwellian", density = sourceDensity, temperature = sourceTemperature},
       evolve = true, -- evolve species?
       diagnosticMoments = {"GkM0", "GkM1"}, 
