@@ -10,7 +10,7 @@
 
 ## Collisional cases
 
-- c2: Same as n2, but with collisions
+- c2: Same as n2, but with LBO collisions. nuFrac = 0.1
 
 ## Scaling studies
 
