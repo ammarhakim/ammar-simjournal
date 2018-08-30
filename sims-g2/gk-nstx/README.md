@@ -11,3 +11,7 @@
 ## Collisional cases
 
 - c2: Same as n2, but with collisions
+
+## Scaling studies
+
+- s1: Corresponds to n2. Run for 0.1 mu.s
