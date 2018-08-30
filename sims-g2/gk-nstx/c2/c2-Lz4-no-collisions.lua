@@ -30,8 +30,6 @@ nuElc = nuFrac*logLambdaElc*eV^4*n0/(6*math.sqrt(2)*math.pi^(3/2)*eps0^2*math.sq
 logLambdaIon = 6.6 - 0.5*math.log(n0/1e20) + 1.5*math.log(Ti0/eV)
 nuIon = nuFrac*logLambdaIon*eV^4*n0/(12*math.pi^(3/2)*eps0^2*math.sqrt(mi)*(Ti0)^(3/2))
 
-print(string.format("nuElc = %g. tauElc = %g", nuElc, 1/nuElc))
-
 -- derived parameters
 vti     = math.sqrt(Ti0/mi)
 vte  	= math.sqrt(Te0/me)
