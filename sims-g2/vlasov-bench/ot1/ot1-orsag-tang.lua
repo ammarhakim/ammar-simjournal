@@ -54,7 +54,7 @@ plasmaApp = Plasma.App {
    logToFile = true,
 
    tEnd = 20.0/omegaCi, -- end time
-   nFrame = 40, -- number of output frames
+   nFrame = 200, -- number of output frames
    lower = {0.0, 0.0}, -- configuration space lower left
    upper = {Lx, Ly}, -- configuration space upper right
    cells = {64, 64}, -- configuration space cells
@@ -73,6 +73,7 @@ plasmaApp = Plasma.App {
 
    -- electrons
    elc = Plasma.VlasovSpecies {
+      nDistFuncFrame = 40,
       charge = elcCharge, mass = elcMass,
       -- velocity space grid
       lower = {-6.0*vtElc, -6.0*vtElc, -6.0*vtElc},
@@ -110,6 +111,7 @@ plasmaApp = Plasma.App {
    },
    -- protons
    ion = Plasma.VlasovSpecies {
+      nDistFuncFrame = 40,
       charge = ionCharge, mass = ionMass,
       -- velocity space grid
       lower = {-6.0*vtIon, -6.0*vtIon, -6.0*vtIon},
