@@ -62,3 +62,8 @@ Weibel instability
 - w2: Max-order, 64x16^2, p=1
 - w3: Serendipity, 64x16^2, p=2
 - w4: Max-order, 64x16^2, p=2
+
+Orsag-Tang Problem
+------------------
+
+- ot1: 64^2x12^3, p=2
