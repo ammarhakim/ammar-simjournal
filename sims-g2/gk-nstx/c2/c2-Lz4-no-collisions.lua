@@ -65,13 +65,13 @@ plasmaApp = Plasma.App {
    upper = {R + Lx/2, Ly/2, Lz/2}, -- configuration space upper right
    cells = {12, 24, 8}, -- configuration space cells
    basis = "serendipity", -- one of "serendipity" or "maximal-order"
-   polyOrder = 2, -- polynomial order
+   polyOrder = 1, -- polynomial order
    timeStepper = "rk3", -- one of "rk2" or "rk3"
    cflFrac = 0.2,
    restartFrameEvery = 0.01,
 
    -- decomposition for configuration space
-   decompCuts = {4, 4, 4}, -- cuts in each configuration direction
+   decompCuts = {4, 8, 2}, -- cuts in each configuration direction
    useShared = false, -- if to use shared memory
 
    -- boundary conditions for configuration space
