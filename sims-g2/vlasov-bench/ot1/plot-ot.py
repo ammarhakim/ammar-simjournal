@@ -31,7 +31,7 @@ def calc_psi2d(fx, fy, dx=1, dy=1):#solenoidal flows
 	# it makes sense that information provided by fy[1:nx,:] is useless here
 	return psi
 
-for i in range(0,193):
+for i in range(200,223):
     print("Working on %d ... " % i)
 
     fig = figure(1)
