@@ -135,6 +135,7 @@ r = Lucee.getRank()
 math.randomseed(r+os.time())
 math.random()
 
+
 -- function to apply initial conditions
 function initElc(x,y,z)
    local xloc = 0.5*Lx
