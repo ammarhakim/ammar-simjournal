@@ -11,6 +11,7 @@
 ## Collisional cases
 
 - c2: Same as n2, but with LBO collisions. nuFrac = 0.1
+- c3: Same as c2, but with LBO collisions. nuFrac = 0.5
 
 ## Scaling studies
 
