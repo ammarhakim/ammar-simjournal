@@ -50,6 +50,8 @@ dg1Num = postgkyl.GInterpModal(d, 1, "ms")
 Xc, num = dg1Num.interpolate(0)
 
 Xhr = linspace(Xc[0][0], Xc[0][-1], 200) # for plotting
+dx = Xc[0][1]-Xc[0][0]
+Xc0 = linspace(Xc[0][0]+0.5*dx, Xc[0][-1]-0.5*dx, Xc[0].shape[0]-1)
 
 n = sin(2*pi*Xhr)
 ux = 0.1*cos(2*pi*Xhr)
@@ -57,7 +59,7 @@ Txx = 0.75 + 0.25*cos(2*pi*Xhr)
 
 # density
 figure(1)
-plot(Xc[0], num, 'ro-')
+plot(Xc0, num, 'ro-')
 plot(Xhr, n, 'k-')
 axis('tight')
 xlabel('X')
@@ -73,7 +75,7 @@ dg1Mom = postgkyl.GInterpModal(d, 1, "ms")
 Xc, mom = dg1Mom.interpolate(0)
 
 figure(2)
-plot(Xc[0], mom, 'ro-')
+plot(Xc0, mom, 'ro-')
 plot(Xhr, n*ux, 'k-')
 axis('tight')
 xlabel('X')
@@ -89,7 +91,7 @@ dg1Pr = postgkyl.GInterpModal(d, 1, "ms")
 Xc, pr = dg1Pr.interpolate(0)
 
 figure(3)
-plot(Xc[0], pr, 'ro-')
+plot(Xc0, pr, 'ro-')
 plot(Xhr, n*Txx + n*ux*ux, 'k-')
 axis('tight')
 xlabel('X')
@@ -105,7 +107,7 @@ dg1Eg = postgkyl.GInterpModal(d, 1, "ms")
 Xc, Eg = dg1Eg.interpolate(0)
 
 figure(4)
-plot(Xc[0], Eg, 'ro-')
+plot(Xc0, Eg, 'ro-')
 plot(Xhr, (n*Txx + n*ux*ux), 'k-')
 axis('tight')
 xlabel('X')
