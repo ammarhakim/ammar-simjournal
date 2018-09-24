@@ -9,6 +9,7 @@
 - n4: Same as n2, except bigger cflFrac
 - n5: n2 with positivity fixes
 - n6: n5 with lower velocity resolution
+- n7: n5 with even lower velocity resolution. Crashes!
 
 ## Collisional cases
 
