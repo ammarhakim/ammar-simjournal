@@ -63,15 +63,15 @@ plasmaApp = Plasma.App {
    nFrame = 100, -- number of output frames
    lower = {R - Lx/2, -Ly/2, -Lz/2}, -- configuration space lower left
    upper = {R + Lx/2, Ly/2, Lz/2}, -- configuration space upper right
-   cells = {24, 48, 16}, -- configuration space cells
+   cells = {12, 24, 8}, -- configuration space cells
    basis = "serendipity", -- one of "serendipity" or "maximal-order"
    polyOrder = 1, -- polynomial order
    timeStepper = "rk3", -- one of "rk2" or "rk3"
-   cflFrac = 0.2,
+   cflFrac = 0.8,
    restartFrameEvery = 0.01,
 
    -- decomposition for configuration space
-   decompCuts = {8, 16, 4}, -- cuts in each configuration direction
+   decompCuts = {4, 8, 2}, -- cuts in each configuration direction
    useShared = false, -- if to use shared memory
 
    -- boundary conditions for configuration space
@@ -111,6 +111,7 @@ plasmaApp = Plasma.App {
       },
       source = {"maxwellian", density = sourceDensity, temperature = sourceTemperature},
       evolve = true, -- evolve species?
+      positivity = true,
       diagnosticMoments = {"GkM0", "GkM1"}, 
       randomseed = randomseed,
       bcx = {Plasma.GkSpecies.bcZeroFlux, Plasma.GkSpecies.bcZeroFlux},
@@ -166,6 +167,7 @@ plasmaApp = Plasma.App {
       },
       source = {"maxwellian", density = sourceDensity, temperature = sourceTemperature},
       evolve = true, -- evolve species?
+      positivity = true,
       diagnosticMoments = {"GkM0", "GkM1"}, 
       randomseed = randomseed,
       bcx = {Plasma.GkSpecies.bcZeroFlux, Plasma.GkSpecies.bcZeroFlux},
