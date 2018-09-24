@@ -7,6 +7,7 @@
 - n2: Lower resolution version of n1; Same res in velocity space
 - n3: p=2 version of n2. Slightly different resolution
 - n4: Same as n2, except bigger cflFrac
+- n5: n2 with positivity fixes
 
 ## Collisional cases
 
