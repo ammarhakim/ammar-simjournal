@@ -617,7 +617,7 @@ cmpStates(std::vector<double>& q1, std::vector<double>& q2) {
 }
 
 void
-exactEulerReserv(const ProblemState& ps, Solution& sol) {
+exactEulerReserv(const ProblemState& ps, unsigned maxIter) {
   ProblemState psl(ps), psr(ps);
     
   // this is an effective dt/dx computed from 1D stability condition c*dt/dx < 1
@@ -640,7 +640,7 @@ exactEulerReserv(const ProblemState& ps, Solution& sol) {
   unsigned count = 0;
   while(1) {
     count = count+1;
-    if (count>1000) break;
+    if (count>maxIter) break;
     
     // current intermediate state
     double dsm, usm, psm, csm;
@@ -671,10 +671,10 @@ exactEulerReserv(const ProblemState& ps, Solution& sol) {
     double err = cmpStates(qnew, qstar);
     for (unsigned i=0; i<3; ++i)
       qstar[i] = qnew[i];
-    
+
     if (err<1e-6)  break;
   }
-  if (count<1000)  {
+  if (count<maxIter)  {
     std::cout << "Converged in " << count << " iterations" << std::endl;
     std::cout << qnew[0] << " " << qnew[1] << " " << qnew[2] << std::endl;
   }
@@ -695,7 +695,6 @@ main(int argc, char **argv) {
   std::string inFile(argv[1]);
 
   ProblemState ps;
-  unsigned ncell = 1;
 
 // initialize problem state from input file
   NameValuePair nvpair(inFile);
@@ -725,12 +724,14 @@ main(int argc, char **argv) {
   else
     ps.cr = 0.0;
 
-// allocate arrays for solution
-  Solution solution(ncell);
+  unsigned maxIter = 1000;
+// maximum number of iterations
+  if (nvpair.hasValue("maxIter"))
+    maxIter = (unsigned) nvpair.getValue("maxIter");
 
 // compute solution
   if ((ps.dl != 0.0) && (ps.dr != 0.0))
-    exactEulerReserv(ps, solution);
+    exactEulerReserv(ps, maxIter);
   else if (ps.dr == 0)
     /*exactEulerReservWithVacuum(ps, solution)*/;
   else
