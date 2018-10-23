@@ -677,8 +677,7 @@ exactEulerReserv(const ProblemState& ps, unsigned maxIter) {
     if (err<1e-6)  break;
   }
   if (count<maxIter)  {
-    std::cout << "Converged in " << count << " iterations" << std::endl;
-    std::cout << qnew[0] << " " << qnew[1] << " " << qnew[2] << std::endl;
+    std::cout << count << " " << qnew[0] << " " << qnew[1] << " " << qnew[2] << std::endl;
   }
   else
     std::cout << "FAILED TO CONVERGE!" << std::endl;
