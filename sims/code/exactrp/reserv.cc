@@ -10,6 +10,8 @@
 #include <vector>
 #include <limits>
 
+#include "clipp.h"
+
 class NameValuePair {
   public:
 /** 
@@ -682,17 +684,9 @@ exactEulerReserv(const ProblemState& ps, unsigned maxIter) {
     std::cout << "FAILED TO CONVERGE!" << std::endl;
 }
 
-int
-main(int argc, char **argv) {
-  if (argc != 2) {
-    std::cout << "Usage::" << std::endl;
-    std::cout << " reserv <input-file>" << std::endl;
-    std::cout << "  input-file: Name of input file" << std::endl;
-
-    exit(1);
-  }
-// name of input file and output prefix
-  std::string inFile(argv[1]);
+void
+runWithInputFile(const std::string& fileNm) {
+  std::string inFile(fileNm);
 
   ProblemState ps;
 
@@ -735,7 +729,75 @@ main(int argc, char **argv) {
   else if (ps.dr == 0)
     /*exactEulerReservWithVacuum(ps, solution)*/;
   else
+    /*exactEulerReservWithVacuum(ps, solution)*/;  
+}
+
+void
+runWithCmdArgs(unsigned nmax, double gg, double dl, double pl, double dr, double pr) {
+  ProblemState ps;
+    
+  ps.dl = dl;
+  ps.ul = 0.0;
+  ps.pl = pl;
+  ps.dr = dr;
+  ps.ur = 0.0;
+  ps.pr = pr;
+  ps.pscale = 1.0;
+  ps.disLoc = 0.0;
+  ps.tEnd = 0.1;
+  ps.gas_gamma = gg;
+
+  ps.lower = -1.0;
+  ps.upper = 1.0;
+  ps.domlen = ps.upper - ps.lower;
+
+// compute sound speeds in each region
+  if (ps.dl != 0)
+    ps.cl = std::sqrt(ps.gas_gamma*ps.pl/ps.dl);
+  else
+    ps.cl = 0.0;
+
+  if (ps.dr != 0)
+    ps.cr = std::sqrt(ps.gas_gamma*ps.pr/ps.dr);
+  else
+    ps.cr = 0.0;
+
+  unsigned maxIter = nmax;
+
+// compute solution
+  if ((ps.dl != 0.0) && (ps.dr != 0.0))
+    exactEulerReserv(ps, maxIter);
+  else if (ps.dr == 0)
     /*exactEulerReservWithVacuum(ps, solution)*/;
+  else
+    /*exactEulerReservWithVacuum(ps, solution)*/;    
+}
+
+int
+main(int argc, char **argv) {
+  unsigned nmax = 1000;
+  std::string inpFile("");
+  double dl, pl, dr, pr, gasGamma;
+  
+  auto cli = (
+    clipp::option("-i") & clipp::opt_value("Input file", inpFile),
+    clipp::option("-n").doc("Max number of iteration") & clipp::value("nmax", nmax),
+    clipp::option("-gamma").doc("Gas gamma") & clipp::value("gamma", gasGamma),
+    clipp::option("-dl").doc("Left density") & clipp::value("dl", dl),
+    clipp::option("-pl").doc("Left pressure") & clipp::value("pl", pl),
+    clipp::option("-dr").doc("Right density") & clipp::value("dr", dr),
+    clipp::option("-pr").doc("Right pressure") & clipp::value("pr", pr)
+  );
+  
+  if (clipp::parse(argc, argv, cli)) {
+    if (inpFile.compare("") > 0)
+      runWithInputFile(inpFile);
+    else
+      runWithCmdArgs(nmax, gasGamma, dl, pl, dr, pr);
+
+  } else {
+    std::cout << clipp::make_man_page(cli, argv[0]) << std::endl;
+  }
 
   return 1;
 }
