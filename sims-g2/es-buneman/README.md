@@ -9,5 +9,10 @@ All simulations use p=2 Serendipity basis.
 - b3: Mass ratio 100
 - b4: Mass ratio 200
 - b5: Mass ratio 400
+- b6: Mass ratio 1836.2
+- b7: Mass ratio 40*1836.2 (Argon)
 
 - n1: Nonlinear run with mass-ratio 25
+- n6: Nonlinear run with mass-ratio 1836.2
+
+- f1: Fluid sim corresponding to n1

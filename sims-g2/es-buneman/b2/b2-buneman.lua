@@ -1,5 +1,5 @@
 -- Gkyl ------------------------------------------------------------------------
-local Vlasov = require "App.VlasovOnCartGrid"
+local Vlasov = require("App.PlasmaOnCartGrid").VlasovMaxwell
 
 -- electron parameters
 vDriftElc = 0.159
@@ -44,12 +44,20 @@ vlasovApp = Vlasov.App {
       upper = {6.0*vDriftElc},
       cells = {64},
       decompCuts = {1},
+
       -- initial conditions
-      init = function (t, xn)
-	 local x, v = xn[1], xn[2]
-	 local fv = maxwellian1v(v, vDriftElc, vtElc)
-	 return fv*(1+perturbation*math.cos(2*math.pi*knumber*x))
-      end,
+      init = Vlasov.MaxwellianProjection {
+         density = function (t, zn)
+	    local x = zn[1]
+	    return 1+perturbation*math.cos(2*math.pi*knumber*x)
+	 end,
+	 driftSpeed = {vDriftElc},
+         temperature = function (t, zn)
+	    return vtElc^2
+	 end,
+         exactScaleM0 = true,
+         exactLagFixM012 = false,
+      },
       evolve = true, -- evolve species?
 
       diagnosticMoments = { "M0", "M1i", "M2" }
@@ -63,12 +71,20 @@ vlasovApp = Vlasov.App {
       upper = {6.0*vDriftElc},
       cells = {64},
       decompCuts = {1},
+
       -- initial conditions
-      init = function (t, xn)
-	 local x, v = xn[1], xn[2]
-	 local fv = maxwellian1v(v, -vDriftElc, vtElc)
-	 return fv
-      end,
+      init = Vlasov.MaxwellianProjection {
+         density = function (t, zn)
+	    local x = zn[1]
+	    return 1
+	 end,
+	 driftSpeed = {-vDriftElc},
+         temperature = function (t, zn)
+	    return vtElc^2
+	 end,
+         exactScaleM0 = true,
+         exactLagFixM012 = false,
+      },
       evolve = false, -- evolve species?
 
       diagnosticMoments = { "M0", "M1i", "M2" }
@@ -82,22 +98,31 @@ vlasovApp = Vlasov.App {
       upper = {32.0*vtIon},
       cells = {64},
       decompCuts = {1},
+
       -- initial conditions
-      init = function (t, xn)
-	 local x, v = xn[1], xn[2]
-	 return maxwellian1v(v, vDriftIon, vtIon)
-      end,
+      init = Vlasov.MaxwellianProjection {
+         density = function (t, zn)
+	    local x = zn[1]
+	    return 1
+	 end,
+	 driftSpeed = {vDriftIon},
+         temperature = function (t, zn)
+	    return vtIon^2*massRatio
+	 end,
+         exactScaleM0 = true,
+         exactLagFixM012 = false,
+      },
       evolve = true, -- evolve species?
 
       diagnosticMoments = { "M0", "M1i", "M2" }
    },   
 
    -- field solver
-   field = Vlasov.EmField {
+   field = Vlasov.Field {
       epsilon0 = 1.0, mu0 = 1.0,
       init = function (t, xn)
 	 local Ex = -perturbation*math.sin(2*math.pi*knumber*xn[1])/(2*math.pi*knumber)
-	 return 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+	 return Ex, 0.0, 0.0, 0.0, 0.0, 0.0
       end,
       evolve = true, -- evolve field?
    },
