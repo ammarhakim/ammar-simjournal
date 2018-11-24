@@ -6,9 +6,9 @@ vDriftElc = 0.159
 vtElc = 0.02
 -- ion parameters
 vDriftIon = 0.0
-vtIon = 0.001
+vtIon = vtElc
 -- mass ratio
-massRatio = 1836.2
+massRatio = 25.0
 
 knumber = 1.0 -- wave-number
 perturbation = 1.0e-6 -- distribution function perturbation
@@ -20,18 +20,17 @@ end
 vlasovApp = Vlasov.App {
    logToFile = true,
 
-   tEnd = 2000.0, -- end time
-   nFrame = 200, -- number of output frames
+   tEnd = 70.0, -- end time
+   nFrame = 20, -- number of output frames
    lower = {0.0}, -- configuration space lower left
    upper = {1.0}, -- configuration space upper right
-   cells = {128}, -- configuration space cells
+   cells = {16}, -- configuration space cells
    basis = "serendipity", -- one of "serendipity" or "maximal-order"
    polyOrder = 2, -- polynomial order
    timeStepper = "rk3", -- one of "rk2" or "rk3"
-   cflFrac = 0.9,
 
    -- decomposition for configuration space
-   decompCuts = {4}, -- cuts in each configuration direction
+   decompCuts = {1}, -- cuts in each configuration direction
    useShared = false, -- if to use shared memory
 
    -- boundary conditions for configuration space
@@ -43,7 +42,7 @@ vlasovApp = Vlasov.App {
       -- velocity space grid
       lower = {-6.0*vDriftElc},
       upper = {6.0*vDriftElc},
-      cells = {256},
+      cells = {64},
       decompCuts = {1},
 
       -- initial conditions
@@ -65,24 +64,39 @@ vlasovApp = Vlasov.App {
    },
 
    -- ghost electrons
-   elcGhost = Vlasov.FuncSpecies {
+   elcGhost = Vlasov.Species {
       charge = -1.0, mass = 1.0,
-      -- momentum provided by this species
-      momentumDensity = function (t, xc)
-   	 local n0 = 1.0
-   	 return -n0*vDriftElc
-      end,
-      
+      -- velocity space grid
+      lower = {-6.0*vDriftElc},
+      upper = {6.0*vDriftElc},
+      cells = {64},
+      decompCuts = {1},
+
+      -- initial conditions
+      init = Vlasov.MaxwellianProjection {
+         density = function (t, zn)
+	    local x = zn[1]
+	    return 1
+	 end,
+	 driftSpeed = {-vDriftElc},
+         temperature = function (t, zn)
+	    return vtElc^2
+	 end,
+         exactScaleM0 = true,
+         exactLagFixM012 = false,
+      },
       evolve = false, -- evolve species?
-   },
+
+      diagnosticMoments = { "M0", "M1i", "M2" }
+   },   
 
    -- electrons
    ion = Vlasov.Species {
       charge = 1.0, mass = massRatio,
       -- velocity space grid
-      lower = {-128.0*vtIon},
-      upper = {128.0*vtIon},
-      cells = {256},
+      lower = {-32.0*vtIon},
+      upper = {32.0*vtIon},
+      cells = {64},
       decompCuts = {1},
 
       -- initial conditions

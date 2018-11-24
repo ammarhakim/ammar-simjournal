@@ -90,7 +90,7 @@ program for that simulation.
     - Two-fluid shock problem with :math:`q_i/m_i = 10.0`.
   * - :doc:`s38 <s38/s38-twofluid-shock>` 
     - Two-fluid shock problem with :math:`q_i/m_i = 100.0`
-  * - :doc:`s39 <s39/s39-twofluid-shock>` 
+  * - :doc:`s39 <s39/s39-twofluid-shock-lr>` 
     - Two-fluid shock problem with :math:`q_i/m_i = 1000.0`
   * - :doc:`s40 <s40/s40-dispersive-euler>` 
     - Dispersive Euler equations with :math:`\omega_c = 10` and 100 cells.
