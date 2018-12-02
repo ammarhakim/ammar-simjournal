@@ -63,33 +63,6 @@ vlasovApp = Vlasov.App {
       diagnosticMoments = { "M0", "M1i", "M2" }
    },
 
-   -- ghost electrons
-   elcGhost = Vlasov.Species {
-      charge = -1.0, mass = 1.0,
-      -- velocity space grid
-      lower = {-6.0*vDriftElc},
-      upper = {6.0*vDriftElc},
-      cells = {64},
-      decompCuts = {1},
-
-      -- initial conditions
-      init = Vlasov.MaxwellianProjection {
-         density = function (t, zn)
-	    local x = zn[1]
-	    return 1
-	 end,
-	 driftSpeed = {-vDriftElc},
-         temperature = function (t, zn)
-	    return vtElc^2
-	 end,
-         exactScaleM0 = true,
-         exactLagFixM012 = false,
-      },
-      evolve = false, -- evolve species?
-
-      diagnosticMoments = { "M0", "M1i", "M2" }
-   },   
-
    -- electrons
    ion = Vlasov.Species {
       charge = 1.0, mass = massRatio,
@@ -120,6 +93,7 @@ vlasovApp = Vlasov.App {
    -- field solver
    field = Vlasov.Field {
       epsilon0 = 1.0, mu0 = 1.0,
+      useGhostCurrent = true,
       init = function (t, xn)
 	 local Ex = -perturbation*math.sin(2*math.pi*knumber*xn[1])/(2*math.pi*knumber)
 	 return Ex, 0.0, 0.0, 0.0, 0.0, 0.0

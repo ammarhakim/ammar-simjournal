@@ -36,6 +36,8 @@ plasmaApp = Plasma.App {
 
    -- boundary conditions for configuration space
    periodicDirs = {1}, -- periodic directions
+   -- integrated moment flag, compute quantities 1000 times in simulation
+   calcIntQuantEvery = 0.001,   
 
    -- electrons
    elc = Plasma.Species {
@@ -53,20 +55,9 @@ plasmaApp = Plasma.App {
       end,
       evolve = true, -- evolve species?
 
-      diagnosticMoments = { "M0", "M1i", "M2" }
+      diagnosticMoments = { "M0", "M1i", "M2" },
+      diagnosticIntegratedMoments = { "intM0", "intM1i", "intM2Flow", "intM2Thermal", "intL2" },
    },
-
-   -- ghost electrons: balances the electrons to cancel initial currents
-   elcGhost = Plasma.FuncSpecies {
-      charge = -1.0, mass = 1.0,
-      -- momentum provided by this species
-      momentumDensity = function (t, xc)
-   	 local n0 = 1.0
-   	 return -n0*vDriftElc
-      end,
-      
-      evolve = false, -- evolve species?
-   },   
 
    -- electrons
    ion = Plasma.Species {
@@ -83,12 +74,14 @@ plasmaApp = Plasma.App {
       end,
       evolve = true, -- evolve species?
 
-      diagnosticMoments = { "M0", "M1i", "M2" }
+      diagnosticMoments = { "M0", "M1i", "M2" },
+      diagnosticIntegratedMoments = { "intM0", "intM1i", "intM2Flow", "intM2Thermal", "intL2" },
    },   
 
    -- field solver
    field = Plasma.Field {
       epsilon0 = 1.0, mu0 = 1.0,
+      useGhostCurrent = true,
       init = function (t, xn)
 	 local Ex = -perturbation*math.sin(2*math.pi*knumber*xn[1])/(2*math.pi*knumber)
 	 return Ex, 0.0, 0.0, 0.0, 0.0, 0.0

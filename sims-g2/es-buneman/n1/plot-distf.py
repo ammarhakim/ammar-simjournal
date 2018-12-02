@@ -4,7 +4,7 @@ import numpy
 
 style.use('postgkyl.mplstyle')
 
-for i in range(151):
+for i in range(121, 151):
     print("Working on %d ... " % i)
 
     fig, ax = subplots(2,1)
@@ -27,3 +27,4 @@ for i in range(151):
 
     savefig("n1-es-buneman_%05d.png" % i, dpi=200)
     close()
+
