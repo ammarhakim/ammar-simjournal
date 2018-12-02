@@ -61,9 +61,8 @@ written as, after identifying :math:`\phi=n` and defining
 
 .. math::
  
-  \frac{\partial \zeta'}{\partial t} + \{\phi,\zeta' \} &= 
-  \kappa \frac{\partial \phi}{\partial y}
-  - \mu \nabla^4 \zeta'
+  \frac{\partial \zeta'}{\partial t} + \{\phi,\zeta' \} =
+  \kappa \frac{\partial \phi}{\partial y} - \mu \nabla^4 \zeta'
 
 with the potential now determined from
 
@@ -87,9 +86,9 @@ zonal and non-zonal component of any variable :math:`f` as
 
 .. math::
 
-  \mathrm{zonal:}\ \left<f\right> &\equiv \frac{1}{L_y}\int f dy,
+  \mathrm{zonal:}\ \langle f\rangle \equiv \frac{1}{L_y}\int f dy,
   \quad
-  \mathrm{nonzonal:}\ \tilde{f} &\equiv f - \left<f\right>
+  \mathrm{nonzonal:}\ \tilde{f} \equiv f - \left<f\right>
 
 respectively. Note that in the reduced 2D geometry, the
 :math:`y`-direction is assumed to lie on flux surfaces, while
@@ -247,8 +246,8 @@ the :math:`E\times B` velocity nearly parallel to the
   :align: center
 
 
-  Comparison of potential (:math:`n`) with adiabaticity parameter 1.0
-  with Hasegawa-Wakatani (left) [:doc:`s215
+  Comparison of number density (:math:`n`) with adiabaticity parameter
+  1.0 with Hasegawa-Wakatani (left) [:doc:`s215
   <../../sims/s218/s218-hw>`] and modified Hasegawa-Wakatani
   [:doc:`s215 <../../sims/s222/s222-mhw>`] at :math:`t=200`. Not only
   is the structure of the fluctuations different, the magnitudes are
@@ -258,7 +257,7 @@ the :math:`E\times B` velocity nearly parallel to the
   :width: 100%
   :align: center
 
-  Comparison of of number density (:math:`\phi`) with adiabaticity
+  Comparison of of potential (:math:`\phi`) with adiabaticity
   parameter 1.0 with Hasegawa-Wakatani (left) [:doc:`s215
   <../../sims/s218/s218-hw>`] and modified Hasegawa-Wakatani
   [:doc:`s215 <../../sims/s222/s222-mhw>`] at :math:`t=200`. Unlike

@@ -15,7 +15,10 @@ All simulations use p=2 Serendipity basis.
 - n1: Nonlinear run with mass-ratio 25
 - n6: Nonlinear run with mass-ratio 1836.2
 
-- f1: Fluid sim corresponding to n1
+- c1: Same as n1, except with small amounts of collisions
 
+The following don't seem to work properly at present
+
+- f1: Fluid sim corresponding to n1
 
 - w1: Same as b1, except ion and electron thermal speeds are same.
