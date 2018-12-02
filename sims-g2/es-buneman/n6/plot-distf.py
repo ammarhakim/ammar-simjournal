@@ -4,7 +4,7 @@ import numpy
 
 style.use('postgkyl.mplstyle')
 
-for i in range(201):
+for i in range(162, 201):
     print("Working on %d ... " % i)
 
     fig, ax = subplots(2,1)
