@@ -12,7 +12,7 @@ In this note I study the Buneman instability with the Vlasov-Maxwell
 solver in Gkeyll. This is in preparation for a more complex case in
 which a magnetic field is also present. In the latter case the
 instability is called "Electron Cyclotron Drift Instability" (ECDI),
-often conjectured as causing anamalous electron transport observed in
+often conjectured as causing anomalous electron transport observed in
 Hall-thrusters.
 
 Ghost Currents
@@ -213,7 +213,7 @@ oscillation frequency for different mass ratios.
   frequency for various values of mass ratios: red :math:`m_i/m_e =
   25`, black :math:`m_i/m_e = 200` and magenta :math:`m_i/m_e =
   1836.2`. Consistent with the previous figures, purely oscillatory
-  modes exist beyond a critical wave-number.
+  modes exist beyond a critical oscillation frequency.
 
 As seen in the above plots, the maximum growth of the instability
 occurs approximately at resonance :math:`kV_0 = \omega_{pe}`. In this
@@ -251,10 +251,17 @@ kinetic dispersion relation, something I have not yet done).
   analytical formula given in text (black). The growth rate of the
   instability reduces rapidly with increasing ion mass (approximately
   :math:`(m_e/m_i)^{1/3}`). Note that this is for the resonant case in
-  which :math:`k V_0 = \omega_{pe}`.
+  which :math:`k V_0 = \omega_{pe}`. See
+  :doc:`es-buneman/b1 <b1-buneman>`,
+  :doc:`es-buneman/b2 <b2-buneman>`,
+  :doc:`es-buneman/b3 <b3-buneman>`,
+  :doc:`es-buneman/b4 <b4-buneman>`,
+  :doc:`es-buneman/b5 <b5-buneman>`,
+  :doc:`es-buneman/b6 <b6-buneman>`,
+  :doc:`es-buneman/b7 <b7-buneman>` for input files.
 
-The non-linear stage
---------------------
+The nonlinear stage
+-------------------
 
 After a few multiples of :math:`\tau = 1/\gamma`, the linear growth
 stops and the instability saturates. This saturation is due to the
@@ -280,7 +287,8 @@ the :math:`m_i/m_e = 25` case.
   Field energy for :math:`m_i/m_e = 25` case as a function of
   time. The growth period for this case is :math:`\tau = 1/\gamma
   \approx 5`.  The instability saturates about :math:`t\omega_{pe} =
-  70`, followed by a second growth phase and then saturation.
+  70`, followed by a second growth phase and then saturation. See
+  :doc:`es-buneman/n1 <n1-buneman>` for input file.
 
 The plot below shows the ion (top) and electron (bottom) distribution
 at :math:`t\omega_{pe} = 90`. At this point electrons are trapped in
@@ -326,7 +334,8 @@ plot shows the field energy as a function of time.
   time. The instability saturates about :math:`t\omega_{pe} = 250`,
   followed by a second growth phase and then saturation. After
   saturation there is a periodic exchange of energy between the
-  electric field and ions.
+  electric field and ions. See :doc:`es-buneman/n6 <n6-buneman>` for
+  input file.
 
 Around :math:`t\Omega_{pe} = 320` particle trapping is significant, as
 seen in the plot below.
@@ -369,6 +378,75 @@ clearly visible.
   clearly visible. A small fraction of passing particles are also
   seen.
 
+The nonlinear stage with weak collisions
+----------------------------------------
+
+The final set of simulations I performed were included weak
+electron-electron collisions for the :math:`m_i/,_e = 25` case. For
+this the collision frequency was set to :math:`\nu_{ee}/\omega_{pe} =
+10^{-2}` and a Lenard-Bernstein Operator (LBO) was used. This operator
+conserves density, momentum and energy and has the same structure as
+the full Fokker-Planck operator in that it has a drag and diffusion
+term. However, it does not require the calculation of Rosenbluth
+potentials, which, even though it simplified the implementation,
+implies that it can not capture the correct velocity dependent
+collision frequency.
+
+The collisions are sufficiently weak that the linear phase of the
+instability is unchanged. See field energy plot below.
+
+.. figure:: c1-n1-fieldEnergy-cmp.png
+  :width: 100%
+  :align: center
+
+  Field energy for :math:`m_i/m_e = 25` case as a function of
+  time. Blue curve shows the case with weak collisions
+  (:math:`\nu_{ee}/\omega_{pe}=10^{-2}`) and the orange line is the
+  collisionless case. The linear phase of the instability is unchanged
+  with collisions, but the small-scale field energy oscillations are
+  wiped out. See :doc:`es-buneman/c1 <c1-buneman>` for input file.
+
+However, the non-linear phase is qualitatively different, with most of
+the fine-scale phase-space structures wiped out due to
+collisions. However, qualitative features like particle trapping and
+flattening of distribution function persist. The following plots show
+the distribution functions at :math:`t\omega_{pe} = 90` and
+:math:`t\omega_{pe} =150`. These should be compared with the
+collisionless case above.
+
+.. figure:: c1-buneman_00090.png
+  :width: 100%
+  :align: center  
+
+  Ion (top) and electron (bottom) distribution function at
+  :math:`t\omega_{pe} = 90` with weak collisions. The fine-scale
+  features in the collisionless case are wiped out, even with weak
+  collisions.
+
+.. figure:: c1-buneman_00150.png
+  :width: 100%
+  :align: center  
+
+  Same as previous figure, except at :math:`t\omega_{pe} = 150`.
+
+The following plot shows the spatially integrated distribution
+function at :math:`t\omega_{pe} = 100` for the collisionless and
+collisional cases. Note that the finer phase-space features are wiped
+out and the distribution function is becoming Maxwellian due to the
+collisions. By :math:`t\omega_{pe}=150` the collisions cause near
+thermalization of the electrons.
+
+.. figure:: c1-n1-fv-cmp.png
+  :width: 100%
+  :align: center  
+
+  Spatially Integrated distribution function; blue curve shows the
+  case with weak collisions (:math:`\nu_{ee}/\omega_{pe}=10^{-2}`) and
+  the orange line is the collisionless case. The collisions wipe out
+  the fine-scale distribution function features and drive the
+  electrons towards thermalization. However, at this point some
+  flattening continues to persist.
+  
 Conclusion
 ----------
 
@@ -381,10 +459,12 @@ inescapable.
 
 Many interesting features are seen in the simulations, including
 saturation due to particle trapping, complex phase-space structures
-and highly persistent electron holes. This study sets the path to
-perform simulations with magnetized electrons, a case relevant to
-potentially explain anomalous electron transport in Hall thrusters and
-other :math:`E\times B` machines.
+and highly persistent electron holes. Even weak collisions can have a
+significant quantitative impact in the late nonlinear phase of the
+instability. This study sets the path to perform simulations with
+magnetized electrons, a case relevant to potentially explain anomalous
+electron transport in Hall thrusters and other :math:`E\times B`
+machines.
 
 Footnotes
 ---------
