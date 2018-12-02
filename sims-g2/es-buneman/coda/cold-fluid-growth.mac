@@ -1,0 +1,20 @@
+D : fullratsimp(expand((1 - 1/(w-kv)^2 - 1/(M*w^2))*(w-kv)^2*w^2))$
+
+D1 : subst(kv=4/3, D)$
+rates : []$
+mcurr : 25.0$
+deltam : (400-25)/100$
+for i from 1 thru 100 do (
+  Dm : subst(M=mcurr, D1),
+  r : lmax(imagpart(map(rhs,allroots(Dm)))),
+  rates : endcons(r, rates),
+  mcurr : mcurr+deltam
+  )$
+
+mcurr : 25.0$
+fh : openw("~/max-out/bi-kv-43.txt")$
+for i from 1 thru length(rates) do (
+  printf(fh, "~a ~a ~%", mcurr, rates[i]),
+  mcurr : mcurr+deltam
+  )$
+close(fh)$
