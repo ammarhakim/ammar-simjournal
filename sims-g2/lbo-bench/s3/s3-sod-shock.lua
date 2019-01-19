@@ -7,7 +7,7 @@ nl, ul, pl = 1.0, 0.0, 1.0
 nr, ur, pr = 0.125, 0.0, 0.1
 
 Lx = 1.0 -- domain size
-mfp = 0.001*Lx -- mean-free path
+mfp = Lx/500 -- mean-free path
 
 -- thermal velocity to give same energy as in fluid internal energy
 vThermal_l = math.sqrt(pl/nl)
@@ -75,7 +75,7 @@ sim = Plasma.App {
       bcx = { Plasma.Species.bcOpen, Plasma.Species.bcOpen },
 
       -- diagnostics
-      diagnosticMoments = { "M0", "M1i" },
+      diagnosticMoments = { "M0", "M1i", "M2", "M3i" },
       diagnosticIntegratedMoments = {
 	 "intM0", "intM1i", "intM2Flow", "intM2Thermal" },
    },

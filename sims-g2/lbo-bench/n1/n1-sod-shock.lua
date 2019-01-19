@@ -3,11 +3,11 @@
 local Plasma = require ("App.PlasmaOnCartGrid").VlasovMaxwell
 
 -- left/right state for shock
-nl, ul, pl = 1.0, 0.0, 1.0
+nl, ul, pl = 1.0, 0.75, 1.0
 nr, ur, pr = 0.125, 0.0, 0.1
 
 Lx = 1.0 -- domain size
-mfp = Lx/100 -- mean-free path
+mfp = Lx/200 -- mean-free path
 
 -- thermal velocity to give same energy as in fluid internal energy
 vThermal_l = math.sqrt(pl/nl)
@@ -36,7 +36,7 @@ sim = Plasma.App {
    basis = "serendipity", -- one of "serendipity" or "maximal-order"
    polyOrder = 2, -- polynomial order
    timeStepper = "rk3", -- one of "rk2", "rk3" or "rk3s4"
-   cflFrac = 0.9,
+   cflFrac = 0.5,
 
    -- decomposition for configuration space
    decompCuts = {1}, -- cuts in each configuration direction
@@ -58,7 +58,7 @@ sim = Plasma.App {
       init = function (t, xn)
 	 local x, v = xn[1], xn[2]
 	 local n, u, vt = nl, ul, vThermal_l
-	 if x>0.5 then
+	 if x>0.3 then
 	    n, u, vt = nr, ur, vThermal_r
 	 end
 	 return maxwellian(n, u, vt, v)
