@@ -12,5 +12,11 @@ Sod-shock tests (Problem 2)
 
 - s1: Sod-shock problem. MFP = 0.1*Lx
 - s2: Sod-shock problem. MFP = 0.01*Lx
-- s3: Sod-shock problem. MFP = 0.001*Lx
+- s3: Sod-shock problem. MFP = 0.002*Lx
 - s4: Exact solution to Euler Sod-shock
+
+Sod-shock with sonic rarefaction
+
+- n1: Sod-shock problem. MFP = 0.01*Lx
+- n2: Same as n2 except on a periodic domain to test momentum conservation
+- ne: Exact Euler solution to n1

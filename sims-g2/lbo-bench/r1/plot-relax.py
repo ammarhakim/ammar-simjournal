@@ -34,6 +34,7 @@ legend(loc='best')
 xlabel(r'$t\nu$')
 ylabel(r'$\Delta E/\max(E) N_s$')
 grid()
+gca().set_xlim([0, 5])
 savefig('square-relax-er.png', dpi=150)
 
 def calcEntropy(X, V, fv):
@@ -67,6 +68,7 @@ semilogx(T[1:], p2_s[1:]/p2_s[1], 'k-', label='$p=2$')
 legend(loc='best')
 xlabel(r'$t\nu$')
 ylabel(r'Entropy')
+gca().set_xlim([T[1], 5])
 grid()
 savefig('square-relax-entropy.png', dpi=150)
 
