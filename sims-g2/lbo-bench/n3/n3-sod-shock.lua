@@ -33,7 +33,7 @@ sim = Plasma.App {
    upper = {Lx}, -- configuration space upper right
    cells = {128}, -- configuration space cells
    basis = "serendipity", -- one of "serendipity" or "maximal-order"
-   polyOrder = 2, -- polynomial order
+   polyOrder = 1, -- polynomial order
    timeStepper = "rk3", -- one of "rk2", "rk3" or "rk3s4"
    cflFrac = 0.5,
 
