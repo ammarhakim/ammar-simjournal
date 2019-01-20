@@ -5,8 +5,9 @@ import numpy
 
 style.use('../code/postgkyl.mplstyle')
 
+
 def calcNormError(M):
-    err = (M-M[0])/max(M)/M.shape[0]
+    err = (M-M[0])/max(M)
     return err
 
 def calcEnergyError(pre):
@@ -22,17 +23,18 @@ def calcEnergyError(pre):
 
 # p=1 case
 p4_t, p4_err = calcEnergyError("../r4/r4")
-
 # p=2 case
 p2_t, p2_err = calcEnergyError("../r2/r2")
+
+r = 1.0*p2_t.shape[0]/p4_t.shape[0]
 
 # plot of energy error v/s time
 figure(1)
 plot(p4_t, p4_err, 'r-', label='$p=1$')
-plot(p2_t, p2_err, 'k-', label='$p=2$')
+plot(p2_t, p2_err/r, 'k-', label='$p=2$')
 legend(loc='best')
 xlabel(r'$t\nu$')
-ylabel(r'$\Delta E/\max(E) N_s$')
+title(r'$\Delta M_2/M_2(0)$')
 grid()
 gca().set_xlim([0, 5])
 savefig('square-relax-er.png', dpi=150)
@@ -60,14 +62,14 @@ T = linspace(0, 5, 100)
 #semilogx(T[1:], p1_s[1:]/p1_s[1], 'r-', label='$p=1$')
 
 p4_s = getEntropy(1, "../r4/r4")
-semilogx(T[1:], p4_s[1:]/p4_s[1], 'r-', label='$p=1$')
+semilogx(T[1:], p4_s[1:]/p4_s[1]-1, 'r-', label='$p=1$')
 
 p2_s = getEntropy(2, "../r2/r2")
-semilogx(T[1:], p2_s[1:]/p2_s[1], 'k-', label='$p=2$')
+semilogx(T[1:], p2_s[1:]/p2_s[1]-1, 'k-', label='$p=2$')
 
 legend(loc='best')
 xlabel(r'$t\nu$')
-ylabel(r'Entropy')
+title(r'$\Delta S/S(0)$')
 gca().set_xlim([T[1], 5])
 grid()
 savefig('square-relax-entropy.png', dpi=150)

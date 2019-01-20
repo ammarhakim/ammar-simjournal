@@ -7,6 +7,7 @@ Relaxation tests (Problem 1)
 - r2: Relaxation of step function to Maxwellian. p=2 case
 - r3: Same as r1, except CFL factor of 2x smaller
 - r4: Same as r1, except 2x more cells in V (entropy convergence comparison)
+- r5: Relaxation of bi-Maxwellian to a Maxwellian
 
 Sod-shock tests (Problem 2)
 
@@ -19,4 +20,5 @@ Sod-shock with sonic rarefaction
 
 - n1: Sod-shock problem. MFP = 0.01*Lx
 - n2: Same as n2 except on a periodic domain to test momentum conservation
+- n3: Same as n2, except p=1
 - ne: Exact Euler solution to n1

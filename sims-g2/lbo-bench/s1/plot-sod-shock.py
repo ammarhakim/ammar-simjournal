@@ -5,6 +5,24 @@ import numpy
 
 style.use('../code/postgkyl.mplstyle')
 
+def calcGrad(x, ff):
+    f = ff
+    if len(ff.shape) > 1:
+        f = ff[:,0]
+        
+    dx = x[1]-x[0]
+    N = f.shape[0]
+    df = zeros((f.shape[0]+1,), float)
+    df[0] = (f[1]-f[0])/dx
+    for i in range(1,N):
+        df[i] = (f[i]-f[i-1])/dx
+    df[N] = (f[N-1]-f[N-2])/dx
+
+    return df
+
+def calcMidVals(f):
+    return 0.5*(f[0:-1]+f[1:])
+
 def getXc(Xn):
     dx = Xn[1]-Xn[0]
     Xc = linspace(Xn[0]+0.5*dx, Xn[-1]-0.5*dx, Xn.shape[0]-1)
@@ -68,11 +86,20 @@ gca().set_xlim([0,1])
 ax.set_xticklabels([""])
 
 subplot(2,2,3)
-plot(X, s1_ie/2, '-r')
-plot(X, s2_ie/2, '-m')
-plot(X, s3_ie/2, '-b')
-plot(eu_n0[:,0], eu_n0[:,1]*eu_ie[:,1], 'k--')
-title('Internal Energy')
+# plot(X, s1_ie/2, '-r')
+# plot(X, s2_ie/2, '-m')
+# plot(X, s3_ie/2, '-b')
+# plot(eu_n0[:,0], eu_n0[:,1]*eu_ie[:,1], 'k--')
+# title('Internal Energy')
+# xlabel('X')
+# grid()
+# gca().set_xlim([0,1])
+
+plot(X, s1_ie/s1_n0, '-r')
+plot(X, s2_ie/s2_n0, '-m')
+plot(X, s3_ie/s3_n0, '-b')
+plot(eu_n0[:,0], 2*eu_ie[:,1], 'k--')
+title('Temperature')
 xlabel('X')
 grid()
 gca().set_xlim([0,1])
@@ -86,6 +113,8 @@ grid()
 title('Heat flux')
 xlabel('X')
 gca().set_xlim([0,1])
+
+#tight_layout()
 
 savefig('sod-shock-moments.png', dpi=150)
 
