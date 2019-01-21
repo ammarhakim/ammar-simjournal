@@ -16,9 +16,15 @@ Sod-shock tests (Problem 2)
 - s3: Sod-shock problem. MFP = 0.002*Lx
 - s4: Exact solution to Euler Sod-shock
 
-Sod-shock with sonic rarefaction
+Sod-shock with sonic rarefaction (Problem 2)
 
 - n1: Sod-shock problem. MFP = 0.01*Lx
 - n2: Same as n2 except on a periodic domain to test momentum conservation
 - n3: Same as n2, except p=1
 - ne: Exact Euler solution to n1
+
+Collisional Landau damping (Problem 3)
+
+- d1: Collisional Landau damping, nu=0.0 (no collisions)
+- d2: Collisional Landau damping, nu=0.05
+- d3: Collisional Landau damping, nu=0.1
