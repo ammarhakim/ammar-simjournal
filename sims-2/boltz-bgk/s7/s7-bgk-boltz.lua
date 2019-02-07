@@ -69,7 +69,7 @@ confGrid = Grid.RectCart1D {
 }
 
 -- phase-space basis functions
-phaseBasis = NodalFiniteElement2D.Serendipity {
+phaseBasis = NodalFiniteElement2D.SerendipityElement {
    onGrid = phaseGrid,
    polyOrder = polyOrder,
 }
