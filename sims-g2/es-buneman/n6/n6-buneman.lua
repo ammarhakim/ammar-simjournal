@@ -31,7 +31,7 @@ vlasovApp = Vlasov.App {
    cflFrac = 0.9,
 
    -- decomposition for configuration space
-   decompCuts = {4}, -- cuts in each configuration direction
+   decompCuts = {8}, -- cuts in each configuration direction
    useShared = false, -- if to use shared memory
 
    -- boundary conditions for configuration space
