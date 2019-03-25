@@ -133,7 +133,7 @@ end
 function calcB(x,y,z)
    local Bx = Bx0
    local By = By0
-   local Bz = Bz0 + Bnoise*math.sin(2*math.pi*x/Lx) --*math.sin(2*math.pi*y/Ly)
+   local Bz = Bz0 + Bnoise*math.sin(2*math.pi*y/Ly)
    return Bx, By, Bz
 end
 
