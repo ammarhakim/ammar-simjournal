@@ -163,7 +163,7 @@ momentApp = Moments.App {
       equation = Euler { gasGamma = gasGamma },
       equationInv = Euler { gasGamma = gasGamma, numericalFlux = "lax" },
       --forceInv = true,
-      --limiter = "zero",
+      limiter = "zero",
       init = function (t, xn)
          local x, y = xn[1], xn[2]
          local rho_e = rho0_e
@@ -185,7 +185,7 @@ momentApp = Moments.App {
       equation = Euler { gasGamma = gasGamma },
       equationInv = Euler { gasGamma = gasGamma, numericalFlux = "lax" },
       --forceInv = true,
-      --limiter = "zero",
+      limiter = "zero",
       init = function (t, xn)
          local x, y = xn[1], xn[2]
          local rho_i = rho0_i
@@ -204,6 +204,7 @@ momentApp = Moments.App {
 
    field = Moments.Field {
       epsilon0 = epsilon0, mu0 = mu0,
+      limiter = "zero",
       init = function (t, xn)
          local x, y = xn[1], xn[2]
          local vx, vy, vz = calcV(x, y, 0)
