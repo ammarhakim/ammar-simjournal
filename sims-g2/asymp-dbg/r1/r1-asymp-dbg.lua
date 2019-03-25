@@ -57,9 +57,7 @@ local cells = {Nx, Ny}
 
 local tEnd = 1500
 local nFrame = 20
-local cfl = 1.0
-
-math.randomseed(1)
+local cfl = 0.5
 
 -- diagnostic parameters
 local u0_e = p0_e / (gasGamma-1) + 0.5 * (vx0^2 + vy0^2 + vz0^2) * rho0_e
@@ -135,7 +133,7 @@ end
 function calcB(x,y,z)
    local Bx = Bx0
    local By = By0
-   local Bz = Bz0 + Bnoise*math.sin(2*math.pi*x/Lx)*math.sin(2*math.pi*y/Ly)
+   local Bz = Bz0 + Bnoise*math.sin(2*math.pi*x/Lx) --*math.sin(2*math.pi*y/Ly)
    return Bx, By, Bz
 end
 

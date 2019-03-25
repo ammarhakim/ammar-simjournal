@@ -12,4 +12,4 @@
 module load intel
 module load intel-mpi
 
-srun --mpi=pmix /home/ammar/gkylsoft/gkyl/bin/gkyl s6-euler-kh.lua
+srun --mpi=pmix /home/ammar/gkylsoft/gkyl/bin/gkyl s6-euler-kh.lua restart
