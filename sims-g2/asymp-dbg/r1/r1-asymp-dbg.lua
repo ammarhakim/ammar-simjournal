@@ -49,14 +49,14 @@ local rho0_i = rho0 - rho0_e
 local p0_e = p0 / (1 + pressure_ratio)
 local p0_i = p0 - p0_e
 
-local xlo, xup, Nx =  -18 * Re, 78 * Re, 64
-local ylo, yup, Ny =  -48 * Re, 48 * Re, 64
+local xlo, xup, Nx =  -18 * Re, 78 * Re, 256
+local ylo, yup, Ny =  -48 * Re, 48 * Re, 256
 local lower = {xlo, ylo}
 local upper = {xup, yup}
 local cells = {Nx, Ny}
 
 local tEnd = 1500
-local nFrame = 5
+local nFrame = 20
 local cfl = 1.0
 
 math.randomseed(1)
@@ -154,8 +154,7 @@ momentApp = Moments.App {
    cfl = cfl,
 
    -- decomposition for configuration space
-   decompCuts = {2, 2}, -- cuts in each configuration direction
-   -- decompCuts = {1, 1}, -- cuts in each configuration direction
+   decompCuts = {4, 4}, -- cuts in each configuration direction
    useShared = false, -- if to use shared memory
 
    -- boundary conditions for configuration space
