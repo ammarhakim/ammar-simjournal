@@ -5,3 +5,4 @@ under-resolved.
   CFL=0.5, limiters and 1D variation in X only
 - r2: Uniform flow with perturbed field; 256x256 grid. Base case,
   CFL=0.5, limiters and 1D variation in Y only
+- r3: Same as r2, cfl=0.1
