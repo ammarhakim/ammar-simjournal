@@ -56,7 +56,7 @@ local upper = {xup, yup}
 local cells = {Nx, Ny}
 
 local tEnd = 1500
-local nFrame = 20
+local nFrame = 100
 local cfl = 0.5
 
 -- diagnostic parameters
