@@ -56,7 +56,7 @@ local upper = {xup, yup}
 local cells = {Nx, Ny}
 
 local tEnd = 1500
-local nFrame = 20
+local nFrame = 100
 local cfl = 0.5
 
 -- diagnostic parameters
@@ -162,7 +162,6 @@ momentApp = Moments.App {
       charge = eleCharge, mass = eleMass,
       equation = Euler { gasGamma = gasGamma },
       equationInv = Euler { gasGamma = gasGamma, numericalFlux = "lax" },
-      --forceInv = true,
       limiter = "zero",
       init = function (t, xn)
          local x, y = xn[1], xn[2]
@@ -184,7 +183,6 @@ momentApp = Moments.App {
       charge = ionCharge, mass = ionMass,
       equation = Euler { gasGamma = gasGamma },
       equationInv = Euler { gasGamma = gasGamma, numericalFlux = "lax" },
-      --forceInv = true,
       limiter = "zero",
       init = function (t, xn)
          local x, y = xn[1], xn[2]

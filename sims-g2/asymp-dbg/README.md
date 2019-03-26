@@ -11,5 +11,5 @@ under-resolved.
 
 2D cases:
 
-- r4: Same as r1, except full 2D variation in perturbation. No limiters
+- r4: Same as r1, except full 2D variation in perturbation. "zero" limiter (first-order)
 - r5: Same as r4, except 512x512 grid
