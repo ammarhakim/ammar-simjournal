@@ -26,8 +26,8 @@ local epsilon0 = 1/mu0/(lightSpeed^2)
 local gasGamma = 5/3
 
 local rho0 = 6e6*Constants.PROTON_MASS
-local vx0 = 450e3
-local vy0 = 450e3
+local vx0 = 0.0 --450e3
+local vy0 = 0.0 --450e3
 local vz0 = 0e3
 local p0 = 6e-12
 local Bx0 = 0e-9
@@ -133,7 +133,8 @@ end
 function calcB(x,y,z)
    local Bx = Bx0
    local By = By0
-   local Bz = Bz0 + Bnoise*math.sin(2*math.pi*x/Lx)*math.sin(2*math.pi*y/Ly)
+   local xmid, ymid = 0.5*(xlo+xup), 0.5*(ylo+yup)
+   local Bz = Bz0 + Bnoise*math.sin(2*math.pi*(x-xmid)/Lx)*math.sin(2*math.pi*(y-ymid)/Ly)
    return Bx, By, Bz
 end
 
