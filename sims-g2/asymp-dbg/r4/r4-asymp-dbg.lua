@@ -138,6 +138,13 @@ function calcB(x,y,z)
    return Bx, By, Bz
 end
 
+function calcJ(x,y,z)
+   local xmid, ymid = 0.5*(xlo+xup), 0.5*(ylo+yup)
+   local Jx = Bnoise*math.sin(2*math.pi*(x-xmid)/Lx)*math.cos(2*math.pi*(y-ymid)/Ly)*2*math.pi/Lx/mu0
+   local Jy = -Bnoise*math.cos(2*math.pi*(x-xmid)/Lx)*math.sin(2*math.pi*(y-ymid)/Ly)*2*math.pi/Ly/mu0
+   return Jx, Jy, 0.0
+end
+
 ---------
 -- APP --
 ---------
@@ -168,6 +175,11 @@ momentApp = Moments.App {
          local x, y = xn[1], xn[2]
          local rho_e = rho0_e
          local vx, vy, vz = calcV(x, y)
+	 local Jx, Jy, Jz = calcJ(x,y,z)
+
+	 vx = vx + 0.5*Jx/(eleCharge*6e6)
+	 vy = vy + 0.5*Jy/(eleCharge*6e6)
+	 
          local p_e = p0_e
 
          local rhovx_e = rho_e * vx
@@ -188,7 +200,12 @@ momentApp = Moments.App {
       init = function (t, xn)
          local x, y = xn[1], xn[2]
          local rho_i = rho0_i
-         local vx, vy, vz = calcV(x, y)
+         local vx, vy, vz = calcV(x,y,z)
+	 local Jx, Jy, Jz = calcJ(x,y,z)
+
+	 vx = vx + 0.5*Jx/(ionCharge*6e6)
+	 vy = vy + 0.5*Jy/(ionCharge*6e6)
+	 
          local p_i = p0_i
 
          local rhovx_i = rho_i * vx
@@ -207,7 +224,7 @@ momentApp = Moments.App {
       init = function (t, xn)
          local x, y = xn[1], xn[2]
          local vx, vy, vz = calcV(x, y, 0)
-         local Bx, By, Bz = calcB(x, y, Bnoise)
+         local Bx, By, Bz = calcB(x, y, 0)
 
          local Ex = -vy*Bz + vz*By
          local Ey = -vz*Bx + vx*Bz
