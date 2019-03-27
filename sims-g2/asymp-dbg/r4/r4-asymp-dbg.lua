@@ -27,7 +27,7 @@ local gasGamma = 5/3
 
 local rho0 = 6e6*Constants.PROTON_MASS
 local vx0 = 450e3
-local vy0 = 0e3
+local vy0 = 450e3
 local vz0 = 0e3
 local p0 = 6e-12
 local Bx0 = 0e-9
