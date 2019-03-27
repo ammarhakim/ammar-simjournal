@@ -14,3 +14,4 @@ under-resolved.
 - r4: Same as r1, except full 2D variation in perturbation. "zero" limiter (first-order)
 - r5: Same as r4, except 512x512 grid
 - r6: Same as r1, except CFL = 0.95
+- r7: Same as r4, except CFL = 1.0
