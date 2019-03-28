@@ -140,8 +140,8 @@ end
 
 function calcJ(x,y,z)
    local xmid, ymid = 0.5*(xlo+xup), 0.5*(ylo+yup)
-   local Jx = Bnoise*math.sin(2*math.pi*(x-xmid)/Lx)*math.cos(2*math.pi*(y-ymid)/Ly)*2*math.pi/Lx/mu0
-   local Jy = -Bnoise*math.cos(2*math.pi*(x-xmid)/Lx)*math.sin(2*math.pi*(y-ymid)/Ly)*2*math.pi/Ly/mu0
+   local Jx = Bnoise*math.sin(2*math.pi*(x-xmid)/Lx)*math.cos(2*math.pi*(y-ymid)/Ly)*2*math.pi/Ly/mu0
+   local Jy = -Bnoise*math.cos(2*math.pi*(x-xmid)/Lx)*math.sin(2*math.pi*(y-ymid)/Ly)*2*math.pi/Lx/mu0
    return Jx, Jy, 0.0
 end
 
@@ -177,8 +177,10 @@ momentApp = Moments.App {
          local vx, vy, vz = calcV(x, y)
 	 local Jx, Jy, Jz = calcJ(x,y,z)
 
-	 vx = vx + 0.5*Jx/(eleCharge*6e6)
-	 vy = vy + 0.5*Jy/(eleCharge*6e6)
+	 local n0 = rho_e/eleMass
+	 
+	 vx = vx + 0.5*Jx/(eleCharge*n0)
+	 vy = vy + 0.5*Jy/(eleCharge*n0)
 	 
          local p_e = p0_e
 
@@ -203,8 +205,10 @@ momentApp = Moments.App {
          local vx, vy, vz = calcV(x,y,z)
 	 local Jx, Jy, Jz = calcJ(x,y,z)
 
-	 vx = vx + 0.5*Jx/(ionCharge*6e6)
-	 vy = vy + 0.5*Jy/(ionCharge*6e6)
+	 local n0 = rho_i/ionMass
+	 
+	 vx = vx + 0.5*Jx/(ionCharge*n0)
+	 vy = vy + 0.5*Jy/(ionCharge*n0)
 	 
          local p_i = p0_i
 
