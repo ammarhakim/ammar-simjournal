@@ -17,6 +17,16 @@ SimJournal: Ammar Hakim's Simulation Journal
   these results. Hence, there is no "hidden hand-of-god", as one
   commonly finds in some papers, etc.
 
+.. warning::
+
+   Gkeyll has undergone (and continues to undergo) major changes. The
+   old-style Gkeyll 1.0 (G1) input files here will not work with
+   Gkeyll 2.0 (G2). **G2 and G1 are completely different codes**. Even
+   some G1 input files will need some (minor) mods to work. It is
+   nearly impossible for me to keep these input files up-to-date as
+   there are, literally, hundreds of them linked to my simulation
+   journal.
+
 Below are a list of journal entries, documenting various problems that
 have been attempted with Gkeyll. The eventual goal of Gkeyll is to
 solve the gyrokinetic equations in the edge region of tokamaks,
