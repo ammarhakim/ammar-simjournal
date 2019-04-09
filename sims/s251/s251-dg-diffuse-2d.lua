@@ -64,6 +64,7 @@ diffSolver = Updater.HyperDiffusion2D {
    onGrid = grid,
    -- basis functions to use
    basis = basis,
+   calcDiffusion = true,
    -- diffusion coefficent
    diffusionCoeff = 1.0,
    -- CFL number

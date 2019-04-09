@@ -14,7 +14,7 @@ grid = Grid.RectCart2D {
 }
 
 -- create FEM nodal basis
-basis = NodalFiniteElement2D.Serendipity {
+basis = NodalFiniteElement2D.SerendipityElement {
    -- grid on which elements should be constructured
    onGrid = grid,
    -- polynomial order in each cell
@@ -65,6 +65,7 @@ diffSolver = Updater.HyperDiffusion2D {
    -- basis functions to use
    basis = basis,
    -- diffusion coefficent
+   calcDiffusion = true,
    diffusionCoeff = 1.0,
    -- CFL number
    cfl = cfl,
@@ -163,7 +164,7 @@ end
 
 -- parameters to control time-stepping
 tStart = 0.0
-tEnd = 1.0
+tEnd = 0.1
 dtSuggested = 0.1*tEnd -- initial time-step to use (will be adjusted)
 nFrames = 1
 tFrame = (tEnd-tStart)/nFrames -- time between frames
