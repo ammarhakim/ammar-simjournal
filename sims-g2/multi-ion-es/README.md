@@ -9,3 +9,10 @@
 - b1: Same as n1, except with BGK operator
 - b2: Same as n2, except with BGK operator
 - b3: Same as n3, except with BGK operator
+
+The following input file is not right. Ions and electrons have same
+thermal velocity (which is probably ok) but then the mfp are
+different. Should instead setup a stationary shock for ions and then
+electrons will stick to them due to ES forces.
+
+- t1: Two species (electron and ions) corresponding to n1
