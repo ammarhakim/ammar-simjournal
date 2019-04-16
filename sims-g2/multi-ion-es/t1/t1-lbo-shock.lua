@@ -4,8 +4,13 @@ local Logger = require "Lib.Logger"
 
 log = Logger { logFile = "info" }
 
+-- physical constants
 elcMass = 1.0
 ionMass = 1836.2
+elcCharge = -1.0
+ionCharge = 1.0
+epsilon0 = 1.0
+mu0 = 1.0
 
 gasGamma = 3.0 -- gas adiabatic constant
 LX = 10.0 -- length of domain
@@ -38,9 +43,12 @@ nuElc = nuIon*math.sqrt(ionMass/elcMass) -- ion collision frequency
 tEnd = 0.1*LX/vThermalIon_l -- end time for sim
 
 -- print some information
+lambdaD = math.sqrt(epsilon0/elcCharge^2/(nl/Te+nl/Te))
+
 log(string.format("Electron collision frequency: %g\n", nuElc))
 log(string.format("Ion collision frequency: %g\n", nuIon))
 log(string.format("Ion mfp/LX: %g\n", mfp/LX))
+log(string.format("Ion mfp/lambdaD: %g\n", mfp/lambdaD))
 log("\n\n")
 
 plasmaApp = Plasma.App {
@@ -60,7 +68,7 @@ plasmaApp = Plasma.App {
    useShared = false, -- if to use shared memory
 
    elc = Plasma.Species {
-      charge = -1.0, mass = elcMass,
+      charge = elcCharge, mass = elcMass,
       -- velocity space grid
       lower = {-1.0},
       upper = {1.0},
@@ -110,7 +118,7 @@ plasmaApp = Plasma.App {
    },
 
    ion = Plasma.Species {
-      charge = 1.0, mass = ionMass,
+      charge = ionCharge, mass = ionMass,
       -- velocity space grid
       lower = {-1.0/math.sqrt(ionMass/elcMass)},
       upper = {1.0/math.sqrt(ionMass/elcMass)},
@@ -161,7 +169,7 @@ plasmaApp = Plasma.App {
 
    -- field solver
    field = Plasma.Field {
-      epsilon0 = 1.0, mu0 = 1.0,
+      epsilon0 = epsilon0, mu0 = mu0,
       init = function (t, xn)
 	 return 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
       end,
