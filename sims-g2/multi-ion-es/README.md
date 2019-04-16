@@ -10,6 +10,7 @@
 - b2: Same as n2, except with BGK operator
 - b3: Same as n3, except with BGK operator
 
-- t1: Two species (electron and ions) mfp = 0.1
+- t1: Two species (electron and ions) mfp = 0.1 (LX = 10)
 - t2: Same as t1, except larger domain mfp = 0.1 (LX = 50)
 - t3: Same as t2 except mfp = 0.25 (LX = 50)
+- t3: Same as t2 except temperature is higher (mfp/lambda < 1) (LX = 50)

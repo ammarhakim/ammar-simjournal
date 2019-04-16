@@ -13,9 +13,9 @@ mu0 = 1.0
 
 gasGamma = 3.0 -- gas adiabatic constant
 LX = 50.0 -- length of domain
-mfp = 0.25 -- mean-free path
+mfp = 0.1 -- mean-free path
 
-Te = 1.0e-2 -- temperature
+Te = 4*1.0e-2 -- temperature
 M = 2.0 -- Mach number for flow
 
 -- left state
@@ -39,7 +39,7 @@ vThermalElc_r = math.sqrt(pr/(nr*elcMass))
 nuIon = vThermalIon_l/mfp -- ion collision frequency
 nuElc = nuIon*math.sqrt(ionMass/elcMass) -- ion collision frequency
 
-tEnd = 0.1*LX/vThermalIon_l -- end time for sim
+tEnd = 0.05*LX/vThermalIon_l -- end time for sim
 
 -- print some information
 lambdaD = math.sqrt(epsilon0/elcCharge^2/(nl/Te+nl/Te))
@@ -54,7 +54,7 @@ plasmaApp = Plasma.App {
    logToFile = true,
 
    tEnd = tEnd, -- end time
-   nFrame = 50, -- number of output frames
+   nFrame = 25, -- number of output frames
    lower = {0.0}, -- configuration space lower left
    upper = {LX}, -- configuration space upper right
    cells = {320}, -- configuration space cells
