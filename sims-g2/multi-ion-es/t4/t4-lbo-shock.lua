@@ -69,8 +69,8 @@ plasmaApp = Plasma.App {
    elc = Plasma.Species {
       charge = elcCharge, mass = elcMass,
       -- velocity space grid
-      lower = {-1.0},
-      upper = {1.0},
+      lower = {-2.0},
+      upper = {2.0},
       cells = {16},
       decompCuts = {1},
 
@@ -119,8 +119,8 @@ plasmaApp = Plasma.App {
    ion = Plasma.Species {
       charge = ionCharge, mass = ionMass,
       -- velocity space grid
-      lower = {-1.0/math.sqrt(ionMass/elcMass)},
-      upper = {1.0/math.sqrt(ionMass/elcMass)},
+      lower = {-2.5/math.sqrt(ionMass/elcMass)},
+      upper = {2.5/math.sqrt(ionMass/elcMass)},
       cells = {16},
       decompCuts = {1},
 
