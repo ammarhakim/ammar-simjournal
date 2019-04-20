@@ -10,7 +10,13 @@
 - b2: Same as n2, except with BGK operator
 - b3: Same as n3, except with BGK operator
 
+Single ion with ion sound speed
+
 - t1: Two species (electron and ions) mfp = 0.1 (LX = 10)
 - t2: Same as t1, except larger domain mfp = 0.1 (LX = 50)
 - t3: Same as t2 except mfp = 0.25 (LX = 50)
-- t3: Same as t2 except temperature is higher (mfp/lambda < 1) (LX = 50)
+- t4: Same as t2 except temperature is higher (mfp/lambda < 1) (LX = 50)
+
+- m1: Same as t1, but using plasma sound speed to compute flow speeds
+
+- tf2: Same as t2, except using the 5M models for electrons and ions
