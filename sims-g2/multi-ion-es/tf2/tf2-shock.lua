@@ -94,7 +94,7 @@ plasmaApp = Plasma.App {
 
       evolve = true, -- evolve species?
       bcx = { Plasma.Species.bcCopy, Plasma.Species.bcCopy }, -- boundary conditions in X
-   },   
+   },
 
    -- field solver
    field = Plasma.Field {
