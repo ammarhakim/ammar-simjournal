@@ -6,8 +6,6 @@
 
 local Grid = require "Grid"
 local DataStruct = require "DataStruct"
-local Time = require "Lib.Time"
-local Lin = require "Lib.Linalg"
 local Basis = require "Basis"
 local Updater = require "Updater"
 
@@ -96,9 +94,9 @@ local App = function(tbl)
    --------------
 
    local function writeData(frame, tm)
-      f:write(string.format("f_%d.bp", frame), tEnd)
-      density:write(string.format("density_%d.bp", frame), 0.0)
-      fSquare:write(string.format("fSquare_%d.bp", frame), 0.0)
+      f:write(string.format("f_%d.bp", frame), tm)
+      density:write(string.format("density_%d.bp", frame), tm)
+      fSquare:write(string.format("fSquare_%d.bp", frame), tm)
    end
 
    local function applyBc(fld)
@@ -177,6 +175,7 @@ local App = function(tbl)
       local tCurr = 0.0
       local step = 1
       local dt = cfl*grid:dx(1)
+      local isDone = false
       
       while not isDone do
 	 if (tCurr+dt >= tEnd) then
