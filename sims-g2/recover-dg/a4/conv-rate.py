@@ -4,22 +4,22 @@ import math
 style.use('../code/postgkyl.mplstyle')
 
 dat = loadtxt("error-dx.txt")
-dx = dat[:,0]
+N = dat[:,0]*1.0
 err = dat[:,1]
+err1 = err-err[-1] # this gets rid of dt errors assuming dx is very small
 
-for i in range(1,dx.shape[0]):
-    dxOrder = math.log(err[i-1]/err[i])/log(dx[i-1]/dx[i])
-    print("%g %g" % (dx[i], dxOrder))
+for i in range(1,N.shape[0]-1):
+    dxOrder = math.log(err1[i-1]/err1[i])/log(N[i]/N[i-1])
+    print("%g %g" % (1/N[i], dxOrder))
 
-dx1 = linspace(1.5, 6.0, 10)
-err4 = (1/dx1)**4 
+fig, ax = plt.subplots(1,1)
     
-loglog(1/dx, err)
-loglog(dx1, err4, 'r--')
-xticks([])
-text(3, 0.02, r'$\Delta x^4$')
-xlabel(r'$1/\Delta x$')
-ylabel('Error')
+ax.loglog(N[:-1], err1[:-1])
+ax.set_xticks([4,8,16,32])
+ax.set_xlim(0,40)
+ax.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
+ax.set_xlabel(r'$N$')
+ax.set_ylabel('Error')
 grid()
 show()
 

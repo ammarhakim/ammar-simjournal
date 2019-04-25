@@ -15,8 +15,8 @@ for i in range(1,N.shape[0]-1):
 fig, ax = plt.subplots(1,1)
     
 ax.loglog(N[:-1], err1[:-1])
-ax.set_xticks([4,8,16,32])
-ax.set_xlim(0,40)
+ax.set_xticks([2,4,8,16])
+ax.set_xlim(0,20)
 ax.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
 ax.set_xlabel(r'$N$')
 ax.set_ylabel('Error')
