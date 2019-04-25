@@ -3,7 +3,7 @@ local App = dofile("../code/advection.lua")
 
 advection = App {
    polyOrder = 2, -- polynomial order
-   cflFrac = 2.0/128, -- cflFrac (defaults to 1.0)
+   cflFrac = 2.0/128/4, -- cflFrac (defaults to 1.0)
    extents = {-math.pi, math.pi}, -- domain size
    nCell = 8, -- number of cells
    tEnd = 2*math.pi, -- time

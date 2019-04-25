@@ -6,7 +6,7 @@ style.use('../code/postgkyl.mplstyle')
 dat = loadtxt("error-dx.txt")
 N = dat[:,0]*1.0
 err = dat[:,1]
-err1 = err- err[-1] # this gets rid of dt errors assuming dx is very small
+err1 = err - err[-1] # this gets rid of dt errors assuming dx is very small
 
 for i in range(1,N.shape[0]-1):
     dxOrder = math.log(err1[i-1]/err1[i])/log(N[i]/N[i-1])
