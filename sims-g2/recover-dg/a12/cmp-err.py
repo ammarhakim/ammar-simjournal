@@ -23,17 +23,17 @@ text(16,1.3e-3, r"$\Delta x^4$", color='r')
 
 Nn = linspace(4,32,100)
 a = 1.e-2**(1/5.0)*Nn[0]
-f = (a/Nn)**5
+f = (a/Nn)**(4.5)
 loglog(N2, e2, 'k-', label='p=2')
 loglog(Nn, f, 'k--', linewidth=1.0)
-text(10,1.0e-4, r"$\Delta x^5$", color='k')
+text(10,1.0e-4, r"$\Delta x^{9/2}$", color='k')
 
 Nn = linspace(3,16,100)
 a = 2.e-4**(1/6.0)*Nn[0]
-f = (a/Nn)**6
+f = (a/Nn)**(7.5)
 loglog(N3, e3, 'm-', label='p=3')
 loglog(Nn, f, 'm--', linewidth=1.0)
-text(5,1.0e-5, r"$\Delta x^6$", color='m')
+text(5,1.0e-5, r"$\Delta x^{15/2}$", color='m')
 
 gca().set_xlim(0,40)
 xticks([2,4,8,16,32], [2,4,8,16,32])
