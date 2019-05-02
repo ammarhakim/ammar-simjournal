@@ -25,3 +25,7 @@ Advection equation tests:
 - a11: p=3, N=8
 - a12: p=3, N=16
 - a109: p=3, N=128
+
+Advection of Gaussian
+
+- g1: p=1, N=8 (for convergence)
