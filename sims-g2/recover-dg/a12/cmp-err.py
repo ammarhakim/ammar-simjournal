@@ -16,17 +16,17 @@ N3, e3 = readError("../a12/error-dx.txt")
 
 Nn = linspace(8,32,100)
 a = 0.01**(1/4.0)*Nn[0]
-f = (a/Nn)**4
+f = (a/Nn)**(3.5)
 loglog(N1, e1, 'r-', label='p=1')
 loglog(Nn, f, 'r--', linewidth=1.0)
-text(16,1.3e-3, r"$\Delta x^4$", color='r')
+text(16,1.3e-3, r"$\Delta x^{7/2}$", color='r')
 
 Nn = linspace(4,32,100)
 a = 1.e-2**(1/5.0)*Nn[0]
-f = (a/Nn)**(4.5)
+f = (a/Nn)**(5.5)
 loglog(N2, e2, 'k-', label='p=2')
 loglog(Nn, f, 'k--', linewidth=1.0)
-text(10,1.0e-4, r"$\Delta x^{9/2}$", color='k')
+text(10,1.0e-4, r"$\Delta x^{11/2}$", color='k')
 
 Nn = linspace(3,16,100)
 a = 2.e-4**(1/6.0)*Nn[0]
