@@ -35,3 +35,7 @@ Advection of Gaussian
 - g4: p=2, N=12
 - g5: p=2, N=18
 - g6: p=2, N=24
+- g7: p=2, N=30
+
+- g8: p=3, N=8
+- g9: p=3, N=16
