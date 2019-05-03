@@ -10,7 +10,7 @@ advection = App {
 
    -- initial conditions
    init = function(t, xn)
-      return math.exp(-xn[1]^2/(2*0.2^2))
+      return 1+math.exp(-xn[1]^2/(2*0.2^2))
    end,
 }
 advection()

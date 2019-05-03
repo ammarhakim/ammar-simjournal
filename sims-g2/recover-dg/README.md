@@ -28,4 +28,10 @@ Advection equation tests:
 
 Advection of Gaussian
 
-- g1: p=1, N=8 (for convergence)
+- g1: p=1, N=16 (for convergence)
+- g2: p=1, N=32
+- g3: p=1, N=64
+
+- g4: p=2, N=12
+- g5: p=2, N=18
+- g6: p=2, N=24
