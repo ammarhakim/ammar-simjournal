@@ -68,7 +68,7 @@ rsol : linsolve(eqList, makelist(r[i],i,0,maxReconOrder))$
 r1d : subst(rsol, rh)$
 
 /* Update stencil for L2 */
-l2Stencil : integrate(r1d^2, x, -dx/2, dx/2)/dx$
+l2Stencil : integrate((r1d-fh)^2, x, -dx/2, dx/2)/dx$
 
 /* Write to file */
 substList : append(
@@ -77,6 +77,7 @@ substList : append(
   makelist(f(j-1,i)=fL[i],i,1,length(bCC)))$
 gs : float(expand((subst(substList, l2Stencil))))$
 
-fh : openw("~/max-out/l2-stencil")$
-printf(fh, "fOut[1] = ~a ~%", gs) $
-close(fh)$
+fl : openw("~/max-out/l2-smoothness-stencil")$
+printf(fl, "local v = ~a ~%", gs) $
+printf(fl, "fOut[1] = v/(~a) ~%", sum(f1[i]^2,i,1,length(bCC))) $
+close(fl)$
