@@ -10,7 +10,7 @@ matchSlope : true $
 matchValue : true $
 
 /* Reconstruction across two cells of size dx each */
-bCC : basisC[1]$ 
+bCC : basisC[2]$ 
 
 pL : eta(-dx/2,dx,bCC)$
 pR : eta(dx/2,dx,bCC)$
@@ -23,7 +23,7 @@ eqList : append(eqL,eqR)$
 hsol : linsolve(eqList, makelist(hn[i], i, 0, 2*N-1))$
 h1d : fullratsimp(subst(hsol, h))$
 
-/* Basis function in three cells: L,I,R */
+/* Basis function in two  cells: L,R */
 bCL : eta(-dx/2,dx,bCC)$
 bCR : eta(dx/2,dx,bCC)$
 

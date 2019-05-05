@@ -1,0 +1,49 @@
+load("modal-basis")$
+load("basis-precalc/basisSer1x")$
+assume(dx>0)$
+
+eta(xc,dx,b) := subst(z=x,
+  subst(x=(z-xc)/(dx/2), b))$
+
+/* Reconstruction across two cells of size dx each */
+bCC : basisC[3]$
+
+pL : eta(-dx/2,dx,bCC)$
+pR : eta(dx/2,dx,bCC)$
+
+N : length(bCC)$
+h : doExpand1(hn, makelist(x^i,i,0,2*N-1))$
+eqL : calcInnerProdListGen([x], [[-dx,0]], 1, pL, h-doExpand(hL,pL))$
+eqR : calcInnerProdListGen([x], [[0,dx]],  1, pR, h-doExpand(hR,pR))$
+eqList : append(eqL,eqR)$
+hsol : linsolve(eqList, makelist(hn[i], i, 0, 2*N-1))$
+h1d : fullratsimp(subst(hsol, h))$
+
+/* Compute recovery poly from left/right expansion coefficients */
+calcReconFromExpansions(gL, gR) := expand(
+  fullratsimp(subst(append(
+        makelist(hL[i]=gL[i],i,1,N),
+        makelist(hR[i]=gR[i],i,1,N)),
+      h1d)))$
+
+/* Coefficients in L,I,R cells */
+fLh : makelist(fL[i], i, 1, N)$
+f1h : makelist(f1[i], i, 1, N)$
+fRh : makelist(fR[i], i, 1, N)$
+
+/* Left/right surface terms */
+leftSurf : subst(x=0, calcReconFromExpansions(fLh, f1h))*subst(x=-1, bCC)*2/dx$
+rightSurf : subst(x=0, calcReconFromExpansions(f1h, fRh))*subst(x=1, bCC)*2/dx$
+
+/* vol term */
+vol : calcInnerProdList([x], 1, diff(bCC,x)*2/dx, doExpand(f1, bCC))$
+
+/* Complete stencil */
+gridStencil : (rightSurf-leftSurf) - vol$
+
+/* Write to file */
+gs : float(expand((gridStencil)))$
+
+fh : openw("~/max-out/stencil")$
+for i : 1 thru length(bCC) do printf(fh, "fOut[~a] = ~a ~%", i, f1[i] - dt*gs[i]) $
+close(fh)$
