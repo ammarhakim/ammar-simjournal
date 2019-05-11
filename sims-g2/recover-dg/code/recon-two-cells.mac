@@ -10,7 +10,7 @@ matchSlope : true $
 matchValue : true $
 
 /* Reconstruction across two cells of size dx each */
-bCC : basisC[2]$ 
+bCC : basisC[1]$ 
 
 pL : eta(-dx/2,dx,bCC)$
 pR : eta(dx/2,dx,bCC)$
@@ -27,15 +27,17 @@ h1d : fullratsimp(subst(hsol, h))$
 bCL : eta(-dx/2,dx,bCC)$
 bCR : eta(dx/2,dx,bCC)$
 
-calcRecon(g) := block([gL, gR, g1g],
-  gL : calcInnerProdListGen([x], [[-dx,0]], 1, bCL, g)*2/dx,
-  gR : calcInnerProdListGen([x], [[0,dx]], 1, bCR, g)*2/dx,
-  h1g : expand(
-    fullratsimp(subst(append(
-      makelist(hL[i]=gL[i],i,1,N),
-      makelist(hR[i]=gR[i],i,1,N)),
-    h1d))),
-  return (h1g)
+/* Compute recovery poly from left/right expansion coefficients */
+calcReconFromExpansions(gL, gR) := expand(
+  fullratsimp(subst(append(
+        makelist(hL[i]=gL[i],i,1,N),
+        makelist(hR[i]=gR[i],i,1,N)),
+      h1d)))$
+
+/* Recovery poly of a function */
+calcRecon(g) := calcReconFromExpansions(
+  calcInnerProdListGen([x], [[-dx,0]], 1, bCL, g)*2/dx,
+  calcInnerProdListGen([x], [[0,dx]], 1, bCR, g)*2/dx
   )$
 
 /* Taylor series analysis */

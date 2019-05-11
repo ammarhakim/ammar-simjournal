@@ -6,7 +6,7 @@ eta(xc,dx,b) := subst(z=x,
   subst(x=(z-xc)/(dx/2), b))$
 
 /* Reconstruction across two cells of size dx each */
-bCC : basisC[3]$
+bCC : basisC[1]$
 
 pL : eta(-dx/2,dx,bCC)$
 pR : eta(dx/2,dx,bCC)$
