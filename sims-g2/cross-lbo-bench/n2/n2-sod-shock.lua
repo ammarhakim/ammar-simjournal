@@ -25,7 +25,7 @@ function maxwellian(n0, vdrift, vt, v)
 end
 
 sim = Plasma.App {
-   logToFile = false,
+   logToFile = true,
 
    tEnd = 0.1, -- end time
    nFrame = 1, -- number of frames to write
@@ -66,7 +66,7 @@ sim = Plasma.App {
       evolveCollisions = true,
       -- collisions
       bgk = Plasma.BgkCollisions {
-	 collideWith = {"neut1"},
+	 collideWith = {"neut2"},
 	 frequencies = {nu},
       },
 
@@ -101,7 +101,7 @@ sim = Plasma.App {
       -- collisions
       bgk = Plasma.BgkCollisions {
 	 collideWith = {"neut1"},
-	 frequencies = {nu/10},
+	 frequencies = {nu},
       },
 
       bcx = { Plasma.Species.bcOpen, Plasma.Species.bcOpen },

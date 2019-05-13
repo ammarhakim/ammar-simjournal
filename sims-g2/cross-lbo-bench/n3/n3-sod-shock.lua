@@ -25,7 +25,7 @@ function maxwellian(n0, vdrift, vt, v)
 end
 
 sim = Plasma.App {
-   logToFile = false,
+   logToFile = true,
 
    tEnd = 0.1, -- end time
    nFrame = 1, -- number of frames to write
@@ -38,8 +38,8 @@ sim = Plasma.App {
    cflFrac = 0.9,
 
    -- decomposition for configuration space
-   decompCuts = {4}, -- cuts in each configuration direction
-   useShared = false, -- if to use shared memory
+   decompCuts = {1}, -- cuts in each configuration direction
+   useShared = true, -- if to use shared memory
 
    -- boundary conditions for configuration space
    periodicDirs = {}, -- periodic directions
@@ -65,7 +65,7 @@ sim = Plasma.App {
       evolveCollisions = true,
       -- collisions
       lbo = Plasma.LBOCollisions {
-	 collideWith = {"neut1"},
+	 collideWith = {"neut2"},
 	 frequencies = {nu},
       },
 
@@ -99,7 +99,7 @@ sim = Plasma.App {
       -- collisions
       lbo = Plasma.LBOCollisions {
 	 collideWith = {"neut1"},
-	 frequencies = {nu/10},
+	 frequencies = {nu},
       },
 
       bcx = { Plasma.Species.bcOpen, Plasma.Species.bcOpen },

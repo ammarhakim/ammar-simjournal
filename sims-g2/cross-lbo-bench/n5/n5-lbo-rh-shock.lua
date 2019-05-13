@@ -78,7 +78,7 @@ plasmaApp = Plasma.App {
       evolveCollisions = true,
       -- collisions
       lbo = Plasma.LBOCollisions {
-	 collideWith = {"neut1"},
+	 collideWith = {"neut2"},
 	 frequencies = {nu},
       },
 

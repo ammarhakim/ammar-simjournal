@@ -36,8 +36,8 @@ plasmaApp = Plasma.App {
    timeStepper = "rk3", -- one of "rk2" or "rk3"
 
    -- decomposition for configuration space
-   decompCuts = {2}, -- cuts in each configuration direction
-   useShared = false, -- if to use shared memory
+   decompCuts = {1}, -- cuts in each configuration direction
+   useShared = true, -- if to use shared memory
 
 
    neut1 = Plasma.Species {
@@ -77,7 +77,7 @@ plasmaApp = Plasma.App {
       evolveCollisions = true,
       -- collisions
       lbo = Plasma.LBOCollisions {
-	 collideWith = {"neut1"},
+	 collideWith = {"neut2"},
 	 frequencies = {nu},
       },
 
@@ -124,7 +124,7 @@ plasmaApp = Plasma.App {
 
       -- collisions
       lbo = Plasma.LBOCollisions {
-	 collideWith = {"neut2"},
+	 collideWith = {"neut1"},
 	 frequencies = {nu},
       },      
 
