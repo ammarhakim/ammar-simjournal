@@ -36,8 +36,8 @@ plasmaApp = Plasma.App {
    timeStepper = "rk3", -- one of "rk2" or "rk3"
 
    -- decomposition for configuration space
-   decompCuts = {1}, -- cuts in each configuration direction
-   useShared = true, -- if to use shared memory
+   decompCuts = {4}, -- cuts in each configuration direction
+   useShared = false, -- if to use shared memory
 
 
    neut1 = Plasma.Species {
