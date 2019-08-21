@@ -42,7 +42,7 @@ grid = Grid.RectCart2D {
 }
 
 -- create FEM nodal basis
-basis = NodalFiniteElement2D.Serendipity {
+basis = NodalFiniteElement2D.SerendipityElement {
    -- grid on which elements should be constructured
    onGrid = grid,
    -- polynomial order in each cell. One of 1, or 2. Corresponding
@@ -194,6 +194,8 @@ totalPtclCalc = Updater.IntegrateNodalField1D {
    basis = basis_1d,
    -- are common nodes shared?
    shareCommonNodes = false, -- for DG fields common nodes not shared
+
+   integrand = function (x) return x end,
 }
 -- set input field
 totalPtclCalc:setIn( {numDensity} )
@@ -234,6 +236,8 @@ totalPtclEnergyCalc = Updater.IntegrateNodalField1D {
    basis = basis_1d,
    -- are common nodes shared?
    shareCommonNodes = false, -- for DG fields common nodes not shared
+
+   integrand = function (x) return x end,
 }
 -- set input field
 totalPtclEnergyCalc:setIn( {ptclEnergy} )

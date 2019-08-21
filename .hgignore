@@ -1,4 +1,8 @@
 syntax: glob
+.DS_Store
+*.aux
+*.out
+*.dat
 *~
 build/*
 sims/*/*.h5

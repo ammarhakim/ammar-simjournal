@@ -45,4 +45,4 @@ close()
 
 exactRates = numpy.array([.007780445578799889, .01844791241964087, .03240172691301003, 
                           .1533594669096014, 0.461918799798943, .8513304586905912, 3.966650346524154])
-print "Percent errors", -100*(dat[:,1]-exactRates)/exactRates
+print ("Percent errors", -100*(dat[:,1]-exactRates)/exactRates)
