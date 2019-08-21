@@ -6,7 +6,7 @@ eta(xc,dx,b) := subst(z=x,
   subst(x=(z-xc)/(dx/2), b))$
 
 /* Flags to indicate what we are matching (one can match both) */
-matchSlope : true $
+matchSlope : false $
 matchValue : true $
 
 /* Reconstruction across two cells of size dx each */

@@ -27,7 +27,7 @@ eulerApp = Moments.App {
    timeStepper = "fvDimSplit",
    
    -- decomposition stuff
-   decompCuts = {6, 6, 6}, -- cuts in each direction
+   --decompCuts = {6, 6, 6}, -- cuts in each direction
    useShared = false, -- if to use shared memory
 
    periodicDirs = {1, 2, 3}, -- periodic directions
