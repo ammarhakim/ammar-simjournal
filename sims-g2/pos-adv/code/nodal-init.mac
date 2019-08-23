@@ -1,0 +1,15 @@
+load("out-scripts")$
+load("modal-basis")$
+load("basis-precalc/basisSer2x")$
+
+bC : basisC[1]$
+fl : doExpand(f, bC)$
+
+clist : [[-mu1,-mu1], [mu1,-mu1], [-mu1,mu1], [mu1,mu1]]$
+fv : makelist(subst([x=clist[i][1],y=clist[i][2]], fl), i, 1, 4)$
+C : coefmatrix(fv,[f[1],f[2],f[3],f[4]])$
+fp : invert(C) . transpose([v1,v2,v3,v4])$
+
+fh : openw("~/max-out/fp.lua")$
+writeExprs(colVecToList(fp))$
+close(fh)$
