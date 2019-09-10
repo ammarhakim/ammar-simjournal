@@ -29,9 +29,9 @@ vlasovApp = Plasma.App {
    elc = Plasma.Species {
       charge = -1.0, mass = 1.0,
       -- velocity space grid
-      lower = {-12.0},
-      upper = {12.0},
-      cells = {72},
+      lower = {-16.0},
+      upper = {16.0},
+      cells = {96},
       -- initial conditions
       init = function (t, xn)
 	 local x, v = xn[1], xn[2]
@@ -42,7 +42,7 @@ vlasovApp = Plasma.App {
 	 if math.abs(v) < 2 then
 	    fv = fmid
 	 elseif math.abs(v) < 4 then
-	    fv = 0.5*fbeam
+	    fv = fbeam
 	 elseif math.abs(v) < 6 then
 	    fv = fmid
 	 elseif math.abs(v) < 8 then

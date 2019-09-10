@@ -11,7 +11,7 @@ vlasovApp = Vlasov.App {
    logToFile = true,
 
    tEnd = 100.0, -- end time
-   nFrame = 100, -- number of output frames
+   nFrame = 200, -- number of output frames
    lower = {0.0}, -- configuration space lower left
    upper = {2*math.pi}, -- configuration space upper right
    cells = {16}, -- configuration space cells
@@ -19,10 +19,9 @@ vlasovApp = Vlasov.App {
    polyOrder = 2, -- polynomial order
    timeStepper = "rk3s4", -- one of "rk2" or "rk3"
 
-   ioMethod = "POSIX",   
    -- decomposition for configuration space
    decompCuts = {1}, -- cuts in each configuration direction
-   useShared = false, -- if to use shared memory
+   useShared = true, -- if to use shared memory
 
    -- boundary conditions for configuration space
    periodicDirs = {1}, -- periodic directions

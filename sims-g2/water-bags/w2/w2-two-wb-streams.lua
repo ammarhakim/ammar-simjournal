@@ -4,7 +4,7 @@ local Plasma = require("App.PlasmaOnCartGrid").VlasovMaxwell
 knumber = 0.5 -- wave-number
 perturbation = 1.0e-6 -- distribution function perturbation
 fbeam = 1.0 -- beam bag
-fmid = 0.1 -- middle bag
+fmid = 0.01 -- middle bag
 fout = 1e-6 -- outside bags
 
 vlasovApp = Plasma.App {
