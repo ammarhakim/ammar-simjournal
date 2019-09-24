@@ -5,3 +5,5 @@ Various problems with waterbag ICs.
 - w3: More water-bags, outer beam higher density
 - w4: More water-bags, inner beam lower density
 - w5: More water-bags, all beams same density
+- w6: Four water-bags with no particles in "inner" part
+- w7: Two water-bags with no particles in "inner" part
