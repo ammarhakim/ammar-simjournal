@@ -15,7 +15,7 @@ local Updater = require "Updater"
 polyOrder = 1 -- polynomial order (DONT CHANGE THIS: WORKS ONLY FOR P=1)
 xvel = 1.0 -- x-direction velocity
 yvel = 1.0 -- y-direction velocity
-cfl = 0.166 -- CFL number
+cfl = 0.166 -- CFL number 
 tEnd = 1.0
 useAntiLimiter = true -- if we should use anti-limiters
 rescaleSolution = true -- if we should rescale solution
@@ -620,7 +620,7 @@ function singleStep(tEnd)
 end
 
 -- initialize simulation
-initDist:advance(0.0, 0.0, {}, {f})
+initDist:advance(0.0, {}, {f})
 applyBc(f)
 rescaleSol(f) -- rescale so solution is positive at control nodes
 calcAbsDist(0.0, f)
