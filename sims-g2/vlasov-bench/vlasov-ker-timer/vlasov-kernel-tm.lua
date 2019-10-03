@@ -5,7 +5,7 @@ local ffi = require "ffi"
 local Basis = require "Basis"
 
 local fl = io.open("vlasov-kernel-tm.out", "w")
-fl:write(string.format("basis, p, CDIM, VDIM, N, stream, accel, time, time-per-DOF\n"))
+fl:write(string.format("basis, p, CDIM, VDIM, N, stream, accel (includes stream), time, time-per-DOF\n"))
 
 function timeKernel(bnm, polyOrder, cdim, vdim, nloop)
    local ndim = cdim+vdim
@@ -82,8 +82,8 @@ function timeKernel(bnm, polyOrder, cdim, vdim, nloop)
 
    local ts = (vs+cdim*ss)/nloop
    local ta = (vf+vdim*sf)/nloop
-   local tt = ts+ta
-   print(string.format("Total update should take %g per cell", (vs+cdim*ss + vf+vdim*sf)/nloop))
+   local tt = (vf+vdim*sf + cdim*ss)/nloop
+   print(string.format("Total update should take %g per cell", tt))
    print(string.format("Number of updates %d\n\n", nloop))
    
    fl:write(string.format("%s, %d, %d, %d, %d, %g, %g, %g, %g\n", bnm, polyOrder, cdim, vdim, nPhase, ts, ta, tt, tt/nPhase))
@@ -109,23 +109,23 @@ for i = 1, 2 do
    timeKernel("ms", i, 2, 3, 1e6)
 end
 
-for i = 1, 4 do
+for i = 1, 3 do
    timeKernel("mo", i, 1, 1, 1e7)
 end
 
-for i = 1, 4 do
+for i = 1, 3 do
    timeKernel("mo", i, 1, 2, 1e7)
 end
 
-for i = 1, 4 do
+for i = 1, 3 do
    timeKernel("mo", i, 1, 3, 1e7)
 end
 
-for i = 1, 4 do
+for i = 1, 3 do
    timeKernel("mo", i, 2, 2, 1e7)
 end
 
-for i = 1, 4 do
+for i = 1, 3 do
    timeKernel("mo", i, 2, 3, 1e7)
 end
 
