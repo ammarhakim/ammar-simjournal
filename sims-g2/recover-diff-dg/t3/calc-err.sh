@@ -1,0 +1,1 @@
+pgkyl -f t3-recovery-dg-diff_f_1.bp -f t3-recovery-dg-diff_fExact.bp ev "f0[0] f1[0] - sq f0[1] f1[1] - sq f0[2] f1[2] - sq f0[3] f1[3] - sq f0[4] f1[4] - sq f0[5] f1[5] - sq f0[6] f1[6] - sq f0[7] f1[7] - sq + + + + + + +" integrate 0 ev "f0 sqrt" info
