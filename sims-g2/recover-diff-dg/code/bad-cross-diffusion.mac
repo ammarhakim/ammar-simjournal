@@ -41,8 +41,7 @@ calcSurfTerm(dir, edge, polyOrder, fL, fR, fT, fTR, fB, fBR) := block(
   eBy : calcInnerProdList(delete(dirList[dir],dirList), 1, bc1y, subst(dirList[dir]=0, rB)),
   
   /* Unprojected Term 2: Derivative in transverse direction */
-  t2 : diffList[dir][2]*diff(getRecov3CellGen(dirRepl[dir], [2], polyOrder, 0, eBy, eCy, eTy),
-    dirRepl[dir])*2/dxRepl[dir],
+  t2 : diffList[dir][2]*diff(eCy.bc1y, dirRepl[dir])*2/dxRepl[dir],
   
   /* Project t1 and t2 on basis */
   st1 : calcInnerProdList(delete(dirList[dir],dirList),

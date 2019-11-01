@@ -1,0 +1,25 @@
+load("recovery-calc/recovery.mac")$
+load("modal-basis")$
+load("basis-precalc/basisSer1x")$
+
+bc : basisC[1]$
+
+projectOnCell(xc, dx, g) := block([bcI, gI],
+  bcI : eta([xc],[dx],bc),
+  gI : calcInnerProdListGen([x], [[xc-dx/2,xc+dx/2]], 1, bcI, g)*2/dx,
+  return (gI)
+  )$
+
+/* Taylor polynomial */
+ge : sum(g[i]*x^i/factorial(i), i, 0, 8)$
+
+/* Project Taylor polynomial in left/right cells */
+gL : projectOnCell(-dx/2, dx, ge)$
+gR : projectOnCell(dx/2, dx, ge)$
+
+/* Recover across two cells */
+r2 : getRecov2CellGen(x, [dx], 1, gL, gR)$
+
+/* Compute derivatives */
+gx : fullratsimp(subst(x=0,diff(r2,x))), expand$
+gxx : fullratsimp(subst(x=0,diff(r2,x,2))), expand$
