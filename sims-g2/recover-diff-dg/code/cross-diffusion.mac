@@ -1,7 +1,7 @@
 load("recovery-calc/recovery.mac")$
 load("modal-basis")$
 
-polyOrder : 1$
+polyOrder : 2$
 
 /* Load 2D and 1D basis */
 load("basis-precalc/basisSer2x")$
@@ -64,10 +64,10 @@ calcSurfTerm(dir, edge, polyOrder, fL, fR, fT, fTR, fB, fBR) := block(
   )$
 
 /* Function to compute cross-derivatives */
-diffCross(f,x,y) := diff(diff(f,x),y)$
+diffCross(f,z1,z2) := diff(diff(f,z1),z2)$
 
 /* Compute volume contribution */
-d2bc : diffCross(bc2,x,x)*Dxx*2/dx*2/dy + diffCross(bc2,x,y)*Dxy*2/dx*2/dy + diffCross(bc2,y,x)*Dyx*2/dy*2/dx + diffCross(bc2,y,y)*Dxx*2/dy*2/dy$
+d2bc : diffCross(bc2,x,x)*Dxx*2/dx*2/dx + diffCross(bc2,x,y)*Dxy*2/dx*2/dy + diffCross(bc2,y,x)*Dyx*2/dy*2/dx + diffCross(bc2,y,y)*Dyy*2/dy*2/dy$
 vol : calcInnerProdList([x,y], 1, d2bc, doExpand(q,bc2))$
 
 /* Surface terms */
