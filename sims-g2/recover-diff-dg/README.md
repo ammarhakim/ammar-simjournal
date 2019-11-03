@@ -13,6 +13,7 @@ dt. In actual simulations one can set cflFrac to 1.0.
 - s4: Dxx = Dyy = 0. Dxy = Dyx = 1. This shows eventually instability
   as D is not positive definite.
 - s5: ky = -1 test. This mode damps very slowly compared to kx=ky=1 mode
+- s6: Decay of Gaussian with Dxx = Dyy = 1.0; Dxy = Dyx = 0.9 p=1 12x12 grid
 
 - t1: Same as s1, except p=2, 4x4 grid
 - t2: Same as t1, except p=2, 8x8 grid
