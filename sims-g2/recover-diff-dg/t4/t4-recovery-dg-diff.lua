@@ -3,12 +3,12 @@ local App = dofile("../code/diffusion.lua")
 
 diffusion = App {
    polyOrder = 2,
-   cflFrac = 1/64,
+   cflFrac = 0.9,
    lower = {0.0, 0.0},
    upper = {2*math.pi, 2*math.pi},
-   cells = {16, 16},
-   tEnd = 0.1,
-   numFrames = 1,   
+   cells = {8, 8},
+   tEnd = 2.0,
+   numFrames = 10,
 
    -- diffusion coefficient
    D = { Dxx = 1.0, Dyy = 1.0, Dxy = 0.9 },

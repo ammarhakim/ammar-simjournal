@@ -1,7 +1,7 @@
 load("recovery-calc/recovery.mac")$
 load("modal-basis")$
 
-polyOrder : 2$
+polyOrder : 1$
 
 /* Load 2D and 1D basis */
 load("basis-precalc/basisSer2x")$
@@ -19,7 +19,7 @@ calcBasisGrad(b, varList) := makelist(diff(b,varList[i]), i, 1, length(varList))
  * fB, fBR: layer of cells in minus direction
  */
 calcSurfTerm(dir, edge, polyOrder, fL, fR, fT, fTR, fB, fBR) := block(
-  [dirList, dxList, dirRepl, dxRepl, diffList, rT, rC, rB, bc1y, eTy, eCy, eBy, t1, t2, fhat, st1, st2],
+  [dirList, dxList, dirRepl, dxRepl, diffList, rT, rC, rB, bc1y, eTy, eCy, eBy, t1, t2, fhat, dbc, st1, st2],
   
   dirList : [x,y],
   dirRepl : [y,x],
@@ -52,13 +52,11 @@ calcSurfTerm(dir, edge, polyOrder, fL, fR, fT, fTR, fB, fBR) := block(
   
   /* Now compute term III */
   fhat : subst(dirList[dir]=0, rC), /* f on surface */
+  /* Sum of derivatives of basis function*/
+  dbc : diffList[dir][1]*diff(bc2,dirList[dir])*2/dxList[dir] + diffList[dir][2]*diff(bc2,dirRepl[dir])*2/dxRepl[dir],
   st2 : calcInnerProdList(delete(dirList[dir],dirList),
-    diffList[dir][1],
-    subst(dirList[dir]=edge, diff(bc2,dirList[dir]))*2/dxList[dir],
-    fhat) +
-  calcInnerProdList(delete(dirList[dir],dirList),
-    diffList[dir][2],
-    subst(dirList[dir]=edge, diff(bc2,dirRepl[dir]))*2/dxRepl[dir],
+    1,
+    subst(dirList[dir]=edge, dbc),
     fhat),
   return ((st1-st2)*2/dxList[dir])
   )$

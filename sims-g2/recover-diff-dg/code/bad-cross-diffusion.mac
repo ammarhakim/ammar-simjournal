@@ -19,7 +19,7 @@ calcBasisGrad(b, varList) := makelist(diff(b,varList[i]), i, 1, length(varList))
  * fB, fBR: layer of cells in minus direction
  */
 calcSurfTerm(dir, edge, polyOrder, fL, fR, fT, fTR, fB, fBR) := block(
-  [dirList, dxList, dirRepl, dxRepl, diffList, rT, rC, rB, bc1y, eTy, eCy, eBy, t1, t2, fhat, st1, st2],
+  [dirList, dxList, dirRepl, dxRepl, diffList, rT, rC, rB, bc1y, eTy, eCy, eBy, t1, t2, fhat, dbc, st1, st2],
   
   dirList : [x,y],
   dirRepl : [y,x],
@@ -36,9 +36,7 @@ calcSurfTerm(dir, edge, polyOrder, fL, fR, fT, fTR, fB, fBR) := block(
   
   bc1y : subst(x=dirRepl[dir], bc1),
   /* Evaluate 2-cell recovery at interface and project in 1D surface basis */
-  eTy : calcInnerProdList(delete(dirList[dir],dirList), 1, bc1y, subst(dirList[dir]=0, rT)),
   eCy : calcInnerProdList(delete(dirList[dir],dirList), 1, bc1y, subst(dirList[dir]=0, rC)),
-  eBy : calcInnerProdList(delete(dirList[dir],dirList), 1, bc1y, subst(dirList[dir]=0, rB)),
   
   /* Unprojected Term 2: Derivative in transverse direction */
   t2 : diffList[dir][2]*diff(eCy.bc1y, dirRepl[dir])*2/dxRepl[dir],
@@ -51,22 +49,20 @@ calcSurfTerm(dir, edge, polyOrder, fL, fR, fT, fTR, fB, fBR) := block(
   
   /* Now compute term III */
   fhat : subst(dirList[dir]=0, rC), /* f on surface */
+  /* Sum of derivatives of basis function*/
+  dbc : diffList[dir][1]*diff(bc2,dirList[dir])*2/dxList[dir] + diffList[dir][2]*diff(bc2,dirRepl[dir])*2/dxRepl[dir],
   st2 : calcInnerProdList(delete(dirList[dir],dirList),
-    diffList[dir][1],
-    subst(dirList[dir]=edge, diff(bc2,dirList[dir]))*2/dxList[dir],
-    fhat) +
-  calcInnerProdList(delete(dirList[dir],dirList),
-    diffList[dir][2],
-    subst(dirList[dir]=edge, diff(bc2,dirRepl[dir]))*2/dxRepl[dir],
+    1,
+    subst(dirList[dir]=edge, dbc),
     fhat),
   return ((st1-st2)*2/dxList[dir])
   )$
 
 /* Function to compute cross-derivatives */
-diffCross(f,x,y) := diff(diff(f,x),y)$
+diffCross(f,z1,z2) := diff(diff(f,z1),z2)$
 
 /* Compute volume contribution */
-d2bc : diffCross(bc2,x,x)*Dxx*2/dx*2/dy + diffCross(bc2,x,y)*Dxy*2/dx*2/dy + diffCross(bc2,y,x)*Dyx*2/dy*2/dx + diffCross(bc2,y,y)*Dxx*2/dy*2/dy$
+d2bc : diffCross(bc2,x,x)*Dxx*2/dx*2/dx + diffCross(bc2,x,y)*Dxy*2/dx*2/dy + diffCross(bc2,y,x)*Dyx*2/dy*2/dx + diffCross(bc2,y,y)*Dyy*2/dy*2/dy$
 vol : calcInnerProdList([x,y], 1, d2bc, doExpand(q,bc2))$
 
 /* Surface terms */

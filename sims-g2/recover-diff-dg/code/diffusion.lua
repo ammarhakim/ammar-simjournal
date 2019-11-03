@@ -3,7 +3,7 @@ local DataStruct = require "DataStruct"
 local Grid = require "Grid"
 local Updater = require "Updater"
 local Lin = require "Lib.Linalg"
-local updateKernels = dofile("../code/diffusion-kernels.lua")
+local Time = require "Lib.Time"
 
 local App = function(tbl)
    -- read in stuff from input table
@@ -18,9 +18,16 @@ local App = function(tbl)
    local periodicDirs = {1, 2}
 
    local Dxx, Dyy = tbl.D.Dxx, tbl.D.Dyy
-   local Dxy, Dyx = tbl.D.Dxy, tbl.D.Dyx
+   local Dxy, Dyx = tbl.D.Dxy, tbl.D.Dxy -- Dxy = Dyx
 
    local cfl = 0.5*cflFrac/(2*polyOrder+1)
+
+   local updateKernels
+   if tbl.useFivePointStencil then
+      updateKernels = dofile("../code/bad-diffusion-kernels.lua")
+   else
+      updateKernels = dofile("../code/diffusion-kernels.lua")
+   end
 
    ----------------------
    -- Grids and Fields --
@@ -178,10 +185,12 @@ local App = function(tbl)
 
    -- run simulation with RK3
    return function ()
+      local tmStart = Time.clock()
+      
       local tCurr = 0.0
       local step = 1
       local dx, dy = grid:dx(1), grid:dx(2)
-      local omegaCFL = Dxx/dx^2 + (Dxy+Dyx)/(dx*dy) + Dyy/dy^2
+      local omegaCFL = Dxx/dx^2 + 2*math.abs(Dxy)/(dx*dy) + Dyy/dy^2
       local dt = cfl/omegaCFL
 
       local frameInt = tEnd/nFrames
@@ -204,6 +213,8 @@ local App = function(tbl)
 	 end
 	 step = step+1
       end
+
+      print(string.format("\nSimulation took %g sec", Time.clock()-tmStart))
    end
 end
 

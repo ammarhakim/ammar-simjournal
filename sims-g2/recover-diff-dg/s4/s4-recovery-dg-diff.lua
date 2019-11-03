@@ -9,9 +9,9 @@ diffusion = App {
    cells = {8, 8},
 
    -- diffusion coefficient
-   D = { Dxx = 0.0, Dyy = 0.0, Dxy = 1.0, Dyx = 0.0 },
+   D = { Dxx = 0.0, Dyy = 0.0, Dxy = 1.0 },
    
-   tEnd = 0.0925275,
+   tEnd = 1.0,
    numFrames = 1,
 
    -- initial conditions
