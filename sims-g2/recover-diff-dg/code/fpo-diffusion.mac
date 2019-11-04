@@ -1,0 +1,127 @@
+load("recovery-calc/recovery.mac")$
+load("modal-basis")$
+
+polyOrder : 1$
+
+/* Load 2D and 1D basis */
+load("basis-precalc/basisSer2x")$
+bc2 : basisC[polyOrder]$
+
+load("basis-precalc/basisSer1x")$
+bc1 : basisC[polyOrder]$
+
+/* Gradient of basis vectors */
+calcBasisGrad(b, varList) := makelist(diff(b,varList[i]), i, 1, length(varList))$
+
+/* Direction: 1, 2. edge: -1 (left), 1 (right)
+ * fL, fR: middle layer of cells
+ * fT, fTR: layer of cells in plus direction
+ * fB, fBR: layer of cells in minus direction
+ */
+ calcSurfTerm(dir, edge, polyOrder, fL, fR, fT, fTR, fB, fBR, gL, gR, gT, gTR, gB, gBR) := block(
+   [dirList, dxList, dirRepl, dxRepl, diffList,
+   xcd, shapeL, shapeR,
+   bc2L, bc2R,
+   rT, rC, rB, 
+   eTy, eCy, eBy, 
+   gT, gC, gB, gCxx,
+   gTx, gCx, gBx,
+   gCxx_fL, gCxx_fR,
+   bc1y, t1, t2, fhat, dbc, st1, st2,
+   ],
+  
+  dirList : [x,y],
+  dirRepl : [y,x],
+  dxList : [dx,dy],
+  dxRepl : [dy,dx],
+  diffList : [[Dxx, Dyx], [Dyy, Dxy]],
+  xcd : [[1,0], [0,1]][dir],
+  shapeL : [ [[-2,0],[-1,1]], [[-1,1],[-2,0]] ][dir],
+  shapeR : [ [[0, 2],[-1,1]], [[-1,1],[0,2] ] ][dir],
+  
+  /* Basis functions in left/right cells */
+  bc2L : eta([-xcd[1], xcd[2]], [2,2], bc2),
+  bc2R : eta([xcd[1], xcd[2]],  [2,2], bc2),
+
+  /* Construct recovery of g in three layers of cells */
+  gT : getRecov2CellGen(dirList[dir], [2,2], polyOrder, gT, gTR),
+  gC : getRecov2CellGen(dirList[dir], [2,2], polyOrder, gL, gR),
+  gB : getRecov2CellGen(dirList[dir], [2,2], polyOrder, gB, gBR),
+
+  /* Second derivative of g in middle layer of cells */
+  gCxx : diff(gC,x,2)*(2/dxList[dir])^2,
+  /* Recover across middle layer of cells */
+  rC : getRecov2CellGen(dirList[dir], [2,2], polyOrder,
+    calcInnerProdListGen([x,y], shapeL, 1, bc2L, gCxx*doExpand(fL, bc2L)),
+    calcInnerProdListGen([x,y], shapeR, 1, bc2R, gCxx*doExpand(fR, bc2R))),
+  /* Compute unprojected Term I */
+  t1 : subst(dirList[dir]=0, diff(rC ,dirList[dir]))*2/dxList[dir],
+  
+  /* Compute gradients of g */
+  gTx : diff(gT,x)*2/dxList[dir],
+  gCx : diff(gC,x)*2/dxList[dir],
+  gBx : diff(gB,x)*2/dxList[dir],
+  /* Now recover gTx*f etc in each layer of cells */
+  rT : getRecov2CellGen(dirList[dir], [2,2], polyOrder,
+    calcInnerProdListGen([x,y], shapeL, 1, bc2L, gTx*doExpand(fTL, bc2L)),
+    calcInnerProdListGen([x,y], shapeR, 1, bc2R, gTx*doExpand(fTR, bc2R))),
+  
+  rC : getRecov2CellGen(dirList[dir], [2,2], polyOrder,
+    calcInnerProdListGen([x,y], shapeL, 1, bc2L, gCx*doExpand(fL, bc2L)),
+    calcInnerProdListGen([x,y], shapeR, 1, bc2R, gCx*doExpand(fR, bc2R))),
+  
+  rB : getRecov2CellGen(dirList[dir], [2,2], polyOrder,
+    calcInnerProdListGen([x,y], shapeL, 1, bc2L, gBx*doExpand(fBL, bc2L)),
+    calcInnerProdListGen([x,y], shapeR, 1, bc2R, gBx*doExpand(fBR, bc2R))),
+  
+  bc1y : subst(x=dirRepl[dir], bc1),
+  /* Evaluate 2-cell recovery at interface and project in 1D surface basis */
+  eTy : calcInnerProdList(delete(dirList[dir],dirList), 1, bc1y, subst(dirList[dir]=0, rT)),
+  eCy : calcInnerProdList(delete(dirList[dir],dirList), 1, bc1y, subst(dirList[dir]=0, rC)),
+  eBy : calcInnerProdList(delete(dirList[dir],dirList), 1, bc1y, subst(dirList[dir]=0, rB)),
+  
+  /* Unprojected Term 2: Derivative in transverse direction */
+  t2 : diff(
+    getRecov3CellGen(dirRepl[dir], [2], polyOrder, 0, eBy, eCy, eTy),
+    dirRepl[dir]
+    )*2/dxRepl[dir],
+  
+  /* Project t1 and t2 on basis */
+  st1 : calcInnerProdList(delete(dirList[dir],dirList),
+    1,
+    subst(dirList[dir]=edge, bc2),
+    t1+t2),
+  
+  /* Now compute term III */
+  fhat : subst(dirList[dir]=0, rC), /* f on surface */
+  /* Sum of derivatives of basis function*/
+  dbc : diffList[dir][1]*diff(bc2,dirList[dir])*2/dxList[dir] + diffList[dir][2]*diff(bc2,dirRepl[dir])*2/dxRepl[dir],
+  st2 : calcInnerProdList(delete(dirList[dir],dirList),
+    1,
+    subst(dirList[dir]=edge, dbc),
+    fhat),
+  return ((st1-st2)*2/dxList[dir])
+  )$
+
+/* Function to compute cross-derivatives */
+diffCross(f,z1,z2) := diff(diff(f,z1),z2)$
+
+/* Compute volume contribution */
+d2bc : diffCross(bc2,x,x)*Dxx*2/dx*2/dx + diffCross(bc2,x,y)*Dxy*2/dx*2/dy + diffCross(bc2,y,x)*Dyx*2/dy*2/dx + diffCross(bc2,y,y)*Dyy*2/dy*2/dy$
+vol : calcInnerProdList([x,y], 1, d2bc, doExpand(q,bc2))$
+
+/* Surface terms */
+surfRight : calcSurfTerm(1, 1, polyOrder, q, qR, qT, qTR, qB, qBR)$
+surfLeft : calcSurfTerm(1, -1, polyOrder, qL, q, qTL, qT, qBL, qB)$
+surfTop : calcSurfTerm(2, 1, polyOrder, q, qT, qR, qTR, qL, qTL)$
+surfBottom : calcSurfTerm(2, -1, polyOrder, qB, q, qBR, qR, qBL, qL)$
+
+stencil : (surfRight-surfLeft) + (surfTop-surfBottom) + vol, expand$
+
+/* Write out kernel to file */
+fh : openw("~/max-out/diffKernel")$
+for i : 1 thru length(stencil) do (
+  printf(fh, "kerOut[~a] = ~a ~%", i, float(stencil[i]))
+  )$
+close(fh)$
+
