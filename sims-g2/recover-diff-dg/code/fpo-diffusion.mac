@@ -24,12 +24,13 @@ diffCross(f,z1,z2) := diff(diff(f,z1),z2)$
    [dirList, dxList, dirRepl, dxRepl, diffList,
    xcd, shapeL, shapeR,
    bc2L, bc2R,
-   rT, rC, rB, 
+   rCGxx, 
+   rT, rC, rB,
    eTy, eCy, eBy, 
    ggT, ggC, ggB, gCxx,
    gTx, gCx, gBx,
    gCxx_fL, gCxx_fR,
-   bc1y, t1, t2, fhat, dbc, st1, st2,
+   bc1y, t1, t2, fhat, dbc, st1, st31, st32
    ],
   
   dirList : [x,y],
@@ -51,13 +52,13 @@ diffCross(f,z1,z2) := diff(diff(f,z1),z2)$
   ggB : getRecov2CellGen(dirList[dir], [2,2], polyOrder, gB, gBR),
 
   /* Second derivative of g in middle layer of cells */
-  gCxx : diff(gC,dirList[dir],2)*(2/dxList[dir])^2,
+  gCxx : diff(ggC,dirList[dir],2)*(2/dxList[dir])^2,
   /* Recover across middle layer of cells */
-  rC : getRecov2CellGen(dirList[dir], [2,2], polyOrder,
+  rCGxx : getRecov2CellGen(dirList[dir], [2,2], polyOrder,
     calcInnerProdListGen([x,y], shapeL, 1, bc2L, gCxx*doExpand(fL, bc2L)),
     calcInnerProdListGen([x,y], shapeR, 1, bc2R, gCxx*doExpand(fR, bc2R))),
   /* Compute unprojected Term I */
-  t1 : subst(dirList[dir]=0, diff(rC ,dirList[dir]))*2/dxList[dir],
+  t1 : subst(dirList[dir]=0, diff(rCGxx ,dirList[dir]))*2/dxList[dir],
   
   /* Compute gradients of g */
   gTx : diffCross(ggT,dirList[dir],dirRepl[dir])*2/dxList[dir]*2/dxRepl[dir],
@@ -95,13 +96,16 @@ diffCross(f,z1,z2) := diff(diff(f,z1),z2)$
     t1+t2),
   
   /* Now compute term III */
-  fhat : subst(dirList[dir]=0, rC), /* f on surface */
-  /* Sum of derivatives of basis function*/
-  dbc : diffList[dir][1]*diff(bc2,dirList[dir])*2/dxList[dir] + diffList[dir][2]*diff(bc2,dirRepl[dir])*2/dxRepl[dir],
   st2 : calcInnerProdList(delete(dirList[dir],dirList),
     1,
-    subst(dirList[dir]=edge, dbc),
-    fhat),
+    subst(dirList[dir]=edge, diff(bc2,dirList[dir])*2/dxList[dir]),
+    subst(dirList[dir]=0, rCGxx)
+    ) +
+  calcInnerProdList(delete(dirList[dir],dirList),
+    1,
+    subst(dirList[dir]=edge, diff(bc2,dirRepl[dir])*2/dxRepl[dir]),
+    subst(dirList[dir]=0, rC)
+    ),
   return ((st1-st2)*2/dxList[dir])
   )$
 
