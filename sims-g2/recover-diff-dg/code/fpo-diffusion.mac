@@ -12,6 +12,8 @@ bc1 : basisC[polyOrder]$
 
 /* Gradient of basis vectors */
 calcBasisGrad(b, varList) := makelist(diff(b,varList[i]), i, 1, length(varList))$
+/* Function to compute second-derivatives */
+diffCross(f,z1,z2) := diff(diff(f,z1),z2)$
 
 /* Direction: 1, 2. edge: -1 (left), 1 (right)
  * fL, fR: middle layer of cells
@@ -24,7 +26,7 @@ calcBasisGrad(b, varList) := makelist(diff(b,varList[i]), i, 1, length(varList))
    bc2L, bc2R,
    rT, rC, rB, 
    eTy, eCy, eBy, 
-   gT, gC, gB, gCxx,
+   ggT, ggC, ggB, gCxx,
    gTx, gCx, gBx,
    gCxx_fL, gCxx_fR,
    bc1y, t1, t2, fhat, dbc, st1, st2,
@@ -44,12 +46,12 @@ calcBasisGrad(b, varList) := makelist(diff(b,varList[i]), i, 1, length(varList))
   bc2R : eta([xcd[1], xcd[2]],  [2,2], bc2),
 
   /* Construct recovery of g in three layers of cells */
-  gT : getRecov2CellGen(dirList[dir], [2,2], polyOrder, gT, gTR),
-  gC : getRecov2CellGen(dirList[dir], [2,2], polyOrder, gL, gR),
-  gB : getRecov2CellGen(dirList[dir], [2,2], polyOrder, gB, gBR),
+  ggT : getRecov2CellGen(dirList[dir], [2,2], polyOrder, gT, gTR),
+  ggC : getRecov2CellGen(dirList[dir], [2,2], polyOrder, gL, gR),
+  ggB : getRecov2CellGen(dirList[dir], [2,2], polyOrder, gB, gBR),
 
   /* Second derivative of g in middle layer of cells */
-  gCxx : diff(gC,x,2)*(2/dxList[dir])^2,
+  gCxx : diff(gC,dirList[dir],2)*(2/dxList[dir])^2,
   /* Recover across middle layer of cells */
   rC : getRecov2CellGen(dirList[dir], [2,2], polyOrder,
     calcInnerProdListGen([x,y], shapeL, 1, bc2L, gCxx*doExpand(fL, bc2L)),
@@ -58,9 +60,9 @@ calcBasisGrad(b, varList) := makelist(diff(b,varList[i]), i, 1, length(varList))
   t1 : subst(dirList[dir]=0, diff(rC ,dirList[dir]))*2/dxList[dir],
   
   /* Compute gradients of g */
-  gTx : diff(gT,x)*2/dxList[dir],
-  gCx : diff(gC,x)*2/dxList[dir],
-  gBx : diff(gB,x)*2/dxList[dir],
+  gTx : diffCross(ggT,dirList[dir],dirRepl[dir])*2/dxList[dir]*2/dxRepl[dir],
+  gCx : diffCross(ggC,dirList[dir],dirRepl[dir])*2/dxList[dir]*2/dxRepl[dir],
+  gBx : diffCross(ggB,dirList[dir],dirRepl[dir])*2/dxList[dir]*2/dxRepl[dir],
   /* Now recover gTx*f etc in each layer of cells */
   rT : getRecov2CellGen(dirList[dir], [2,2], polyOrder,
     calcInnerProdListGen([x,y], shapeL, 1, bc2L, gTx*doExpand(fTL, bc2L)),
