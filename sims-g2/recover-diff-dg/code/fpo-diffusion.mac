@@ -109,25 +109,36 @@ diffCross(f,z1,z2) := diff(diff(f,z1),z2)$
   return ((st1-st2)*2/dxList[dir])
   )$
 
-/* Function to compute cross-derivatives */
-diffCross(f,z1,z2) := diff(diff(f,z1),z2)$
+/* Surface terms */
+surfRight : calcSurfTerm(1, 1, polyOrder, q, qR, qT, qTR, qB, qBR,
+  gs, gsR, gsT, gsTR, gsB, gsBR
+  )$
+surfLeft : calcSurfTerm(1, -1, polyOrder, qL, q, qTL, qT, qBL, qB,
+  gsL, gs, gsTL, gsT, gsBL, gsB
+  )$
+surfTop : calcSurfTerm(2, 1, polyOrder, q, qT, qR, qTR, qL, qTL,
+  gs, gsT, gsR, gsTR, gsL, gsTL
+  )$
+surfBottom : calcSurfTerm(2, -1, polyOrder, qB, q, qBR, qR, qBL, qL,
+  gsB, gs, gsBR, gsR, gsBL, gsL
+  )$
 
 /* Compute volume contribution */
-d2bc : diffCross(bc2,x,x)*Dxx*2/dx*2/dx + diffCross(bc2,x,y)*Dxy*2/dx*2/dy + diffCross(bc2,y,x)*Dyx*2/dy*2/dx + diffCross(bc2,y,y)*Dyy*2/dy*2/dy$
+gsE : doExpand(gs, bc2)$
+d2bc :
+  diffCross(bc2,x,x)*diffCross(gsE,x,x)*(2/dx*2/dx)^2
++ diffCross(bc2,x,y)*diffCross(gsE,x,y)*(2/dx*2/dy)^2
++ diffCross(bc2,y,x)*diffCross(gsE,y,x)*(2/dy*2/dx)^2
++ diffCross(bc2,y,y)*diffCross(gsE,y,y)*(2/dy*2/dy)^2$
 vol : calcInnerProdList([x,y], 1, d2bc, doExpand(q,bc2))$
 
-/* Surface terms */
-surfRight : calcSurfTerm(1, 1, polyOrder, q, qR, qT, qTR, qB, qBR)$
-surfLeft : calcSurfTerm(1, -1, polyOrder, qL, q, qTL, qT, qBL, qB)$
-surfTop : calcSurfTerm(2, 1, polyOrder, q, qT, qR, qTR, qL, qTL)$
-surfBottom : calcSurfTerm(2, -1, polyOrder, qB, q, qBR, qR, qBL, qL)$
-
+/* Total stencil */
 stencil : (surfRight-surfLeft) + (surfTop-surfBottom) + vol, expand$
 
 /* Write out kernel to file */
-fh : openw("~/max-out/diffKernel")$
+fh : openw("~/max-out/fpoKernel")$
 for i : 1 thru length(stencil) do (
-  printf(fh, "kerOut[~a] = ~a ~%", i, float(stencil[i]))
+  printf(fh, "kerOut[~a] = ~a ~%", i-1, float(stencil[i]))
   )$
 close(fh)$
 
