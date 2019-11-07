@@ -22,13 +22,14 @@ dirRepl : [y,x]$
 dxList : [dx,dy]$
 dxRepl : [dy,dx]$
 diffList : [[Dxx, Dyx], [Dyy, Dxy]]$
-xcd : [[1,0], [0,1]][dir]$
+xcdL : [[-1,0], [0,-1]][dir]$
+xcdR : [[1, 0], [0, 1]][dir]$
 shapeL : [ [[-2,0],[-1,1]], [[-1,1],[-2,0]] ][dir]$
 shapeR : [ [[0, 2],[-1,1]], [[-1,1],[0,2] ] ][dir]$
 
 /* Basis functions in left/right cells */
-bc2L : eta([-xcd[1], xcd[2]], [2,2], bc2)$
-bc2R : eta([xcd[1], xcd[2]],  [2,2], bc2)$
+bc2L : eta(xcdL, [2,2], bc2)$
+bc2R : eta(xcdR, [2,2], bc2)$
 
 /* Construct recovery of g in three layers of cells */
 ggT : getRecov2CellGen(dirList[dir], [2,2], polyOrder, gT, gTR)$

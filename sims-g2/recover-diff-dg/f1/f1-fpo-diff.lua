@@ -11,7 +11,7 @@ fpo = App {
    numFrames = 1,
 
    -- diffusion coefficient
-   D = { Dxx = 1.0, Dyy = 0.0, Dxy = 0.0 },
+   D = { Dxx = 1.0, Dyy = 1.0, Dxy = 0.9 },
    
    -- initial conditions
    init = function(t, xn)
