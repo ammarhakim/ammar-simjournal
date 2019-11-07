@@ -25,3 +25,7 @@ The following series for "bad" kernels, in which the stencil is
 
 - b1: kx=ky=1.0 with Dxx = Dyy = 1.0. Dxy = Dyx = 1/6. p=1 8x8 grid
 - b2: kx=ky=1.0 with Dxx = Dyy = 1.0. Dxy = Dyx = 0.9 p=1 8x8 grid
+
+Tests for diffusion terms in FPO
+
+- f1: kx=ky=1.0 with Dxx = Dyy = 1.0; Dxy = Dyx = 0.9 p=1 8x8 grid

@@ -1,0 +1,126 @@
+load("recovery-calc/recovery.mac")$
+load("modal-basis")$
+
+polyOrder : 1$
+
+/* Load 2D and 1D basis */
+load("basis-precalc/basisSer2x")$
+bc2 : basisC[polyOrder]$
+
+load("basis-precalc/basisSer1x")$
+bc1 : basisC[polyOrder]$
+
+/* Gradient of basis vectors */
+calcBasisGrad(b, varList) := makelist(diff(b,varList[i]), i, 1, length(varList))$
+/* Function to compute second-derivatives */
+diffCross(f,z1,z2) := diff(diff(f,z1),z2)$
+
+dir : 1$ edge : 1$
+
+dirList : [x,y]$
+dirRepl : [y,x]$
+dxList : [dx,dy]$
+dxRepl : [dy,dx]$
+diffList : [[Dxx, Dyx], [Dyy, Dxy]]$
+xcd : [[1,0], [0,1]][dir]$
+shapeL : [ [[-2,0],[-1,1]], [[-1,1],[-2,0]] ][dir]$
+shapeR : [ [[0, 2],[-1,1]], [[-1,1],[0,2] ] ][dir]$
+
+/* Basis functions in left/right cells */
+bc2L : eta([-xcd[1], xcd[2]], [2,2], bc2)$
+bc2R : eta([xcd[1], xcd[2]],  [2,2], bc2)$
+
+/* Construct recovery of g in three layers of cells */
+ggT : getRecov2CellGen(dirList[dir], [2,2], polyOrder, gT, gTR)$
+ggC : getRecov2CellGen(dirList[dir], [2,2], polyOrder, gL, gR)$
+ggB : getRecov2CellGen(dirList[dir], [2,2], polyOrder, gB, gBR)$
+
+/* Second derivative of g in middle layer of cells */
+gCxx : diff(ggC,dirList[dir],2)*(2/dxList[dir])^2$
+/* Recover across middle layer of cells */
+rCGxx : getRecov2CellGen(dirList[dir], [2,2], polyOrder,
+  calcInnerProdListGen([x,y], shapeL, 1, bc2L, gCxx*doExpand(fL, bc2L)),
+  calcInnerProdListGen([x,y], shapeR, 1, bc2R, gCxx*doExpand(fR, bc2R)))$
+/* Compute unprojected Term I */
+t1 : subst(dirList[dir]=0, diff(rCGxx ,dirList[dir]))*2/dxList[dir]$
+
+/* Compute gradients of g */
+gTx : diffCross(ggT,dirList[dir],dirRepl[dir])*2/dxList[dir]*2/dxRepl[dir]$
+gCx : diffCross(ggC,dirList[dir],dirRepl[dir])*2/dxList[dir]*2/dxRepl[dir]$
+gBx : diffCross(ggB,dirList[dir],dirRepl[dir])*2/dxList[dir]*2/dxRepl[dir]$
+/* Now recover gTx*f etc in each layer of cells */
+rT : getRecov2CellGen(dirList[dir], [2,2], polyOrder,
+  calcInnerProdListGen([x,y], shapeL, 1, bc2L, gTx*doExpand(fT, bc2L)),
+  calcInnerProdListGen([x,y], shapeR, 1, bc2R, gTx*doExpand(fTR, bc2R)))$
+
+rC : getRecov2CellGen(dirList[dir], [2,2], polyOrder,
+  calcInnerProdListGen([x,y], shapeL, 1, bc2L, gCx*doExpand(fL, bc2L)),
+  calcInnerProdListGen([x,y], shapeR, 1, bc2R, gCx*doExpand(fR, bc2R)))$
+
+rB : getRecov2CellGen(dirList[dir], [2,2], polyOrder,
+  calcInnerProdListGen([x,y], shapeL, 1, bc2L, gBx*doExpand(fB, bc2L)),
+  calcInnerProdListGen([x,y], shapeR, 1, bc2R, gBx*doExpand(fBR, bc2R)))$
+
+bc1y : subst(x=dirRepl[dir], bc1)$
+/* Evaluate 2-cell recovery at interface and project in 1D surface basis */
+eTy : calcInnerProdList(delete(dirList[dir],dirList), 1, bc1y, subst(dirList[dir]=0, rT))$
+eCy : calcInnerProdList(delete(dirList[dir],dirList), 1, bc1y, subst(dirList[dir]=0, rC))$
+eBy : calcInnerProdList(delete(dirList[dir],dirList), 1, bc1y, subst(dirList[dir]=0, rB))$
+
+/* Unprojected Term 2: Derivative in transverse direction */
+t2 : diff(
+  getRecov3CellGen(dirRepl[dir], [2], polyOrder, 0, eBy, eCy, eTy),
+  dirRepl[dir]
+  )*2/dxRepl[dir]$
+
+/* Project t1 and t2 on basis */
+st1_1 : calcInnerProdList(delete(dirList[dir],dirList),
+  1,
+  subst(dirList[dir]=edge, bc2),
+  t1)$
+
+st1_2 : calcInnerProdList(delete(dirList[dir],dirList),
+  1,
+  subst(dirList[dir]=edge, bc2),
+  t2)$
+
+/* Now compute term III */
+st2 : calcInnerProdList(delete(dirList[dir],dirList),
+  1,
+  subst(dirList[dir]=edge, diff(bc2,dirList[dir])*2/dxList[dir]),
+  subst(dirList[dir]=0, rCGxx)
+  ) +
+calcInnerProdList(delete(dirList[dir],dirList),
+  1,
+  subst(dirList[dir]=edge, diff(bc2,dirRepl[dir])*2/dxRepl[dir]),
+  subst(dirList[dir]=0, rC)
+  )$
+
+gsE : doExpand(gs, bc2)$
+d2bc :
+  diffCross(bc2,x,x)*diffCross(gsE,x,x)*(2/dx*2/dx)^2
++ diffCross(bc2,x,y)*diffCross(gsE,x,y)*(2/dx*2/dy)^2
++ diffCross(bc2,y,x)*diffCross(gsE,y,x)*(2/dy*2/dx)^2
++ diffCross(bc2,y,y)*diffCross(gsE,y,y)*(2/dy*2/dy)^2$
+
+/* Special case for quadratic potential */
+bc2xy : eta([xc,yc],[dx,dy],bc2)$
+gLbo : 1/2*(x^2+y^2) + x*y$
+gLbo_e : calcInnerProdListGen([x,y], [[xc-dx/2,xc+dx/2], [yc-dy/2,yc+dy/2]], 1, bc2xy,
+  gLbo)*2/dx*2/dy$
+
+gLbo_e_L : subst([xc=xcL, yc=ycL], gLbo_e)$
+gLbo_e_R : subst([xc=xcL+dx, yc=ycL], gLbo_e)$
+gLbo_e_T : subst([xc=xcL, yc=ycL+dy], gLbo_e)$
+gLbo_e_TR : subst([xc=xcL+dx, yc=ycL+dy], gLbo_e)$
+gLbo_e_B : subst([xc=xcL, yc=ycL-dy], gLbo_e)$
+gLbo_e_BR : subst([xc=xcL+dx, yc=ycL-dy], gLbo_e)$
+
+slist : append(
+  makelist(gL[i]=gLbo_e_L[i],i,1,4), makelist(gR[i]=gLbo_e_R[i],i,1,4),
+  makelist(gT[i]=gLbo_e_T[i],i,1,4), makelist(gTR[i]=gLbo_e_TR[i],i,1,4),
+  makelist(gB[i]=gLbo_e_B[i],i,1,4), makelist(gBR[i]=gLbo_e_BR[i],i,1,4))$
+
+st1_1_lbo : expand(fullratsimp(subst(slist, st1_1)))$
+st1_2_lbo : expand(fullratsimp(subst(slist, st1_2)))$
+st2_lbo : expand(fullratsimp(subst(slist, st2)))$

@@ -1,0 +1,59 @@
+load("recovery-calc/recovery.mac")$
+load("modal-basis")$
+
+polyOrder : 1$
+
+/* Load 2D and 1D basis */
+load("basis-precalc/basisSer2x")$
+bc2 : basisC[polyOrder]$
+
+load("basis-precalc/basisSer1x")$
+bc1 : basisC[polyOrder]$
+
+/* Gradient of basis vectors */
+calcBasisGrad(b, varList) := makelist(diff(b,varList[i]), i, 1, length(varList))$
+
+dir : 1$ edge : 1$
+
+dirList : [x,y]$
+dirRepl : [y,x]$
+dxList : [dx,dy]$
+dxRepl : [dy,dx]$
+diffList : [[1, 1], [1, 1]]$
+
+/* Construct recovery in three layers of cells */
+rT : getRecov2CellGen(dirList[dir], [2,2], polyOrder, fT, fTR)$
+rC : getRecov2CellGen(dirList[dir], [2,2], polyOrder, fL, fR)$
+rB : getRecov2CellGen(dirList[dir], [2,2], polyOrder, fB, fBR)$
+/* Compute unprojected Term I */
+t1 : diffList[dir][1]*subst(dirList[dir]=0, diff(rC,dirList[dir]))*2/dxList[dir]$
+
+bc1y : subst(x=dirRepl[dir], bc1)$
+/* Evaluate 2-cell recovery at interface and project in 1D surface basis */
+eTy : calcInnerProdList(delete(dirList[dir],dirList), 1, bc1y, subst(dirList[dir]=0, rT))$
+eCy : calcInnerProdList(delete(dirList[dir],dirList), 1, bc1y, subst(dirList[dir]=0, rC))$
+eBy : calcInnerProdList(delete(dirList[dir],dirList), 1, bc1y, subst(dirList[dir]=0, rB))$
+
+/* Unprojected Term 2: Derivative in transverse direction */
+t2 : diffList[dir][2]*diff(getRecov3CellGen(dirRepl[dir], [2], polyOrder, 0, eBy, eCy, eTy),
+  dirRepl[dir])*2/dxRepl[dir]$
+
+/* Project t1 and t2 on basis */
+st1_1 : calcInnerProdList(delete(dirList[dir],dirList),
+  1,
+  subst(dirList[dir]=edge, bc2),
+  t1)$
+
+st1_2 : calcInnerProdList(delete(dirList[dir],dirList),
+  1,
+  subst(dirList[dir]=edge, bc2),
+  t2)$
+
+/* Now compute term III */
+fhat : subst(dirList[dir]=0, rC)$ /* f on surface */
+/* Sum of derivatives of basis function*/
+dbc : diffList[dir][1]*diff(bc2,dirList[dir])*2/dxList[dir] + diffList[dir][2]*diff(bc2,dirRepl[dir])*2/dxRepl[dir]$
+st2 : calcInnerProdList(delete(dirList[dir],dirList),
+  1,
+  subst(dirList[dir]=edge, dbc),
+  fhat)$

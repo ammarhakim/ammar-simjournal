@@ -66,7 +66,7 @@ diffCross(f,z1,z2) := diff(diff(f,z1),z2)$
   gBx : diffCross(ggB,dirList[dir],dirRepl[dir])*2/dxList[dir]*2/dxRepl[dir],
   /* Now recover gTx*f etc in each layer of cells */
   rT : getRecov2CellGen(dirList[dir], [2,2], polyOrder,
-    calcInnerProdListGen([x,y], shapeL, 1, bc2L, gTx*doExpand(fTL, bc2L)),
+    calcInnerProdListGen([x,y], shapeL, 1, bc2L, gTx*doExpand(fT, bc2L)),
     calcInnerProdListGen([x,y], shapeR, 1, bc2R, gTx*doExpand(fTR, bc2R))),
   
   rC : getRecov2CellGen(dirList[dir], [2,2], polyOrder,
@@ -74,7 +74,7 @@ diffCross(f,z1,z2) := diff(diff(f,z1),z2)$
     calcInnerProdListGen([x,y], shapeR, 1, bc2R, gCx*doExpand(fR, bc2R))),
   
   rB : getRecov2CellGen(dirList[dir], [2,2], polyOrder,
-    calcInnerProdListGen([x,y], shapeL, 1, bc2L, gBx*doExpand(fBL, bc2L)),
+    calcInnerProdListGen([x,y], shapeL, 1, bc2L, gBx*doExpand(fB, bc2L)),
     calcInnerProdListGen([x,y], shapeR, 1, bc2R, gBx*doExpand(fBR, bc2R))),
   
   bc1y : subst(x=dirRepl[dir], bc1),
@@ -138,7 +138,7 @@ stencil : (surfRight-surfLeft) + (surfTop-surfBottom) + vol, expand$
 /* Write out kernel to file */
 fh : openw("~/max-out/fpoKernel")$
 for i : 1 thru length(stencil) do (
-  printf(fh, "kerOut[~a] = ~a ~%", i-1, float(stencil[i]))
+  printf(fh, "kerOut[~a] = ~a; ~%", i, float(stencil[i]))
   )$
 close(fh)$
 
