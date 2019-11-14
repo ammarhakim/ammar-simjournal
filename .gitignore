@@ -4,4 +4,8 @@
 .#*
 *.bp*
 *.log
+*.waf*
+*.lock*
 .DS_Store
+*.o
+*.dylib

@@ -143,3 +143,26 @@ for i : 1 thru length(stencil) do (
   )$
 close(fh)$
 
+/* Function to shift indices. n : number of elements. List of symbols */
+indexShifter(n, vList) := flatten(makelist(
+    makelist(vList[i][j]=vList[i][j-1], j, 1, n), i, length(vList)))$
+
+/* Create C-indexed stencil */
+shiftList : indexShifter(length(bc2),
+  [qBL, qB, qBR, qL, q, qR, qTL, qT, qTR,
+  gsBL, gsB, gsBR, gsL, gs, gsR, gsTL, gsT, gsTR])$
+stencil_c : subst(shiftList, stencil)$
+
+/* Replace occurences of powers */
+let(dx^2, dx2)$
+let(dy^2, dy2)$
+let(dx^4, dx4)$
+let(dy^4, dy4)$
+
+/* Write out kernel to file */
+fh : openw("~/max-out/fpoKernel-c")$
+for i : 1 thru length(stencil_c) do (
+  printf(fh, "kerOut[~a] = ~a; ~%", i-1, float(
+      expand(letsimp(stencil_c[i]))))
+  )$
+close(fh)$

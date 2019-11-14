@@ -22,6 +22,7 @@ local App = function(tbl)
 
    local cfl = 0.5*cflFrac/(2*polyOrder+1)
 
+   --local updateKernels = dofile("../code/fpo-kernels-c.lua")
    local updateKernels = dofile("../code/fpo-kernels.lua")
 
    ----------------------
