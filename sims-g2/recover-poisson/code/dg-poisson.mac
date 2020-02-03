@@ -33,7 +33,7 @@ projectOnBasisGrid(func, bc, xL, xR, N) := block([dx],
   )$
 
 /* Function to compute L2 norm of field */
-calcL2Norm(dgField, dx) := sqrt(dx*sum(sum(dgField[i][k]^2,k,1,NC), i, 1, nmax))$
+calcL2Norm(dgField, dx) := sqrt(dx*sum(sum(dgField[i][k]^2,k,1,length(dgField[1])), i, 1, length(dgField)))$
 
 /* Transform to [-1,1] */
 xe(eta,dx,xj)  := eta*dx/2+xj$
@@ -42,7 +42,6 @@ solvePoissonEquation(grid, polyOrder, srcFunc, bcLeft, bcRight) := block(
   /* Declare local variables */
   [
   NC, xL, xR, dx, nmax, slist, h, stencilI, hL, stenciL, hR, stencilR, eqnList,
-  srcFuncHat,
   varList, fsol
   ],
   
