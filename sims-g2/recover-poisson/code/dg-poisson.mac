@@ -1,0 +1,116 @@
+/* Poisson solver based on recovery approach */
+
+load("modal-basis")$
+load("basis-precalc/basisSer1x")$
+load("recovery-calc/recovery")$
+
+/* Struct to represent a rectangular grid */
+defstruct(grid(lower, upper, cells))$
+
+/* Function to make agruments to draw2d() function */
+createArgListDgSol(dgField, clr, xL, xR) := block([dx,argList,xj,N],
+  N : length(dgField),
+  dx : (xR-xL)/N,
+  argList : [grid=true, color=clr],
+  for i : 1 thru N do (
+    xj : xL+(i-1/2)*dx,
+    argList : endcons(explicit(
+        dgField[i].subst(x=(z-xj)/(dx/2),bc),z,xL+(i-1)*dx,xL+i*dx),
+      argList)
+    ),
+  return(argList)
+  )$
+
+/* Function to project function on DG basis */
+projectOnBasisGrid(func, bc, xL, xR, N) := block([dx],
+  dx : (xR-xL)/N,
+  return (
+    makelist(
+      calcInnerProdList([x],1,bc,
+        subst(z=x*dx/2+(xL+(i-1/2)*dx), apply(func, [z]))),
+      i, 1, N)
+    )
+  )$
+
+/* Function to compute L2 norm of field */
+calcL2Norm(dgField, dx) := sqrt(dx*sum(sum(dgField[i][k]^2,k,1,NC), i, 1, nmax))$
+
+/* Transform to [-1,1] */
+xe(eta,dx,xj)  := eta*dx/2+xj$
+
+solvePoissonEquation(grid, polyOrder, srcFunc, bcLeft, bcRight) := block(
+  /* Declare local variables */
+  [
+  NC, xL, xR, dx, nmax, slist, h, stencilI, hL, stenciL, hR, stencilR, eqnList,
+  srcFuncHat,
+  varList, fsol
+  ],
+  
+  bc : basisC[polyOrder],
+  NC : length(bc),
+  xL : grid@lower[1],
+  xR : grid@upper[1],
+  nmax : grid@cells[1],
+  dx : (xR-xL)/nmax, /* Cell spacing */
+  /* Source function on [-1,1] */
+  srcFuncHat(eta,dx,xj) := srcFunc(xe(eta,dx,xj)),
+  
+  /* Subtitution list for indexing ... */
+  slist : append(
+    /* x-direction for f ... */
+    makelist(fL[k]=f[i-1,k],k,1,NC),
+    makelist(fC[k]=f[i,k],k,1,NC),
+    makelist(fR[k]=f[i+1,k],k,1,NC)
+    ),
+  
+  /* Compute second derivative */
+  h : getRecov3CellGen(x, [2], polyOrder, 1, fL, fC, fR),
+  
+  /* Interior stencil */
+  stencilI : subst(slist,
+    calcInnerProdList([x], 1, bc, diff(h,x,2))
+    ),
+  
+  /* Left skin cell stencil */
+  hL : getRecov3CellGen(x, [2], polyOrder, 1, bcLeft, fC, fR, [1,0]),
+  stencilL : subst(subst(i=1,slist),
+    calcInnerProdList([x], 1, bc, diff(hL,x,2))
+    ),
+  
+  /* Right skin cell stencil */
+  hR : getRecov3CellGen(x, [2], polyOrder, 1, fL, fC, bcRight, [0,1]),
+  stencilR : subst(subst(i=nmax,slist),
+    calcInnerProdList([x], 1, bc, diff(hR,x,2))
+    ),
+  
+  eqnList : [], /* List of equations */
+  /* Construct set of linear equations for interior */
+  for j : 2 thru nmax-1 do (
+    eqnList : append(eqnList,
+      4/dx^2*subst(i=j,stencilI)-calcInnerProdList([x],1,bc,-srcFuncHat(x,dx,xL+(j-1/2)*dx))
+      )
+    ),
+  /* Equations in left/right skin cells */
+  eqnList : append(eqnList,
+    4/dx^2*subst(i=1,stencilL)-calcInnerProdList([x],1,bc,-srcFuncHat(x,dx,xL+(1-1/2)*dx))
+    ),
+  eqnList : append(eqnList,
+    4/dx^2*subst(i=nmax,stencilR)-calcInnerProdList([x],1,bc,-srcFuncHat(x,dx,xL+(nmax-1/2)*dx))
+    ),
+  
+  /* List of unknowns */
+  varList : [],
+  for i : 1 thru nmax do (
+    varList : append(varList, makelist(f[i,k],k,1,NC))
+    ),
+  /* Solve linear system */
+  fSol : linsolve(eqnList, varList),
+  /* Return solution field */
+  return (
+    subst(fSol, makelist(makelist(f[i,k],k,1,NC), i, 1, nmax))
+    )
+  )$
+
+
+
+
