@@ -7,6 +7,9 @@ load("recovery-calc/recovery")$
 /* Struct to represent a rectangular grid */
 defstruct(grid(lower, upper, cells))$
 
+/* Structure to represent BCs: type 1: Dirichlet. 2: Neumann */
+defstruct(BC(type, value))$
+
 /* Function to make agruments to draw2d() function */
 createArgListDgSol(dgField, clr, xL, xR) := block([dx,argList,xj,N],
   N : length(dgField),
@@ -42,7 +45,7 @@ solvePoissonEquation(grid, polyOrder, srcFunc, bcLeft, bcRight) := block(
   /* Declare local variables */
   [
   NC, xL, xR, dx, nmax, slist, h, stencilI, hL, stenciL, hR, stencilR, eqnList,
-  varList, fsol
+  varList, fsol, isPeriodic
   ],
   
   bc : basisC[polyOrder],
@@ -53,6 +56,8 @@ solvePoissonEquation(grid, polyOrder, srcFunc, bcLeft, bcRight) := block(
   dx : (xR-xL)/nmax, /* Cell spacing */
   /* Source function on [-1,1] */
   srcFuncHat(eta,dx,xj) := srcFunc(xe(eta,dx,xj)),
+  
+  /* Check if periodic direction */
   
   /* Subtitution list for indexing ... */
   slist : append(
@@ -71,13 +76,13 @@ solvePoissonEquation(grid, polyOrder, srcFunc, bcLeft, bcRight) := block(
     ),
   
   /* Left skin cell stencil */
-  hL : getRecov3CellGen(x, [2], polyOrder, 1, bcLeft, fC, fR, [1,0]),
+  hL : getRecov3CellGen(x, [2], polyOrder, 1, bcLeft@value, fC, fR, [bcLeft@type,0]),
   stencilL : subst(subst(i=1,slist),
     calcInnerProdList([x], 1, bc, diff(hL,x,2))
     ),
   
   /* Right skin cell stencil */
-  hR : getRecov3CellGen(x, [2], polyOrder, 1, fL, fC, bcRight, [0,1]),
+  hR : getRecov3CellGen(x, [2], polyOrder, 1, fL, fC, bcRight@value, [0,bcRight@type]),
   stencilR : subst(subst(i=nmax,slist),
     calcInnerProdList([x], 1, bc, diff(hR,x,2))
     ),

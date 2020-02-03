@@ -22,7 +22,8 @@ define(srcFunc(z), _src)$
 /* Solve Poisson equation */
 solList : solvePoissonEquation(
   grid(lower:[xL], upper:[xR], cells:[nmax]),
-  polyOrder, srcFunc, 0, 0
+  polyOrder, srcFunc,
+  BC(type:1, value:0), BC(type:1, value:0)
   )$
 
 /* Commands to plot solution */

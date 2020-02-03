@@ -6,11 +6,11 @@ file_search_maxima: append(file_search_maxima,
 
 load("dg-poisson")$
 
-polyOrder : 1$
+polyOrder : 3$
 /* Left/right domain boundary */
 xL : 0$
 xR : 1$
-nmax : 8$
+nmax : 16$
 dx : (xR-xL)/nmax$
 
 /* Exact solution ... */
