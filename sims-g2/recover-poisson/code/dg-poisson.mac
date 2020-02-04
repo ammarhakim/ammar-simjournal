@@ -4,12 +4,6 @@ load("modal-basis")$
 load("basis-precalc/basisSer1x")$
 load("recovery-calc/recovery")$
 
-/* Struct to represent a rectangular grid */
-defstruct(grid(lower, upper, cells))$
-
-/* Structure to represent BCs: type 1: Dirichlet. 2: Neumann */
-defstruct(BC(type, value))$
-
 /* Function to make agruments to draw2d() function */
 createArgListDgSol(dgField, clr, xL, xR) := block([dx,argList,xj,N],
   N : length(dgField),
@@ -41,18 +35,28 @@ calcL2Norm(dgField, dx) := sqrt(dx*sum(sum(dgField[i][k]^2,k,1,length(dgField[1]
 /* Transform to [-1,1] */
 xe(eta,dx,xj)  := eta*dx/2+xj$
 
+/*
+* grid: grid(lower=xl, upper=xr,cells=N,isPeriodic=false)
+*
+*    isPeriodic is optional
+*
+* bcLeft/bcRight: BC(type=1, value=0)
+*
+*    type can be 1 (Dirichlet) or 2 (Neumann). Value muust be a number
+*/
 solvePoissonEquation(grid, polyOrder, srcFunc, bcLeft, bcRight) := block(
   /* Declare local variables */
   [
   NC, xL, xR, dx, nmax, slist, h, stencilI, hL, stenciL, hR, stencilR, eqnList,
-  varList, fsol, isPeriodic
+  varList, fsol, isPeriodic,
+  bcType, bcValue
   ],
   
   bc : basisC[polyOrder],
   NC : length(bc),
-  xL : grid@lower[1],
-  xR : grid@upper[1],
-  nmax : grid@cells[1],
+  xL : assoc(lower,grid),
+  xR : assoc(upper,grid),
+  nmax : assoc(cells,grid),
   dx : (xR-xL)/nmax, /* Cell spacing */
   /* Source function on [-1,1] */
   srcFuncHat(eta,dx,xj) := srcFunc(xe(eta,dx,xj)),
@@ -74,15 +78,19 @@ solvePoissonEquation(grid, polyOrder, srcFunc, bcLeft, bcRight) := block(
   stencilI : subst(slist,
     calcInnerProdList([x], 1, bc, diff(h,x,2))
     ),
-  
+
+  bcType : assoc(type,bcLeft),
+  bcValue : assoc(value,bcLeft),
   /* Left skin cell stencil */
-  hL : getRecov3CellGen(x, [2], polyOrder, 1, bcLeft@value, fC, fR, [bcLeft@type,0]),
+  hL : getRecov3CellGen(x, [2], polyOrder, 1, bcValue, fC, fR, [bcType,0]),
   stencilL : subst(subst(i=1,slist),
     calcInnerProdList([x], 1, bc, diff(hL,x,2))
     ),
-  
+
+  bcType : assoc(type,bcRight),
+  bcValue : assoc(value,bcRight),
   /* Right skin cell stencil */
-  hR : getRecov3CellGen(x, [2], polyOrder, 1, fL, fC, bcRight@value, [0,bcRight@type]),
+  hR : getRecov3CellGen(x, [2], polyOrder, 1, fL, fC, bcValue, [0,bcType]),
   stencilR : subst(subst(i=nmax,slist),
     calcInnerProdList([x], 1, bc, diff(hR,x,2))
     ),
