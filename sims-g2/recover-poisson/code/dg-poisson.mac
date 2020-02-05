@@ -29,6 +29,15 @@ projectOnBasisGrid(func, bc, xL, xR, N) := block([dx],
     )
   )$
 
+/* Function to substract value from first element in list of list */
+subVal(dgField, val) := block([outList],
+  outList : copylist(dgField),
+  for i : 1 thru length(dgField) do (
+    outList[i][1] : dgField[i][1]-val
+    ),
+  return(outList)
+  )$
+
 /* Function to compute L2 norm of field */
 calcL2Norm(dgField, dx) := sqrt(dx*sum(sum(dgField[i][k]^2,k,1,length(dgField[1])), i, 1, length(dgField)))$
 
@@ -49,7 +58,7 @@ solvePoissonEquation(grid, polyOrder, srcFunc, bcLeft, bcRight) := block(
   [
   NC, xL, xR, dx, nmax, slist, h, stencilI, hL, stenciL, hR, stencilR, eqnList,
   varList, fsol, isPeriodic,
-  bcType, bcValue
+  bcType, bcValue, srcMean
   ],
   
   bc : basisC[polyOrder],
@@ -58,11 +67,11 @@ solvePoissonEquation(grid, polyOrder, srcFunc, bcLeft, bcRight) := block(
   xR : assoc(upper,grid),
   nmax : assoc(cells,grid),
   dx : (xR-xL)/nmax, /* Cell spacing */
+  
   /* Source function on [-1,1] */
   srcFuncHat(eta,dx,xj) := srcFunc(xe(eta,dx,xj)),
-  
   /* Check if periodic direction */
-  
+  isPeriodic : assoc(isPeriodic,grid),
   /* Subtitution list for indexing ... */
   slist : append(
     /* x-direction for f ... */
@@ -70,44 +79,67 @@ solvePoissonEquation(grid, polyOrder, srcFunc, bcLeft, bcRight) := block(
     makelist(fC[k]=f[i,k],k,1,NC),
     makelist(fR[k]=f[i+1,k],k,1,NC)
     ),
+  /* ... for periodic BCs */
+  pBc : append(
+    /* for f ... */
+    makelist(f[0,k]=f[nmax,k],k,1,NC),
+    makelist(f[nmax+1,k]=f[1,k],k,1,NC)
+    ),
   
   /* Compute second derivative */
   h : getRecov3CellGen(x, [2], polyOrder, 1, fL, fC, fR),
-  
-  /* Interior stencil */
-  stencilI : subst(slist,
-    calcInnerProdList([x], 1, bc, diff(h,x,2))
-    ),
-
-  bcType : assoc(type,bcLeft),
-  bcValue : assoc(value,bcLeft),
-  /* Left skin cell stencil */
-  hL : getRecov3CellGen(x, [2], polyOrder, 1, bcValue, fC, fR, [bcType,0]),
-  stencilL : subst(subst(i=1,slist),
-    calcInnerProdList([x], 1, bc, diff(hL,x,2))
-    ),
-
-  bcType : assoc(type,bcRight),
-  bcValue : assoc(value,bcRight),
-  /* Right skin cell stencil */
-  hR : getRecov3CellGen(x, [2], polyOrder, 1, fL, fC, bcValue, [0,bcType]),
-  stencilR : subst(subst(i=nmax,slist),
-    calcInnerProdList([x], 1, bc, diff(hR,x,2))
-    ),
-  
-  eqnList : [], /* List of equations */
-  /* Construct set of linear equations for interior */
-  for j : 2 thru nmax-1 do (
+  /* Construct list of equations */
+  if isPeriodic then (
+    srcMean : integrate(srcFunc(x),x,xL,xR)/(xR-xL),
+    /* Interior stencil */
+    stencilI : subst(slist,
+      calcInnerProdList([x], 1, bc, diff(h,x,2))
+      ),
+    eqnList : [], /* List of equations */
+    /* Construct set of linear equations for interior */
+    for j : 1 thru nmax do (
+      eqnList : append(eqnList,
+        4/dx^2*subst(i=j,stencilI)-calcInnerProdList([x],1,bc,-(srcFuncHat(x,dx,xL+(j-1/2)*dx)-srcMean))
+        )
+      ),
+    /* Apply periodic BCs */
+    eqnList : subst(pBc, eqnList),
+    /* Set cell-average term in first skin cell to zero to avoid singular inversion */
+    eqnList : rest(append(eqnList, [f[1,1]=0])) /* remove one equation */
+    )
+  else (
+    /* Interior stencil */
+    stencilI : subst(slist,
+      calcInnerProdList([x], 1, bc, diff(h,x,2))
+      ),
+    /* Stencils for left/right skin cells */
+    bcType : assoc(type,bcLeft),
+    bcValue : assoc(value,bcLeft),
+    hL : getRecov3CellGen(x, [2], polyOrder, 1, bcValue, fC, fR, [bcType,0]),
+    stencilL : subst(subst(i=1,slist),
+      calcInnerProdList([x], 1, bc, diff(hL,x,2))
+      ),
+    bcType : assoc(type,bcRight),
+    bcValue : assoc(value,bcRight),
+    /* Right skin cell stencil */
+    hR : getRecov3CellGen(x, [2], polyOrder, 1, fL, fC, bcValue, [0,bcType]),
+    stencilR : subst(subst(i=nmax,slist),
+      calcInnerProdList([x], 1, bc, diff(hR,x,2))
+      ),
+    eqnList : [], /* List of equations */
+    /* Construct set of linear equations for interior */
+    for j : 2 thru nmax-1 do (
+      eqnList : append(eqnList,
+        4/dx^2*subst(i=j,stencilI)-calcInnerProdList([x],1,bc,-srcFuncHat(x,dx,xL+(j-1/2)*dx))
+        )
+      ),
+    /* Equations in left/right skin cells */
     eqnList : append(eqnList,
-      4/dx^2*subst(i=j,stencilI)-calcInnerProdList([x],1,bc,-srcFuncHat(x,dx,xL+(j-1/2)*dx))
+      4/dx^2*subst(i=1,stencilL)-calcInnerProdList([x],1,bc,-srcFuncHat(x,dx,xL+(1-1/2)*dx))
+      ),
+    eqnList : append(eqnList,
+      4/dx^2*subst(i=nmax,stencilR)-calcInnerProdList([x],1,bc,-srcFuncHat(x,dx,xL+(nmax-1/2)*dx))
       )
-    ),
-  /* Equations in left/right skin cells */
-  eqnList : append(eqnList,
-    4/dx^2*subst(i=1,stencilL)-calcInnerProdList([x],1,bc,-srcFuncHat(x,dx,xL+(1-1/2)*dx))
-    ),
-  eqnList : append(eqnList,
-    4/dx^2*subst(i=nmax,stencilR)-calcInnerProdList([x],1,bc,-srcFuncHat(x,dx,xL+(nmax-1/2)*dx))
     ),
   
   /* List of unknowns */

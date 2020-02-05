@@ -1,0 +1,46 @@
+file_search_maxima: append(file_search_maxima,
+  [
+  "/Users/ahakim/research/ammar-simjournal/sims-g2/recover-poisson/code/###.{lisp,mac}"
+  ])$
+
+
+load("dg-poisson")$
+
+polyOrder : 1$
+/* Left/right domain boundary */
+xL : 0$
+xR : 1$
+nmax : 16$
+dx : (xR-xL)/nmax$
+
+/* Exact solution ... */
+exactSol(z) := 2+sin(2*%pi*z)$
+/* .. source term corresponding to it */
+_src : -diff(exactSol(z),z,2)$
+define(srcFunc(z), _src)$
+
+/* Solve Poisson equation */
+solList : solvePoissonEquation(
+  grid(lower=xL, upper=xR, cells=nmax, isPeriodic=true),
+  polyOrder, srcFunc,
+  0, 0 /* Not used for periodic BCs */
+  )$
+
+/* Command to plot projection of exact solution */
+exactProj : projectOnBasisGrid(exactSol, bc, xL, xR, nmax)$
+solListShift : subVal(solList, -exactProj[1][1])$
+/* Commands to plot solution */
+drawCmd : createArgListDgSol(solListShift, red, xL, xR)$
+
+/* Commands to plot exact solution*/
+exactSmoothCmd : append(drawCmd, [color=blue, explicit(exactSol(z),z,xL,xR)])$
+/* Shift to have zero mean in first cell */
+exactProjShift : subVal(exactProj, exactProj[1][1])$
+/* Plotting command */
+exactProjCmd : createArgListDgSol(exactProj, black, xL, xR)$
+
+/* Plot solution */
+apply(draw2d, append(drawCmd, exactSmoothCmd, exactProjCmd))$
+
+/* Compute L2 norm of error */
+err : float(calcL2Norm(exactProj-solListShift,dx))$

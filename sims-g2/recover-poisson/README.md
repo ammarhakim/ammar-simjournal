@@ -6,6 +6,8 @@
 - p1-s2: p=1, N=8
 - p1-s3: p=1, N=16
 - p1-s4: p=1, N=4. Cubic solution (to show it is exactly captured)
+- p1-s5: p=1, N=4, periodic BCs
+- p1-s6: p=1, N=8, periodic BCs
 
 - p2-s1: p=2, N=4
 - p2-s2: p=2, N=8
