@@ -1,0 +1,32 @@
+file_search_maxima: append(file_search_maxima,
+  [
+  "/Users/ahakim/research/ammar-simjournal/sims-g2/recover-poisson/code/###.{lisp,mac}"
+  ])$
+
+
+load("dg-poisson-w")$
+
+polyOrder : 1$
+/* Left/right domain boundary */
+xL : -3*dz/2$
+xR : 3*dz/2$
+nmax : 3$
+bc : basisC[polyOrder]$
+
+/* Exact solution ... */
+exactSol(z) := (z+xL)*(z+xR)*z$
+/* .. source term corresponding to it */
+_src : -diff(exactSol(z),z,2)$
+define(srcFunc(z), _src)$
+
+bc : basisC[polyOrder]$
+srcProj : projectOnBasisGrid(srcFunc, bc, xL, xR, nmax)$
+
+/* Solve Poisson equation */
+solList : solvePoissonEquation(
+  grid(lower=xL, upper=xR, cells=nmax),
+  polyOrder, srcProj,
+  BC(type=1, value=0), BC(type=1, value=0)
+  )$
+
+exactProj : projectOnBasisGrid(exactSol, bc, xL, xR, nmax)$

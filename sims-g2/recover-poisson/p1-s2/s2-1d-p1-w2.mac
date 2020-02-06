@@ -6,16 +6,17 @@ file_search_maxima: append(file_search_maxima,
 
 load("dg-poisson")$
 
-polyOrder : 3$
+polyOrder : 1$
 /* Left/right domain boundary */
-xL : 0$
-xR : 1$
-nmax : 4$
+dz : 2$
+xL : -3*dz/2$
+xR : 3*dz/2$
+nmax : 16$
 dx : (xR-xL)/nmax$
 bc : basisC[polyOrder]$
 
 /* Exact solution ... */
-exactSol(z) := z*(z-1)*(z^4-1/2)$
+exactSol(z) := (z+xL)*(z+xR)*(z-1)^3$
 /* .. source term corresponding to it */
 _src : -diff(exactSol(z),z,2)$
 define(srcFunc(z), _src)$

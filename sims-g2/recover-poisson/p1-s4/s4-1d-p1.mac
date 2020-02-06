@@ -12,6 +12,7 @@ xL : 0$
 xR : 1$
 nmax : 4$
 dx : (xR-xL)/nmax$
+bc : basisC[polyOrder]$
 
 /* Exact solution ... */
 exactSol(z) := z*(z-1)*(z-1/2)$

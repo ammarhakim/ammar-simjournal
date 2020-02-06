@@ -56,7 +56,7 @@ xe(eta,dx,xj)  := eta*dx/2+xj$
 solvePoissonEquation(grid, polyOrder, srcFunc, bcLeft, bcRight) := block(
   /* Declare local variables */
   [
-  NC, xL, xR, dx, nmax, slist, h, stencilI, hL, stenciL, hR, stencilR, eqnList,
+  bc, NC, xL, xR, dx, nmax, slist, h, stencilI, hL, stenciL, hR, stencilR, eqnList,
   varList, fsol, isPeriodic,
   bcType, bcValue, srcMean
   ],
