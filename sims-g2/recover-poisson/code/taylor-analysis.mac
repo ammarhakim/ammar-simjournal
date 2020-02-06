@@ -2,9 +2,6 @@ load("modal-basis")$
 load("basis-precalc/basisSer1x")$
 load("recovery-calc/recovery")$
 
-xL : -3*dx/2$
-xR : 3*dx/2$
-
 /* Taylor expansion */
 func(z) := sum(a[i]*z^i/factorial(i),i,0,10)$
 
@@ -19,15 +16,26 @@ projectOnBasisGrid(func, bc, xL, xR, N) := block([dx],
     )
   )$
 
-/* Compute remainder polynomial of expansion. Second optional argument
+/* Compute remainder polynomial of 3-cell recovery. Second optional argument
 * is order of continuity at cell edges */
-calcRemPoly(polyOrder, [C]) := block(
+calcRemPoly3Cell(polyOrder, [C]) := block(
   [bc, taylorProj, h, cmax],
   bc : basisC[polyOrder],
   cmax : if (length(C) > 0) then C[1] else 1,
   /* Project Taylor expansion on basis */
-  taylorProj : projectOnBasisGrid(func, bc, xL, xR, 3),
+  taylorProj : projectOnBasisGrid(func, bc, -3*dx/2, 3*dx/2, 3),
   /* Contruct recovery polynomial */
   h : getRecov3CellGen(x, [dx], polyOrder, cmax, taylorProj[1], taylorProj[2], taylorProj[3]),
+  return (expand(h-func(x)))
+  )$
+
+/* Compute remainder polynomial of 2-cell recovery. */
+calcRemPoly2Cell(polyOrder) := block(
+  [bc, taylorProj, h],
+  bc : basisC[polyOrder],
+  /* Project Taylor expansion on basis */
+  taylorProj : projectOnBasisGrid(func, bc, -dx, dx, 2),
+  /* Contruct recovery polynomial */
+  h : getRecov2CellGen(x, [dx], polyOrder, taylorProj[1], taylorProj[2]),
   return (expand(h-func(x)))
   )$

@@ -29,7 +29,7 @@ projectOnBasisGrid(func, bc, xL, xR, N) := block([dx],
     )
   )$
 
-/* Function to substract value from first element in list of list */
+/* Function to subtract value from first element in list of list */
 subVal(dgField, val) := block([outList],
   outList : copylist(dgField),
   for i : 1 thru length(dgField) do (
@@ -72,7 +72,7 @@ solvePoissonEquation(grid, polyOrder, srcFunc, bcLeft, bcRight) := block(
   srcFuncHat(eta,dx,xj) := srcFunc(xe(eta,dx,xj)),
   /* Check if periodic direction */
   isPeriodic : assoc(isPeriodic,grid),
-  /* Subtitution list for indexing ... */
+  /* Substitution list for indexing ... */
   slist : append(
     /* x-direction for f ... */
     makelist(fL[k]=f[i-1,k],k,1,NC),

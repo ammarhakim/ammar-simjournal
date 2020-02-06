@@ -24,3 +24,7 @@
 - p3-s5: p=3, N=4. k=6 solution (to show it is exactly captured)
 - p3-s6: p=3, N=4. periodic BCs
 - p3-s7: p=3, N=8. periodic BCs
+
+- p4-s1: p=4, N=2
+- p4-s2: p=4, N=4
+- p4-s3: p=4, N=8
