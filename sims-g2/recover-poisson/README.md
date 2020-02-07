@@ -4,6 +4,7 @@
 
 p=1 simulations:
 
+- p1-s0: p=1, testing stencil
 - p1-s1: p=1, N=4
 - p1-s2: p=1, N=8
 - p1-s3: p=1, N=16
@@ -36,3 +37,10 @@ p=4 simulations:
 - p4-s1: p=4, N=2
 - p4-s2: p=4, N=4
 - p4-s3: p=4, N=8
+- p4-s4: p=4, N=2. k=7 solution (to show it is exactly captured)
+
+## 2D simulations
+
+p=1 simulations:
+
+- p1-2d-s0: p=1, testing stencil

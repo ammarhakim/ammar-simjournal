@@ -1,0 +1,29 @@
+file_search_maxima: append(file_search_maxima,
+  [
+  "/Users/ahakim/research/ammar-simjournal/sims-g2/recover-poisson/code/###.{lisp,mac}"
+  ])$
+
+
+load("dg-poisson")$
+
+polyOrder : 1$
+/* Left/right domain boundary */
+xL : 0$
+xR : 1$
+nmax : 3$
+dx : (xR-xL)/nmax$
+bc : basisC[polyOrder]$
+
+/* Exact solution ... */
+exactSol(z) := z*(z-1)*(z^2-1/2)$
+/* .. source term corresponding to it */
+_src : -diff(exactSol(z),z,2)$
+define(srcFunc(z), _src)$
+
+/* Compute exact projection and compute Laplacian */
+exactProj : projectOnBasisGrid(exactSol, bc, xL, xR, nmax)$
+stencil : getLaplacianStencil(polyOrder, exactProj[1], exactProj[2], exactProj[3])$
+
+/* Compare with source projection */
+srcProj : projectOnBasisGrid(srcFunc, bc, xL, xR, nmax)$
+remPoly : 4/dx^2*stencil + srcProj[2]$

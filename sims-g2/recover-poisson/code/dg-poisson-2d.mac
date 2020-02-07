@@ -1,78 +1,58 @@
 /* Poisson solver based on recovery approach */
 
 load("modal-basis")$
-load("basis-precalc/basisSer1x")$
+load("basis-precalc/basisSer2x")$
 load("recovery-calc/recovery")$
 
-/* Function to make agruments to draw2d() function */
-createArgListDgSol(dgField, clr, xL, xR) := block([dx,argList,xj,N],
-  N : length(dgField),
-  dx : (xR-xL)/N,
-  argList : [grid=true, color=clr],
-  for i : 1 thru N do (
-    xj : xL+(i-1/2)*dx,
-    argList : endcons(explicit(
-        dgField[i].subst(x=(z-xj)/(dx/2),bc),z,xL+(i-1)*dx,xL+i*dx),
-      argList)
-    ),
-  return(argList)
-  )$
-
 /* Function to project function on DG basis */
-projectOnBasisGrid(func, bc, xL, xR, N) := block([dx],
-  dx : (xR-xL)/N,
+projectOnBasisGrid(func, bc, xL, xR, yL, yR, NX, NY) := block([dx,dy],
+  dx : (xR-xL)/NX,
+  dy : (yR-yL)/NY,
   return (
     makelist(
-      calcInnerProdList([x],1,bc,
-        subst(z=x*dx/2+(xL+(i-1/2)*dx), apply(func, [z]))),
-      i, 1, N)
+      makelist(
+        calcInnerProdList([x,y],1,bc,
+          subst([z=x*dx/2+(xL+(i-1/2)*dx),w=y*dy/2+(yL+(j-1/2)*dy)], apply(func, [z,w]))),
+        j, 1, NY),
+      i, 1, NX)
     )
   )$
 
-/* Function to subtract value from first element in list of list */
-subVal(dgField, val) := block([outList],
-  outList : copylist(dgField),
-  for i : 1 thru length(dgField) do (
-    outList[i][1] : dgField[i][1]-val
-    ),
-  return(outList)
-  )$
-
 /* Function to compute L2 norm of field */
-calcL2Norm(dgField, dx) := sqrt(dx*sum(sum(dgField[i][k]^2,k,1,length(dgField[1])), i, 1, length(dgField)))$
-
-/* Function to compute Laplacian stencil in 1D */
-getLaplacianStencil(polyOrder, fL, fC, fR) := calcInnerProdList([x], 1,
-  basisC[polyOrder],
-  diff(getRecov3CellGen(x, [2], polyOrder, 1, fL, fC, fR), x,2)
+calcL2Norm(dgField, dx, dy) := block([NX,NY,NC,l2s],
+  NX : length(dgField),
+  NY : length(dgField[1]),
+  NC : length(dgField[1][1]),
+  l2s : 0,
+  for i : 1 thru NX do (
+    for j : 1 thru NY do (
+      l2s : l2s+sum(dgField[i][j][k]^2,k,1,NC)
+      )
+    ),
+  return (dx*dy*l2s/4)
   )$
 
-/* Apply stencil to given expansion in 3 cells */
-applyStencil(stencil, qL, qR, qC) := subst(
-  append(
-    makelist(fL[i]=qL[i],i,1,length(qL)),
-    makelist(fC[i]=qC[i],i,1,length(qL)),
-    makelist(fR[i]=qR[i],i,1,length(qL))
-    ),
-  stencil
+/* Function to compute Laplacian stencil in 2D */
+getLaplacianStencil(polyOrder, fL, fC, fR, fB, fT) := calcInnerProdList([x,y], 1,
+  basisC[polyOrder],
+  diff(getRecov3CellGen(x, [2,2], polyOrder, 1, fL, fC, fR), x, 2) +
+  diff(getRecov3CellGen(y, [2,2], polyOrder, 1, fB, fC, fT), y, 2)
   )$
 
 /* Transform to [-1,1] */
 xe(eta,dx,xj)  := eta*dx/2+xj$
 
 /*
-* grid: grid(lower=xl, upper=xr,cells=N,isPeriodic=false)
+* grid: grid(lower=[xl,yl], upper=[xr,yr],cells=[NX,NY])
 *
-*    isPeriodic is optional
-*
-* bcLeft/bcRight: BC(type=1, value=0)
+* bcLeft/bcRight, bcTop/bcBottom: BC(type=1, value=0)
 *
 *    type can be 1 (Dirichlet) or 2 (Neumann). Value muust be a number
 */
-solvePoissonEquation(grid, polyOrder, srcFunc, bcLeft, bcRight) := block(
+solvePoissonEquation(grid, polyOrder, srcFunc, bcLeft, bcRight, bcBottom, bcTop) := block(
   /* Declare local variables */
   [
-  bc, NC, xL, xR, dx, nmax, slist, h, stencilI, hL, stenciL, hR, stencilR, eqnList,
+  NC, xL, xR, dx, nmax, slist, h, stencilI, hL, stenciL, hR, stencilR, eqnList,
   varList, fsol, isPeriodic,
   bcType, bcValue, srcMean
   ],
