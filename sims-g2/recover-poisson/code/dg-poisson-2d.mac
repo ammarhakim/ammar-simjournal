@@ -33,10 +33,10 @@ calcL2Norm(dgField, dx, dy) := block([NX,NY,NC,l2s],
   )$
 
 /* Function to compute Laplacian stencil in 2D */
-getLaplacianStencil(polyOrder, fL, fC, fR, fB, fT) := calcInnerProdList([x,y], 1,
-  basisC[polyOrder],
-  diff(getRecov3CellGen(x, [2,2], polyOrder, 1, fL, fC, fR), x, 2) +
-  diff(getRecov3CellGen(y, [2,2], polyOrder, 1, fB, fC, fT), y, 2)
+getLaplacianStencil(basisNm, polyOrder, fL, fC, fR, fB, fT) := calcInnerProdList([x,y], 1,
+  getBasis(sconcat("basis-precalc/basis", basisNm, "2x"), polyOrder),
+  diff(calcRecov3CellGen(basisNm, x, [2,2], polyOrder, 1, fL, fC, fR), x, 2) +
+  diff(calcRecov3CellGen(basisNm, y, [2,2], polyOrder, 1, fB, fC, fT), y, 2)
   )$
 
 /* Transform to [-1,1] */
