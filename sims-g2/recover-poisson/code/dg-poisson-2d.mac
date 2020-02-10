@@ -32,131 +32,149 @@ calcL2Norm(dgField, dx, dy) := block([NX,NY,NC,l2s],
   return (dx*dy*l2s/4)
   )$
 
-/* Function to compute Laplacian stencil in 2D */
-getLaplacianStencil_w(basisNm, polyOrder, fL, fC, fR, fB, fT) := calcInnerProdList([x,y], 1,
-  getBasis(sconcat("basis-precalc/basis", basisNm, "2x"), polyOrder),
-  diff(calcRecov3CellGen(basisNm, x, [2,2], polyOrder, 1, fL, fC, fR), x, 2) +
-  diff(calcRecov3CellGen(basisNm, y, [2,2], polyOrder, 1, fB, fC, fT), y, 2)
-  )$
-
 getLaplacianStencil(basisNm, polyOrder, fL, fC, fR, fB, fT, bcx, bcy) := calcInnerProdList([x,y], 1,
   getBasis(sconcat("basis-precalc/basis", basisNm, "2x"), polyOrder),
   diff(calcRecov3CellGen(basisNm, x, [2,2], polyOrder, 1, fL, fC, fR, bcx), x, 2) +
   diff(calcRecov3CellGen(basisNm, y, [2,2], polyOrder, 1, fB, fC, fT, bcy), y, 2)
   )$
 
+getLaplacianStencil2(bc, dx, dy, polyOrder, fL, fC, fR, fB, fT, bcx, bcy) := calcInnerProdList([x,y], 1,
+  bc,
+  4/dx^2*diff(calcRecov3CellGen(basisNm, x, [2,2], polyOrder, 1, fL, fC, fR, bcx), x, 2) +
+  4/dy^2*diff(calcRecov3CellGen(basisNm, y, [2,2], polyOrder, 1, fB, fC, fT, bcy), y, 2)
+  )$
+
 /* Transform to [-1,1] */
 xe(eta,dx,xj)  := eta*dx/2+xj$
 
 /*
-* grid: grid(lower=[xl,yl], upper=[xr,yr],cells=[NX,NY])
+* grid: grid(lower=[xl,yl], upper=[xr,yr], cells=[NX,NY])
 *
 * bcLeft/bcRight, bcTop/bcBottom: BC(type=1, value=0)
 *
 *    type can be 1 (Dirichlet) or 2 (Neumann). Value muust be a number
+*
+* srcFunc is the disctere source projected on the basis functions
 */
-solvePoissonEquation(grid, polyOrder, srcFunc, bcLeft, bcRight, bcBottom, bcTop) := block(
+solvePoissonEquation(basisNm, grid, polyOrder, srcFunc, bcLeft, bcRight, bcBottom, bcTop) := block(
   /* Declare local variables */
   [
-  NC, xL, xR, dx, nmax, slist, h, stencilI, hL, stenciL, hR, stencilR, eqnList,
-  varList, fsol, isPeriodic,
-  bcType, bcValue, srcMean
+  bc, NC, lower, upper, dx, cells,
+  slist, eqnList, stencil,
+  varList, fsol,
+  bcL, bcR, bcB, bcT
   ],
   
-  bc : basisC[polyOrder],
+  bc : getBasis(sconcat("basis-precalc/basis", basisNm, "2x"), polyOrder),
   NC : length(bc),
-  xL : assoc(lower,grid),
-  xR : assoc(upper,grid),
-  nmax : assoc(cells,grid),
-  dx : (xR-xL)/nmax, /* Cell spacing */
+  lower : assoc(lower,grid),
+  upper : assoc(upper,grid),
+  cells : assoc(cells,grid),
+  dx : makelist((upper[i]-lower[i])/cells[i], i, 1, 2),
   
-  /* Source function on [-1,1] */
-  srcFuncHat(eta,dx,xj) := srcFunc(xe(eta,dx,xj)),
-  /* Check if periodic direction */
-  isPeriodic : assoc(isPeriodic,grid),
   /* Substitution list for indexing ... */
   slist : append(
-    /* x-direction for f ... */
-    makelist(fL[k]=f[i-1,k],k,1,NC),
-    makelist(fC[k]=f[i,k],k,1,NC),
-    makelist(fR[k]=f[i+1,k],k,1,NC)
-    ),
-  /* ... for periodic BCs */
-  pBc : append(
-    /* for f ... */
-    makelist(f[0,k]=f[nmax,k],k,1,NC),
-    makelist(f[nmax+1,k]=f[1,k],k,1,NC)
+    /* x-direction ... */
+    makelist(fL[k]=f[i-1,j,k],k,1,NC),
+    makelist(fC[k]=f[i,j,k],k,1,NC),
+    makelist(fR[k]=f[i+1,j,k],k,1,NC),
+    /* ... y-direction */
+    makelist(fB[k]=f[i,j-1,k],k,1,NC),
+    makelist(fT[k]=f[i,j+1,k],k,1,NC)
     ),
   
-  /* Compute second derivative */
-  h : getRecov3CellGen(x, [2], polyOrder, 1, fL, fC, fR),
-  /* Construct list of equations */
-  if isPeriodic then (
-    srcMean : integrate(srcFunc(x),x,xL,xR)/(xR-xL),
-    /* Interior stencil */
-    stencilI : subst(slist,
-      calcInnerProdList([x], 1, bc, diff(h,x,2))
-      ),
-    eqnList : [], /* List of equations */
-    /* Construct set of linear equations for interior */
-    for j : 1 thru nmax do (
-      eqnList : append(eqnList,
-        4/dx^2*subst(i=j,stencilI)-calcInnerProdList([x],1,bc,-(srcFuncHat(x,dx,xL+(j-1/2)*dx)-srcMean))
-        )
-      ),
-    /* Apply periodic BCs */
-    eqnList : subst(pBc, eqnList),
-    /* Set cell-average term in first skin cell to zero to avoid singular inversion */
-    eqnList : rest(append(eqnList, [f[1,1]=0])) /* remove one equation */
-    )
-  else (
-    /* Interior stencil */
-    stencilI : subst(slist,
-      calcInnerProdList([x], 1, bc, diff(h,x,2))
-      ),
-    /* Stencils for left/right skin cells */
-    bcType : assoc(type,bcLeft),
-    bcValue : assoc(value,bcLeft),
-    hL : getRecov3CellGen(x, [2], polyOrder, 1, bcValue, fC, fR, [bcType,0]),
-    stencilL : subst(subst(i=1,slist),
-      calcInnerProdList([x], 1, bc, diff(hL,x,2))
-      ),
-    bcType : assoc(type,bcRight),
-    bcValue : assoc(value,bcRight),
-    /* Right skin cell stencil */
-    hR : getRecov3CellGen(x, [2], polyOrder, 1, fL, fC, bcValue, [0,bcType]),
-    stencilR : subst(subst(i=nmax,slist),
-      calcInnerProdList([x], 1, bc, diff(hR,x,2))
-      ),
-    eqnList : [], /* List of equations */
-    /* Construct set of linear equations for interior */
-    for j : 2 thru nmax-1 do (
-      eqnList : append(eqnList,
-        4/dx^2*subst(i=j,stencilI)-calcInnerProdList([x],1,bc,-srcFuncHat(x,dx,xL+(j-1/2)*dx))
-        )
-      ),
-    /* Equations in left/right skin cells */
-    eqnList : append(eqnList,
-      4/dx^2*subst(i=1,stencilL)-calcInnerProdList([x],1,bc,-srcFuncHat(x,dx,xL+(1-1/2)*dx))
-      ),
-    eqnList : append(eqnList,
-      4/dx^2*subst(i=nmax,stencilR)-calcInnerProdList([x],1,bc,-srcFuncHat(x,dx,xL+(nmax-1/2)*dx))
+  eqnList : [], /* List of equations */
+  /* Construct equations in interior */
+  stencil : subst(slist,
+    getLaplacianStencil2(bc, dx[1], dx[2], polyOrder, fL, fC, fR, fB, fT, [0,0], [0,0])
+    ),
+  for ix : 2 thru NX-1 do (
+    for iy : 2 thru NY-1 do (
+      eqnList : append(eqnList, subst([i=ix,j=iy],stencil)+srcFunc[ix][iy])
+      )
+    ),
+  /* Left skin cells */
+  stencil : subst(slist,
+    getLaplacianStencil2(bc, dx[1], dx[2], polyOrder, assoc(value,bcLeft), fC, fR, fB, fT,
+      [1,0], [0,0])
+    ),
+  for ix : 1 thru 1 do (
+    for iy : 2 thru NY-1 do (
+      eqnList : append(eqnList, subst([i=ix,j=iy],stencil)+srcFunc[ix][iy])
+      )
+    ),
+  /* Right skin cells */
+  stencil : subst(slist,
+    getLaplacianStencil2(bc, dx[1], dx[2], polyOrder, fL, fC, assoc(value,bcRight), fB, fT,
+      [0,1], [0,0])
+    ),
+  for ix : NX thru NX do (
+    for iy : 2 thru NY-1 do (
+      eqnList : append(eqnList, subst([i=ix,j=iy],stencil)+srcFunc[ix][iy])
+      )
+    ),
+  /* Bottom skin cells */
+  stencil : subst(slist,
+    getLaplacianStencil2(bc, dx[1], dx[2], polyOrder, fL, fC, fR, assoc(value,bcBottom), fT,
+      [0,0], [1,0])
+    ),
+  for ix : 2 thru  NX-1 do (
+    for iy : 1 thru 1 do (
+      eqnList : append(eqnList, subst([i=ix,j=iy],stencil)+srcFunc[ix][iy])
+      )
+    ),  
+  /* Top skin cells */
+  stencil : subst(slist,
+    getLaplacianStencil2(bc, dx[1], dx[2], polyOrder, fL, fC, fR, fB, assoc(value,bcTop),
+      [0,0], [0,1])
+    ),
+  for ix : 2 thru  NX-1 do (
+    for iy : NY thru NY do (
+      eqnList : append(eqnList, subst([i=ix,j=iy],stencil)+srcFunc[ix][iy])
       )
     ),
   
+  /* Bottom-left */
+  stencil : subst(slist,
+    getLaplacianStencil2(bc, dx[1], dx[2], polyOrder, assoc(value,bcLeft), fC, fR, assoc(value,bcBottom), fT,
+      [1,0], [1,0])
+    ),
+  eqnList : append(eqnList, subst([i=1,j=1],stencil)+srcFunc[1][1]),
+  /* Top-left */
+  stencil : subst(slist,
+    getLaplacianStencil2(bc, dx[1], dx[2], polyOrder, assoc(value,bcLeft), fC, fR, fB, assoc(value,bcTop),
+      [1,0], [0,1])
+    ),
+  eqnList : append(eqnList, subst([i=1,j=NY],stencil)+srcFunc[1][NY]),
+  /* Bottom-right */
+  stencil : subst(slist,
+    getLaplacianStencil2(bc, dx[1], dx[2], polyOrder, fL, fC, assoc(value,bcRight), assoc(value,bcBottom), fT,
+      [0,1], [1,0])
+    ),
+  eqnList : append(eqnList, subst([i=NX,j=1],stencil)+srcFunc[NX][1]),
+  /* Top-right */
+  stencil : subst(slist,
+    getLaplacianStencil2(bc, dx[1], dx[2], polyOrder, fL, fC, assoc(value,bcRight), fB, assoc(value,bcTop),
+      [0,1], [0,1])
+    ),
+  eqnList : append(eqnList, subst([i=NX,j=NY],stencil)+srcFunc[NX][NY]),
+  
   /* List of unknowns */
   varList : [],
-  for i : 1 thru nmax do (
-    varList : append(varList, makelist(f[i,k],k,1,NC))
+  for i : 1 thru NX do (
+    for j : 1 thru NY do (
+      varList : append(varList, makelist(f[i,j,k],k,1,NC))
+      )
     ),
   /* Solve linear system */
   fSol : linsolve(eqnList, varList),
   /* Return solution field */
   return (
-    subst(fSol, makelist(makelist(f[i,k],k,1,NC), i, 1, nmax))
+    subst(fSol,
+      makelist(
+        makelist(
+          makelist(f[i,j,k],k,1,NC),
+          j, 1, NY),
+        i, 1, NX))
     )
   )$
-
-
-
-
