@@ -48,6 +48,9 @@ p=1 simulations:
 p=2 simulations:
 
 - p2-2d-s0: p=2, Serendipity basis, testing stencil for bi-linear (all terms match)
-- p2-2d-s1: p=2, Serendipity product basis, testing stencil for bi-cubic (only bilinear terms match)
+- p2-2d-s1: p=2, Serendipity basis, testing stencil for bi-cubic (only bilinear terms match)
 - p2-2d-s2: p=2, Tensor product basis, testing stencil for bi-cubic. All terms match
 
+p=3 simulations:
+
+- p3-2d-s1: p=2, Tensor product basis, testing stencil for 5th order source. All terms match
