@@ -16,6 +16,17 @@ projectOnBasisGrid(func, bc, xL, xR, N) := block([dx],
     )
   )$
 
+/* Compute error as measured in the L2 */
+calcL2NormError(func, funcProj, bc, xL, xR, N) := block([dx, bcc, l2],
+  dx : (xR-xL)/N,
+  l2 : 0,
+  for i : 1 thru N do (
+    bcc : etaDir(x, -xL+(i-1/2)*dx, dx, bc),
+    l2 : l2 + integrate((func(x)-funcProj[i].bcc)^2, x, -xL+(i-1)*dx, -xL+i*dx)
+    ),
+  return(sqrt(float(l2)))
+  )$
+
 /* Compute remainder polynomial of 3-cell recovery. Second optional argument
 * is order of continuity at cell edges */
 calcRemPoly3Cell(polyOrder, [C]) := block(

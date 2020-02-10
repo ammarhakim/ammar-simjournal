@@ -24,12 +24,32 @@ exactSol(x,y) := x*(x-1)*(x-1/2)*y*(y-1)*(y-1/2)$
 _src : -(diff(exactSol(x,y),x,2)+diff(exactSol(x,y),y,2))$
 define(srcFunc(x,y), _src)$
 
-/* Compute exact projection and compute Laplacian */
+/* Compute exact projections */
 exactProj : projectOnBasisGrid(exactSol, bc, xL, xR, yL, yR, nmax, nmax)$
-stencil : getLaplacianStencil(basisNm, polyOrder,
+srcProj : projectOnBasisGrid(srcFunc, bc, xL, xR, yL, yR, nmax, nmax)$
+
+/* Compute Laplacian: internal stencil */
+stencilI : getLaplacianStencil(basisNm, polyOrder,
   exactProj[1][2], exactProj[2][2], exactProj[3][2],
-  exactProj[2][1], exactProj[2][3])$
+  exactProj[2][1], exactProj[2][3],
+  [0,0], [0,0]
+  )$
+
+/* Compute Laplacian: skin stencil */
+stencilS : getLaplacianStencil(basisNm, polyOrder,
+  0, exactProj[1][2], exactProj[2][2],
+  exactProj[1][1], exactProj[1][3],
+  [1,0], [0,0]
+  )$
+
+/* Compute Laplacian: corner stencil */
+stencilC : getLaplacianStencil(basisNm, polyOrder,
+  0, exactProj[1][1], exactProj[2][1],
+  0, exactProj[1][2],
+  [1,0], [1,0]
+  )$
 
 /* Compare with source projection */
-srcProj : projectOnBasisGrid(srcFunc, bc, xL, xR, yL, yR, nmax, nmax)$
-remPoly : 4/dx^2*stencil + srcProj[2][2]$
+remPolyI : 4/dx^2*stencilI + srcProj[2][2]$
+remPolyS : 4/dx^2*stencilS + srcProj[1][2]$
+remPolyC : 4/dx^2*stencilC + srcProj[1][1]$

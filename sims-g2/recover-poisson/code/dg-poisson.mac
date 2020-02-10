@@ -42,9 +42,11 @@ subVal(dgField, val) := block([outList],
 calcL2Norm(dgField, dx) := sqrt(dx*sum(sum(dgField[i][k]^2,k,1,length(dgField[1])), i, 1, length(dgField)))$
 
 /* Function to compute Laplacian stencil in 1D */
-getLaplacianStencil(polyOrder, fL, fC, fR) := calcInnerProdList([x], 1,
+getLaplacianStencil(polyOrder, fL, fC, fR, [bc]) := calcInnerProdList([x], 1,
   basisC[polyOrder],
-  diff(getRecov3CellGen(x, [2], polyOrder, 1, fL, fC, fR), x,2)
+  if length(bc) > 0
+  then diff(getRecov3CellGen(x, [2], polyOrder, 1, fL, fC, fR, bc[1]), x,2)
+  else diff(getRecov3CellGen(x, [2], polyOrder, 1, fL, fC, fR), x,2)
   )$
 
 /* Apply stencil to given expansion in 3 cells */
