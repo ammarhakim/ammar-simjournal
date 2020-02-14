@@ -1,0 +1,36 @@
+file_search_maxima: append(file_search_maxima,
+  [
+  "/Users/ahakim/research/ammar-simjournal/sims-g2/recover-poisson/code/###.{lisp,mac}"
+  ])$
+
+
+load("dg-poisson")$
+
+polyOrder : 2$
+/* Left/right domain boundary */
+xL : 0$
+xR : 1$
+nmax : 3$
+dx : (xR-xL)/nmax$
+bc : basisC[polyOrder]$
+
+/* Exact solution ... */
+exactSol(z) := (z-xL)*(z-xR)*(a[0] + sum(a[i]*z^i,i,1,3)) $
+diff2Exact(z) := diff(exactSol(z),z,2)$
+
+/* Compute exact projection */
+exactProj : projectOnBasisGrid(exactSol, bc, xL, xR, nmax)$
+
+/* Apply Laplacian stencils in interior and left skin */
+stencilI : getLaplacianStencil(polyOrder, exactProj[1], exactProj[2], exactProj[3])$
+stencilS : getLaplacianStencil(polyOrder, 0, exactProj[1], exactProj[2], [1,0])$
+/* This is based on two-cell constrained recovery */
+stencilS2 : getLaplacianSkinStencil(polyOrder, exactProj[1], exactProj[2], [1,0,0],[0,0,0])$
+
+/* Project second derivative on basis */
+
+diff2ExactProject : projectOnBasisGrid(diff2Exact, bc, xL, xR, nmax)$
+
+remPolyI : fullratsimp(4/dx^2*stencilI - diff2ExactProject[2])$
+remPolyS : fullratsimp(4/dx^2*stencilS - diff2ExactProject[1])$
+remPolyS2 : fullratsimp(4/dx^2*stencilS2 - diff2ExactProject[1])$

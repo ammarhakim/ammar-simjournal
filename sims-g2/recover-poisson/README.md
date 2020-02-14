@@ -14,6 +14,7 @@ p=1 simulations:
 
 p=2 simulations:
 
+- p2-s0: p=2, testing stencil
 - p2-s1: p=2, N=4
 - p2-s2: p=2, N=8
 - p2-s3: p=2, N=16
@@ -21,6 +22,7 @@ p=2 simulations:
 - p2-s5: p=2, N=4. Neumann on left, Dirichlet of right BCs (sol is quartic, so exactly captured)
 - p2-s6: p=2, N=4. periodic BCs
 - p2-s7: p=2, N=8. periodic BCs
+- p2-s8: p=2, Taylor series analysis
 
 p=3 simulations:
 

@@ -49,14 +49,14 @@ getLaplacianStencil(polyOrder, fL, fC, fR, [bc]) := calcInnerProdList([x], 1,
   else diff(getRecov3CellGen(x, [2], polyOrder, 1, fL, fC, fR), x,2)
   )$
 
-/* Apply stencil to given expansion in 3 cells */
-applyStencil(stencil, qL, qR, qC) := subst(
-  append(
-    makelist(fL[i]=qL[i],i,1,length(qL)),
-    makelist(fC[i]=qC[i],i,1,length(qL)),
-    makelist(fR[i]=qR[i],i,1,length(qL))
-    ),
-  stencil
+/* Function to compute Laplacian stencil in 1D: uses constrained recovery */
+getLaplacianSkinStencil(polyOrder, fL, fR, [bc]) := block([bcL],
+  bcL : etaDir(x, -1, 2, basisC[polyOrder]),
+  return (
+    calcInnerProdListGen([x], [[-2,0]], 1, bcL,
+      diff(calcRecov2CellGen("Ser", x, [2], polyOrder, fL, fR, bc[1], bc[2]), x,2)
+      )
+    )
   )$
 
 /* Transform to [-1,1] */
