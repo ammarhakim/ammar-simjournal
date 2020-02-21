@@ -23,6 +23,9 @@ p=2 simulations:
 - p2-s6: p=2, N=4. periodic BCs
 - p2-s7: p=2, N=8. periodic BCs
 - p2-s8: p=2, Taylor series analysis
+- p2-s9: p=2, N=4. Neumann on left, Dirichlet of right BCs (sol is quintic, so exactly captured)
+- p2-s10: p=2, N=4. Neumann on left, Dirichlet of right BCs (sol is k=8)
+- p2-s11: p=2, N=4. Attempt at Taylor series
 
 p=3 simulations:
 

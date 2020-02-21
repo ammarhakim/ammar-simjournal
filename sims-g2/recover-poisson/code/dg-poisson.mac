@@ -2,7 +2,7 @@
 
 load("modal-basis")$
 load("basis-precalc/basisSer1x")$
-load("recovery-calc/recovery")$
+load("recovery")$
 
 /* Function to make agruments to draw2d() function */
 createArgListDgSol(dgField, clr, xL, xR) := block([dx,argList,xj,N],
@@ -41,12 +41,10 @@ subVal(dgField, val) := block([outList],
 /* Function to compute L2 norm of field */
 calcL2Norm(dgField, dx) := sqrt(dx*sum(sum(dgField[i][k]^2,k,1,length(dgField[1])), i, 1, length(dgField)))$
 
-/* Function to compute Laplacian stencil in 1D */
-getLaplacianStencil(polyOrder, fL, fC, fR, [bc]) := calcInnerProdList([x], 1,
+/* Function to compute Laplacian stencil in 1D for deep interior cell */
+getLaplacianStencil(polyOrder, fL, fC, fR) := calcInnerProdList([x], 1,
   basisC[polyOrder],
-  if length(bc) > 0
-  then diff(getRecov3CellGen(x, [2], polyOrder, 1, fL, fC, fR, bc[1]), x,2)
-  else diff(getRecov3CellGen(x, [2], polyOrder, 1, fL, fC, fR), x,2)
+  diff(calcRecov1CellGen("Ser", x, [2], polyOrder, 1, ["exp", fL], fC, ["exp", fR]), x,2)
   )$
 
 /* Function to compute Laplacian stencil in 1D: uses constrained recovery */
@@ -105,7 +103,7 @@ solvePoissonEquation(grid, polyOrder, srcFunc, bcLeft, bcRight) := block(
     ),
   
   /* Compute second derivative */
-  h : getRecov3CellGen(x, [2], polyOrder, 1, fL, fC, fR),
+  h : calcRecov1CellGen("Ser", x, [2], polyOrder, 1, ["exp", fL], fC, ["exp", fR]),
   /* Construct list of equations */
   if isPeriodic then (
     srcMean : integrate(srcFunc(x),x,xL,xR)/(xR-xL),
@@ -133,14 +131,14 @@ solvePoissonEquation(grid, polyOrder, srcFunc, bcLeft, bcRight) := block(
     /* Stencils for left/right skin cells */
     bcType : assoc(type,bcLeft),
     bcValue : assoc(value,bcLeft),
-    hL : getRecov3CellGen(x, [2], polyOrder, 1, bcValue, fC, fR, [bcType,0]),
+    hL : calcRecov1CellGen("Ser", x, [2], polyOrder, 1, ["pt", [1,0,bcValue]], fC, ["exp", fR]),
     stencilL : subst(subst(i=1,slist),
       calcInnerProdList([x], 1, bc, diff(hL,x,2))
       ),
     bcType : assoc(type,bcRight),
     bcValue : assoc(value,bcRight),
     /* Right skin cell stencil */
-    hR : getRecov3CellGen(x, [2], polyOrder, 1, fL, fC, bcValue, [0,bcType]),
+    hR : calcRecov1CellGen("Ser", x, [2], polyOrder, 1, ["exp", fL], fC, ["pt", [1,0,bcValue]]),
     stencilR : subst(subst(i=nmax,slist),
       calcInnerProdList([x], 1, bc, diff(hR,x,2))
       ),

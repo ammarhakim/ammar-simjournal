@@ -23,9 +23,7 @@ exactProj : projectOnBasisGrid(exactSol, bc, xL, xR, nmax)$
 
 /* Apply Laplacian stencils in interior and left skin */
 stencilI : getLaplacianStencil(polyOrder, exactProj[1], exactProj[2], exactProj[3])$
-stencilS : getLaplacianStencil(polyOrder, 0, exactProj[1], exactProj[2], [1,0])$
-/* This is based on two-cell constrained recovery */
-stencilS2 : getLaplacianSkinStencil(polyOrder, exactProj[1], exactProj[2], [1,0,0],[0,0,0])$
+stencilS : getLaplacianSkinStencil(polyOrder, exactProj[1], exactProj[2], [1,0,0],[0,0,0])$
 
 /* Project second derivative on basis */
 
@@ -33,4 +31,3 @@ diff2ExactProject : projectOnBasisGrid(diff2Exact, bc, xL, xR, nmax)$
 
 remPolyI : fullratsimp(4/dx^2*stencilI - diff2ExactProject[2])$
 remPolyS : fullratsimp(4/dx^2*stencilS - diff2ExactProject[1])$
-remPolyS2 : fullratsimp(4/dx^2*stencilS2 - diff2ExactProject[1])$
