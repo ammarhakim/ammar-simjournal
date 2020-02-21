@@ -15,7 +15,7 @@ dx : (xR-xL)/nmax$
 bc : basisC[polyOrder]$
 
 /* Exact solution ... */
-exactSol(z) := z*(z-1)*(z-1/2)^3$
+exactSol(z) := z*(z-1)*(z-1/2)^4$
 /* .. source term corresponding to it */
 _src : -diff(exactSol(z),z,2)$
 define(srcFunc(z), _src)$
@@ -28,6 +28,16 @@ srcProj : projectOnBasisGrid(srcFunc, bc, xL, xR, nmax)$
 /* Compute interior and left skin residual */
 stencilI : getLaplacianStencil(polyOrder, exactProj[1], exactProj[2], exactProj[3])$
 stencilS : getLaplacianSkinStencil(polyOrder, exactProj[1], exactProj[2], [1,0,0],[0,0,0])$
+/* First interior stencil */
+stencilFI : getLaplacianFirstInteriorStencil(polyOrder, exactProj[1], exactProj[2], exactProj[3],
+  [1,0,0], [0,0,0]
+  )$
+/* First interior stencil (for three cells the middle cell is first interior from both sides) */
+stencilFI2 : getLaplacianFirstInteriorStencil(polyOrder, exactProj[1], exactProj[2], exactProj[3],
+  [1,0,0], [1,0,0]
+  )$
 
 remPolyI : fullratsimp(4/dx^2*stencilI + srcProj[2])$
 remPolyS : fullratsimp(4/dx^2*stencilS + srcProj[1])$
+remPolyFI : fullratsimp(4/dx^2*stencilFI + srcProj[2])$
+remPolyFI2 : fullratsimp(4/dx^2*stencilFI2 + srcProj[2])$

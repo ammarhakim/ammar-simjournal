@@ -57,6 +57,14 @@ getLaplacianSkinStencil(polyOrder, fL, fR, [bc]) := block([bcL],
     )
   )$
 
+/* Function to compute Laplacian stencil in 1D: uses constrained recovery */
+getLaplacianFirstInteriorStencil(polyOrder, fL, fC, fR, [bc]) := calcInnerProdList([x], 1,
+  basisC[polyOrder],
+  diff(
+    calcRecov1CellGen("Ser", x, [2], polyOrder, 1, ["exp", fL], fC, ["exp", fR], bc[1], bc[2]),
+    x,2)
+  )$
+
 /* Transform to [-1,1] */
 xe(eta,dx,xj)  := eta*dx/2+xj$
 
