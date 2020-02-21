@@ -82,7 +82,7 @@ solvePoissonEquation(grid, polyOrder, srcFunc, bcLeft, bcRight) := block(
   [
   bc, NC, xL, xR, dx, nmax, slist, h, stencilI, hL, stenciL, hR, stencilR, eqnList,
   varList, fsol, isPeriodic,
-  bcType, bcValue, srcMean
+  bcType, bcValue, bcList, srcMean
   ],
   
   bc : basisC[polyOrder],
@@ -139,14 +139,16 @@ solvePoissonEquation(grid, polyOrder, srcFunc, bcLeft, bcRight) := block(
     /* Stencils for left/right skin cells */
     bcType : assoc(type,bcLeft),
     bcValue : assoc(value,bcLeft),
-    hL : calcRecov1CellGen("Ser", x, [2], polyOrder, 1, ["pt", [1,0,bcValue]], fC, ["exp", fR]),
+    bcList : if bcType = 1 then [1,0,bcValue] else [0,1,bcValue],
+    hL : calcRecov1CellGen("Ser", x, [2], polyOrder, 1, ["pt", bcList], fC, ["exp", fR]),
     stencilL : subst(subst(i=1,slist),
       calcInnerProdList([x], 1, bc, diff(hL,x,2))
       ),
     bcType : assoc(type,bcRight),
     bcValue : assoc(value,bcRight),
+    bcList : if bcType = 1 then [1,0,bcValue] else [0,1,bcValue],
     /* Right skin cell stencil */
-    hR : calcRecov1CellGen("Ser", x, [2], polyOrder, 1, ["exp", fL], fC, ["pt", [1,0,bcValue]]),
+    hR : calcRecov1CellGen("Ser", x, [2], polyOrder, 1, ["exp", fL], fC, ["pt", bcList]),
     stencilR : subst(subst(i=nmax,slist),
       calcInnerProdList([x], 1, bc, diff(hR,x,2))
       ),
