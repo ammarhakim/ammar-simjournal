@@ -29,15 +29,6 @@ projectOnBasisGrid(func, bc, xL, xR, N) := block([dx],
     )
   )$
 
-/* Function to subtract value from first element in list of list */
-subVal(dgField, val) := block([outList],
-  outList : copylist(dgField),
-  for i : 1 thru length(dgField) do (
-    outList[i][1] : dgField[i][1]-val
-    ),
-  return(outList)
-  )$
-
 /* Function to compute L2 norm of field */
 calcL2Norm(dgField, dx) := sqrt(dx*sum(sum(dgField[i][k]^2,k,1,length(dgField[1])), i, 1, length(dgField)))$
 
@@ -47,11 +38,13 @@ getLaplacianStencil(polyOrder, fL, fC, fR) := calcInnerProdList([x], 1,
   diff(calcRecov1CellGen("Ser", x, [2], polyOrder, 1, ["exp", fL], fC, ["exp", fR]), x,2)
   )$
 
-/* Function to compute Laplacian stencil in 1D: uses constrained recovery */
-getLaplacianSkinStencil(polyOrder, fL, fR, [bc]) := block([bcL],
-  bcL : etaDir(x, -1, 2, basisC[polyOrder]),
+/* Function to compute Laplacian stencil in 1D: uses constrained recovery. side=left/right */
+getLaplacianSkinStencil(side, polyOrder, fL, fR, [bc]) := block([bcL,xc,lims],
+  lims : if side = 'left then [-2,0] else [0,2], /* Cell to project on */
+  xc : if side = 'left then -1 else 1, /* Center of cell to project on */
+  bcL : etaDir(x, xc, 2, basisC[polyOrder]),
   return (
-    calcInnerProdListGen([x], [[-2,0]], 1, bcL,
+    calcInnerProdListGen([x], [lims], 1, bcL,
       diff(calcRecov2CellGen("Ser", x, [2], polyOrder, fL, fR, bc[1], bc[2]), x,2)
       )
     )
@@ -80,9 +73,10 @@ xe(eta,dx,xj)  := eta*dx/2+xj$
 solvePoissonEquation(grid, polyOrder, srcFunc, bcLeft, bcRight) := block(
   /* Declare local variables */
   [
-  bc, NC, xL, xR, dx, nmax, slist, h, stencilI, hL, stenciL, hR, stencilR, eqnList,
+  bc, NC, xL, xR, dx, nmax, slist, stencil, eqnList,
   varList, fsol, isPeriodic,
-  bcType, bcValue, bcList, srcMean
+  bcType, bcValue, bcLeftList, bcRightList,
+  srcMean
   ],
   
   bc : basisC[polyOrder],
@@ -110,20 +104,18 @@ solvePoissonEquation(grid, polyOrder, srcFunc, bcLeft, bcRight) := block(
     makelist(f[nmax+1,k]=f[1,k],k,1,NC)
     ),
   
-  /* Compute second derivative */
-  h : calcRecov1CellGen("Ser", x, [2], polyOrder, 1, ["exp", fL], fC, ["exp", fR]),
   /* Construct list of equations */
   if isPeriodic then (
     srcMean : integrate(srcFunc(x),x,xL,xR)/(xR-xL),
     /* Interior stencil */
-    stencilI : subst(slist,
-      calcInnerProdList([x], 1, bc, diff(h,x,2))
+    stencil : subst(slist,
+      getLaplacianStencil(polyOrder, fL, fC, fR)
       ),
     eqnList : [], /* List of equations */
     /* Construct set of linear equations for interior */
     for j : 1 thru nmax do (
       eqnList : append(eqnList,
-        4/dx^2*subst(i=j,stencilI)-calcInnerProdList([x],1,bc,-(srcFuncHat(x,dx,xL+(j-1/2)*dx)-srcMean))
+        4/dx^2*subst(i=j,stencil)-calcInnerProdList([x],1,bc,-(srcFuncHat(x,dx,xL+(j-1/2)*dx)-srcMean))
         )
       ),
     /* Apply periodic BCs */
@@ -132,39 +124,66 @@ solvePoissonEquation(grid, polyOrder, srcFunc, bcLeft, bcRight) := block(
     eqnList : rest(append(eqnList, [f[1,1]=0])) /* remove one equation */
     )
   else (
-    /* Interior stencil */
-    stencilI : subst(slist,
-      calcInnerProdList([x], 1, bc, diff(h,x,2))
-      ),
-    /* Stencils for left/right skin cells */
+    /* Create left/right BC lists (also needed for skin/first-interior cells) */
     bcType : assoc(type,bcLeft),
     bcValue : assoc(value,bcLeft),
-    bcList : if bcType = 1 then [1,0,bcValue] else [0,1,bcValue],
-    hL : calcRecov1CellGen("Ser", x, [2], polyOrder, 1, ["pt", bcList], fC, ["exp", fR]),
-    stencilL : subst(subst(i=1,slist),
-      calcInnerProdList([x], 1, bc, diff(hL,x,2))
-      ),
+    bcLeftList : if bcType = 1 then [1,0,bcValue] else [0,1,bcValue],
+    
     bcType : assoc(type,bcRight),
     bcValue : assoc(value,bcRight),
-    bcList : if bcType = 1 then [1,0,bcValue] else [0,1,bcValue],
-    /* Right skin cell stencil */
-    hR : calcRecov1CellGen("Ser", x, [2], polyOrder, 1, ["exp", fL], fC, ["pt", bcList]),
-    stencilR : subst(subst(i=nmax,slist),
-      calcInnerProdList([x], 1, bc, diff(hR,x,2))
-      ),
+    bcRightList : if bcType = 1 then [1,0,bcValue] else [0,1,bcValue],
+
     eqnList : [], /* List of equations */
+    /* Interior stencil */
+    stencil : subst(slist,
+      getLaplacianStencil(polyOrder, fL, fC, fR)
+      ),
     /* Construct set of linear equations for interior */
-    for j : 2 thru nmax-1 do (
+    for j : 3 thru nmax-2 do (
       eqnList : append(eqnList,
-        4/dx^2*subst(i=j,stencilI)-calcInnerProdList([x],1,bc,-srcFuncHat(x,dx,xL+(j-1/2)*dx))
+        4/dx^2*subst(i=j,stencil)-calcInnerProdList([x],1,bc,-srcFuncHat(x,dx,xL+(j-1/2)*dx))
         )
       ),
-    /* Equations in left/right skin cells */
-    eqnList : append(eqnList,
-      4/dx^2*subst(i=1,stencilL)-calcInnerProdList([x],1,bc,-srcFuncHat(x,dx,xL+(1-1/2)*dx))
+    if nmax > 3 then (
+      /* First-interior cell on left */
+      stencil : subst(slist,
+        getLaplacianFirstInteriorStencil(polyOrder, fL, fC, fR, bcLeftList, [0,0,0])
+        ),
+      eqnList : append(eqnList,
+        4/dx^2*subst(i=2,stencil)-calcInnerProdList([x],1,bc,-srcFuncHat(x,dx,xL+(2-1/2)*dx))
+        ),
+      /* First-interior cell on right */
+      stencil : subst(slist,
+        getLaplacianFirstInteriorStencil(polyOrder, fL, fC, fR, [0,0,0], bcRightList)
+        ),
+      eqnList : append(eqnList,
+        4/dx^2*subst(i=nmax-1,stencil)-calcInnerProdList([x],1,bc,-srcFuncHat(x,dx,xL+(nmax-1-1/2)*dx))
+        )
+      ),
+    if nmax = 3 then (
+      /* Match both left/right BC values */
+      stencil : subst(slist,
+        getLaplacianFirstInteriorStencil(polyOrder, fL, fC, fR, bcLeftList, bcRightList)
+        ),
+      eqnList : append(eqnList,
+        4/dx^2*subst(i=2,stencil)-calcInnerProdList([x],1,bc,-srcFuncHat(x,dx,xL+(2-1/2)*dx))
+        )
+      ),
+    
+    /* Left skin cell */
+    stencil : subst(slist,
+      getLaplacianSkinStencil('left, polyOrder, fC, fR, bcLeftList, [0,0,0])
       ),
     eqnList : append(eqnList,
-      4/dx^2*subst(i=nmax,stencilR)-calcInnerProdList([x],1,bc,-srcFuncHat(x,dx,xL+(nmax-1/2)*dx))
+      4/dx^2*subst(i=1,stencil)-calcInnerProdList([x],1,bc,-srcFuncHat(x,dx,xL+(1-1/2)*dx))
+      ),
+    
+    /* Right skin cell */
+    stencil : subst(slist,
+      getLaplacianSkinStencil('right, polyOrder, fL, fC, [0,0,0], bcRightList)
+      ),
+    eqnList : append(eqnList,
+      4/dx^2*subst(i=nmax,stencil)-calcInnerProdList([x],1,bc,-srcFuncHat(x,dx,xL+(nmax-1/2)*dx))
       )
     ),
   
@@ -172,7 +191,8 @@ solvePoissonEquation(grid, polyOrder, srcFunc, bcLeft, bcRight) := block(
   varList : [],
   for i : 1 thru nmax do (
     varList : append(varList, makelist(f[i,k],k,1,NC))
-    ),
+    ),  
+  /* Return solution field */
   /* Solve linear system */
   fSol : linsolve(eqnList, varList),
   /* Return solution field */
