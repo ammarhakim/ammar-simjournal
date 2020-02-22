@@ -12,6 +12,8 @@ p=1 simulations:
 - p1-s5: p=1, N=4, periodic BCs
 - p1-s6: p=1, N=8, periodic BCs
 
+- p1-s21: p=1, N=4, FD approach (using calcRecov1CellGen for all cells)
+
 p=2 simulations:
 
 - p2-s0: p=2, testing stencil
@@ -26,6 +28,8 @@ p=2 simulations:
 - p2-s9: p=2, N=4. Neumann on left, Dirichlet of right BCs (sol is quintic, so exactly captured)
 - p2-s10: p=2, N=4. Neumann on left, Dirichlet of right BCs (sol is k=8)
 - p2-s11: p=2, N=4. Attempt at Taylor series
+
+- p2-s21: p=2, N=4, FD approach (using calcRecov1CellGen for all cells)
 
 p=3 simulations:
 

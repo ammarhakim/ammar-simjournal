@@ -41,30 +41,20 @@ subVal(dgField, val) := block([outList],
 /* Function to compute L2 norm of field */
 calcL2Norm(dgField, dx) := sqrt(dx*sum(sum(dgField[i][k]^2,k,1,length(dgField[1])), i, 1, length(dgField)))$
 
-/* Function to compute Laplacian stencil in 1D for deep interior cell */
-getLaplacianStencil(polyOrder, fL, fC, fR) := calcInnerProdList([x], 1,
+/* Function to compute Laplacian stencil in 1D for interior cell */
+getLaplacianStencil(polyOrder, fL, fC, fR) :=  calcInnerProdList([x], 1,
   basisC[polyOrder],
   diff(calcRecov1CellGen("Ser", x, [2], polyOrder, 1, ["exp", fL], fC, ["exp", fR]), x,2)
   )$
-
-/* Function to compute Laplacian stencil in 1D: uses constrained recovery. side=left/right */
-getLaplacianSkinStencil(side, polyOrder, fL, fR, [bc]) := block([bcL,xc,lims],
-  lims : if side = 'left then [-2,0] else [0,2], /* Cell to project on */
-  xc : if side = 'left then -1 else 1, /* Center of cell to project on */
-  bcL : etaDir(x, xc, 2, basisC[polyOrder]),
-  return (
-    calcInnerProdListGen([x], [lims], 1, bcL,
-      diff(calcRecov2CellGen("Ser", x, [2], polyOrder, fL, fR, bc[1], bc[2]), x,2)
-      )
-    )
-  )$
-
-/* Function to compute Laplacian stencil in 1D: uses constrained recovery */
-getLaplacianFirstInteriorStencil(polyOrder, fL, fC, fR, [bc]) := calcInnerProdList([x], 1,
+/* Function to compute Laplacian stencil in left-skin 1D for interior cell */
+getLaplacianLeftSkinStencil(polyOrder, fL, fC, fR) :=  calcInnerProdList([x], 1,
   basisC[polyOrder],
-  diff(
-    calcRecov1CellGen("Ser", x, [2], polyOrder, 1, ["exp", fL], fC, ["exp", fR], bc[1], bc[2]),
-    x,2)
+  diff(calcRecov1CellGen("Ser", x, [2], polyOrder, 1, ["pt", fL], fC, ["exp", fR]), x,2)
+  )$
+/* Function to compute Laplacian stencil in right-skin 1D for interior cell */
+getLaplacianRightSkinStencil(polyOrder, fL, fC, fR) :=  calcInnerProdList([x], 1,
+  basisC[polyOrder],
+  diff(calcRecov1CellGen("Ser", x, [2], polyOrder, 1, ["exp", fL], fC, ["pt", fR]), x,2)
   )$
 
 /* Transform to [-1,1] */
@@ -148,40 +138,15 @@ solvePoissonEquation(grid, polyOrder, srcFunc, bcLeft, bcRight) := block(
       getLaplacianStencil(polyOrder, fL, fC, fR)
       ),
     /* Construct set of linear equations for interior */
-    for j : 3 thru nmax-2 do (
+    for j : 2 thru nmax-1 do (
       eqnList : append(eqnList,
         4/dx^2*subst(i=j,stencil)-calcInnerProdList([x],1,bc,-srcFuncHat(x,dx,xL+(j-1/2)*dx))
-        )
-      ),
-    if nmax > 3 then (
-      /* First-interior cell on left */
-      stencil : subst(slist,
-        getLaplacianFirstInteriorStencil(polyOrder, fL, fC, fR, bcLeftList, [0,0,0])
-        ),
-      eqnList : append(eqnList,
-        4/dx^2*subst(i=2,stencil)-calcInnerProdList([x],1,bc,-srcFuncHat(x,dx,xL+(2-1/2)*dx))
-        ),
-      /* First-interior cell on right */
-      stencil : subst(slist,
-        getLaplacianFirstInteriorStencil(polyOrder, fL, fC, fR, [0,0,0], bcRightList)
-        ),
-      eqnList : append(eqnList,
-        4/dx^2*subst(i=nmax-1,stencil)-calcInnerProdList([x],1,bc,-srcFuncHat(x,dx,xL+(nmax-1-1/2)*dx))
-        )
-      ),
-    if nmax = 3 then (
-      /* Match both left/right BC values */
-      stencil : subst(slist,
-        getLaplacianFirstInteriorStencil(polyOrder, fL, fC, fR, bcLeftList, bcRightList)
-        ),
-      eqnList : append(eqnList,
-        4/dx^2*subst(i=2,stencil)-calcInnerProdList([x],1,bc,-srcFuncHat(x,dx,xL+(2-1/2)*dx))
         )
       ),
     
     /* Left skin cell */
     stencil : subst(slist,
-      getLaplacianSkinStencil('left, polyOrder, fC, fR, bcLeftList, [0,0,0])
+      getLaplacianLeftSkinStencil(polyOrder, bcLeftList, fC, fR)
       ),
     eqnList : append(eqnList,
       4/dx^2*subst(i=1,stencil)-calcInnerProdList([x],1,bc,-srcFuncHat(x,dx,xL+(1-1/2)*dx))
@@ -189,7 +154,7 @@ solvePoissonEquation(grid, polyOrder, srcFunc, bcLeft, bcRight) := block(
     
     /* Right skin cell */
     stencil : subst(slist,
-      getLaplacianSkinStencil('right, polyOrder, fL, fC, [0,0,0], bcRightList)
+      getLaplacianRightSkinStencil(polyOrder, fL, fC, bcRightList)
       ),
     eqnList : append(eqnList,
       4/dx^2*subst(i=nmax,stencil)-calcInnerProdList([x],1,bc,-srcFuncHat(x,dx,xL+(nmax-1/2)*dx))
