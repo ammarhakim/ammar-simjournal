@@ -10,29 +10,54 @@ polyOrder : 2$
 basisNm : "Tensor"$
 
 /* Left/right domain boundary */
-xL : 0$
-xR : 1$
-yL : 0$
-yR : 1$
-NX : 4$
-NY : 4$
+xL : -3$
+xR : 3$
+yL : -3$
+yR : 3$
+NX : 3$
+NY : 3$
 bc : getBasis(sconcat("basis-precalc/basis", basisNm, "2x"), polyOrder)$
 
+pmax : 4$
+
 /* Exact solution ... */
-exactSol(x,y) := x*(x-1)*(x-1/2)^3*y*(y-1)*(y-1/2)^3$
+define(exactSol(x,y),
+  (x-xL)*(x-xR)*(y-yL)*(y-yR)*sum(
+    sum(a[i,j]*x^i*y^j,i,0,pmax), j,0,pmax)
+  )$
 /* .. source term corresponding to it */
-_src : -(diff(exactSol(x,y),x,2)+diff(exactSol(x,y),y,2))$
-define(srcFunc(x,y), _src)$
+define(srcFunc(x,y), -(diff(exactSol(x,y),x,2)+diff(exactSol(x,y),y,2)))$
 
 /* Compute exact projections */
-exactProj : projectOnBasisGrid(exactSol, bc, xL, xR, yL, yR, NX, NY)$
 srcProj : projectOnBasisGrid(srcFunc, bc, xL, xR, yL, yR, NX, NY)$
 
-solList : solvePoissonEquation(basisNm, grid(lower=[0,0],upper=[1,1],cells=[NX,NY]),
+solList : solvePoissonEquation(basisNm,
+  grid(lower=[xL,yL],upper=[xR,yR],cells=[NX,NY]),
   polyOrder, srcProj,
   BC(type=1, value=0), BC(type=1, value=0),
   BC(type=1, value=0), BC(type=1, value=0)
   )$
 
-/* Compute difference */
-solDiff : fullratsimp(solList-exactProj)$
+/* Error */
+exactProj : projectOnBasisGrid(exactSol, bc, xL, xR, yL, yR, NX, NY)$
+errProj : expand(fullratsimp(solList-exactProj))$
+
+/* Express a[i,j] in term of derivatives */
+diffList : []$
+for i : 2 thru pmax+2 do (
+  for j : 2 thru pmax+2 do (
+    diffList : endcons(subst([x=0,y=0],
+        diff(diff(exactSol(x,y),x,i),y,j)-d[i,j]), diffList
+      )
+    )
+  )$
+aL : []$
+for i : 0 thru pmax do (
+  for j : 0 thru pmax do (
+    aL : endcons(a[i,j], aL)
+    )
+  )$
+akSol : linsolve(diffList, aL)$
+
+/* Express errors in terms of derivatives at z=0 */
+errProj_d : subst(akSol, errProj)$

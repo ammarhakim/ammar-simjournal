@@ -12,6 +12,7 @@ p=1 simulations:
 - p1-s5: p=1, N=4, periodic BCs
 - p1-s6: p=1, N=8, periodic BCs
 
+- p1-s20: p=1, testing stencil, FD approach. Taylor series
 - p1-s21: p=1, N=4, FD approach (using calcRecov1CellGen for all cells)
 
 p=2 simulations:
@@ -59,6 +60,7 @@ p=2 simulations:
 - p2-2d-s0: p=2, Serendipity basis, testing stencil for bi-linear (all terms match)
 - p2-2d-s1: p=2, Serendipity basis, testing stencil for bi-cubic (only bilinear terms match)
 - p2-2d-s2: p=2, Tensor product basis, testing stencil for bi-cubic. All terms match
+- p2-2d-s3: p=2, Tensor product basis, attempt at Taylor analysis
 
 p=3 simulations:
 

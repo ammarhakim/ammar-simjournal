@@ -34,9 +34,11 @@ exactSmoothCmd : append(drawCmd, [color=blue, explicit(exactSol(z),z,xL,xR)])$
 /* Command to plot projection of exact solution */
 exactProj : projectOnBasisGrid(exactSol, bc, xL, xR, nmax)$
 exactProjCmd : createArgListDgSol(exactProj, black, xL, xR)$
+/* Recovered solution plotting command */
+recSolCmd : createArgListRecovSol(solList, salmon, xL, xR, [1,0,0], [1,0,0])$
 
 /* Plot solution */
-apply(draw2d, append(drawCmd, exactSmoothCmd, exactProjCmd))$
+apply(draw2d, append(drawCmd, exactSmoothCmd, recSolCmd))$
 
 /* Compute L2 norm of error */
 err : float(calcL2Norm(exactProj-solList,dx))$

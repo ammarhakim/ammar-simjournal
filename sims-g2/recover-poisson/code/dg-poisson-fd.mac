@@ -18,6 +18,55 @@ createArgListDgSol(dgField, clr, xL, xR) := block([dx,argList,xj,N],
   return(argList)
   )$
 
+__etat(x,a,b) := (x-(b+a)/2)/((b-a)/2)$
+
+/* Function to create list of recovered polynomials on grid given DG representation */
+calcRecoveredPolySol(dgField, xL, xR, bcLeft, bcRight) := block([dx,ncells,polyOrder,polyList],
+  ncells : length(dgField),
+  dx : (xR-xL)/ncells,
+  polyOrder : length(dgField[1])-1,
+  polyList : [],
+  /* Left cell */
+  polyList : endcons(
+    subst(x=__etat(z,xL,xL+dx),
+      calcRecov1CellGen("Ser", x, [2], polyOrder, 1, ["pt", bcLeft], dgField[1], ["exp", dgField[2]])
+      ),
+    polyList
+    ),
+  /* Interior cells */
+  for i : 2 thru ncells-1 do (
+  polyList : endcons(
+    subst(x=__etat(z,xL+(i-1)*dx,xL+i*dx),
+      calcRecov1CellGen("Ser", x, [2], polyOrder, 1, ["exp", dgField[i-1]], dgField[i], ["exp", dgField[i+1]])
+      ),
+    polyList
+    )
+  ),
+  /* Right cell */
+  polyList : endcons(
+    subst(x=__etat(z,xR-dx,xR),
+      calcRecov1CellGen("Ser", x, [2], polyOrder, 1, ["exp", dgField[ncells-1]], dgField[ncells], ["pt", bcRight])
+      ),
+    polyList
+    ),  
+  return(polyList)
+  )$
+
+/* Function to take list of expressions and construct draw2d command parameters */
+createArgListRecovSol(dgField, clr, xL, xR, bcLeft, bcRight) := block([dx,ncells,rpoly,argList],
+  ncells : length(dgField),
+  dx : (xR-xL)/ncells,
+  argList : [],
+  rpoly : calcRecoveredPolySol(dgField, xL, xR, bcLeft, bcRight),
+  return (
+    append([color=clr,line_type=dots],
+      makelist(
+        explicit(rpoly[i],z,xL+(i-1)*dx,xL+i*dx),i,1,length(rpoly)
+        )
+      )
+    )
+  )$
+
 /* Function to project function on DG basis */
 projectOnBasisGrid(func, bc, xL, xR, N) := block([dx],
   dx : (xR-xL)/N,
@@ -40,6 +89,12 @@ subVal(dgField, val) := block([outList],
 
 /* Function to compute L2 norm of field */
 calcL2Norm(dgField, dx) := sqrt(dx*sum(sum(dgField[i][k]^2,k,1,length(dgField[1])), i, 1, length(dgField)))$
+
+/* Function to compute gradient stencil in 1D for interior cell */
+getGradStencil(polyOrder, fL, fC, fR) :=  calcInnerProdList([x], 1,
+  basisC[polyOrder],
+  diff(calcRecov1CellGen("Ser", x, [2], polyOrder, 1, ["exp", fL], fC, ["exp", fR]), x,1)
+  )$
 
 /* Function to compute Laplacian stencil in 1D for interior cell */
 getLaplacianStencil(polyOrder, fL, fC, fR) :=  calcInnerProdList([x], 1,

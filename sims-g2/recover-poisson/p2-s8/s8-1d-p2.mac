@@ -4,30 +4,41 @@ file_search_maxima: append(file_search_maxima,
   ])$
 
 
-load("dg-poisson")$
+load("dg-poisson-fd")$
 
 polyOrder : 2$
-/* Left/right domain boundary */
-xL : 0$
-xR : 1$
 nmax : 3$
+/* Left/right domain boundary */
+xL : -nmax$
+xR : nmax$
 dx : (xR-xL)/nmax$
 bc : basisC[polyOrder]$
 
+pmax : 4$
+
 /* Exact solution ... */
-exactSol(z) := (z-xL)*(z-xR)*(a[0] + sum(a[i]*z^i,i,1,3)) $
-diff2Exact(z) := diff(exactSol(z),z,2)$
+define(exactSol(z), (z-xL)*(z-xR)*sum(a[k+2]*z^k/factorial(k+2), k, 0, pmax))$
+/* .. source term corresponding to it */
+define(srcFunc(z), -diff(exactSol(z),z,2))$
+
+/* Solve Poisson equation */
+solList : solvePoissonEquation(
+  grid(lower=xL, upper=xR, cells=nmax),
+  polyOrder, srcFunc,
+  BC(type=1, value=0), BC(type=1, value=0)
+  )$
 
 /* Compute exact projection */
 exactProj : projectOnBasisGrid(exactSol, bc, xL, xR, nmax)$
 
-/* Apply Laplacian stencils in interior and left skin */
-stencilI : getLaplacianStencil(polyOrder, exactProj[1], exactProj[2], exactProj[3])$
-stencilS : getLaplacianSkinStencil(polyOrder, exactProj[1], exactProj[2], [1,0,0],[0,0,0])$
+/* Error */
+errProj : expand(fullratsimp(solList-exactProj))$
 
-/* Project second derivative on basis */
+/* Express a[k] in term of derivatives */
+diffList : subst(z=0,makelist(diff(exactSol(z),z,i)-d[i],i,2,pmax+2))$
+aL : makelist(a[k],k,2,pmax+2)$
+akSol : linsolve(diffList, aL)$
 
-diff2ExactProject : projectOnBasisGrid(diff2Exact, bc, xL, xR, nmax)$
+/* Express errors in terms of derivatives at z=0 */
+errProj_d : subst(akSol, errProj)$
 
-remPolyI : fullratsimp(4/dx^2*stencilI - diff2ExactProject[2])$
-remPolyS : fullratsimp(4/dx^2*stencilS - diff2ExactProject[1])$

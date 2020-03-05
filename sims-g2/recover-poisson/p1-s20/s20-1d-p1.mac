@@ -1,0 +1,39 @@
+file_search_maxima: append(file_search_maxima,
+  [
+  "/Users/ahakim/research/ammar-simjournal/sims-g2/recover-poisson/code/###.{lisp,mac}"
+  ])$
+
+
+load("dg-poisson-fd")$
+
+polyOrder : 1$
+/* Left/right domain boundary */
+xL : -3*dx/2$
+xR : 3*dx/2$
+nmax : 3$
+dx1 : (xR-xL)/nmax$
+bc : basisC[polyOrder]$
+
+pmax : 6$
+/* Exact solution ... */
+define(exactSol(z), a[0] + sum(a[k]*z^k/factorial(k), k, 1, pmax))$
+/* .. source term corresponding to it */
+define(srcFunc(z), -diff(exactSol(z),z,2))$
+/* .. first derivative */
+define(dxFunc(z), diff(exactSol(z),z,1))$
+
+/* Compute exact projection and compute Laplacian for interior */
+exactProj : projectOnBasisGrid(exactSol, bc, xL, xR, nmax)$
+/* Source projection */
+srcProj : projectOnBasisGrid(srcFunc, bc, xL, xR, nmax)$
+dxProj : projectOnBasisGrid(dxFunc, bc, xL, xR, nmax)$
+
+/* Compute interior stencil and residual (Laplacian) */
+stencilI : getLaplacianStencil(polyOrder, exactProj[1], exactProj[2], exactProj[3])$
+remPolyI : fullratsimp(4/dx1^2*stencilI + srcProj[2])$
+remPolyI_l2 : expand( 1/2*sum(remPolyI[i]^2, i, 1, length(bc)) )$
+
+/* Compute interior stencil and residual (gradient) */
+stencilGI : getGradStencil(polyOrder, exactProj[1], exactProj[2], exactProj[3])$
+remPolyGI : fullratsimp(2/dx1*stencilGI - dxProj[2])$
+remPolyGI_l2 : expand( 1/2*sum(remPolyGI[i]^2, i, 1, length(bc)) )$
