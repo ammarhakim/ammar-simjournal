@@ -64,6 +64,11 @@ local App = function(tbl)
    local fe = getField()
    local fNew = getField()
 
+   local src = getField()
+
+   local srcFunc = function (t, xn) return 0 end
+   if tbl.source  then  srcFunc = tbl.source end
+
    --------------
    -- Updaters --
    --------------
@@ -71,6 +76,11 @@ local App = function(tbl)
       onGrid = grid,
       basis = basis,
       evaluate = tbl.init,
+   }
+   local initSrc = Updater.ProjectOnBasis {
+      onGrid = grid,
+      basis = basis,
+      evaluate = srcFunc,
    }
 
    local function applyBc(fld)
@@ -115,6 +125,8 @@ local App = function(tbl)
    applyBc(f)
    f:write("f_0.bp", 0, 0)
 
+   initSrc:advance(0.0, {}, {src})
+
    local updateKernel = updateKernels[polyOrder]
 
    local diffCoeff = {}
@@ -129,7 +141,7 @@ local App = function(tbl)
       local idxsL, idxsR = {}, {}
       local idxsT, idxsB = {}, {}
       local idxsTL, idxsTR = {}, {}
-      local idxsBL, idxsBR = {}, {}   
+      local idxsBL, idxsBR = {}, {}
       local dx, dy = grid:dx(1), grid:dx(2)
       local dxCells = {dx, dy}
 
@@ -157,12 +169,13 @@ local App = function(tbl)
 	 local fBL = fIn:get(indexer(idxsBL))
 	 local fBR = fIn:get(indexer(idxsBR))
 
+	 local sr = src:get(indexer(idxs))
+
 	 -- compute increment
 	 updateKernel(diffCoeff, dxCells, fTL, fT, fTR, fL, f, fR, fBL, fB, fBR, kerOut)
-	 -- update solution
 	 local fO = fOut:get(indexer(idxs))
 	 for k = 1, fIn:numComponents() do
-	    fO[k] = f[k] + dt*kerOut[k]
+	    fO[k] = f[k] + dt*(kerOut[k] + sr[k])
 	 end
       end
    end
