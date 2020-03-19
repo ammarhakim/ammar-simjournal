@@ -40,7 +40,7 @@ local App = function(tbl)
    }
 
    -- basis functions
-   local basis = Basis.CartModalSerendipity {
+   local basis = Basis.CartModalTensor {
       ndim = grid:ndim(),
       polyOrder = polyOrder
    }
@@ -65,9 +65,14 @@ local App = function(tbl)
    local fNew = getField()
 
    local src = getField()
+   local exactSol = getField()
 
+   -- function for source (optional)
    local srcFunc = function (t, xn) return 0 end
-   if tbl.source  then  srcFunc = tbl.source end
+   if tbl.source  then srcFunc = tbl.source end
+   -- function for exact solution (optional)
+   local exactFunc = function (t, xn) return 0 end
+   if tbl.exact  then exactFunc = tbl.exact end
 
    --------------
    -- Updaters --
@@ -82,6 +87,11 @@ local App = function(tbl)
       basis = basis,
       evaluate = srcFunc,
    }
+   local initExactSol = Updater.ProjectOnBasis {
+      onGrid = grid,
+      basis = basis,
+      evaluate = exactFunc,
+   }   
 
    local function applyBc(fld)
       fld:sync()
@@ -126,6 +136,10 @@ local App = function(tbl)
    f:write("f_0.bp", 0, 0)
 
    initSrc:advance(0.0, {}, {src})
+   src:write("src.bp", 0, 0)
+
+   initExactSol:advance(0.0, {}, {exactSol})
+   exactSol:write("exactSol.bp", 0, 0)
 
    local updateKernel = updateKernels[polyOrder]
 

@@ -1,13 +1,13 @@
 load("recovery-calc/recovery.mac")$
 load("modal-basis")$
 
-polyOrder : 1$
+polyOrder : 2$
 
 /* Load 2D and 1D basis */
-load("basis-precalc/basisSer2x")$
+load("basis-precalc/basisTensor2x")$
 bc2 : basisC[polyOrder]$
 
-load("basis-precalc/basisSer1x")$
+load("basis-precalc/basisTensor1x")$
 bc1 : basisC[polyOrder]$
 
 /* Gradient of basis vectors */

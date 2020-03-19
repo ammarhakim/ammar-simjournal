@@ -20,7 +20,13 @@ dt. In actual simulations one can set cflFrac to 1.0.
 - t3: Same as t1, except p=2, 16x16 grid
 - t4: Same as t2, run for longer with cflFrac = 0.9
 
-- w1: kx=ky=1.0 with Dxx = Dyy = 1.0; Dxy = Dyx = 0.9 p=1 8x8 grid; source term
+- w1: with Dxx = Dyy = 1.0; Dxy = Dyx = 0.9 p=1 8x8 grid; source term
+- w2: Anisotropic diffusion problem. p=1, 4x4 grid
+- w3: Anisotropic diffusion problem. p=1, 8x8 grid
+- w4: Anisotropic diffusion problem. p=1, 16x16 grid
+- w5: Anisotropic diffusion problem. p=1, 32x32 grid
+
+- x2: Same as w2, except p=2
 
 The following series for "bad" kernels, in which the stencil is
 5-point and not 9-point
