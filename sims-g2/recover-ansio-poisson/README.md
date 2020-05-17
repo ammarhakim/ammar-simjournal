@@ -14,3 +14,7 @@ X-point simulations
 - xpoint-1: 4x4 bi-quadratic
 - xpoint-2: 8x8 bi-quadratic
 - xpoint-3: 16x16 bi-quadratic
+
+- xpoint-4: 4x4 bi-cubic
+- xpoint-5: 8x8 bi-cubic
+- xpoint-6: 16x16 bi-cubic
