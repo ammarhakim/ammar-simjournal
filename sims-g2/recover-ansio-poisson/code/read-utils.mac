@@ -1,0 +1,32 @@
+load("lapack")$
+
+/* Function to read matrix market format */
+readMatMarket(fl) := block([matFmt, sz, SM],
+  matFmt : read_matrix(fl),
+  sz : matrix_size(matFmt),
+  SM : zeromatrix(matFmt[1][1], matFmt[1][2]),
+  for i : 2 thru sz[1] do (
+    SM[matFmt[i][1],matFmt[i][2]] : matFmt[i][3]
+    ),
+  return(SM)
+  )$
+
+SM : readMatMarket("/Users/ahakim/research/misc/proj-dij/gp-2D-8x8-stiffMat.mm")$
+src : readMatMarket("/Users/ahakim/research/misc/proj-dij/gp-2D-8x8-src.mm")$
+sol0 : readMatMarket("/Users/ahakim/research/misc/proj-dij/gp-2D-8x8-sol.mm")$
+
+sol1 : dgesv(SM, src)$
+
+sz : matrix_size(SM)$
+/* Attempt to solve symbolically */
+vars : makelist(v[i], i, sz[1])$
+svars : makelist(sv[i], i, sz[1])$
+eqnList : makelist(SM[i].vars = sv[i], i, 1, sz[1])$
+solVars : expand(bfloat(linsolve(eqnList, vars)))$
+
+solVarsRhs : map(rhs, solVars)$
+
+/* Actual source list */
+svarsList : makelist(sv[i]=src[i][1], i, 1, sz[1])$
+/* Full solution */
+solLin : subst(svarsList, solVars)$
