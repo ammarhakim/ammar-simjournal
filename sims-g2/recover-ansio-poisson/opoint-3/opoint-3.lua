@@ -18,7 +18,7 @@ aPoisson = App {
    cflFrac = 0.9,
    lower = {-0.5, -0.5},
    upper = {0.5, 0.5},
-   cells = {4, 4},
+   cells = {16, 16},
 
    bcLower = { {D=1, N=0, val=0.0}, {D=1, N=0, val=0.0} },
    bcUpper = { {D=1, N=0, val=0.0}, {D=1, N=0, val=0.0} },
@@ -47,6 +47,6 @@ aPoisson = App {
    sol = function (t, z)
       local x, y = z[1], z[2]
       return (x-1/2)*(x+1/2)*(y-1/2)*(y+1/2)
-   end  
+   end
 }
 aPoisson()

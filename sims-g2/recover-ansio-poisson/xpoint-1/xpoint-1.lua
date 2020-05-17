@@ -10,7 +10,7 @@ local bx = function(x, y)
    return -(y-y0)/math.sqrt((x-x0)^2+(y-y0)^2)
 end
 local by = function(x, y)
-   return (x-x0)/math.sqrt((x-x0)^2+(y-y0)^2)
+   return -(x-x0)/math.sqrt((x-x0)^2+(y-y0)^2)
 end
 
 aPoisson = App {
@@ -40,7 +40,7 @@ aPoisson = App {
    -- source (RHS)
    src = function (t, z)
       local x, y = z[1], z[2]
-      return (8*Dperp*x^2*y^4)/(y^4+2*x^2*y^2+x^4)-(Dperp*y^4)/(y^4+2*x^2*y^2+x^4)+(8*Dperp*x^4*y^2)/(y^4+2*x^2*y^2+x^4)-(2*Dperp*x^2*y^2)/(y^4+2*x^2*y^2+x^4)-(Dperp*x^4)/(y^4+2*x^2*y^2+x^4)+(2*Dperp*y^2)/(2*y^2+2*x^2)+(2*Dperp*x^2)/(2*y^2+2*x^2)-(2*Dpar*y^4)/(y^2+x^2)-(24*Dperp*x^2*y^2)/(y^2+x^2)+(12*Dpar*x^2*y^2)/(y^2+x^2)+(Dperp*y^2)/(y^2+x^2)-(2*Dpar*x^4)/(y^2+x^2)+(Dperp*x^2)/(y^2+x^2)
+      return (8.0*Dpar*x^2*y^4)/(y^4+2.0*x^2*y^2+x^4)-(1.0*Dperp*y^4)/(y^4+2.0*x^2*y^2+x^4)+(8.0*Dpar*x^4*y^2)/(y^4+2.0*x^2*y^2+x^4)+(2.0*Dperp*x^2*y^2)/(y^4+2.0*x^2*y^2+x^4)-(4.0*Dpar*x^2*y^2)/(y^4+2.0*x^2*y^2+x^4)-(1.0*Dperp*x^4)/(y^4+2.0*x^2*y^2+x^4)+(2.0*Dpar*y^2)/(2.0*y^2+2.0*x^2)+(2.0*Dpar*x^2)/(2.0*y^2+2.0*x^2)-(2.0*Dpar*y^4)/(y^2+x^2)-(12.0*Dpar*x^2*y^2)/(y^2+x^2)+(Dperp*y^2)/(y^2+x^2)-(2.0*Dpar*x^4)/(y^2+x^2)+(Dperp*x^2)/(y^2+x^2)
    end,
 
    -- optional exact solution (App will compute projection)
