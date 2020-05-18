@@ -99,6 +99,10 @@ local App = function(tbl)
       bcUpper = bcUpper,
       writeMatrix = true,
    }
+
+   Dxx:write("Dxx.bp")
+   Dyy:write("Dyy.bp")
+   Dxy:write("Dxy.bp")
    
    return function ()
       local tmStart = Time.clock()
