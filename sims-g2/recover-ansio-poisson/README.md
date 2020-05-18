@@ -1,6 +1,12 @@
 Test cases for debugging/understanding behaviour of the RDG solver for
 anisotropic Poisson equations.
 
+Constant, inclined field
+------------------------
+
+- bconst-1: 4x4, 15 deg field inclination, bi-cubic. Solution is exact
+- bconst-2: 4x4, 15 deg field inclination, fifth order.
+
 O-point simulations
 --------------------
 
