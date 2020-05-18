@@ -1,16 +1,28 @@
-Dxx : (Dpar*y^2+Dperp*x^2)/(x^2+y^2)$
-Dyy : (Dperp*y^2+Dpar*x^2)/(x^2+y^2)$
-Dxy : 0.1$ /*-(Dpar-Dperp)*x*y/(x^2+y^2)$*/
+xc : 1.0$
+yc : 0.0$
+
+Dxx : (Dpar*(y-yc)^2+Dperp*(x-xc)^2)/((x-xc)^2+(y-yc)^2)$
+Dyy : (Dperp*(y-yc)^2+Dpar*(x-xc)^2)/((x-xc)^2+(y-yc)^2)$
+Dxy : -(Dpar-Dperp)*(x-xc)*(y-yc)/((x-xc)^2+(y-yc)^2)$ /* O-point */
+/* Dxy : (Dpar-Dperp)*x*y/(x^2+y^2)$  */ /* X-point */
 Dyx : Dxy$
+
+/* bx : cos(theta)$ */
+/* by : sin(theta)$ */
+
+/* Dxx : Dpar*bx^2 + Dperp*by^2$ */
+/* Dyy: Dperp*bx^2 + Dpar*by^2$ */
+/* Dxy: (Dpar-Dperp)*bx*by$ */
+/* Dyx : Dxy$ */
 
 calcSrc(f) := diff(Dxx*diff(f,x)+Dxy*diff(f,y),x) + diff(Dyx*diff(f,x)+Dyy*diff(f,y),y)$
 
-f : (x-1/2)*(x+1/2)*(y-1/2)*(y+1/2)$
+f : (x-1/2)*(x+1/2)*(x-1/4)*(y-1/2)*(y+1/2)*(y+1/4)$
 /* f : (x-1/2)*(x+1/2)*x*(y-1/2)*(y+1/2)*y$ */
 /* f : exp(-(x^2+y^2)/(2*0.1^2))$ */
 /* f : x*y*exp(-(x^2+y^2)/(2*0.1^2))$ */
 /* f : (x-1/2)*(x+1/2)*(x+1/6)*(y-1/2)*(y+1/2)*(y-1/4)$ */
-src : -calcSrc(f)$
+src : expand(-calcSrc(f))$
 
 fh : openw("~/max-out/src")$
 printf(fh, "~a ~%", float(expand(src)))$

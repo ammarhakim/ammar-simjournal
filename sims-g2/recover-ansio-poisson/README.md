@@ -23,6 +23,10 @@ O-point outside domain simulations
 ----------------------------------
 
 - out-opoint-1: 4x4 bi-cubic
+- out-opoint-2: 8x8 bi-cubic
+- out-opoint-3: 16x16 bi-cubic
+
+- out-opoint-5: 8x8 bi-cubic
 
 X-point simulations
 --------------------
