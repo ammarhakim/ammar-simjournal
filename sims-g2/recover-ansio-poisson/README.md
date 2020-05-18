@@ -6,6 +6,10 @@ Constant, inclined field
 
 - bconst-1: 4x4, 15 deg field inclination, bi-cubic. Solution is exact
 - bconst-2: 4x4, 15 deg field inclination, fifth order.
+- bconst-3: 8x8, 15 deg field inclination, fifth order.
+- bconst-4: 16x16, 15 deg field inclination, fifth order.
+- bconst-5: 32x32, 15 deg field inclination, fifth order.
+- bconst-6: 16x16, 15 deg field inclination, Gaussian blob src
 
 O-point simulations
 --------------------
@@ -13,6 +17,7 @@ O-point simulations
 - opoint-1: 4x4 bi-quadratic
 - opoint-2: 8x8 bi-quadratic
 - opoint-3: 16x16 bi-quadratic
+- opoint-4: 16x16 Gaussian blob src
 
 O-point outside domain simulations
 ----------------------------------
@@ -29,3 +34,5 @@ X-point simulations
 - xpoint-4: 4x4 bi-cubic
 - xpoint-5: 8x8 bi-cubic
 - xpoint-6: 16x16 bi-cubic
+
+- xpoint-7: 16x16 Gaussian blob src
