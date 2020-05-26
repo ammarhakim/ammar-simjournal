@@ -1,0 +1,45 @@
+load("recovery")$
+
+NX : 4$
+NY : 4$
+dx : 1/NX$
+dy : 1/NY$
+
+readGkylField(fn, NX, NY) := block([matFmt, sz, nbasis],
+  matFmt : read_matrix(fn, comma),
+  sz : matrix_size(matFmt),
+  nbasis : sz[1]*(sz[2]-2)/(NX*NY),
+  return (
+    makelist(
+      makelist(
+        makelist(matFmt[(i-1)*NY+j][n+2], n, 1, nbasis),
+        j, 1, NY),
+      i, 1, NX)
+    )
+  )$
+
+makeMatrix(fld, c) := block([NX, NY, m],
+  NX : length(fld), NY : length(fld[1]),
+  m : zeromatrix(NX, NY),
+  for i : 1 thru NX do (
+    for j : 1 thru NY do (
+      m[i][j] : fld[i][NY-j+1][c]
+      )
+    ),
+  return (transpose(m))
+  )$
+
+filterList(lst) := map(
+  lambda([x],
+    if abs(x) < 1e-15 then 0 else x),
+  lst
+  )$
+
+/* Load gkyl output */
+Dxx : readGkylField("/Users/ahakim/research/ammar-simjournal/sims-g2/recover-ansio-poisson/Dij-proj/Dxx-1.txt", NX, NY)$
+Dyy : readGkylField("/Users/ahakim/research/ammar-simjournal/sims-g2/recover-ansio-poisson/Dij-proj/Dyy-1.txt", NX, NY)$
+Dxy : readGkylField("/Users/ahakim/research/ammar-simjournal/sims-g2/recover-ansio-poisson/Dij-proj/Dxy-1.txt", NX, NY)$
+
+
+Dxx_t : calcRecov2CellGen("Ser", y, [2,2], 1, dg(filterList(Dxx[2][2])), dg(filterList(Dxx[2][3])))$
+Dxx_r : calcRecov2CellGen("Ser", x, [2,2], 1, dg(filterList(Dxx[2][2])), dg(filterList(Dxx[3][2])))$
