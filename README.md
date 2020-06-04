@@ -7,8 +7,8 @@ However, most input files (> 99%) should work with minor (if any) edits.*
 
 You can use any code, data and writeups in this repo subject to the following license.
 
-LICENSE
--------
+MIT LICENSE
+-----------
 
 Copyright 2012-2020 Ammar Hakim
 
