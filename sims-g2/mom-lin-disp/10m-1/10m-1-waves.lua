@@ -3,21 +3,23 @@
 local Species = require "Tool.LinearSpecies"
 
 -- Electrons
-elc = Species.Isothermal {
+elc = Species.TenMoment {
    mass = 1.0, -- mass
    charge = -1.0, -- charge
    density = 1.0, -- number density
    velocity = {0.0, 0.0, 0.0}, -- velocity vector
-   temperature = 0.0, -- temperature
+   -- pressure tensor: Pxx, Pxy, Pxz, Pyy, Pyz, Pzz
+   pressureTensor = {0.1, 0.0, 0.0, 0.1, 0.0, 0.1},
 }
 
 -- Ions
-ion = Species.Isothermal {
+ion = Species.TenMoment {
    mass = 25.0, -- mass
    charge = 1.0, -- charge
    density = 1.0, -- number density
    velocity = {0.0, 0.0, 0.0}, -- velocity vector
-   temperature = 0.0, -- temperature
+   -- pressure tensor: Pxx, Pxy, Pxz, Pyy, Pyz, Pzz
+   pressureTensor = {0.1, 0.0, 0.0, 0.1, 0.0, 0.1},   
 }
 
 -- EM field
@@ -40,3 +42,5 @@ for i = 1, NK do
    kvectors[i] = {kcurr, 0.0, 0.0} -- each k-vector is 3D
    kcurr = kcurr + dk
 end
+
+

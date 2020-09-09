@@ -3,21 +3,21 @@
 local Species = require "Tool.LinearSpecies"
 
 -- Electrons
-elc = Species.Isothermal {
+elc = Species.Euler {
    mass = 1.0, -- mass
    charge = -1.0, -- charge
    density = 1.0, -- number density
    velocity = {0.0, 0.0, 0.0}, -- velocity vector
-   temperature = 0.0, -- temperature
+   pressure = 0.1, -- pressure
 }
 
 -- Ions
-ion = Species.Isothermal {
+ion = Species.Euler {
    mass = 25.0, -- mass
    charge = 1.0, -- charge
    density = 1.0, -- number density
    velocity = {0.0, 0.0, 0.0}, -- velocity vector
-   temperature = 0.0, -- temperature
+   pressure = 0.1, -- pressure
 }
 
 -- EM field
@@ -25,7 +25,7 @@ field = Species.Maxwell {
    epsilon0 = 1.0, mu0 = 1.0,
 
    electricField = {0.0, 0.0, 0.0}, -- background electric field
-   magneticField = {0.5, 0.0, 1.0}, -- background magnetic field
+   magneticField = {1.0, 0.0, 0.75}, -- background magnetic field
 }
 
 -- list of species to include in dispersion relation
@@ -40,3 +40,5 @@ for i = 1, NK do
    kvectors[i] = {kcurr, 0.0, 0.0} -- each k-vector is 3D
    kcurr = kcurr + dk
 end
+
+

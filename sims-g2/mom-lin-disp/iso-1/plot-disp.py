@@ -26,8 +26,7 @@ plot(k, omega_r[:,9], '.', markersize=2)
 grid()
 xlabel("k")
 ylabel("$\omega_r$")
-title("Selected waves in cold plasma parallel propagation")
-savefig("iso-cold-parallel.png", dpi=200, bbox='tight')
+savefig("iso-cold-waves.png", dpi=200, bbox='tight')
 
 show()
 
