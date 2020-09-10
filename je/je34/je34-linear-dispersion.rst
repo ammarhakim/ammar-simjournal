@@ -30,7 +30,7 @@ to compute the eigensystem. This allows great flexibility as there is
 no need to directly find complex nonlinear polynomial roots or even
 formulate the dispersion relation explicitly. I note that this
 technique was described in my 2008 paper on the ten-moment model
-[Hakim2008]_. Since then, it has been signifianctly developed and used
+[Hakim2008]_. Since then, it has been significantly developed and used
 by Hausheng Xie and others. See, for example [Xie]_ and references
 therein. As far as I know, however, the inclusion of the ten-moment
 model and Landau closures is unique to Gkeyll.
@@ -98,7 +98,7 @@ various plasma waves that appear in the system.
   the background magnetic field. Seen are the right (R) and left (L)
   polarized modes that asymptote to light waves at large
   :math:`k`. Also seen the second branch of the R mode which contains
-  the Whister mode at low-:math:`k` and also the Alfven mode. See
+  the Whistler mode at low-:math:`k` and also the Alfven mode. See
   input file :doc:`iso-1-wave <iso-1-wave>`.
 
 In the next problem I use the five-moment model with a finite pressure
@@ -125,7 +125,7 @@ existence of *two* cyclotron harmonics marked with :math:`\omega_{ce}`
 and :math:`2 \omega_{ce}` in the plot. These are missing in the
 five-moment model. Also, the R- and L-mode structure is different,
 with the lower cyclotron harmonic transitioning to the L-mode and the
-upper cyclotron harmomic to the R-mode at larger :math:`k` values.
+upper cyclotron harmonic to the R-mode at larger :math:`k` values.
 
 .. figure:: 10m-5m-cmp-elc.png
   :width: 100%

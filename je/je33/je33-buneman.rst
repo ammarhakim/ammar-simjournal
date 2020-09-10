@@ -319,7 +319,7 @@ particles are also present. See below.
   particle trapping. However, a significant fraction of passing
   particles are also present.
 
-Mass ratio :math:`m_i/m_e = 1862.2`
+Mass ratio :math:`m_i/m_e = 1836.2`
 +++++++++++++++++++++++++++++++++++
 
 For hydrogen ions the growth is slower and the particle trapping leads
