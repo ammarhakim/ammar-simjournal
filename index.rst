@@ -89,4 +89,5 @@ Gkeyll Simulation Journal
   je/je31/je31-antilim-adv.rst
   je/je32/je32-vlasov-test-ptcl.rst
   je/je33/je33-buneman.rst
+  je/je34/je34-linear-dispersion.rst
 
