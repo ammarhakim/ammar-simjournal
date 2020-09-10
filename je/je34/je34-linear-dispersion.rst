@@ -154,7 +154,94 @@ branches.
 The tests in these sections were done without any closures, and in
 particular, without Landau closures. In the kinetic system many of the
 modes seen above are damped.
-  
+
+The Buneman instability
+-----------------------
+
+In the next series of tests various unstabilities are used as
+benchmarks. First, consider the Buneman instability which was studied
+extensively in :doc:`JE33 <../je33/je33-buneman>`. Consider a
+one-dimensional, electrostatic, collisionless plasma in which the
+electrons are drifting with respect to cold ions with speed
+:math:`V_0` much larger than the electron thermal speed,
+i.e. :math:`V_0 \gg v_{the}`. In this case an electron perturbation
+couples to ion plasma oscillations, leading to an electrostatic
+instability called the Buneman instability. The following plot shows
+the growth rate of the instability for various wave-numbers for
+several different mass ratios. Note that this figure is identical to
+the one presented in :doc:`JE33 <../je33/je33-buneman>`, giving
+confidence in the correctness of the linear dispersion solver
+implementation.
+
+.. figure:: iso-bune-cmp.png
+  :width: 100%
+  :align: center
+
+  Growth rate as a function of :math:`k` for various ion-electron mass
+  ratios: :math:`m_i/m_e = 25` (blue), :math:`m_i/m_e = 200` (orange)
+  and :math:`m_i/m_e = 1836.2` (green). The instability grows slower
+  with increasing mass ratio. For full study of this problem,
+  including nonlinear kinetic simulations, see :doc:`JE33
+  <../je33/je33-buneman>`. Also see tool input file for the
+  :math:`m_e/m_e = 25` case :doc:`iso-2-bune <iso-2-bune>`.
+
+To see which modes actually grow, the follow plot shows the spectrum
+of the modes in the complex plane for the :math:`m_i/m_e = 1836.2`
+case. Only a very narrow range of low-frequency modes grow, while the
+higher frequency modes are merely oscillate.
+
+.. figure:: iso-bune-complex.png
+  :width: 100%
+  :align: center
+
+  Spectrum of the modes in the complex plane for the Buneman
+  instability. This plot shows that only the very low frequency modes
+  grow, while the higher-frequency modes remain purely oscillating.
+
+The Electron Cyclotron Drift Instability (ECDI)
+-----------------------------------------------
+
+The Electron Cyclotron Drift Instability (ECDI) is an electrostatic
+current-driven instability that arizes due to
+:math:`\mathbf{E}\times\mathbf{B}` motion of electrons. In the typical
+setup the ions are unmagnetized and hence do not contribute an
+:math:`\mathbf{E}\times\mathbf{B}` current. (Note that in general
+there is no net :math:`\mathbf{E}\times\mathbf{B}` current in an
+infinite plasma. However, in some situations it is possible that the
+ions never complete a gyroperiod and hence the ion currents are never
+set up). The ECDI is considered a mechanism of anomalous electron
+transport in Hall thrusters.
+
+In the first set of simulations the electrons and ions are treated as
+isothermal fluids. The background electric field is set to :math:`E_y
+= 0.2` and the background magnetic field to :math:`B_z = 1.0`. The
+growth of the instability vs :math:`k` is shown below. The instability
+is active only for a small range of wave-numbers. Further, increasing
+mass-ratio reduces the growth rate and the range over which the
+instability is active.
+
+.. figure:: iso-ecdi-growth.png
+  :width: 100%
+  :align: center
+
+  Growth rate vs :math:`k` for the ECDI for a :math:`E\times B`
+  velocity of 0.2 for mass ratio of 400 (blue) and 1836.2
+  (orange). The instability is active for a narrow range of
+  wave-numbers. The growth reduced with increasing mass ratio. See
+  :doc:`iso-ecdi-2 <iso-ecdi-2>` for an input file for the
+  :math:`m_i/m_e = 1836.2` case.
+
+As for the Buneman instability, in the isothermal limit the
+instability only grows for low-frequency modes. See below.
+
+.. figure:: iso-ecdi-complex.png
+  :width: 100%
+  :align: center
+
+  Spectrum of the modes in the complex plane for the ECDI. This plot
+  shows that only the very low frequency modes grow, while the
+  higher-frequency modes remain purely oscillating.
+
 References
 ----------
 

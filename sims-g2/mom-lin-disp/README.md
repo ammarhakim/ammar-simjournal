@@ -7,6 +7,8 @@ Isothermal tests
 - iso-2: Buneman instability, mi/me = 25
 - iso-3: Buneman instability, mi/me = 200
 - iso-4: Buneman instability, mi/me = 1836.2
+- iso-ecdi-1: ECDI, mi/me = 400
+- iso-ecdi-2: ECDI, mi/me = 1836.2
 
 5m tests
 --------
