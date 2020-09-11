@@ -9,6 +9,9 @@ Isothermal tests
 - iso-4: Buneman instability, mi/me = 1836.2
 - iso-ecdi-1: ECDI, mi/me = 400
 - iso-ecdi-2: ECDI, mi/me = 1836.2
+- iso-ecdi-3: ECDI, mi/me = 400, but both species are cold
+- iso-weibel-1: Weibel. ud = 0.1. Cold fluids
+- iso-weibel-2: Weibel. ud = 0.1. vt = ud.
 
 5m tests
 --------
@@ -22,3 +25,5 @@ Isothermal tests
 - 10m-ecdi-1: same as iso-ecdi-1 (ECDI, mi/me = 400)
 - 10m-ecdi-3: using 10M electrons but isothermal ions instead. (shows
   the same second harmonic driven growing mode also).
+- 10m-weibel-2: Weibel. ud = 0.1. ud = vt.
+- 10m-weibel-3: Weibel. ud = 0.1. ud = vt/3.

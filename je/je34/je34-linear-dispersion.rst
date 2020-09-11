@@ -202,7 +202,7 @@ The Electron Cyclotron Drift Instability (ECDI)
 -----------------------------------------------
 
 The Electron Cyclotron Drift Instability (ECDI) is an electrostatic
-current-driven instability that arizes due to
+current-driven instability that arises due to
 :math:`\mathbf{E}\times\mathbf{B}` motion of electrons. In the typical
 setup the ions are unmagnetized and hence do not contribute an
 :math:`\mathbf{E}\times\mathbf{B}` current. (Note that in general
@@ -242,6 +242,19 @@ instability only grows for low-frequency modes. See below.
   shows that only the very low frequency modes grow, while the
   higher-frequency modes remain purely oscillating.
 
+The real part of the dispersion relation is shown in the following
+plot for the :math:`m_i/m_e = 400` case. The unstable modes are
+colored in red in the figure.
+
+.. figure:: iso-ecdi-real.png
+  :width: 100%
+  :align: center
+
+  Real part of the dispersion relation for ECDI with isothermal fluids
+  for the :math:`m_i/m_e = 400` case. Marked in red are the unstable
+  modes. As also seen in the above figures, only a very narrow range
+  of modes are unstable.
+	    
 We can also look at the ECDI with the ten-moment model. Here, due to
 the second cyclotron harmonic there is a *second* unstable branch that
 appears at even higher :math:`k`. However, at least for the parameters
@@ -288,7 +301,46 @@ included in the ten-moment model.
   is active. The two set of modes marked in red correspond to the two
   cyclotron harmonics included in the ten-moment model.
 
-	  
+The Weibel instability
+----------------------
+
+The Weibel instability is an electromagnetic instability that is
+excited when two counter-propagating electron beams are perturbed
+transverse to the direction of propagation. This instability leads to
+a growth of magnetic field. For a thorough kinetic study of the Weibel
+instability see our previous work [Skoutnev]_ and references
+therein. Shown below is the growth rate of the Weibel instability in
+the cold fluid limit, with the drift speed set to :math:`u_d =
+1.0`. 
+
+.. figure:: iso-weibel-growth.png
+  :width: 100%
+  :align: center
+
+  Growth rate of the Weibel instability in the cold fluid limit with
+  drift speed of :math:`u_d = 0.1`. These values compare exactly with
+  the analytical expression given in [Califano]_ Eq 12. See
+  :doc:`iso-weibel-1 <iso-weibel-1>` for tool input file.
+
+Note that for a full understanding of the Weibel modes one must use
+fully kinetic simulations. For example, in the warm case when
+:math:`u_d = v_{th}` the isothermal fluid shows no growth, though the
+system is unstable in the kinetic regime. We can, however, study this
+warmer case with the ten-moment model that contains more physics than
+the isothermal model. For the cold case, the ten-moment model agrees
+exactly with the isothermal cold-fluid case. However, for the warm
+case in which isothermal model show *no growth* the ten-moment model
+shows an unstable mode. The growth rate for this is shown below.
+
+.. figure:: 10m-weibel-growth.png
+  :width: 100%
+  :align: center
+
+  Growth rate of the Weibel instability with ten-moment model with
+  drift speed :math:`u_d = v_{th}`. With these parameters the
+  isothermal model does not show any growth. See :doc:`10m-weibel-2
+  <10m-weibel-2>` for tool input file.
+       
 References
 ----------
 
@@ -299,3 +351,13 @@ References
 .. [Xie] H. Xie, Y. Xiao. "PDRK: A General Kinetic Dispersion Relation
     Solver for Magnetized Plasma". *Plasma Science and Technology*,
     **18** (2), 97–107. http://doi.org/10.1088/1009-0630/18/2/01
+
+.. [Skoutnev] W. Skoutnev, A. Hakim, J. Juno, J.M TenBarge,
+   "Temperature-dependent Saturation of Weibel-type Instabilities in
+   Counter-streaming Plasmas". The Astrophysical Journal Letters,
+   872(2), 2019. http://doi.org/10.3847/2041-8213/ab0556
+
+.. [Califano] F. Califano, F. Pegoraro, S.V. Bulanov. "Spatial
+   structure and time evolution of the Weibel instability in
+   collisionless inhomogenous plasmas". Physical Review E, 56(1), 1–7,
+   1997
