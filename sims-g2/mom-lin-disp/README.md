@@ -19,3 +19,6 @@ Isothermal tests
 ---------
 
 - 10m-1: Same as iso-1, except with 10M model. Finite temperature (T = 0.1)
+- 10m-ecdi-1: same as iso-ecdi-1 (ECDI, mi/me = 400)
+- 10m-ecdi-3: using 10M electrons but isothermal ions instead. (shows
+  the same second harmonic driven growing mode also).

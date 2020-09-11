@@ -158,7 +158,7 @@ modes seen above are damped.
 The Buneman instability
 -----------------------
 
-In the next series of tests various unstabilities are used as
+In the next series of tests various instabilities are used as
 benchmarks. First, consider the Buneman instability which was studied
 extensively in :doc:`JE33 <../je33/je33-buneman>`. Consider a
 one-dimensional, electrostatic, collisionless plasma in which the
@@ -242,6 +242,53 @@ instability only grows for low-frequency modes. See below.
   shows that only the very low frequency modes grow, while the
   higher-frequency modes remain purely oscillating.
 
+We can also look at the ECDI with the ten-moment model. Here, due to
+the second cyclotron harmonic there is a *second* unstable branch that
+appears at even higher :math:`k`. However, at least for the parameters
+used here, the second mode grows more slowly, showing that in this
+setup the shorter :math:`k` modes will be dominant.
+
+.. figure:: 10m-ecdi-growth.png
+  :width: 100%
+  :align: center
+
+  Growth rate of ECDI using the ten-moment model for both electrons
+  and ions (orange) for mass-ratio :math:`m_i/m_e = 400`. Also shown
+  for comparison are the growth rates from the isothermal case
+  (blue). Note that there is a *second* unstable mode present in the
+  ten-moment case due to the presence of the second harmonic. This
+  mode, however, grows slower, indicating that the smaller :math:`k`
+  unstable modes will be dominant. See :doc:`10m-ecdi-1 <10m-ecdi-1>`
+  for tool input file.
+
+.. figure:: 10m-ecdi-complex.png
+  :width: 100%
+  :align: center
+
+  Spectrum of the modes in the complex plane for the ECDI using
+  ten-moment model. This plot shows that only the very low frequency
+  modes grow. Note the second set of unstable modes.
+
+We can also look at the real frequencies of the various modes and
+identify the modes that grow. In this system there are huge number of
+modes but as seen from the above plots only those in a narrow range
+are unstable. The following plot shows a zoom into the low-frequency
+branches of the dispersion relation with the unstable modes colored in
+red. Again, note that there are two set of modes that are unstable,
+corresponding to the fact that there are two cyclotron harmonics
+included in the ten-moment model.
+
+.. figure:: 10m-ecdi-real.png
+  :width: 100%
+  :align: center
+
+  Low-frequency branches of the dispersion relation for ten-moment
+  ECDI problem. Marked in red are the unstable modes that lead to the
+  ECDI. Note the narrow region of :math:`k` over which the instability
+  is active. The two set of modes marked in red correspond to the two
+  cyclotron harmonics included in the ten-moment model.
+
+	  
 References
 ----------
 
