@@ -7,7 +7,7 @@ local elcCharge = -1
 local ionMass = 1836.2
 local ionCharge = 1
 local elcTemp = 0.1
-local ud = math.sqrt(elcTemp/elcMass)/3
+local ud = 1.5*math.sqrt(elcTemp/elcMass)
 
 -- Electrons
 elc1 = Species.TenMoment {

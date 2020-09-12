@@ -25,5 +25,6 @@ Isothermal tests
 - 10m-ecdi-1: same as iso-ecdi-1 (ECDI, mi/me = 400)
 - 10m-ecdi-3: using 10M electrons but isothermal ions instead. (shows
   the same second harmonic driven growing mode also).
+- 10m-weibel-1: Weibel. ud = 0.1. elcTemp = 1e-6
 - 10m-weibel-2: Weibel. ud = 0.1. ud = vt.
-- 10m-weibel-3: Weibel. ud = 0.1. ud = vt/3.
+- 10m-weibel-3: Weibel. ud = 0.1. ud = 1.5*vt
