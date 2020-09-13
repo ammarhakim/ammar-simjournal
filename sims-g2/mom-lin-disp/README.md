@@ -17,6 +17,7 @@ Isothermal tests
 --------
 
 - 5m-1: Same as iso-1, except with 5M model. Finite temperature (T = 0.1)
+- 5m-ecdi-1: same as iso-ecdi-1 (ECDI, mi/me = 400)
 
 10m tests
 ---------
