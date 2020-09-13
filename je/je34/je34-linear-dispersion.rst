@@ -330,7 +330,12 @@ warmer case with the ten-moment model that contains more physics than
 the isothermal model. For the cold case, the ten-moment model agrees
 exactly with the isothermal cold-fluid case. However, for the warm
 case in which isothermal model show *no growth* the ten-moment model
-shows an unstable mode. The growth rate for this is shown below.
+shows an unstable mode. The growth rate for this is shown below. Also,
+shown in red dots are the growth rates from a kinetic calculation of
+the dispersion relation. The ten-moment models predicts the growth
+rate reasonably well for lower :math:`k` modes but then deviates for
+higher :math:`k`. The kinetic and ten-moment comparisons get worse as
+the electron beams get warmer. 
 
 .. figure:: 10m-weibel-growth.png
   :width: 100%
@@ -338,8 +343,11 @@ shows an unstable mode. The growth rate for this is shown below.
 
   Growth rate of the Weibel instability with ten-moment model with
   drift speed :math:`u_d = v_{th}`. With these parameters the
-  isothermal model does not show any growth. See :doc:`10m-weibel-2
-  <10m-weibel-2>` for tool input file.
+  *isothermal model does not show any growth*. Also, shown in red dots
+  are the growth rates from a kinetic calculation of the dispersion
+  relation. The peak growth rates are about :math:`20\%` higher in the
+  ten-moment model. See :doc:`10m-weibel-2 <10m-weibel-2>` for tool
+  input file.
        
 References
 ----------
