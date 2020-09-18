@@ -29,3 +29,7 @@ Isothermal tests
 - 10m-weibel-1: Weibel. ud = 0.1. elcTemp = 1e-6
 - 10m-weibel-2: Weibel. ud = 0.1. ud = vt.
 - 10m-weibel-3: Weibel. ud = 0.1. ud = 1.5*vt
+- 10m-hp-closure-1: ES 10M model, Hammett-Perkin closure
+- 10m-hp-closure-2: Same as 10m-1, except with closure
+- 10m-hp-closure-weibel-2: Same as 10m-weibel-2 except with closure
+- 10m-hp-closure-ecdi-1: same as iso-ecdi-1 (ECDI, mi/me = 400) with closure
