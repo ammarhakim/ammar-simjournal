@@ -38,3 +38,9 @@ Tests for diffusion terms in FPO. g = (Dxx*x^2+Dyy*y^2)/2 + Dxy*x*y to
 mimic the constant diffusion case.
 
 - f1: kx=ky=1.0 with Dxx = Dyy = 1.0; Dxy = Dyx = 0.9 p=1 8x8 grid
+
+Tests for marching to steady-state (Poisson solver)
+
+- ss1: 8x8 grid, Poisson with Gaussian source
+- ss2: 16x16 grid, Poisson with Gaussian source
+- ss3: 32x32 grid, Poisson with Gaussian source
