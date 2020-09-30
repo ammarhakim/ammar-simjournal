@@ -7,8 +7,8 @@ diffusion = App {
    upper = {1.0, 1.0},
    cells = {32, 32},
    errEps = 1e-8,
-   factor = 100,
-   extraStages = 2,
+   factor = 120,
+   extraStages = 3,
    
    -- initial conditions
    init = function (t, xn)
