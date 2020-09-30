@@ -9,9 +9,6 @@ diffusion = App {
    cells = {8, 8},
    errEps = 1e-8,
    
-   -- diffusion coefficient
-   D = { Dxx = 1.0, Dyy = 1.0, Dxy = 0.0 },
-   
    -- initial conditions
    init = function (t, xn)
       local x, y = xn[1], xn[2]

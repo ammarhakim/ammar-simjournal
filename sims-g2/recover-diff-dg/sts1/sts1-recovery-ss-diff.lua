@@ -1,13 +1,13 @@
 -- load app code
-local App = dofile("../code/ss-diffusion.lua")
+local App = dofile("../code/sts-diffusion.lua")
 
 diffusion = App {
    polyOrder = 1,
-   cflFrac = 1,
    lower = {-1.0, -1.0},
    upper = {1.0, 1.0},
-   cells = {16, 16},
+   cells = {8, 8},
    errEps = 1e-8,
+   factor = 20,
    
    -- initial conditions
    init = function (t, xn)
