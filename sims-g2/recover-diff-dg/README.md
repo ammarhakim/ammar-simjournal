@@ -44,7 +44,11 @@ Tests for marching to steady-state (Poisson solver)
 - ss1: 8x8 grid, Poisson with Gaussian source
 - ss2: 16x16 grid, Poisson with Gaussian source
 - ss3: 32x32 grid, Poisson with Gaussian source
+- ss4: 8x8 grid, Poisson with Gaussian source
 
 - sts1: 8x8 grid, Poisson with Gaussian source; STS scheme
 - sts2: 16x16 grid, Poisson with Gaussian source; STS scheme
 - sts3: 32x32 grid, Poisson with Gaussian source; STS scheme
+- sts4: 8x8 grid, p=2. Poisson with Gaussian source; STS scheme
+
+As of 9/30/2020 the p=2 code is not working. Not sure why.

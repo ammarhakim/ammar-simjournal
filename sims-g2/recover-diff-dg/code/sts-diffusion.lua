@@ -184,7 +184,7 @@ local App = function(tbl)
 
    local vol = (grid:upper(1)-grid:lower(1))*(grid:upper(2)-grid:lower(2))
    local srcInt = integrateField(src)/vol -- mean integrated source
-   
+
    initExactSol:advance(0.0, {}, {exactSol})
    exactSol:write("exactSol.bp", 0, 0)
 
@@ -195,54 +195,6 @@ local App = function(tbl)
    diffCoeff.Dxy = Dxy
    diffCoeff.Dyx = Dyx
    diffCoeff.Dyy = Dyy
-
-   local function forwardEuler(dt, fIn, fOut)
-      local localRange = fIn:localRange()
-      local indexer = fIn:genIndexer()
-      local idxsL, idxsR = {}, {}
-      local idxsT, idxsB = {}, {}
-      local idxsTL, idxsTR = {}, {}
-      local idxsBL, idxsBR = {}, {}
-      local dx, dy = grid:dx(1), grid:dx(2)
-      local dxCells = {dx, dy}
-
-      local kerOut = Lin.Vec(fIn:numComponents())
-
-      for idxs in localRange:colMajorIter() do
-	 idxsL[1], idxsL[2] = idxs[1]-1, idxs[2]
-	 idxsR[1], idxsR[2] = idxs[1]+1, idxs[2]
-	 idxsT[1], idxsT[2] = idxs[1], idxs[2]+1
-	 idxsB[1], idxsB[2] = idxs[1], idxs[2]-1
-
-	 idxsTL[1], idxsTL[2] = idxs[1]-1, idxs[2]+1
-	 idxsTR[1], idxsTR[2] = idxs[1]+1, idxs[2]+1
-	 idxsBL[1], idxsBL[2] = idxs[1]-1, idxs[2]-1
-	 idxsBR[1], idxsBR[2] = idxs[1]+1, idxs[2]-1
-
-	 local f = fIn:get(indexer(idxs))
-	 local fL = fIn:get(indexer(idxsL))
-	 local fR = fIn:get(indexer(idxsR))
-	 local fT = fIn:get(indexer(idxsT))
-	 local fB = fIn:get(indexer(idxsB))
-
-	 local fTL = fIn:get(indexer(idxsTL))
-	 local fTR = fIn:get(indexer(idxsTR))
-	 local fBL = fIn:get(indexer(idxsBL))
-	 local fBR = fIn:get(indexer(idxsBR))
-
-	 local sr = src:get(indexer(idxs))
-
-	 -- compute increment
-	 updateKernel(diffCoeff, dxCells, fTL, fT, fTR, fL, f, fR, fBL, fB, fBR, kerOut)
-	 local fO = fOut:get(indexer(idxs))
-
-	 -- need to handle averages to ensure proper normalization
-	 fO[1] = f[1] + dt*(kerOut[1] + sr[1] - 2*srcInt)
-	 for k = 2, fIn:numComponents() do
-	    fO[k] = f[k] + dt*(kerOut[k] + sr[k])
-	 end
-      end
-   end
 
    local function calcRHS(fIn, fOut)
       local localRange = fIn:localRange()
