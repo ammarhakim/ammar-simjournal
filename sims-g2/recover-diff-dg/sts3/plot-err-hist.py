@@ -7,16 +7,29 @@ ss = loadtxt("../ss3/ss3-recovery-ss-diff_err.txt")
 
 numStages = 25
 
+def calcSlope(s, e, ns, step, dat):
+    return (log(dat[s])-log(dat[e]))/(s-e)/ns
+
 nt = st[:,0]
 dt = st[:,1]
 
 ns = ss[:,0]
 ds = ss[:,1]
 
-semilogy(numStages*nt, dt, color='red')
-semilogy(3*ns, ds, color='black')
+semilogy(numStages*nt, dt, 'r-')
+semilogy(3*ns, ds, 'k-')
+
+pt = calcSlope(20, 30, numStages, nt, dt)
+ps = calcSlope(1500, 2500, 3, ns, ds)
+
+semilogy(numStages*nt, 1e-1*exp(pt*numStages*nt), 'r--')
+text(600, 1e-3, '$e^{-0.015 s}$')
+
+semilogy(3*ns, 1.5e-4*exp(ps*3*ns), 'k--')
+text(4000, 5e-6, '$e^{-0.001 s}$')
+
 grid()
-xlabel('RK-Stages')
+xlabel('RK-Stages (s)')
 ylabel(r'$L_2$ Error')
 title("Num Stages = %d. Speedup = %g" % (numStages, (3*ns.shape[0]/(numStages*nt.shape[0]))))
 

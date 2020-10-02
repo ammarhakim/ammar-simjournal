@@ -42,11 +42,16 @@ local App = function(tbl)
    local maxSteps = tbl.maxSteps and tbl.maxSteps or 1000
    local fact = tbl.factor and tbl.factor or 100
    local extraStages = tbl.extraStages and tbl.extraStages or 1
+
+   -- initial factor to start iteration
+   local initFact = tbl.initFactor and tbl.initFactor or fact
+   local initFactNumSteps = tbl.initFactorNumSteps and tbl.initFactorNumSteps or 0
    
    local Dxx, Dyy = 1.0, 1.0
    local Dxy, Dyx = 0.0, 0.0
 
    local cfl = fact*0.5*cflFrac/(2*polyOrder+1)
+   local cflInit = initFact*0.5*cflFrac/(2*polyOrder+1)
 
    local updateKernels
    if tbl.useFivePointStencil then
@@ -172,6 +177,22 @@ local App = function(tbl)
       return intf*dx*dy
    end
 
+   -- compute the L2 norm
+   local function l2norm(f1)
+      local localRange = f1:localRange()
+      local indexer = f1:genIndexer()
+      local dx, dy = grid:dx(1), grid:dx(2)
+
+      local l2 = 0.0
+      for idxs in localRange:colMajorIter() do
+	 local f1Itr = f1:get(indexer(idxs))
+	 for k = 1, f1:numComponents() do
+	    l2 = l2 + f1Itr[k]^2/4.0
+	 end
+      end
+      return math.sqrt(l2*dx*dy)
+   end
+
    --------------------
    -- Initialization --
    --------------------
@@ -184,6 +205,9 @@ local App = function(tbl)
 
    local vol = (grid:upper(1)-grid:lower(1))*(grid:upper(2)-grid:lower(2))
    local srcInt = integrateField(src)/vol -- mean integrated source
+
+   local srcL2 = l2norm(src) -- L2 norm of source
+   print(srcInt, srcL2)
 
    initExactSol:advance(0.0, {}, {exactSol})
    exactSol:write("exactSol.bp", 0, 0)
@@ -246,7 +270,7 @@ local App = function(tbl)
 
    print(string.format("Number of stages = %d", calcNumStages(fact, extraStages)))
    
-   local function sts(dt, fIn, fOut)
+   local function sts(dt, fIn, fOut, fact)
       local numStages = calcNumStages(fact, extraStages)
 
       -- we need this in each stage
@@ -298,11 +322,18 @@ local App = function(tbl)
       local step = 1
       local dx, dy = grid:dx(1), grid:dx(2)
       local omegaCFL = Dxx/dx^2 + 2*math.abs(Dxy)/(dx*dy) + Dyy/dy^2
-      local dt = cfl/omegaCFL
       local isDone = false
+      local dt
 
       while not isDone do
-      	 sts(dt, f, fNew)
+	 if step < initFactNumSteps then
+	    dt = cflInit/omegaCFL
+	    -- we may want to take a few steps with smaller factor
+	    sts(dt, f, fNew, initFact)
+	 else
+	    dt = cfl/omegaCFL
+	    sts(dt, f, fNew, fact)
+	 end
 	 
       	 local err = l2diff(f, fNew)
       	 print(string.format("Step %d, dt = %g. Error = %g", step, dt, err))
