@@ -2,8 +2,8 @@ from pylab import *
 
 style.use('../postgkyl.mplstyle')
 
-st = loadtxt("sts3-recovery-ss-diff_err.txt")
-ss = loadtxt("../ss3/ss3-recovery-ss-diff_err.txt")
+st = loadtxt("sts4-recovery-ss-diff_err.txt")
+ss = loadtxt("../ss4/ss4-recovery-ss-diff_err.txt")
 
 numStages = int(loadtxt("numStages"))
 
@@ -37,7 +37,7 @@ xlabel('RK-Stages (s)')
 ylabel(r'$L_2$ Error')
 title("Num Stages = %d. Speedup = %g" % (numStages, (3*ns.shape[0]/(numStages*nt.shape[0]))))
 
-savefig('ss3-sts3-error.png', dpi=200)
+savefig('ss4-sts4-error.png', dpi=200)
 
 show()
 

@@ -42,6 +42,8 @@ local App = function(tbl)
    local maxSteps = tbl.maxSteps and tbl.maxSteps or 1000
    local fact = tbl.factor and tbl.factor or 100
    local extraStages = tbl.extraStages and tbl.extraStages or 1
+   
+   local extrapolateInterval = tbl.extrapolateInterval and tbl.extrapolateInterval or maxSteps+1
 
    -- initial factor to start iteration
    local initFact = tbl.initFactor and tbl.initFactor or fact
@@ -91,13 +93,16 @@ local App = function(tbl)
    end
    local f = getField()
    local fNew = getField()
-   local fDup = getField()
-   local fNewDup = getField()
    local fDiff0 = getField()
    local fDiff = getField()
    local fJ = getField()
    local fJ1 = getField()
    local fJ2 = getField()
+
+   -- for extrapolation
+   local fE0 = getField()   
+   local fE1 = getField()
+   local fE2 = getField()
 
    local src = getField()
    local exactSol = getField()
@@ -271,6 +276,9 @@ local App = function(tbl)
    
    local function sts(dt, fIn, fOut, fact)
       local numStages = calcNumStages(fact, extraStages)
+      local nsFh = io.open("numStages", "w")
+      nsFh:write(string.format("%d", numStages))
+      nsFh:close()
 
       -- we need this in each stage
       calcRHS(fIn, fDiff0)
@@ -324,6 +332,10 @@ local App = function(tbl)
       local isDone = false
       local dt
 
+      local numPrevStored = 0 -- flag to check if we are ready to extrapolate
+      local errE0, errE1, errE2 = 1e10, 1e10, 1e10 -- errors for use in extrapolation
+      local numExtra = 0
+
       while not isDone do
 	 if step < initFactNumSteps then
 	    dt = cflInit/omegaCFL
@@ -342,6 +354,28 @@ local App = function(tbl)
       	    isDone = true
       	 end
       	 f:copy(fNew)
+
+	 -- check if we should store the solution for use in
+	 -- extrapolation
+	 if step % extrapolateInterval == 0 then
+	    fE0:copy(fE1)
+	    fE1:copy(fE2)
+	    fE2:copy(f)
+	    errE0 = errE1
+	    errE1 = errE2
+	    errE2 = err
+	    numPrevStored = numPrevStored+1
+
+	    if numPrevStored > 1 then -- need two values to extrapolate
+	       local redFact = -math.log(errE2/errE1)/extrapolateInterval	       
+	       print(string.format("Extrapolating! Step %d. p = %g", step, redFact))
+	       local eps = math.exp(-redFact*extrapolateInterval)
+	       -- extrapolate based on current decay rate
+	       f:combine(1.0, fE2, eps, fE2, -eps, fE1)
+	       numExtra = numExtra + 1
+	    end
+	 end
+	 
       	 step = step + 1
       end
       if step>maxSteps then
