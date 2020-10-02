@@ -22,6 +22,8 @@ semilogy(3*ns, ds, 'k-')
 pt = calcSlope(20, 30, numStages, nt, dt)
 ps = calcSlope(1500, 2500, 3, ns, ds)
 
+print(pt)
+
 semilogy(numStages*nt, 1e-1*exp(pt*numStages*nt), 'r--')
 text(600, 1e-3, '$e^{-0.015 s}$')
 
