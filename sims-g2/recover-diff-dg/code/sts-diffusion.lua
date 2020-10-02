@@ -207,7 +207,6 @@ local App = function(tbl)
    local srcInt = integrateField(src)/vol -- mean integrated source
 
    local srcL2 = l2norm(src) -- L2 norm of source
-   print(srcInt, srcL2)
 
    initExactSol:advance(0.0, {}, {exactSol})
    exactSol:write("exactSol.bp", 0, 0)
@@ -336,7 +335,8 @@ local App = function(tbl)
 	 end
 	 
       	 local err = l2diff(f, fNew)
-      	 print(string.format("Step %d, dt = %g. Error = %g", step, dt, err))
+	 local resNorm = err/dt/srcL2
+      	 print(string.format("Step %d, dt = %g. Error = %g (Res. norm = %g)", step, dt, err, resNorm))
 	 fn:write(string.format("%d %g\n", step, err))
       	 if err < errEps or step>=maxSteps then
       	    isDone = true
