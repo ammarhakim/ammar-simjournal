@@ -17,19 +17,19 @@ ns = ss[:,0]
 ds = ss[:,1]
 
 semilogy(numStages*nt, dt, 'r-')
-semilogy(3*ns, ds, 'k-')
+#semilogy(3*ns, ds, 'k-')
 
 startIdx = nt.shape[0]//2
 endIdx = nt.shape[0]-1
 pt = calcSlope(startIdx, endIdx, numStages, nt, dt)
 ps = calcSlope(1500, 2500, 3, ns, ds)
 
-print(pt, ps)
+print(pt, pt*numStages)
 
 semilogy(numStages*nt, 1e-1*exp(pt*numStages*nt), 'r--')
 #text(600, 1e-3, '$e^{-0.015 s}$')
 
-semilogy(3*ns, 1.5e-4*exp(ps*3*ns), 'k--')
+#semilogy(3*ns, 1.5e-4*exp(ps*3*ns), 'k--')
 #text(4000, 5e-6, '$e^{-0.001 s}$')
 
 grid()

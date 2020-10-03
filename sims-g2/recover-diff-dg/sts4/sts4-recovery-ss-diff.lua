@@ -9,7 +9,7 @@ diffusion = App {
    errEps = 1e-8,
    factor = 400,
    extraStages = 6,
-   extrapolateInterval = 2,
+   extrapolateInterval = 1,
    
    -- initial conditions
    init = function (t, xn)
