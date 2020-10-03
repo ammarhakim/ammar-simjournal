@@ -7,8 +7,8 @@ diffusion = App {
    upper = {1.0, 1.0},
    cells = {128, 128},
    errEps = 1e-8,
-   factor = 800,
-   extraStages = 6,
+   factor = 1000,
+   extraStages = 9,
    extrapolateInterval = 1,
    
    -- initial conditions

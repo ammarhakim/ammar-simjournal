@@ -1,9 +1,10 @@
 local Basis = require "Basis"
 local DataStruct = require "DataStruct"
+local Eq = require "Eq.ConstDiffusion"
 local Grid = require "Grid"
-local Updater = require "Updater"
 local Lin = require "Lib.Linalg"
 local Time = require "Lib.Time"
+local Updater = require "Updater"
 
 -- this set of functions determines factors which feed into RK scheme
 -- (see Meyer, C. D., Balsara, D. S., & Aslam, T. D. (2014). Journal
@@ -50,17 +51,9 @@ local App = function(tbl)
    local initFactNumSteps = tbl.initFactorNumSteps and tbl.initFactorNumSteps or 0
    
    local Dxx, Dyy = 1.0, 1.0
-   local Dxy, Dyx = 0.0, 0.0
 
    local cfl = fact*0.5*cflFrac/(2*polyOrder+1)
    local cflInit = initFact*0.5*cflFrac/(2*polyOrder+1)
-
-   local updateKernels
-   if tbl.useFivePointStencil then
-      updateKernels = dofile("../code/bad-diffusion-kernels.lua")
-   else
-      updateKernels = dofile("../code/diffusion-kernels.lua")
-   end
 
    ----------------------
    -- Grids and Fields --
@@ -73,16 +66,16 @@ local App = function(tbl)
    }
 
    -- basis functions
-   local basis = Basis.CartModalTensor {
+   local basis = Basis.CartModalSerendipity {
       ndim = grid:ndim(),
       polyOrder = polyOrder
    }
 
    -- fields
-   local function getField()
+   local function getField(numComponents)
       return DataStruct.Field {
 	 onGrid = grid,
-	 numComponents = basis:numBasis(),
+	 numComponents = numComponents,
 	 ghost = {1, 1},
 	 syncCorners = true,
 	 metaData = {
@@ -91,21 +84,23 @@ local App = function(tbl)
 	 },
       }
    end
-   local f = getField()
-   local fNew = getField()
-   local fDiff0 = getField()
-   local fDiff = getField()
-   local fJ = getField()
-   local fJ1 = getField()
-   local fJ2 = getField()
+   local f = getField(basis:numBasis())
+   local fNew = getField(basis:numBasis())
+   local fDiff0 = getField(basis:numBasis())
+   local fDiff = getField(basis:numBasis())
+   local fJ = getField(basis:numBasis())
+   local fJ1 = getField(basis:numBasis())
+   local fJ2 = getField(basis:numBasis())
 
    -- for extrapolation
-   local fE0 = getField()   
-   local fE1 = getField()
-   local fE2 = getField()
+   local fE1 = getField(basis:numBasis())
+   local fE2 = getField(basis:numBasis())
 
-   local src = getField()
-   local exactSol = getField()
+   -- source
+   local src = getField(basis:numBasis())
+
+   -- for time-stepping (never used)
+   local cflRateByCell = getField(1)
 
    -- function for source (optional)
    local srcFunc = function (t, xn) return 0 end
@@ -131,41 +126,24 @@ local App = function(tbl)
       onGrid = grid,
       basis = basis,
       evaluate = exactFunc,
-   }   
+   }
+
+   -- constant diffusion equation object.
+   local constDiffusionCalc = Eq {
+      Dcoeff = {Dxx, Dyy},
+      basis = basis,
+   }
+
+   -- ipdater to solve the (parabolic) diffusion equation.
+   local constDiffusionSlvr = Updater.HyperDisCont {
+      onGrid = grid,
+      basis = basis,
+      cfl = 0.5*cflFrac/(2*polyOrder+1),
+      equation = constDiffusionCalc,
+   }
 
    local function applyBc(fld)
       fld:sync()
-      -- need to manually sync corners for now
-      local globalRange = fld:globalRange()
-      local xlo, xup = globalRange:lower(1), globalRange:upper(1)
-      local ylo, yup = globalRange:lower(2), globalRange:upper(2)
-
-      local indexer = fld:indexer()
-      local idxSkin, idxGhost
-
-      -- lower-left
-      idxSkin, idxGhost = fld:get(indexer(xup, yup)), fld:get(indexer(xlo-1, ylo-1))
-      for k = 1, fld:numComponents() do
-	 idxGhost[k] = idxSkin[k]
-      end
-
-      -- lower-right
-      idxSkin, idxGhost = fld:get(indexer(xlo, yup)), fld:get(indexer(xup+1, ylo-1))
-      for k = 1, fld:numComponents() do
-	 idxGhost[k] = idxSkin[k]
-      end
-
-      -- upper-left
-      idxSkin, idxGhost = fld:get(indexer(xup, ylo)), fld:get(indexer(xlo-1, yup+1))
-      for k = 1, fld:numComponents() do
-	 idxGhost[k] = idxSkin[k]
-      end
-
-      -- upper-right
-      idxSkin, idxGhost = fld:get(indexer(xlo, ylo)), fld:get(indexer(xup+1, yup+1))
-      for k = 1, fld:numComponents() do
-	 idxGhost[k] = idxSkin[k]
-      end
    end
 
    -- compute integral of field
@@ -211,65 +189,24 @@ local App = function(tbl)
    local vol = (grid:upper(1)-grid:lower(1))*(grid:upper(2)-grid:lower(2))
    local srcInt = integrateField(src)/vol -- mean integrated source
 
+   do
+      local localRange = src:localRange()
+      local indexer = src:genIndexer()
+      
+      for idxs in localRange:colMajorIter() do
+	 local sr = src:get(indexer(idxs))
+	 sr[1] = sr[1] - 2*srcInt
+      end
+   end
+
+   local srcIntZero = integrateField(src)
    local srcL2 = l2norm(src) -- L2 norm of source
 
-   initExactSol:advance(0.0, {}, {exactSol})
-   exactSol:write("exactSol.bp", 0, 0)
-
-   local updateKernel = updateKernels[polyOrder]
-
-   local diffCoeff = {}
-   diffCoeff.Dxx = Dxx
-   diffCoeff.Dxy = Dxy
-   diffCoeff.Dyx = Dyx
-   diffCoeff.Dyy = Dyy
-
    local function calcRHS(fIn, fOut)
-      local localRange = fIn:localRange()
-      local indexer = fIn:genIndexer()
-      local idxsL, idxsR = {}, {}
-      local idxsT, idxsB = {}, {}
-      local idxsTL, idxsTR = {}, {}
-      local idxsBL, idxsBR = {}, {}
-      local dx, dy = grid:dx(1), grid:dx(2)
-      local dxCells = {dx, dy}
-
-      local kerOut = Lin.Vec(fIn:numComponents())
-
-      for idxs in localRange:colMajorIter() do
-	 idxsL[1], idxsL[2] = idxs[1]-1, idxs[2]
-	 idxsR[1], idxsR[2] = idxs[1]+1, idxs[2]
-	 idxsT[1], idxsT[2] = idxs[1], idxs[2]+1
-	 idxsB[1], idxsB[2] = idxs[1], idxs[2]-1
-
-	 idxsTL[1], idxsTL[2] = idxs[1]-1, idxs[2]+1
-	 idxsTR[1], idxsTR[2] = idxs[1]+1, idxs[2]+1
-	 idxsBL[1], idxsBL[2] = idxs[1]-1, idxs[2]-1
-	 idxsBR[1], idxsBR[2] = idxs[1]+1, idxs[2]-1
-
-	 local f = fIn:get(indexer(idxs))
-	 local fL = fIn:get(indexer(idxsL))
-	 local fR = fIn:get(indexer(idxsR))
-	 local fT = fIn:get(indexer(idxsT))
-	 local fB = fIn:get(indexer(idxsB))
-
-	 local fTL = fIn:get(indexer(idxsTL))
-	 local fTR = fIn:get(indexer(idxsTR))
-	 local fBL = fIn:get(indexer(idxsBL))
-	 local fBR = fIn:get(indexer(idxsBR))
-
-	 local sr = src:get(indexer(idxs))
-
-	 -- compute increment
-	 updateKernel(diffCoeff, dxCells, fTL, fT, fTR, fL, f, fR, fBL, fB, fBR, kerOut)
-	 local fO = fOut:get(indexer(idxs))
-
-	 -- need to handle averages to ensure proper normalization
-	 fO[1] = kerOut[1] + sr[1] - 2*srcInt
-	 for k = 2, fIn:numComponents() do
-	    fO[k] = kerOut[k] + sr[k]
-	 end
-      end
+      local dt, tCurr = 0.1, 1.0 -- these are ignored
+      constDiffusionSlvr:setDtAndCflRate(dt, cflRateByCell)
+      constDiffusionSlvr:advance(tCurr, {fIn}, {fOut})
+      fOut:accumulate(1.0, src)
    end
 
    print(string.format("Number of stages = %d", calcNumStages(fact, extraStages)))
@@ -328,23 +265,15 @@ local App = function(tbl)
       
       local step = 1
       local dx, dy = grid:dx(1), grid:dx(2)
-      local omegaCFL = Dxx/dx^2 + 2*math.abs(Dxy)/(dx*dy) + Dyy/dy^2
+      local omegaCFL = Dxx/dx^2 + Dyy/dy^2
       local isDone = false
-      local dt
 
       local numPrevStored = 0 -- flag to check if we are ready to extrapolate
-      local errE0, errE1, errE2 = 1e10, 1e10, 1e10 -- errors for use in extrapolation
-      local numExtra = 0
+      local errE1, errE2 = 1e10, 1e10 -- errors for use in extrapolation
 
       while not isDone do
-	 if step < initFactNumSteps then
-	    dt = cflInit/omegaCFL
-	    -- we may want to take a few steps with smaller factor
-	    sts(dt, f, fNew, initFact)
-	 else
-	    dt = cfl/omegaCFL
-	    sts(dt, f, fNew, fact)
-	 end
+	 local dt = cfl/omegaCFL
+	 sts(dt, f, fNew, fact)
 	 
       	 local err = l2diff(f, fNew)
 	 local resNorm = err/dt/srcL2
@@ -358,21 +287,18 @@ local App = function(tbl)
 	 -- check if we should store the solution for use in
 	 -- extrapolation
 	 if step % extrapolateInterval == 0 then
-	    fE0:copy(fE1)
 	    fE1:copy(fE2)
 	    fE2:copy(f)
-	    errE0 = errE1
 	    errE1 = errE2
 	    errE2 = err
-	    numPrevStored = numPrevStored+1
+	    numPrevStored = numPrevStored + 1
 
 	    if numPrevStored > 1 then -- need two values to extrapolate
-	       local redFact = -math.log(errE2/errE1)/extrapolateInterval	       
+	       local redFact = -math.log(errE2/errE1)/extrapolateInterval
 	       print(string.format("Extrapolating! Step %d. p = %g", step, redFact))
 	       local eps = math.exp(-redFact*extrapolateInterval)
 	       -- extrapolate based on current decay rate
 	       f:combine(1.0, fE2, eps, fE2, -eps, fE1)
-	       numExtra = numExtra + 1
 	    end
 	 end
 	 
