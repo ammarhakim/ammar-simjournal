@@ -30,8 +30,17 @@ function mu(j) return (2*j-1)/j*b(j)/b(j-1) end
 function nu(j) return -(j-1)/j*b(j)/b(j-2) end
 function gbar(s,j) return -a(j-1)*mubar(s,j) end
 
-function calcNumStages(dhdp, extraStages) 
+function calcNumStagesRKL2(dhdp, extraStages) 
    return math.ceil(math.sqrt(4*dhdp+9/4) - 1/2) + extraStages
+end
+
+-- For RKL1 scheme
+function muRKL1(j) return (2*j-1)/j end
+function nuRKL1(j) return (1-j)/j end
+function mubarRKL1(s,j) return (2*j-1)/j*2/(s^2+s) end
+
+function calcNumStagesRKL1(dhdp, extraStages) 
+   return math.ceil(1/2*(math.sqrt(1+8*dhdp)-1)) + extraStages
 end
 
 local App = function(tbl)
@@ -45,6 +54,9 @@ local App = function(tbl)
    local extraStages = tbl.extraStages and tbl.extraStages or 1
    
    local extrapolateInterval = tbl.extrapolateInterval and tbl.extrapolateInterval or maxSteps+1
+
+   -- one of 'RKL2' or 'RKL1'
+   local stepper = tbl.stepper and tbl.stepper or 'RKL2'
 
    -- initial factor to start iteration
    local initFact = tbl.initFactor and tbl.initFactor or fact
@@ -209,10 +221,14 @@ local App = function(tbl)
       fOut:accumulate(1.0, src)
    end
 
-   print(string.format("Number of stages = %d", calcNumStages(fact, extraStages)))
+   if stepper == 'RKL2' then
+      print(string.format("Number of stages = %d", calcNumStagesRKL2(fact, extraStages)))
+   else
+      print(string.format("Number of stages = %d", calcNumStagesRKL1(fact, extraStages)))
+   end
    
-   local function sts(dt, fIn, fOut, fact)
-      local numStages = calcNumStages(fact, extraStages)
+   local function stsRKL2(dt, fIn, fOut, fact)
+      local numStages = calcNumStagesRKL2(fact, extraStages)
       local nsFh = io.open("numStages", "w")
       nsFh:write(string.format("%d", numStages))
       nsFh:close()
@@ -230,6 +246,35 @@ local App = function(tbl)
 	 calcRHS(fJ1, fDiff)
 	 fJ:combine(mu(j), fJ1, nu(j), fJ2, 1-mu(j)-nu(j), fIn,
 		    mubar(numStages,j)*dt, fDiff, gbar(numStages,j)*dt, fDiff0)
+	 applyBc(fJ)
+	 
+	 -- reset fields for next stage
+	 fJ2:copy(fJ1)
+	 fJ1:copy(fJ)
+      end
+      fOut:copy(fJ)
+   end
+
+   local function stsRKL1(dt, fIn, fOut, fact)
+      local mu, nu, mubar = muRKL1, nuRKL1, mubarRKL1
+      
+      local numStages = calcNumStagesRKL1(fact, extraStages)
+      local nsFh = io.open("numStages", "w")
+      nsFh:write(string.format("%d", numStages))
+      nsFh:close()
+
+      -- we need this in each stage
+      calcRHS(fIn, fDiff0)
+
+      -- stage 1
+      fJ2:copy(fIn)
+      fJ1:combine(1.0, fIn, mubar(numStages,1)*dt, fDiff0)
+      applyBc(fJ1)
+
+      -- rest of stages
+      for j = 2, numStages do
+	 calcRHS(fJ1, fDiff)
+	 fJ:combine(mu(j), fJ1, nu(j), fJ2, mubar(numStages,j)*dt, fDiff)
 	 applyBc(fJ)
 	 
 	 -- reset fields for next stage
@@ -273,7 +318,11 @@ local App = function(tbl)
 
       while not isDone do
 	 local dt = cfl/omegaCFL
-	 sts(dt, f, fNew, fact)
+	 if stepper == 'RKL2' then
+	    stsRKL2(dt, f, fNew, fact)
+	 else
+	    stsRKL1(dt, f, fNew, fact)
+	 end
 	 
       	 local err = l2diff(f, fNew)
 	 local resNorm = err/dt/srcL2
