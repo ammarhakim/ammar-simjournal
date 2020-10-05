@@ -46,7 +46,7 @@ end
 local App = function(tbl)
    -- read in stuff from input table
    local polyOrder = tbl.polyOrder
-   local cflFrac = 1.0
+   local cflFrac = tbl.cflFrac and tbl.cflFrac or 1.0
    local nFrames = 1
    local errEps = tbl.errEps and tbl.errEps or 1.0e-6
    local maxSteps = tbl.maxSteps and tbl.maxSteps or 1000

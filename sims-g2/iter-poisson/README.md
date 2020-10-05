@@ -12,6 +12,8 @@ Each directory contains two runs, with and without extrapolation.
 - s1: 32x32, RKL2 tests
 - s2: 64x64, RKL2 tests
 - s3: 128x128, RKL2 tests
+- s4: Same as s1, p=2
+- s5: Same as s2, p=2
 
 STS RKL1 Tests
 --------------
