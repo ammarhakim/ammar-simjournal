@@ -5,11 +5,12 @@ diffusion = App {
    polyOrder = 2,
    lower = {-1.0, -1.0},
    upper = {1.0, 1.0},
-   cells = {64, 64},
+   cells = {128, 128},
    errEps = 1e-8,
-   factor = 600,
-   extraStages = 7,
+   factor = 2000,
+   extraStages = 16,
    cflFrac = 0.8,
+   extrapolateInterval = 1,   
    
    -- initial conditions
    init = function (t, xn)

@@ -5,10 +5,10 @@ diffusion = App {
    polyOrder = 2,
    lower = {-1.0, -1.0},
    upper = {1.0, 1.0},
-   cells = {64, 64},
+   cells = {32, 32},
    errEps = 1e-8,
-   factor = 600,
-   extraStages = 7,
+   factor = 120,
+   extraStages = 3,
    cflFrac = 0.8,
    
    -- initial conditions

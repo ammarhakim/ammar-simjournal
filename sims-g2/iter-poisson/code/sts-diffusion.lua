@@ -114,6 +114,9 @@ local App = function(tbl)
    -- for time-stepping (never used)
    local cflRateByCell = getField(1)
 
+   -- error history
+   local errHist = DataStruct.DynVector { numComponents = 1 }
+
    -- function for source (optional)
    local srcFunc = function (t, xn) return 0 end
    if tbl.source  then srcFunc = tbl.source end
@@ -306,8 +309,6 @@ local App = function(tbl)
    return function ()
       local tmStart = Time.clock()
 
-      local fn = io.open(GKYL_OUT_PREFIX .. "_err.txt", "w")
-      
       local step = 1
       local dx, dy = grid:dx(1), grid:dx(2)
       local omegaCFL = Dxx/dx^2 + Dyy/dy^2
@@ -315,6 +316,11 @@ local App = function(tbl)
 
       local numPrevStored = 0 -- flag to check if we are ready to extrapolate
       local errE1, errE2 = 1e10, 1e10 -- errors for use in extrapolation
+
+      local numStages = calcNumStagesRKL2(fact, extraStages)
+      if stepper == 'RKL1' then
+	 numStages = calcNumStagesRKL1(fact, extraStages)
+      end
 
       while not isDone do
 	 local dt = cfl/omegaCFL
@@ -327,7 +333,7 @@ local App = function(tbl)
       	 local err = l2diff(f, fNew)
 	 local resNorm = err/dt/srcL2
       	 print(string.format("Step %d, dt = %g. Error = %g (Res. norm = %g)", step, dt, err, resNorm))
-	 fn:write(string.format("%d %g\n", step, err))
+	 errHist:appendData(numStages*step, { err })
       	 if err < errEps or step>=maxSteps then
       	    isDone = true
       	 end
@@ -356,10 +362,10 @@ local App = function(tbl)
       if step>maxSteps then
 	 print("WARNING: Solution has not converged! Increase 'maxSteps'")
       end
-      
-      f:write("f_1.bp", 1.0)
-      io.close(fn)
 
+      errHist:write("errHist.bp", 1.0)
+      f:write("f_1.bp", 1.0)
+      
       print(string.format("\nSimulation took %g sec", Time.clock()-tmStart))
    end
 end
