@@ -145,7 +145,7 @@ local App = function(tbl)
 
    -- constant diffusion equation object.
    local constDiffusionCalc = Eq {
-      Dcoeff = {Dxx, Dyy},
+      coefficient = {Dxx, Dyy},
       basis = basis,
    }
 
@@ -349,10 +349,9 @@ local App = function(tbl)
 	    numPrevStored = numPrevStored + 1
 
 	    if numPrevStored > 1 then -- need two values to extrapolate
-	       local redFact = -math.log(errE2/errE1)/extrapolateInterval
-	       print(string.format("Extrapolating! Step %d. p = %g", step, redFact))
-	       local eps = math.exp(-redFact*extrapolateInterval)
-	       -- extrapolate based on current decay rate
+	       -- extrapolate based on current decay rate	       
+	       local eps = errE2/errE1
+	       --local eps = (errE1*errE2+errE2^2)/errE1^2
 	       f:combine(1.0, fE2, eps, fE2, -eps, fE1)
 	    end
 	 end

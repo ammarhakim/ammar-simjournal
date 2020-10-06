@@ -10,7 +10,7 @@ diffusion = App {
    factor = 2000,
    extraStages = 16,
    cflFrac = 0.8,
-   extrapolateInterval = 1,   
+   extrapolateInterval = 1,
    
    -- initial conditions
    init = function (t, xn)
