@@ -33,3 +33,5 @@ http://ammar-hakim.org/sj/je/je11/je11-fem-poisson.html#convergence-of-second-or
 - c1: 8x8 grid, p=1
 - c2: 16x16 grid, p=1
 - c3: 32x32 grid, p=1.
+
+See 'd' series for RKL1 convergence.
