@@ -20,4 +20,16 @@ STS RKL1 Tests
 --------------
 
 This is the 'm' series of tests corresponding to the 's' series of
-simulations.
+simulations. Only difference is use of RKL1. Note that extrapolation
+can't be applied each step for RKL1, for reasons I do not fully
+understand.
+
+Convergence Tests
+-----------------
+
+These are based on
+http://ammar-hakim.org/sj/je/je11/je11-fem-poisson.html#convergence-of-second-order-solver-with-periodic-boundary-conditions
+
+- c1: 8x8 grid, p=1
+- c2: 16x16 grid, p=1
+- c3: 32x32 grid, p=1.

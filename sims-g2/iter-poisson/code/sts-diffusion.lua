@@ -61,6 +61,8 @@ local App = function(tbl)
    -- initial factor to start iteration
    local initFact = tbl.initFactor and tbl.initFactor or fact
    local initFactNumSteps = tbl.initFactorNumSteps and tbl.initFactorNumSteps or 0
+
+   local hasExact = tbl.exact and true or false -- flag to indicate if exact sol is specified
    
    local Dxx, Dyy = 1.0, 1.0
 
@@ -111,6 +113,9 @@ local App = function(tbl)
    -- source
    local src = getField(basis:numBasis())
 
+   -- exact solution
+   local fExact = getField(basis:numBasis())
+
    -- for time-stepping (never used)
    local cflRateByCell = getField(1)
 
@@ -122,7 +127,7 @@ local App = function(tbl)
    if tbl.source  then srcFunc = tbl.source end
    -- function for exact solution (optional)
    local exactFunc = function (t, xn) return 0 end
-   if tbl.exact  then exactFunc = tbl.exact end
+   if tbl.exact then exactFunc = tbl.exact end
 
    --------------
    -- Updaters --
@@ -201,9 +206,15 @@ local App = function(tbl)
    initSrc:advance(0.0, {}, {src})
    src:write("src.bp", 0, 0)
 
+   if hasExact then
+      initExactSol:advance(0.0, {}, {fExact})
+      fExact:write("fExact.bp", 0.0)
+   end
+
    local vol = (grid:upper(1)-grid:lower(1))*(grid:upper(2)-grid:lower(2))
    local srcInt = integrateField(src)/vol -- mean integrated source
 
+   -- we need to adjust sources when all directions are periodic
    do
       local localRange = src:localRange()
       local indexer = src:genIndexer()
@@ -349,9 +360,7 @@ local App = function(tbl)
 	    numPrevStored = numPrevStored + 1
 
 	    if numPrevStored > 1 then -- need two values to extrapolate
-	       -- extrapolate based on current decay rate	       
 	       local eps = errE2/errE1
-	       --local eps = (errE1*errE2+errE2^2)/errE1^2
 	       f:combine(1.0, fE2, eps, fE2, -eps, fE1)
 	    end
 	 end
@@ -364,6 +373,14 @@ local App = function(tbl)
 
       errHist:write("errHist.bp", 1.0)
       f:write("f_1.bp", 1.0)
+
+      if hasExact then
+	 -- compute L2 norm of error and write to file
+	 local l2Err = l2diff(fExact, f)
+	 local l2Fh = io.open(GKYL_OUT_PREFIX .. "_l2Error", "w")
+	 l2Fh:write(string.format("%g", l2Err))
+	 l2Fh:close() 
+      end
       
       print(string.format("\nSimulation took %g sec", Time.clock()-tmStart))
    end

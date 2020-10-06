@@ -7,8 +7,8 @@ diffusion = App {
    upper = {1.0, 1.0},
    cells = {128, 128},
    errEps = 1e-8,
-   factor = 2000,
-   extraStages = 15,
+   factor = 4000, -- 2000,
+   extraStages = 19,
    cflFrac = 0.8,
    
    -- initial conditions
