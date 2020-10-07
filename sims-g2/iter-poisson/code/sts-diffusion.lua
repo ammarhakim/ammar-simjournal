@@ -121,6 +121,8 @@ local App = function(tbl)
 
    -- error history
    local errHist = DataStruct.DynVector { numComponents = 1 }
+   -- extrapolation factos
+   local extraHist = DataStruct.DynVector { numComponents = 1 }
 
    -- function for source (optional)
    local srcFunc = function (t, xn) return 0 end
@@ -361,6 +363,7 @@ local App = function(tbl)
 
 	    if numPrevStored > 1 then -- need two values to extrapolate
 	       local eps = errE2/errE1
+	       extraHist:appendData(numPrevStored-1, { eps } )
 	       f:combine(1.0, fE2, eps, fE2, -eps, fE1)
 	    end
 	 end
@@ -371,6 +374,7 @@ local App = function(tbl)
 	 print("WARNING: Solution has not converged! Increase 'maxSteps'")
       end
 
+      extraHist:write("extraHist.bp", 1.0)
       errHist:write("errHist.bp", 1.0)
       f:write("f_1.bp", 1.0)
 
