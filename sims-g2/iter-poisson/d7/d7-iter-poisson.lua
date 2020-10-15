@@ -10,11 +10,10 @@ diffusion = App {
    factor = 20*4*4*4,
    extraStages = 10,
    cflFrac = 0.8,
-   extrapolateInterval = 1,
+   stepper = 'RKL1',      
    
    -- initial conditions
    init = function (t, xn)
-      local x, y = xn[1], xn[2]
       return 0.0
    end,
 

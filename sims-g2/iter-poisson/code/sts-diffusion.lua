@@ -391,7 +391,11 @@ local App = function(tbl)
 	 l2Fh:close() 
       end
       
-      print(string.format("\nSimulation took %g sec", Time.clock()-tmStart))
+      print(
+	 string.format(
+	    "\nSimulation took %g sec, %d stages", Time.clock()-tmStart, (step-1)*numStages
+	 )
+      )
    end
 end
 

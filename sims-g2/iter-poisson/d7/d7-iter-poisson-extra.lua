@@ -5,7 +5,7 @@ diffusion = App {
    polyOrder = 2,
    lower = {0.0, 0.0},
    upper = {2*math.pi, 2*math.pi},
-   cells = {32, 32},
+   cells = {64, 64},
    errEps = 1e-8,
    factor = 20*4*4*4,
    extraStages = 10,
@@ -15,7 +15,6 @@ diffusion = App {
    
    -- initial conditions
    init = function (t, xn)
-      local x, y = xn[1], xn[2]
       return 0.0
    end,
 
