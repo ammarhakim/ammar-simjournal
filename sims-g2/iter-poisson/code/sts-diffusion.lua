@@ -346,7 +346,7 @@ local App = function(tbl)
       	 local err = l2diff(f, fNew)
 	 local resNorm = err/dt/srcL2
       	 print(string.format("Step %d, dt = %g. Error = %g (Res. norm = %g)", step, dt, err, resNorm))
-	 errHist:appendData(numStages*step, { err })
+
       	 if err < errEps or step>=maxSteps then
       	    isDone = true
       	 end
@@ -365,8 +365,13 @@ local App = function(tbl)
 	       local eps = errE2/errE1
 	       extraHist:appendData(numPrevStored-1, { eps } )
 	       f:combine(1.0, fE2, eps, fE2, -eps, fE1)
+	       -- next two lines: should they be there??
+	       --err = l2diff(f, fNew)
+	       --errE2 = err
 	    end
 	 end
+
+	 errHist:appendData(numStages*step, { err })	 
 	 
       	 step = step + 1
       end
