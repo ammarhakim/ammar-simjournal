@@ -8,8 +8,8 @@ diffusion = App {
    cells = {64, 64},
    errEps = 1e-8,
    cflFrac = 0.85,
-   factor = 600,
-   extraStages = 6,
+   factor = 20*4*4*4, --600,
+   extraStages = 7,
    stepper = 'RKL1',
    
    -- initial conditions

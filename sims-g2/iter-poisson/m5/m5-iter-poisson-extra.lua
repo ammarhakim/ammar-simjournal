@@ -7,9 +7,9 @@ diffusion = App {
    upper = {1.0, 1.0},
    cells = {64, 64},
    errEps = 1e-8,
-   cflFrac = 0.85,
-   factor = 600,
-   extraStages = 6,
+   cflFrac = 0.8,
+   factor = 20*4*4*4,
+   extraStages = 7,
    stepper = 'RKL1',
    extrapolateInterval = 2,   
    
