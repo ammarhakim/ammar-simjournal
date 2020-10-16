@@ -365,9 +365,6 @@ local App = function(tbl)
 	       local eps = errE2/errE1
 	       extraHist:appendData(numPrevStored-1, { eps } )
 	       f:combine(1.0, fE2, eps, fE2, -eps, fE1)
-	       -- next two lines: should they be there??
-	       --err = l2diff(f, fNew)
-	       --errE2 = err
 	    end
 	 end
 

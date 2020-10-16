@@ -37,7 +37,6 @@ http://ammar-hakim.org/sj/je/je11/je11-fem-poisson.html#convergence-of-second-or
 - c5: 16x16 grid, p=2
 - c6: 32x32 grid, p=2.
 - c7: 64x64 grid, p=2.
-
-'c6' and 'c7' also have direct solver for comparison.
+- c8: 64x64 grid, p=2.
 
 See 'd' series for RKL1 convergence.
