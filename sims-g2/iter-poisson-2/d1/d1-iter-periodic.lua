@@ -9,10 +9,10 @@ local Grid = require "Grid"
 local Updater = require "Updater"
 local Time = require "Lib.Time"
 
-local polyOrder = 1
+local polyOrder = 2
 local lower = {0, 0}
 local upper = {2*math.pi, 2*math.pi}
-local cells = {32, 32}
+local cells = {8, 8}
 local periodicDirs = {1, 2}
 
 local grid = Grid.RectCart {
@@ -92,12 +92,11 @@ local iterPoisson = Updater.IterPoisson {
    -- heuristics
    
    errEps = 1e-8, -- maximum residual error
-   factor = 120, -- factor over explicit scheme
-   extraStages = 2, -- extra stages
-   cflFrac = 1.0, -- CFL frac for internal iterations
+   factor = 30, -- factor over explicit scheme
+   extraStages = 1, -- extra stages
+   cflFrac = 0.8, -- CFL frac for internal iterations
    stepper = 'RKL1', -- stepper to use 'RKL1' or 'RKL2'
-   extrapolateInterval = 1, -- extrapolate every these many steps
-
+   
    verbose = true,
 }
 

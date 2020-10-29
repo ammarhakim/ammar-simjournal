@@ -96,7 +96,7 @@ local iterPoisson = Updater.IterPoisson {
    extraStages = 1, -- extra stages
    cflFrac = 1.0, -- CFL frac for internal iterations
    stepper = 'RKL1', -- stepper to use 'RKL1' or 'RKL2'
-   extrapolateInterval = 2,
+   extrapolateInterval = 1,
    
    verbose = true,
 }
