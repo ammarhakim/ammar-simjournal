@@ -13,8 +13,10 @@ http://ammar-hakim.org/sj/je/je11/je11-fem-poisson.html#convergence-of-second-or
 - c2: 16x16 grid, p=1
 - c3: 32x32 grid, p=1
 - c4: 64x64 grid, p=1
+- c5: 128x128 grid, p=1
 
 - d1: 8x8 grid, p=2
 - d2: 16x16 grid, p=2
 - d3: 32x32 grid, p=2
 - d4: 64x64 grid, p=2
+- d5: 128x128 grid, p=2
