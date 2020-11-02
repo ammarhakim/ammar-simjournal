@@ -8,6 +8,9 @@ Convergence tests 1D
 --------------------
 
 - a1: 8 grid, p=1
+- a2: 16 grid, p=1
+- a3: 32 grid, p=1
+- a4: 64 grid, p=1
 
 Convergence tests 2D
 --------------------
