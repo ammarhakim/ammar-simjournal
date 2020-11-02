@@ -10,10 +10,10 @@ local Updater = require "Updater"
 local Time = require "Lib.Time"
 
 local polyOrder = 1
-local lower = {0, 0}
-local upper = {2*math.pi, 2*math.pi}
-local cells = {16, 16}
-local periodicDirs = {1, 2}
+local lower = {0}
+local upper = {2*math.pi}
+local cells = {64}
+local periodicDirs = {1}
 
 local grid = Grid.RectCart {
    lower = lower,
@@ -47,16 +47,16 @@ local initSource = Updater.ProjectOnBasis {
    onGrid = grid,
    basis = basis,
    evaluate = function(t, xn)
-      local x, y = xn[1], xn[2]
-      local amn = {{0,10,0}, {10,0,0}, {10,0,0}}
-      local bmn = {{0,10,0}, {10,0,0}, {10,0,0}}
+      local x = xn[1]
+      local am = {0, 5, -10} 
+      local bm = {10, 5, 10}
       local t1, t2 = 0.0, 0.0
       local f = 0.0
       for m = 0,2 do
 	 for n = 0,2 do
-	    t1 = amn[m+1][n+1]*math.cos(m*x)*math.cos(n*y)
-	    t2 = bmn[m+1][n+1]*math.sin(m*x)*math.sin(n*y)
-	    f = f + -(m*m+n*n)*(t1+t2)
+	    t1 = am[m+1]*math.cos(m*x)
+	    t2 = bm[m+1]*math.sin(m*x)
+	    f = f-m*m*(t1+t2)
 	 end
       end
       return -f/50.0
@@ -67,17 +67,17 @@ local exactSol = Updater.ProjectOnBasis {
    onGrid = grid,
    basis = basis,
    evaluate = function(t, xn)
-      local x, y = xn[1], xn[2]
-      local amn = {{0,10,0}, {10,0,0}, {10,0,0}}
-      local bmn = {{0,10,0}, {10,0,0}, {10,0,0}}
+      local x = xn[1]
       local t1, t2 = 0.0, 0.0
+      local am = {0, 5, -10} 
+      local bm = {10, 5, 10}
       local f = 0.0
 
       for m = 0,2 do
 	 for n = 0,2 do
-	    t1 = amn[m+1][n+1]*math.cos(m*x)*math.cos(n*y)
-	    t2 = bmn[m+1][n+1]*math.sin(m*x)*math.sin(n*y)
-	    f = f + (t1+t2)
+	    t1 = am[m+1]*math.cos(m*x)
+	    t2 = bm[m+1]*math.sin(m*x)
+	    f = f+(t1+t2)
 	 end
       end
       return f/50.0
@@ -92,11 +92,11 @@ local iterPoisson = Updater.IterPoisson {
    -- heuristics
    
    errEps = 1e-8, -- maximum residual error
-   factor = 30, -- factor over explicit scheme
-   extraStages = 1, -- extra stages
-   cflFrac = 1.0, -- CFL frac for internal iterations
+   factor = 40, -- factor over explicit scheme
+   extraStages = 4, -- extra stages
+   cflFrac = 0.8, -- CFL frac for internal iterations
    stepper = 'RKL1', -- stepper to use 'RKL1' or 'RKL2'
-   extrapolateInterval = 1,
+   extrapolateInterval = 2,   
    
    verbose = true,
 }

@@ -114,3 +114,4 @@ exactSol:advance(0.0, {}, {fExact})
 fExact:write("fExact.bp")
 
 iterPoisson:writeDiagnostics()
+print(string.format("L2 error %g\n", iterPoisson:l2diff(fOut, fExact)))

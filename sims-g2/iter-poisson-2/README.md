@@ -4,8 +4,13 @@ Tests for an iterative solvers for Poisson equations
 Iterative solvers for Poisson equations. Uses the in-built Gkeyll
 updater.
 
-Convergence tests
------------------
+Convergence tests 1D
+--------------------
+
+- a1: 8 grid, p=1
+
+Convergence tests 2D
+--------------------
 
 http://ammar-hakim.org/sj/je/je11/je11-fem-poisson.html#convergence-of-second-order-solver-with-periodic-boundary-conditions
 

@@ -91,7 +91,7 @@ local iterPoisson = Updater.IterPoisson {
    -- there parameters will eventually be replaced by internal
    -- heuristics
    
-   errEps = 1e-8, -- maximum residual error
+   errEps = 1e-10, -- maximum residual error
    factor = 7600, -- factor over explicit scheme
    extraStages = 21, -- extra stages
    cflFrac = 0.8, -- CFL frac for internal iterations
@@ -113,3 +113,4 @@ exactSol:advance(0.0, {}, {fExact})
 fExact:write("fExact.bp")
 
 iterPoisson:writeDiagnostics()
+print(string.format("L2 error %g\n", iterPoisson:l2diff(fOut, fExact)))
