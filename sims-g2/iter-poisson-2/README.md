@@ -33,3 +33,10 @@ http://ammar-hakim.org/sj/je/je11/je11-fem-poisson.html#convergence-of-second-or
 - d3: 32x32 grid, p=2
 - d4: 64x64 grid, p=2
 - d5: 128x128 grid, p=2
+
+Convergence tests 3D
+--------------------
+
+- e1: 8x8x8 grid, p=1
+- e2: 16x16x16 grid, p=1
+- e3: 32x32x32 grid, p=1
