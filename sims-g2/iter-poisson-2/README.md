@@ -12,6 +12,11 @@ Convergence tests 1D
 - a3: 32 grid, p=1
 - a4: 64 grid, p=1
 
+- b1: 8 grid, p=2
+- b2: 16 grid, p=2
+- b3: 32 grid, p=2
+- b4: 64 grid, p=2
+
 Convergence tests 2D
 --------------------
 
