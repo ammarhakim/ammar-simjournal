@@ -92,7 +92,7 @@ local iterPoisson = Updater.IterPoisson {
    -- heuristics
    
    errEps = 1e-8, -- maximum residual error
-   cflFrac = 4.0*2*2, -- CFL frac for internal iterations
+   cflFrac = 4.0, -- CFL frac for internal iterations
    stepper = 'richard2', -- stepper to use
    verbose = true,
 }
