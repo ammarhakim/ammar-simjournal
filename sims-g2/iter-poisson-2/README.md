@@ -2,7 +2,9 @@ Tests for an iterative solvers for Poisson equations
 ====================================================
 
 Iterative solvers for Poisson equations. Uses the in-built Gkeyll
-updater.
+updater. Most (not all) of these driectories contain three Lua files:
+one for RKL1, one for RKL1-extrapolated and one for Richarson
+Second-order method.
 
 Convergence tests 1D
 --------------------
