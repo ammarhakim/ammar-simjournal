@@ -53,11 +53,7 @@ local iterPoisson = Updater.IterPoisson {
    onGrid = grid,
    basis = basis,
 
-   -- there parameters will eventually be replaced by internal
-   -- heuristics
-   
    errEps = 1e-8, -- maximum residual error
-   cflFrac = 4.0, -- CFL frac for internal iterations
    stepper = 'richard2',
    verbose = true,
 }

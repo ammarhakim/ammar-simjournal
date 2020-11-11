@@ -49,3 +49,4 @@ Gaussian source in 2D
 
 - m1: 16x16 grid, p=1
 - m2: 32x32 grid, p=1
+- m3: 64x64 grid, p=1

@@ -9,7 +9,7 @@ local Grid = require "Grid"
 local Updater = require "Updater"
 local Time = require "Lib.Time"
 
-local polyOrder = 1
+local polyOrder = 2
 local lower = {-1.0, -1.0}
 local upper = {1.0, 1.0}
 local cells = {16, 16}
