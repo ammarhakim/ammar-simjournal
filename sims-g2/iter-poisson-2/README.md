@@ -54,6 +54,7 @@ Gaussian source in 2D
 - m4: 128x128 grid, p=1
 - m5: 128x1 grid, p=1
 - m6: 128x128 grid, p=1, parallel
+- m7: 64x64x64 grid, p=1, parallel
 
 - n1: 16x16 grid, p=2
 - n2: 32x32 grid, p=2
