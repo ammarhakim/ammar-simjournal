@@ -93,7 +93,7 @@ local iterPoisson = Updater.IterPoisson {
    
    errEps = 1e-8, -- maximum residual error
    cflFrac = 4.0, -- CFL frac for internal iterations
-   stepper = 'richard2', -- stepper to use 'RKL1' or 'RKL2'
+   stepper = 'richard2',
    verbose = true,
 }
 
