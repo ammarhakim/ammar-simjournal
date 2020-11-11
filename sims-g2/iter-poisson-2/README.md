@@ -29,6 +29,7 @@ http://ammar-hakim.org/sj/je/je11/je11-fem-poisson.html#convergence-of-second-or
 - c3: 32x32 grid, p=1
 - c4: 64x64 grid, p=1
 - c5: 128x128 grid, p=1
+- c6: 256x256 grid, p=1
 
 - d1: 8x8 grid, p=2
 - d2: 16x16 grid, p=2
@@ -50,3 +51,9 @@ Gaussian source in 2D
 - m1: 16x16 grid, p=1
 - m2: 32x32 grid, p=1
 - m3: 64x64 grid, p=1
+- m4: 128x128 grid, p=1
+
+- n1: 16x16 grid, p=2
+- n2: 32x32 grid, p=2
+- n3: 64x64 grid, p=2
+- n4: 128x128 grid, p=2
