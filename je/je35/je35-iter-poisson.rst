@@ -156,15 +156,15 @@ spectral approximation to the Laplacian we have :math:`k_{max} =
 
    \Delta t \lt \frac{2 \Delta x}{\pi}.
 
-For central difference approximation Jardin gives :math:`\Delta t \lt
-\Delta x/\sqrt{2}`.
+For central difference approximation :math:`\Delta t \lt \Delta
+x/\sqrt{2}`.
 
 In either case, as the (pseudo) time-step is *linearly* dependent on
 the cell spacing, indicates that the scheme will converge *linearly*
 with the number of cells in each direction. So, doubling the number of
 cells in each direction in 3D will lead to twice as many
 iterations. As there are 8 times more cells now, the scheme will hence
-take 16 times longer to converge. This is scaling is dramtically
+take 16 times longer to converge. This is scaling is dramatically
 better than a direct solver, which would be :math:`8^3 = 512` times
 more expensive due to the cost scaling of the LU decomposition.
 
@@ -173,7 +173,7 @@ Nishikawa's First Order Scheme
 ------------------------------
 
 In [Nishikawa2007]_ studied a system of first-order relaxation
-equations that reduce to the Poisson at steady-state:
+equations that reduce to the Poisson equation at steady-state:
 
 .. math::
 
@@ -238,7 +238,7 @@ Consider the 1D case and write this as
     \end{matrix}
    \right].
 
-As is easily seen, the eignevalues of the Jacobian matrix are simply
+As is easily seen, the eigenvalues of the Jacobian matrix are simply
 
 .. math::
 
@@ -266,7 +266,9 @@ As Nishikawa's scheme essentially reduces to solving a system of
 hyperbolic (plus relaxation source) equations, the time-step for
 stability will also be linearly proportional to :math:`\Delta x`, and
 hence will have the same cost scaling as the two schemes described
-above.
+above. In fact, for the choice :math:`\alpha = T_r` we will have
+:math:`\lambda_{1,2} = \pm 1` and hence :math:`\Delta t = \Delta x`
+(in 1D).
 
 However, one serious disadvantage of this scheme is that it involves
 solving *four* first-order equations in 3D, while the scheme in the
@@ -275,6 +277,69 @@ implementation for the second-order system in Gkeyll has the *same
 cost* as the cost of a single first-order equation, and hence
 Nishikawa's scheme will be approximately four times more expensive (in
 3D) if the number of iterations are approximately the same.
+
+Residual norm, updater structure
+--------------------------------
+
+To check convergence of the solution we use the *residual norm*
+computed as
+
+.. math::
+
+   R_2[f,s] = \frac{\lVert \nabla_h f + s \rVert_2 }{\lVert s
+   \rVert_2}
+
+where :math:`\lVert \cdot \rVert_2` is the :math:`l_2`-norm of the
+discrete solution. See `this note
+<https://gkeyll.readthedocs.io/en/latest/dev/modalbasis.html#convolution-of-two-functions>`_
+on how to compute :math:`l_2`-norm of the from the Gkeyll
+representation of the DG solution.  For all tests below I use the
+initial guess of zero, and hence the initial residual norm is
+always 1. Typically, I set the condition of :math:`R_2 \lt 10^{-8}` as
+the discretization error is typically larger than this. For some
+:math:`p=2` tests with high resolution one needs a more stringent
+error criteria.
+
+An example of the use of the updater is below:
+
+.. code:: lua
+
+  local iterPoisson = Updater.IterPoisson {
+     onGrid = grid,
+     basis = basis,
+     errEps = 1e-8, -- maximum residual error
+     stepper = 'richard2',
+     verbose = true,
+  }
+  iterPoisson:advance(0.0, {fIn}, {fOut})
+
+Note the parameter `stepper` is set to "richard2" to select the second
+order Richardson iteration scheme.  When the `verbose` flag is set the
+updater will show messages on the console. You can also save the error
+history by calling the `writeDiagnostics()` method after the updater
+has converged:
+
+.. code:: lua
+
+  iterPoisson:writeDiagnostics()
+
+This will produce a DynVector BP file which can be plotted in the
+usual way. For example::
+
+  pgkyl -f f1-r2-iter-periodic_errHist.bp pl --logy
+
+Note that the `IterPoisson` updater is not really restricted to only
+DG discretization of the Poisson equation. In fact, any equation
+system and discretization can be used. For example, density weighted
+diffusion or FEM discretization. The updater simply calls the
+appropriate equation object to compute the residual and does not use
+any equation or discritization specific information.
+  
+Convergence tests in 1D
+-----------------------
+
+
+
     
 References
 ----------
