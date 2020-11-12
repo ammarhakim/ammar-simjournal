@@ -115,35 +115,35 @@ figure for the case :math:`T_e=1.0`.
   damping rate. See [:doc:`s151
   <../../sims/s151/s151-landau-damping-vp>`] for the input file.
 
-The damping rates can be compared to results obtained from linear
-analysis in the :math:`k\lambda_D \ll 1` regime
+..
+   The damping rates can be compared to results obtained from linear
+   analysis in the :math:`k\lambda_D \ll 1` regime
 
-.. math::
+   .. math::
 
-  \Omega_i \approx \left(\frac{\pi}{8}\right)^{1/2}
-    \left(\frac{1}{K^3} - 6K\right)
-    \exp\left(-\frac{1}{2K^2} -\frac{3}{2} - 3K^2 - 12K^4 \right)
+     \Omega_i \approx \left(\frac{\pi}{8}\right)^{1/2}
+       \left(\frac{1}{K^3} - 6K\right)
+       \exp\left(-\frac{1}{2K^2} -\frac{3}{2} - 3K^2 - 12K^4 \right)
 
-In this `third-order accurate formula
-<http://www.lle.rochester.edu/media/publications/lle_review/documents/v74/4_74accurate.pdf>`_
-:math:`\Omega_i` is the normalized (to plasma frequency) growth
-(damping) rate and :math:`K = k\lambda_D`. Note that the standard
-text-book formula
+   In this `third-order accurate formula
+   <http://www.lle.rochester.edu/media/publications/lle_review/documents/v74/4_74accurate.pdf>`_
+   :math:`\Omega_i` is the normalized (to plasma frequency) growth
+   (damping) rate and :math:`K = k\lambda_D`. Note that the standard
+   text-book formula
 
-.. math::
+   .. math::
 
-  \Omega_i \approx \left(\frac{\pi}{8}\right)^{1/2}
-    \frac{1}{K^3}
-    \exp\left(-\frac{1}{2K^2} -\frac{3}{2}\right)
+     \Omega_i \approx \left(\frac{\pi}{8}\right)^{1/2}
+       \frac{1}{K^3}
+       \exp\left(-\frac{1}{2K^2} -\frac{3}{2}\right)
 
-is only first-order accurate. For the case in which :math:`k\lambda_D`
-is large a numerical root-finder is needed to get the correct damping
-rates.
+   is only first-order accurate. For the case in which :math:`k\lambda_D`
+   is large a numerical root-finder is needed to get the correct damping
+   rates.
 
 In the following figure the numerical results are compared to the
 exact values obtained from a numerical root finder that solves the
-dispersion relation for Langmuir waves. Also shown are the values from
-third order and the first-order formulas. Note that it is difficult to
+dispersion relation for Langmuir waves. Note that it is difficult to
 obtain damping rates from simulations with even smaller
 :math:`k\lambda_D` as the numerical damping seems to affect the the
 delicate damping from the phase-mixing process.
@@ -154,11 +154,9 @@ delicate damping from the phase-mixing process.
 
   Damping rate from Landau damping for electron plasma oscillations as
   a function of normalized Debye length. The black dots show the
-  numerical damping rates compared to the exact results (magenta),
-  third-order formula (red) and the first-order formula (blue). The
+  numerical damping rates compared to the exact results (magenta). The
   damping rates are within 3% of the exact values, and for large
-  values of :math:`k\lambda_D` within 1%. The first- and third-oder
-  formulas are only valid for :math:`k\lambda_D \ll 1` and do not
+  values of :math:`k\lambda_D` within 1%.
   agree with the exact results.
 
 Nonlinear Landau damping

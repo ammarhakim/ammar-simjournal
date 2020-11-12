@@ -1,6 +1,6 @@
-maxIter = 1000
+maxIter = 10000
 
-gamma = 1.4
+gamma = 3.0
 
 dl = 1.0
 ul = 0.0

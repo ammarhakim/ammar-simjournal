@@ -28,6 +28,16 @@ exactProj : projectOnBasisGrid(exactSol, bc, xL, xR, nmax)$
 srcProj : projectOnBasisGrid(srcFunc, bc, xL, xR, nmax)$
 dxProj : projectOnBasisGrid(dxFunc, bc, xL, xR, nmax)$
 
+getLaplacianStencil(polyOrder, fL, fC, fR) :=  calcInnerProdList([x], 1,
+  basisC[polyOrder],
+  diff(calcRecov1CellGen("Ser", x, [x], polyOrder, 1, dg(fL), dg(fC), dg(fR)), x,2)
+  )$
+
+getHyperLaplacianStencil(polyOrder, fL, fC, fR) :=  calcInnerProdList([x], 1,
+  basisC[polyOrder],
+  diff(calcRecov1CellGen("Ser", x, [x], polyOrder, 3, dg(fL), dg(fC), dg(fR)), x,4)
+  )$
+
 /* Compute interior stencil and residual (Laplacian) */
 stencilI : getLaplacianStencil(polyOrder, exactProj[1], exactProj[2], exactProj[3])$
 remPolyI : fullratsimp(4/dx1^2*stencilI + srcProj[2])$

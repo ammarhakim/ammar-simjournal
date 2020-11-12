@@ -345,9 +345,9 @@ the electron beams get warmer.
   drift speed :math:`u_d = v_{th}`. With these parameters the
   *isothermal model does not show any growth*. Also, shown in red dots
   are the growth rates from a kinetic calculation of the dispersion
-  relation. The peak growth rates are about :math:`20\%` higher in the
-  ten-moment model. See :doc:`10m-weibel-2 <10m-weibel-2>` for tool
-  input file.
+  relation. (Code courtesy of Petr Cagas). The peak growth rates are
+  about :math:`20\%` higher in the ten-moment model. See
+  :doc:`10m-weibel-2 <10m-weibel-2>` for tool input file.
        
 References
 ----------

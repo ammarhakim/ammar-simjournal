@@ -2,8 +2,6 @@ load("recovery")$
 
 NX : 16$
 NY : 16$
-dx : 1/NX$
-dy : 1/NY$
 
 readGkylField(fn, NX, NY) := block([matFmt, sz, nbasis],
   matFmt : read_matrix(fn, comma),
@@ -49,27 +47,27 @@ Dxy : readGkylField("/Users/ahakim/research/ammar-simjournal/sims-g2/recover-ans
 /* Top-edge of cell lower-left of O-point */
 Dxx_ot : subst(y=0,
   float(
-    calcRecov2CellGen("Ser", y, [2,2], 1, dg(filterList(Dxx[ix][iy])), dg(filterList(Dxx[ix][iy+1])))
+    calcRecov2CellGen("Ser", y, 2, 1, dg(filterList(Dxx[ix][iy])), dg(filterList(Dxx[ix][iy+1])))
     )
   )$
 
 /* Right-edge of cell lower-left of O-point */
 Dxx_or : subst(x=0,
   float(
-    calcRecov2CellGen("Ser", x, [2,2], 1, dg(filterList(Dxx[ix][iy])), dg(filterList(Dxx[ix+1][iy])))
+    calcRecov2CellGen("Ser", x, 2, 1, dg(filterList(Dxx[ix][iy])), dg(filterList(Dxx[ix+1][iy])))
     )
   )$
 
 /* Top-edge (on X-axis) of cell on left wall */
 Dxx_lt : subst(y=0,
   float(
-    calcRecov2CellGen("Ser", y, [2,2], 1, dg(filterList(Dxx[1][iy])), dg(filterList(Dxx[1][iy+1])))
+    calcRecov2CellGen("Ser", y, 2, 1, dg(filterList(Dxx[1][iy])), dg(filterList(Dxx[1][iy+1])))
     )
   )$
 
 /* Right-edge (on Y-axis) of cell on bottom */
 Dxx_br : subst(x=0,
   float(
-    calcRecov2CellGen("Ser", y, [2,2], 1, dg(filterList(Dxx[ix][1])), dg(filterList(Dxx[ix+1][1])))
+    calcRecov2CellGen("Ser", y, 2, 1, dg(filterList(Dxx[ix][1])), dg(filterList(Dxx[ix+1][1])))
     )
   )$

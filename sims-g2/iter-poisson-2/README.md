@@ -45,6 +45,9 @@ Convergence tests 3D
 - e3: 32x32x32 grid, p=1
 - e4: 64x64x64 grid, p=1
 
+- f1: 8x8x8 grid, p=2
+- f2: 16x16x16 grid, p=2
+
 Gaussian source in 2D
 ---------------------
 

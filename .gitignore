@@ -11,4 +11,5 @@
 *.dylib
 *.h5
 *.mm
-
+sims/*/*.rst
+sims-2/*/*/*.rst

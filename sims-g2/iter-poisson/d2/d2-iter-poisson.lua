@@ -7,7 +7,7 @@ diffusion = App {
    upper = {2*math.pi, 2*math.pi},
    cells = {16, 16},
    errEps = 1e-8,
-   factor = 40,
+   factor = 60,
    extraStages = 1,
    stepper = 'RKL1',
    

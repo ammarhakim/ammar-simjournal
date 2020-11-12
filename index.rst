@@ -55,7 +55,6 @@ Gkeyll Simulation Journal
 .. toctree::
   :maxdepth: 1
 
-  sims/simindex.rst
   je/je0/je0-repro-research.rst
   je/je1/je1-periodic-poisson.rst
   je/je2/je2-euler-shock.rst
@@ -90,4 +89,5 @@ Gkeyll Simulation Journal
   je/je32/je32-vlasov-test-ptcl.rst
   je/je33/je33-buneman.rst
   je/je34/je34-linear-dispersion.rst
+  je/je35/je35-iter-poisson.rst
 
