@@ -1,6 +1,6 @@
 :Author: Ammar Hakim
 :Date: November 11th 2020
-:Completed: 
+:Completed: November 13th 2020
 :Last Updated:
 
 JE35: Benchmarking an iterative discontinuous Galerkin Poisson solver
@@ -339,7 +339,7 @@ DG discretization of the Poisson equation. In fact, any equation
 system and discretization can be used. For example, density weighted
 diffusion or FEM discretization. The updater simply calls the
 appropriate equation object to compute the residual and does not use
-any equation or discritization specific information.
+any equation or discretization specific information.
   
 Convergence tests in 1D
 -----------------------
@@ -643,7 +643,7 @@ For 3D convergence tests I used the source
 
 .. math::
 
-   s(x,y) = -\frac{1}{N}\sum_{m,n} (m^2+n^2+9) \left[
+   s(x,y,z) = -\frac{1}{N}\sum_{m,n} (m^2+n^2+9) \left[
     a_{mn} \cos(mx) \cos(ny) + 
     b_{mn} \sin(mx) \sin(ny)
   \right]\sin(3z).
@@ -677,7 +677,7 @@ The exact solution for this problem is
 
 .. math::
 
-   f_e(x,y) = \frac{1}{N}\sum_{m,n} \left[
+   f_e(x,y,z) = \frac{1}{N}\sum_{m,n} \left[
     a_{mn} \cos(mx) \cos(ny) + 
     b_{mn} \sin(mx) \sin(ny)
   \right] \sin(3z)
