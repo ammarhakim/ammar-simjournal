@@ -18,7 +18,7 @@ local cells = {64, 64, 64}
 local periodicDirs = {1, 2, 3}
 
 local log = Logger { logToFile = false }
-local decomp = DecompRegionCalc.CartProd { cuts = {2, 1, 1} }
+local decomp = DecompRegionCalc.CartProd { cuts = {2, 2, 1} }
 
 local grid = Grid.RectCart {
    lower = lower,

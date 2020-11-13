@@ -5,27 +5,21 @@
 
 local Basis = require "Basis"
 local DataStruct = require "DataStruct"
-local DecompRegionCalc = require "Lib.CartDecomp"
 local Grid = require "Grid"
-local Logger = require "Lib.Logger"
-local Time = require "Lib.Time"
 local Updater = require "Updater"
+local Time = require "Lib.Time"
 
 local polyOrder = 1
 local lower = {0, 0, 0}
 local upper = {2*math.pi, 2*math.pi, 2*math.pi}
-local cells = {64, 64, 64}
+local cells = {8, 8, 8}
 local periodicDirs = {1, 2, 3}
-
-local log = Logger { logToFile = false }
-local decomp = DecompRegionCalc.CartProd { cuts = {2, 1, 1} }
 
 local grid = Grid.RectCart {
    lower = lower,
    upper = upper,
    cells = cells,
    periodicDirs = periodicDirs,
-   decomposition = decomp,
 }
 local basis = Basis.CartModalSerendipity {
    ndim = grid:ndim(),
@@ -98,8 +92,12 @@ local iterPoisson = Updater.IterPoisson {
    -- heuristics
    
    errEps = 1e-8, -- maximum residual error
-   cflFrac = 8.0, -- CFL frac for internal iterations
-   stepper = 'richard2',
+   factor = 4, -- factor over explicit scheme
+   extraStages = 0, -- extra stages
+   cflFrac = 1.0, -- CFL frac for internal iterations
+   stepper = 'RKL1',
+   extrapolateInterval = 2,
+   
    verbose = true,
 }
 
@@ -107,7 +105,7 @@ initSource:advance(0.0, {}, {fIn})
 
 local tmStart = Time.clock()
 iterPoisson:advance(0.0, {fIn}, {fOut})
-log(string.format("Simulation took %g\n", Time.clock()-tmStart))
+print(string.format("Simulation took %g", Time.clock()-tmStart))
 
 fIn:write('fIn.bp', 0.0, 0)
 fOut:write('fOut.bp', 0.0, 0)
@@ -116,4 +114,4 @@ exactSol:advance(0.0, {}, {fExact})
 fExact:write("fExact.bp")
 
 iterPoisson:writeDiagnostics()
-log(string.format("L2 error %g\n\n", iterPoisson:l2diff(fOut, fExact)))
+print(string.format("L2 error %g\n", iterPoisson:l2diff(fOut, fExact)))

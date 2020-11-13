@@ -624,8 +624,8 @@ order and number of iterations to converge to a residual norm of
   also).
 
 In the following plot the RDG solution is compared with the exact
-solution for the :math:`p=2` case, showing the extreme accuracy of the
-scheme on a coarse grid of :math:`8\times 8` grid.
+solution for the :math:`p=2` case, showing the accuracy of the scheme
+on a coarse grid of :math:`8\times 8` grid.
 
 .. figure:: d1-sol-cmp.png
   :width: 100%
@@ -635,7 +635,147 @@ scheme on a coarse grid of :math:`8\times 8` grid.
   :math:`8\times 8` grid with :math:`p=2` basis functions. The two
   curves essentially overlap, showing the accuracy of the RDG scheme
   for this problem.
-  
+
+Convergence tests in 3D
+-----------------------
+
+For 3D convergence tests I used the source
+
+.. math::
+
+   s(x,y) = -\frac{1}{N}\sum_{m,n} (m^2+n^2+9) \left[
+    a_{mn} \cos(mx) \cos(ny) + 
+    b_{mn} \sin(mx) \sin(ny)
+  \right]\sin(3z).
+
+with :math:`x,y,z\in [0,2\pi]` on a 3D periodic domain. This source
+source is set in code as:
+
+.. code:: lua
+
+   local initSource = Updater.ProjectOnBasis {
+      onGrid = grid,
+      basis = basis,
+      evaluate = function(t, xn)
+	 local x, y, z = xn[1], xn[2], xn[3]
+	 local amn = {{0,10,0}, {10,0,0}, {10,0,0}}
+	 local bmn = {{0,10,0}, {10,0,0}, {10,0,0}}
+	 local t1, t2 = 0.0, 0.0
+	 local f = 0.0
+	 for m = 0,2 do
+	    for n = 0,2 do
+	       t1 = amn[m+1][n+1]*math.cos(m*x)*math.cos(n*y)*math.sin(3*z)
+	       t2 = bmn[m+1][n+1]*math.sin(m*x)*math.sin(n*y)*math.sin(3*z)
+	       f = f + -(m*m+n*n+9)*(t1+t2)
+	    end
+	 end
+	 return -f/50.0
+      end,
+   }
+
+The exact solution for this problem is
+
+.. math::
+
+   f_e(x,y) = \frac{1}{N}\sum_{m,n} \left[
+    a_{mn} \cos(mx) \cos(ny) + 
+    b_{mn} \sin(mx) \sin(ny)
+  \right] \sin(3z)
+
+
+Gird size of :math:`8\times 8`, :math:`16\times 16`, :math:`32\times
+32`, :math:`64 \times 64` cells were used.  The errors, convergence
+order and number of iterations to converge to a residual norm of
+:math:`10^{-8}` are given below. Note that both the "RKL1" and
+"richard2" converge to the *same* :math:`l_2`-norm error.
+
+.. list-table:: Poisson solver convergence for 3D, :math:`p=1`
+		periodic BCs
+  :header-rows: 1
+  :widths: 10,30,20,20,20
+	   
+  * - :math:`N_x`
+    - :math:`l_2`-error
+    - Order
+    - :math:`N_{RKL1}`
+    - :math:`N_{rich}`
+  * - :math:`8\times 8\times 8`
+    - :math:`1.4831\times 10^{-1}`
+    - 
+    - 36
+    - 35
+  * - :math:`16\times 16\times 16`
+    - :math:`1.53151\times 10^{-2}`
+    - 3.3
+    - 60
+    - 76
+  * - :math:`32\times 32\times 32`
+    - :math:`1.83854 \times 10^{-3}`
+    - 3.05
+    - 110
+    - 156
+  * - :math:`64\times 64\times 64`
+    - :math:`2.27614\times 10^{-4}`
+    - 3.0
+    - 220
+    - 315
+
+.. figure:: p1-3D-errHist.png
+  :width: 100%
+  :align: center
+
+  History of residual norm for :math:`p=1`, 3D :math:`64\times
+  64\times 64` cell case for "RKL1" (blue) and "richard2" (orange)
+  schemes. Note the exponential decay in errors, with the "RKL1"
+  further converging faster due to the sequence acceleration. For the
+  3D case it seems there is persistent oscillatory modes which seem
+  absent in 1D or 2D.
+
+Though not shown here, a similar trend is seen for :math:`p=2` 3D case
+and the scheme converges with 4th order accuracy.
+
+Some concluding notes
+---------------------
+
+It seems that the iterative Poisson solver is working well, and both
+the schemes converge with the best possible scaling for a *local*
+(3-point) iterative scheme. Multigrid schemes may scale better and be
+faster for large problems, but a side-by-side comparison remains to be
+done. Some concluding notes follow.
+
+- The sequence acceleration implemented for the "RKL1" scheme makes it
+  converge faster than the "richard2" scheme as well as without the
+  sequence acceleration. The same sequence acceleration scheme *does
+  not work* for "richard2" scheme, probably due to the presence of the
+  oscillatory modes. Perhaps there is a way to apply such an
+  acceleration to the "richard2" scheme also.
+
+- Although the "RKL1" consistently outperforms the "richard2" scheme,
+  the parameters are hard to choose and significant experimentation is
+  needed. (Though the parameters are geometry dependent and do not
+  depend on the source term). Hence, for now, "richard2" scheme is
+  easier to use. Auto-selecting the parameter remains ongoing
+  research. (A hint here is that once one determines the parameter for
+  a given resolution then the parameters for doubling the grid in each
+  direction are easy to determine).
+
+- Compared to a direct solver, the iterative solvers are significantly
+  faster for even modest size problems. For example, for
+  :math:`16\times 16\times 16`, :math:`p=1` problem the iterative
+  solver is about 600x faster! (The number of degrees of freedom are
+  :math:`16\times 16\times 16\times 8 = 32768`) The bulk of the time
+  is spent in the LU factorization. Further, even though the matrix is
+  sparse, the LU factor are not and storing these may be an
+  issue. However, for small problems for which the factorization can
+  be done once and the LU factors stored, the direct solver can be
+  faster as for each solve (after factorization) only a
+  back-substitution is needed.
+
+- The iterative solver works in parallel. The :math:`64\times 64\times
+  64`, :math:`p=1` problem runs about 1.98x faster on 2 cores and 3.4x
+  faster on 4 cores.
+
+      
 References
 ----------
 
