@@ -92,8 +92,8 @@ local iterPoisson = Updater.IterPoisson {
    -- heuristics
    
    errEps = 1e-8, -- maximum residual error
-   factor = 30, -- factor over explicit scheme
-   extraStages = 1, -- extra stages
+   factor = 20, -- factor over explicit scheme
+   extraStages = 2, -- extra stages
    cflFrac = 0.8, -- CFL frac for internal iterations
    stepper = 'RKL1',
    extrapolateInterval = 2, -- extrapolate every these many steps 

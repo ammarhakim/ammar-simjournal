@@ -1,0 +1,1 @@
+pgkyl -f d1-iter-periodic_fExact.bp -l "Exact" -f d1-iter-periodic-extra_fOut.bp -l "RDG"  interp  sel --z1 1.0 pl -f0 --xlabel="x" --ylabel='$f(x,y=1)$' -t 'Lineout of $p=2$, $8\times 8$ solution' --saveas=d1-sol-cmp

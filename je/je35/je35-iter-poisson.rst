@@ -581,6 +581,61 @@ order and number of iterations to converge to a residual norm of
   some oscillatory mode (as can be seen from the dispersion relation
   also).
 
+.. list-table:: Poisson solver convergence for 2D, :math:`p=2`
+		periodic BCs
+  :header-rows: 1
+  :widths: 10,30,20,20,20
+	   
+  * - :math:`N_x`
+    - :math:`l_2`-error
+    - Order
+    - :math:`N_{RKL1}`
+    - :math:`N_{rich}`
+  * - :math:`8\times 8`
+    - :math:`1.13367\times 10^{-3}`
+    - 
+    - 88
+    - 131
+  * - :math:`16\times 16`
+    - :math:`6.90935\times 10^{-5}`
+    - 4.0
+    - 117
+    - 260
+  * - :math:`32\times 32`
+    - :math:`4.25829 \times 10^{-6}`
+    - 4.0
+    - 225
+    - 519
+  * - :math:`64\times 64`
+    - :math:`2.67645\times10^{-7}`
+    - 4.0
+    - 450
+    - 1038
+      
+.. figure:: p2-2D-errHist.png
+  :width: 100%
+  :align: center
+
+  History of residual norm for :math:`p=2`, 2D :math:`64\times 64`
+  cell case for "RKL1" (blue) and "richard2" (orange) schemes. Note
+  the exponential decay in errors, with the "RKL1" further converging
+  faster due to the sequence acceleration. The "richard2" scheme has
+  some oscillatory mode (as can be seen from the dispersion relation
+  also).
+
+In the following plot the RDG solution is compared with the exact
+solution for the :math:`p=2` case, showing the extreme accuracy of the
+scheme on a coarse grid of :math:`8\times 8` grid.
+
+.. figure:: d1-sol-cmp.png
+  :width: 100%
+  :align: center
+
+  Lineout of RDG solution (orange) and exact solution (blue) for 2D
+  :math:`8\times 8` grid with :math:`p=2` basis functions. The two
+  curves essentially overlap, showing the accuracy of the RDG scheme
+  for this problem.
+  
 References
 ----------
 
