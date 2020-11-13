@@ -168,6 +168,10 @@ take 16 times longer to converge. This is scaling is dramatically
 better than a direct solver, which would be :math:`8^3 = 512` times
 more expensive due to the cost scaling of the LU decomposition.
 
+.. note::
+
+   I am grateful to Greg Hammett for discussions on the second-order
+   Richardson iteration scheme.
 
 Nishikawa's First Order Scheme
 ------------------------------
@@ -276,7 +280,9 @@ previous section has only a single second-order equation. The RDG
 implementation for the second-order system in Gkeyll has the *same
 cost* as the cost of a single first-order equation, and hence
 Nishikawa's scheme will be approximately four times more expensive (in
-3D) if the number of iterations are approximately the same.
+3D) if the number of iterations are approximately the same. However,
+an advantage is that Nishikawa's scheme also gives us the gradient of
+:math:`f`, which is typically what is needed in many simulations.
 
 Residual norm, updater structure
 --------------------------------
@@ -338,9 +344,243 @@ any equation or discritization specific information.
 Convergence tests in 1D
 -----------------------
 
+For 1D convergence tests I used the source
+
+.. math::
+
+   s(x) = -\frac{1}{N} \sum_m m^2[ a_m \cos(mx) + b_m \sin(mx) ]
+
+with :math:`x\in [0,2\pi]` on a periodic domain. This source source is
+set in code as:
+
+.. code:: lua
+
+  local initSource = Updater.ProjectOnBasis {
+     onGrid = grid,
+     basis = basis,
+     evaluate = function(t, xn)
+        local x = xn[1]
+        local am = {0, 5, -10} 
+        local bm = {10, 5, 10}
+        local t1, t2 = 0.0, 0.0
+        local f = 0.0
+        for m = 0,2 do
+	   for n = 0,2 do
+	      t1 = am[m+1]*math.cos(m*x)
+	      t2 = bm[m+1]*math.sin(m*x)
+	      f = f-m*m*(t1+t2)
+	   end
+        end
+        return -f/50.0
+     end,
+  }	  
+
+The exact solution for this problem is
+
+.. math::
+
+   f_e(x) = \frac{1}{N} \sum_m a_m \cos(mx) + b_m \sin(mx).
+
+The error in the :math:`l_2`-norm is measured:
+
+.. math::
+
+   E = \sqrt{\int (f - f_e)^2 \thinspace dx}
 
 
-    
+Gird size of :math:`8`, :math:`16`, :math:`32`, :math:`64` cells were
+used.  The errors, convergence order and number of iterations to
+converge to a residual norm of :math:`10^{-8}` are given below. Note
+that both the "RKL1" and "richard2" converge to the *same*
+:math:`l_2`-norm error.
+
+.. list-table:: Poisson solver convergence for 1D, :math:`p=1`
+		periodic BCs
+  :header-rows: 1
+  :widths: 10,30,20,20,20
+	   
+  * - :math:`N_x`
+    - :math:`l_2`-error
+    - Order
+    - :math:`N_{RKL1}`
+    - :math:`N_{rich}`
+  * - 8
+    - :math:`2.38715\times 10^{-2}`
+    - 
+    - 36
+    - 52
+  * - 16
+    - :math:`2.54502\times 10^{-3}`
+    - 3.23
+    - 91
+    - 100
+  * - 32
+    - :math:`2.99617\times 10^{-4}`
+    - 3.1
+    - 156
+    - 197
+  * - 64
+    - :math:`3.68094\times10^{-5}`
+    - 3.0
+    - 300
+    - 394
+
+Clearly, both the "RKL1" and "richard2" schemes converge linear with
+the grid size and attain a 3rd order convergence error. Note that a
+conventional DG scheme would only obtain a 2nd order convergence
+rate. The following plot shows the history of the residual norm with
+iteration for the :math:`64` cell case.
+
+.. figure:: p1-1D-errHist.png
+  :width: 100%
+  :align: center
+
+  History of residual norm for :math:`p=1`, 1D :math:`64` cell case
+  for "RKL1" (blue) and "richard2" (orange) schemes. Note the
+  exponential decay in errors, with the "RKL1" further converging
+  faster due to the sequence acceleration. The "richard2" scheme has
+  some oscillatory mode (as can be seen from the dispersion relation
+  also).
+
+The convergence of the :math:`p=2` scheme is shown in the following
+table.
+  
+.. list-table:: Poisson solver convergence for 1D, :math:`p=2`
+		periodic BCs
+  :header-rows: 1
+  :widths: 10,30,20,20,20
+	   
+  * - :math:`N_x`
+    - :math:`l_2`-error
+    - Order
+    - :math:`N_{RKL1}`
+    - :math:`N_{rich}`
+  * - 8
+    - :math:`1.91262\times 10^{-3}`
+    - 
+    - 50
+    - 84
+  * - 16
+    - :math:`1.16559\times 10^{-4}`
+    - 4
+    - 90
+    - 165
+  * - 32
+    - :math:`7.18317\times 10^{-6}`
+    - 4
+    - 162
+    - 328
+  * - 64
+    - :math:`4.4714\times 10^{-7}`
+    - 4
+    - 333
+    - 741
+
+.. figure:: p2-1D-errHist.png
+  :width: 100%
+  :align: center
+
+  History of residual norm for :math:`p=2`, 1D :math:`64` cell case
+  for "RKL1" (blue) and "richard2" (orange) schemes. Note the
+  exponential decay in errors, with the "RKL1" further converging
+  faster due to the sequence acceleration. The "richard2" scheme has
+  some oscillatory mode (as can be seen from the dispersion relation
+  also).
+
+Convergence tests in 2D
+-----------------------
+
+For 2D convergence tests I used the source
+
+.. math::
+
+   s(x,y) = -\frac{1}{N}\sum_{m,n} (m^2+n^2) \left[
+    a_{mn} \cos(mx) \cos(ny) + 
+    b_{mn} \sin(mx) \sin(ny)
+  \right].
+
+with :math:`x\in [0,2\pi]` and :math:`y\in [0,2\pi]` on a periodic
+domain. This source source is set in code as:
+
+.. code:: lua
+
+  local initSource = Updater.ProjectOnBasis {
+     onGrid = grid,
+     basis = basis,
+     evaluate = function(t, xn)
+        local x, y = xn[1], xn[2]
+        local amn = {{0,10,0}, {10,0,0}, {10,0,0}}
+        local bmn = {{0,10,0}, {10,0,0}, {10,0,0}}
+        local t1, t2 = 0.0, 0.0
+        local f = 0.0
+        for m = 0,2 do
+	   for n = 0,2 do
+	      t1 = amn[m+1][n+1]*math.cos(m*x)*math.cos(n*y)
+	      t2 = bmn[m+1][n+1]*math.sin(m*x)*math.sin(n*y)
+	      f = f + -(m*m+n*n)*(t1+t2)
+	   end
+        end
+        return -f/50.0
+     end,
+  }
+
+The exact solution for this problem is
+
+.. math::
+
+   f_e(x,y) = \frac{1}{N}\sum_{m,n} \left[
+    a_{mn} \cos(mx) \cos(ny) + 
+    b_{mn} \sin(mx) \sin(ny)
+  \right].
+
+Gird size of :math:`8\times 8`, :math:`16\times 16`, :math:`32\times
+32`, :math:`64 \times 64` cells were used.  The errors, convergence
+order and number of iterations to converge to a residual norm of
+:math:`10^{-8}` are given below. Note that both the "RKL1" and
+"richard2" converge to the *same* :math:`l_2`-norm error.
+
+.. list-table:: Poisson solver convergence for 2D, :math:`p=1`
+		periodic BCs
+  :header-rows: 1
+  :widths: 10,30,20,20,20
+	   
+  * - :math:`N_x`
+    - :math:`l_2`-error
+    - Order
+    - :math:`N_{RKL1}`
+    - :math:`N_{rich}`
+  * - :math:`8\times 8`
+    - :math:`1.42428\times 10^{-2}`
+    - 
+    - 40
+    - 80
+  * - :math:`16\times 16`
+    - :math:`1.5217\times 10^{-3}`
+    - 3.23
+    - 81
+    - 156
+  * - :math:`32\times 32`
+    - :math:`1.79333 \times 10^{-4}`
+    - 3.1
+    - 153
+    - 311
+  * - :math:`64\times 64`
+    - :math:`2.20389\times10^{-5}`
+    - 3.0
+    - 320
+    - 623
+
+.. figure:: p1-2D-errHist.png
+  :width: 100%
+  :align: center
+
+  History of residual norm for :math:`p=1`, 2D :math:`64\times 64`
+  cell case for "RKL1" (blue) and "richard2" (orange) schemes. Note
+  the exponential decay in errors, with the "RKL1" further converging
+  faster due to the sequence acceleration. The "richard2" scheme has
+  some oscillatory mode (as can be seen from the dispersion relation
+  also).
+
 References
 ----------
 
