@@ -10,10 +10,12 @@ local Updater = require "Updater"
 local Time = require "Lib.Time"
 
 local polyOrder = 1
-local lower = {0, 0}
-local upper = {2*math.pi, 2*math.pi}
+local lower = {-1.0, -1.0}
+local upper = {1.0, 1.0}
 local cells = {64, 64}
 local periodicDirs = {1, 2}
+
+math.randomseed(12345)
 
 local grid = Grid.RectCart {
    lower = lower,
@@ -39,48 +41,13 @@ local function getField()
 end
 local fIn = getField()
 local fOut = getField()
-local fExact = getField()
 
--- Initial conditions from
--- http://ammar-hakim.org/sj/je/je11/je11-fem-poisson.html#convergence-of-2d-solver
 local initSource = Updater.ProjectOnBasis {
    onGrid = grid,
    basis = basis,
    evaluate = function(t, xn)
       local x, y = xn[1], xn[2]
-      local amn = {{0,10,0}, {10,0,0}, {10,0,0}}
-      local bmn = {{0,10,0}, {10,0,0}, {10,0,0}}
-      local t1, t2 = 0.0, 0.0
-      local f = 0.0
-      for m = 0,2 do
-	 for n = 0,2 do
-	    t1 = amn[m+1][n+1]*math.cos(m*x)*math.cos(n*y)
-	    t2 = bmn[m+1][n+1]*math.sin(m*x)*math.sin(n*y)
-	    f = f + -(m*m+n*n)*(t1+t2)
-	 end
-      end
-      return -f/50.0
-   end,
-}
-
-local exactSol = Updater.ProjectOnBasis {
-   onGrid = grid,
-   basis = basis,
-   evaluate = function(t, xn)
-      local x, y = xn[1], xn[2]
-      local amn = {{0,10,0}, {10,0,0}, {10,0,0}}
-      local bmn = {{0,10,0}, {10,0,0}, {10,0,0}}
-      local t1, t2 = 0.0, 0.0
-      local f = 0.0
-
-      for m = 0,2 do
-	 for n = 0,2 do
-	    t1 = amn[m+1][n+1]*math.cos(m*x)*math.cos(n*y)
-	    t2 = bmn[m+1][n+1]*math.sin(m*x)*math.sin(n*y)
-	    f = f + (t1+t2)
-	 end
-      end
-      return f/50.0
+      return math.random()*math.exp(-10*(x^2+y^2))
    end,
 }
 
@@ -92,25 +59,21 @@ local iterPoisson = Updater.IterPoisson {
    -- heuristics
    
    errEps = 1e-8, -- maximum residual error
-   factor = 900, -- factor over explicit scheme
-   extraStages = 5, -- extra stages
+   factor = 480, -- factor over explicit scheme
+   extraStages = 4, -- extra stages
    cflFrac = 1.0, -- CFL frac for internal iterations
    stepper = 'RKL1',
-
+   extrapolateInterval = 2,
    verbose = true,
 }
 
 initSource:advance(0.0, {}, {fIn})
+fIn:write('fIn.bp', 0.0, 0)
 
 local tmStart = Time.clock()
 iterPoisson:advance(0.0, {fIn}, {fOut})
 print(string.format("Simulation took %g", Time.clock()-tmStart))
 
-fIn:write('fIn.bp', 0.0, 0)
 fOut:write('fOut.bp', 0.0, 0)
 
-exactSol:advance(0.0, {}, {fExact})
-fExact:write("fExact.bp")
-
 iterPoisson:writeDiagnostics()
-print(string.format("L2 error %g\n", iterPoisson:l2diff(fOut, fExact)))

@@ -1,1 +1,1 @@
-pgkyl -f c4-iter-periodic-extra_errHist.bp -l "RKL1" -f c4-r2-iter-periodic_errHist.bp -l "richard2" pl --logy -f0 --xlabel="Iteration" --ylabel='Residual Norm' -t 'Error History $p=1$, 2D' --saveas p1-2D-errHist
+pgkyl -f c4-iter-periodic-extra_errHist.bp -l "RKL1+SA" -f c4-iter-periodic_errHist.bp -l "RKL1" -f c4-r2-iter-periodic_errHist.bp -l "richard2" pl --logy -f0 --xlabel="Iteration" --ylabel='Residual Norm' -t 'Error History $p=1$, 2D' --saveas p1-2D-errHist

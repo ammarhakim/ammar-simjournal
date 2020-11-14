@@ -64,3 +64,9 @@ Gaussian source in 2D
 - n2: 32x32 grid, p=2
 - n3: 64x64 grid, p=2
 - n4: 128x128 grid, p=2
+
+Gaussian + random source in 2D
+------------------------------
+
+- g1: 16x16 grid, p=1
+- g2: 64x64 grid, p=1
