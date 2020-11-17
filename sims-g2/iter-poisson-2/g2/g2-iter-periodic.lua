@@ -45,6 +45,7 @@ local fOut = getField()
 local initSource = Updater.ProjectOnBasis {
    onGrid = grid,
    basis = basis,
+   numQuad = 2*polyOrder+1,
    evaluate = function(t, xn)
       local x, y = xn[1], xn[2]
       return math.random()*math.exp(-10*(x^2+y^2))

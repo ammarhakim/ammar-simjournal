@@ -45,6 +45,7 @@ local fExact = getField()
 local initSource = Updater.ProjectOnBasis {
    onGrid = grid,
    basis = basis,
+   numQuad = 2*polyOrder+1,
    evaluate = function(t, xn)
       local x, y = xn[1], xn[2]
       local amn = {{0,10,0}, {10,0,0}, {10,0,0}}
