@@ -54,7 +54,7 @@ local iterPoisson = Updater.IterPoisson {
    onGrid = grid,
    basis = basis,
 
-   errEps = 1e-8, -- maximum residual error
+   errEps = 1e-10, -- maximum residual error
    stepper = 'richard2',
    verbose = true,
 }
