@@ -340,6 +340,24 @@ system and discretization can be used. For example, density weighted
 diffusion or FEM discretization. The updater simply calls the
 appropriate equation object to compute the residual and does not use
 any equation or discretization specific information.
+
+.. note::
+
+   In the following by "RKL1" I mean the STS method without any
+   further sequence acceleration; "RKL1-SA" is the STS with the
+   sequence acceleration; "richard2" is the second order Richardson
+   iteration scheme.
+
+On Convergence of RDG Poisson solver
+------------------------------------
+
+One would expect a DG or FEM of polyOrder :math:`p` to converge as
+with :math:`p+1` order. However, as the tests below show and also as
+can be shown analytically (using Maxima) that the RDG Poisson solver
+*converges much more rapidly*, apparently as :math:`2(p+1)`. In fact,
+for :math:`p=3` case (not shown below) the round-off errors eventually
+dominate and the schemes do not converge and blow up. Somehow this
+round-off accumulation needs to be handled properly.
   
 Convergence tests in 1D
 -----------------------
@@ -405,25 +423,25 @@ that both the "RKL1" and "richard2" converge to the *same*
     - :math:`N_{RKL1}`
     - :math:`N_{rich}`
   * - 8
-    - :math:`2.38715\times 10^{-2}`
+    - :math:`2.21084\times 10^{-2}`
     - 
     - 36
     - 52
   * - 16
-    - :math:`2.54502\times 10^{-3}`
-    - 3.23
-    - 91
-    - 100
+    - :math:`1.53035\times 10^{-3}`
+    - 3.85
+    - 104
+    - 101
   * - 32
-    - :math:`2.99617\times 10^{-4}`
-    - 3.1
-    - 156
-    - 197
+    - :math:`9.84246\times 10^{-5}`
+    - 3.96
+    - 169
+    - 198
   * - 64
-    - :math:`3.68094\times10^{-5}`
-    - 3.0
-    - 300
-    - 394
+    - :math:`6.19711\times10^{-6}`
+    - 3.99
+    - 325
+    - 395
 
 Clearly, both the "RKL1" and "richard2" schemes converge linear with
 the grid size and attain a 3rd order convergence error. Note that a
@@ -436,11 +454,11 @@ iteration for the :math:`64` cell case.
   :align: center
 
   History of residual norm for :math:`p=1`, 1D :math:`64` cell case
-  for "RKL1" (blue) and "richard2" (orange) schemes. Note the
-  exponential decay in errors, with the "RKL1" further converging
-  faster due to the sequence acceleration. The "richard2" scheme has
-  some oscillatory mode (as can be seen from the dispersion relation
-  also).
+  for "RKL1+SA" (blue), "richard2" (green) and "RKL1" (orange)
+  schemes. Note the exponential decay in errors, with the "RKL1+SA"
+  further converging faster due to the sequence acceleration. The
+  "richard2" scheme has some oscillatory mode (as can be seen from the
+  dispersion relation also).
 
 The convergence of the :math:`p=2` scheme is shown in the following
 table.
@@ -456,36 +474,36 @@ table.
     - :math:`N_{RKL1}`
     - :math:`N_{rich}`
   * - 8
-    - :math:`1.91262\times 10^{-3}`
+    - :math:`3.35174\times 10^{-4}`
     - 
-    - 50
-    - 84
+    - 55
+    - 85
   * - 16
-    - :math:`1.16559\times 10^{-4}`
-    - 4
-    - 90
-    - 165
+    - :math:`5.79245\times 10^{-6}`
+    - 5.85
+    - 100
+    - 166
   * - 32
-    - :math:`7.18317\times 10^{-6}`
-    - 4
-    - 162
-    - 328
+    - :math:`9.25562\times 10^{-8}`
+    - 5.97
+    - 198
+    - 412
   * - 64
-    - :math:`4.4714\times 10^{-7}`
-    - 4
-    - 333
-    - 741
+    - :math:`1.45406\times 10^{-9}`
+    - 5.99
+    - 444
+    - 997
 
 .. figure:: p2-1D-errHist.png
   :width: 100%
   :align: center
 
   History of residual norm for :math:`p=2`, 1D :math:`64` cell case
-  for "RKL1" (blue) and "richard2" (orange) schemes. Note the
-  exponential decay in errors, with the "RKL1" further converging
-  faster due to the sequence acceleration. The "richard2" scheme has
-  some oscillatory mode (as can be seen from the dispersion relation
-  also).
+  for "RKL1+SA" (blue), "richard2" (green) and "RKL1" (orange)
+  schemes. Note the exponential decay in errors, with the "RKL1+SA"
+  further converging faster due to the sequence acceleration. The
+  "richard2" scheme has some oscillatory mode (as can be seen from the
+  dispersion relation also).
 
 Convergence tests in 2D
 -----------------------
@@ -550,36 +568,36 @@ order and number of iterations to converge to a residual norm of
     - :math:`N_{RKL1}`
     - :math:`N_{rich}`
   * - :math:`8\times 8`
-    - :math:`1.42428\times 10^{-2}`
+    - :math:`1.31167\times 10^{-2}`
     - 
-    - 40
-    - 80
-  * - :math:`16\times 16`
-    - :math:`1.5217\times 10^{-3}`
-    - 3.23
+    - 44
     - 81
-    - 156
+  * - :math:`16\times 16`
+    - :math:`9.07424\times 10^{-4}`
+    - 3.85
+    - 90
+    - 157
   * - :math:`32\times 32`
-    - :math:`1.79333 \times 10^{-4}`
-    - 3.1
-    - 153
-    - 311
+    - :math:`5.8352 \times 10^{-5}`
+    - 3.96
+    - 170
+    - 312
   * - :math:`64\times 64`
-    - :math:`2.20389\times10^{-5}`
-    - 3.0
-    - 320
-    - 623
+    - :math:`3.67363\times10^{-6}`
+    - 3.99
+    - 352
+    - 624
 
 .. figure:: p1-2D-errHist.png
   :width: 100%
   :align: center
 
   History of residual norm for :math:`p=1`, 2D :math:`64\times 64`
-  cell case for "RKL1" (blue) and "richard2" (orange) schemes. Note
-  the exponential decay in errors, with the "RKL1" further converging
-  faster due to the sequence acceleration. The "richard2" scheme has
-  some oscillatory mode (as can be seen from the dispersion relation
-  also).
+  cell case for "RKL1+SA" (blue), "richard2" (green) and "RKL1"
+  (orange) schemes. Note the exponential decay in errors, with the
+  "RKL1+SA" further converging faster due to the sequence
+  acceleration. The "richard2" scheme has some oscillatory mode (as
+  can be seen from the dispersion relation also).
 
 .. list-table:: Poisson solver convergence for 2D, :math:`p=2`
 		periodic BCs
@@ -592,36 +610,36 @@ order and number of iterations to converge to a residual norm of
     - :math:`N_{RKL1}`
     - :math:`N_{rich}`
   * - :math:`8\times 8`
-    - :math:`1.13367\times 10^{-3}`
+    - :math:`1.98078\times 10^{-4}`
     - 
-    - 88
-    - 131
+    - 96
+    - 132
   * - :math:`16\times 16`
-    - :math:`6.90935\times 10^{-5}`
-    - 4.0
-    - 117
-    - 260
+    - :math:`3.42286\times 10^{-6}`
+    - 5.85
+    - 130
+    - 261
   * - :math:`32\times 32`
-    - :math:`4.25829 \times 10^{-6}`
-    - 4.0
-    - 225
-    - 519
+    - :math:`5.47957 \times 10^{-8}`
+    - 5.96
+    - 275
+    - 642
   * - :math:`64\times 64`
-    - :math:`2.67645\times10^{-7}`
-    - 4.0
-    - 450
-    - 1038
+    - :math:`8.59271\times10^{-10}`
+    - 5.99
+    - 600
+    - 1406
       
 .. figure:: p2-2D-errHist.png
   :width: 100%
   :align: center
 
   History of residual norm for :math:`p=2`, 2D :math:`64\times 64`
-  cell case for "RKL1" (blue) and "richard2" (orange) schemes. Note
-  the exponential decay in errors, with the "RKL1" further converging
-  faster due to the sequence acceleration. The "richard2" scheme has
-  some oscillatory mode (as can be seen from the dispersion relation
-  also).
+  cell case for "RKL1+SA" (blue), "richard2" (green) and "RKL1"
+  (orange) schemes. Note the exponential decay in errors, with the
+  "RKL1+SA" further converging faster due to the sequence
+  acceleration. The "richard2" scheme has some oscillatory mode (as
+  can be seen from the dispersion relation also).
 
 In the following plot the RDG solution is compared with the exact
 solution for the :math:`p=2` case, showing the accuracy of the scheme
@@ -700,25 +718,25 @@ order and number of iterations to converge to a residual norm of
     - :math:`N_{RKL1}`
     - :math:`N_{rich}`
   * - :math:`8\times 8\times 8`
-    - :math:`1.4831\times 10^{-1}`
+    - :math:`1.50795\times 10^{-1}`
     - 
+    - 42
     - 36
-    - 35
   * - :math:`16\times 16\times 16`
-    - :math:`1.53151\times 10^{-2}`
-    - 3.3
-    - 60
-    - 76
+    - :math:`1.15276\times 10^{-2}`
+    - 3.7
+    - 54
+    - 77
   * - :math:`32\times 32\times 32`
-    - :math:`1.83854 \times 10^{-3}`
-    - 3.05
-    - 110
-    - 156
+    - :math:`7.63856 \times 10^{-4}`
+    - 3.9
+    - 77
+    - 157
   * - :math:`64\times 64\times 64`
-    - :math:`2.27614\times 10^{-4}`
-    - 3.0
-    - 220
-    - 315
+    - :math:`4.84829\times 10^{-5}`
+    - 3.98
+    - 154
+    - 316
 
 .. figure:: p1-3D-errHist.png
   :width: 100%
@@ -732,7 +750,49 @@ order and number of iterations to converge to a residual norm of
   absent in 1D or 2D.
 
 Though not shown here, a similar trend is seen for :math:`p=2` 3D case
-and the scheme converges with 4th order accuracy.
+and the scheme converges with 6th order accuracy.
+
+Random source
+-------------
+
+To test if the sequence acceleration is effective simply because there
+are only a few wave modes in solutions used in the above test, I also
+tested the case in which the source is initialized randomly using the
+following code block:
+
+.. code:: lua
+
+  local initSource = Updater.ProjectOnBasis {
+     onGrid = grid,
+     basis = basis,
+     numQuad = 2*polyOrder+1,
+     evaluate = function(t, xn)
+	local x, y = xn[1], xn[2]
+	return math.random()
+     end,
+  }
+
+With this, the error history of the :math:`p=1` basis code on
+:math:`16\times 16` domain is show below for each of the three
+schemes.
+
+.. figure:: p1-1D-random-errHist.png
+  :width: 100%
+  :align: center
+
+  History of residual norm for :math:`p=1`, 2D :math:`16\times 16`
+  cell case for "RKL1-SA" (blue), "richard2" (orange) and "RKL1"
+  (orange) schemes. For this problem, the source (RHS) is initialized
+  with random noise. Even though the "RKL1-SA" and "richard2" converge
+  in about the same nunber of iterations, even in this extreme case
+  the sequence acceleration does help reduce the number of iterations
+  in about :math:`2\times` from the "RKL1" case.
+
+Note that even in this case the number of iterations scales linearly
+with the grid size. (I am not sure how to precisely initialize the
+source in a way that scaling with grid size can be properly
+studies. However, it does seem that the scaling holds in this case
+also).
 
 Some concluding notes
 ---------------------
