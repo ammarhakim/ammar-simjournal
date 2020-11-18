@@ -81,3 +81,17 @@ PolyOrder 3 convergence tests
 - t1: 4x4 cells, p=3, 2D
 - t2: 8x8 cells, p=3, 2D
 - t3: 16x16 cells, p=3, 2D (blows up)
+
+Nearly-Square step convergence
+------------------------------
+
+- u1: 8 cells, p=1
+- u2: 16 cells, p=1
+- u3: 32 cells, p=1
+- u4: 64 cells, p=1
+- u5: 128 cells, p=1
+
+- u6: 8 cells, p=2
+- u7: 16 cells, p=2
+- u8: 32 cells, p=2
+- u9: 64 cells, p=2
