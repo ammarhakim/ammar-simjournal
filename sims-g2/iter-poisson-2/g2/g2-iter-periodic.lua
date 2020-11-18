@@ -12,7 +12,7 @@ local Time = require "Lib.Time"
 local polyOrder = 1
 local lower = {-1.0, -1.0}
 local upper = {1.0, 1.0}
-local cells = {64, 64}
+local cells = {32, 32}
 local periodicDirs = {1, 2}
 
 math.randomseed(12345)
@@ -48,7 +48,7 @@ local initSource = Updater.ProjectOnBasis {
    numQuad = 2*polyOrder+1,
    evaluate = function(t, xn)
       local x, y = xn[1], xn[2]
-      return math.random()*math.exp(-10*(x^2+y^2))
+      return math.random()
    end,
 }
 
@@ -60,7 +60,7 @@ local iterPoisson = Updater.IterPoisson {
    -- heuristics
    
    errEps = 1e-8, -- maximum residual error
-   factor = 30*4*4*2, -- factor over explicit scheme
+   factor = 30*4*2, -- factor over explicit scheme
    extraStages = 5, -- extra stages
    cflFrac = 1.0, -- CFL frac for internal iterations
    stepper = 'RKL1',

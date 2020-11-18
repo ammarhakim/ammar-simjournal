@@ -65,8 +65,19 @@ Gaussian source in 2D
 - n3: 64x64 grid, p=2
 - n4: 128x128 grid, p=2
 
-Gaussian + random source in 2D
-------------------------------
+Random source in 2D
+-------------------
 
 - g1: 16x16 grid, p=1
-- g2: 64x64 grid, p=1
+- g2: 32x32 grid, p=1
+
+PolyOrder 3 convergence tests
+-----------------------------
+
+- s1: 4 cells, p=3, 1D
+- s2: 8 cells, p=3, 1D
+- s3: 16 cells, p=3, 1D
+
+- t1: 4x4 cells, p=3, 2D
+- t2: 8x8 cells, p=3, 2D
+- t3: 16x16 cells, p=3, 2D (blows up)

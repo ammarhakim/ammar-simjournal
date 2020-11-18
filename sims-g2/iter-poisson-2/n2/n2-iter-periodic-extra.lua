@@ -9,7 +9,7 @@ local Grid = require "Grid"
 local Updater = require "Updater"
 local Time = require "Lib.Time"
 
-local polyOrder = 1
+local polyOrder = 2
 local lower = {-1.0, -1.0}
 local upper = {1.0, 1.0}
 local cells = {32, 32}
@@ -48,7 +48,7 @@ local initSource = Updater.ProjectOnBasis {
    numQuad = 2*polyOrder+1,
    evaluate = function(t, xn)
       local x, y = xn[1], xn[2]
-      return math.random()
+      return math.exp(-10*(x^2+y^2))
    end,
 }
 
@@ -60,9 +60,9 @@ local iterPoisson = Updater.IterPoisson {
    -- heuristics
    
    errEps = 1e-8, -- maximum residual error
-   factor = 120, -- factor over explicit scheme
-   extraStages = 2, -- extra stages
-   cflFrac = 1.0, -- CFL frac for internal iterations
+   factor = 60*4, -- factor over explicit scheme
+   extraStages = 4, -- extra stages
+   cflFrac = 0.85, -- CFL frac for internal iterations
    stepper = 'RKL1',
    extrapolateInterval = 2,
    verbose = true,

@@ -93,7 +93,7 @@ local iterPoisson = Updater.IterPoisson {
    -- there parameters will eventually be replaced by internal
    -- heuristics
    
-   errEps = 1e-8, -- maximum residual error
+   errEps = 1e-11, -- maximum residual error
    factor = 900, -- factor over explicit scheme
    extraStages = 8, -- extra stages
    cflFrac = 0.8, -- CFL frac for internal iterations

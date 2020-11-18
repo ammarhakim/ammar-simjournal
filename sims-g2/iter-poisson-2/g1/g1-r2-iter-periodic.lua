@@ -48,7 +48,7 @@ local initSource = Updater.ProjectOnBasis {
    numQuad = 2*polyOrder+1,
    evaluate = function(t, xn)
       local x, y = xn[1], xn[2]
-      return math.random()*math.exp(-10*(x^2+y^2))
+      return math.random()
    end,
 }
 
