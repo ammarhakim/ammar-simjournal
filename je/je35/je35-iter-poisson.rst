@@ -776,7 +776,7 @@ With this, the error history of the :math:`p=1` basis code on
 :math:`16\times 16` domain is show below for each of the three
 schemes.
 
-.. figure:: p1-1D-random-errHist.png
+.. figure:: p1-2D-random-errHist.png
   :width: 100%
   :align: center
 
