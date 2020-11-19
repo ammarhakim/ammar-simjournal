@@ -95,3 +95,4 @@ Nearly-Square step convergence
 - u7: 16 cells, p=2
 - u8: 32 cells, p=2
 - u9: 64 cells, p=2
+- u10: 128 cells, p=2
