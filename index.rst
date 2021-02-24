@@ -48,6 +48,7 @@ Technical Notes
   euler-eigensystem
   tenmom-eigensystem
   twofluid-sources
+  fluid-kin-drifts
   geometry-metric-symplectic
   hancock-muscl
   multifluid-equilibrium
