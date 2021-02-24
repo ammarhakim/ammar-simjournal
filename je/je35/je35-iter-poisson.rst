@@ -47,7 +47,7 @@ In the first scheme a diffusion equation is marched to steady-state:
    \frac{\partial f}{\partial t} = \nabla^2 f + s
 
 An explicit scheme would be very slow for this equation: the time-step
-would be go as :math:`\Delta x^2` and so the number of iterations to
+would scale as :math:`\Delta x^2` and so the number of iterations to
 converge to steady-state would go as :math:`N^2`, where :math:`N` is
 the number of cells in each direction. Hence, instead one can use the
 Super-Time Stepping Scheme (STS) to accelerate the convergence. In
@@ -87,10 +87,13 @@ the number of stages is computed from
 
 where :math:`s_0` are extra stages. Note that :math:`\Delta \tau = W
 \Delta t_e`. Hence, in this scheme, the free parameters one must
-choose are :math:`W` and :math:`s_0`. In Gkeyll one chooses this
-scheme using the "RKL1" parameter in the `IterPoisson` updater. On top
-of the "inner" STS stages one can also use a sequence acceleration
-method that drives the system to steady-state even faster.
+choose are :math:`W` and :math:`s_0`. (I will update how these should
+be choosen at a later point).
+
+In Gkeyll one chooses this scheme using the "RKL1" parameter in the
+`IterPoisson` updater. On top of the "inner" STS stages one can also
+use a sequence acceleration method that drives the system to
+steady-state even faster.
 
 Second order Richardson Iteration
 ---------------------------------
@@ -118,6 +121,18 @@ differences to get the time-marching scheme:
    + \nu \frac{f^{n+1} - f^{n-1}}{\Delta t}
    = \nabla^2_h f^n + s.
 
+Note that the drag term can also be discretized by simple first-order
+differences as:
+
+.. math::
+
+   \frac{f^{n+1} - 2f^n + f^{n-1}}{\Delta t^2}
+   + 2 \nu \frac{f^{n+1} - f^{n}}{\Delta t}
+   = \nabla^2_h f^n + s.
+
+It appears that this scheme uses slight more iterations than the
+centered one, and so is not available by default in Gkeyll.
+   
 The free parameter in this scheme is :math:`\nu`. To pick this, first
 write the solution as :math:`f = f_0 + f_1`, where :math:`f_0` is the
 steady-state solution and :math:`f_1` is the error. The error itself
@@ -137,27 +152,21 @@ Now assume a mode :math:`f_1 \sim e^{-i\omega t}e^{i k
 
    \omega(\mathbf{k}) = -i\nu \pm \sqrt{ k^2 - \nu^2 }.
 
-Hence, to ensure that all modes damp (and the second term remains
-purely oscillatory) we choose
-
-.. math::
-
-   \nu = k_{min}
-
-where :math:`k_{min}` is the smallest wavenumber that can be
-represented on the grid. Typically, in 1D we have :math:`k_{min} =
-2\pi/L`, where :math:`L` is the domain size. Note that the fastest
-*frequency* we must resolve is approximately :math:`k_{max}` and the
-time-step we must choose is :math:`k_{max} \Delta t \lt 2`. For simple
-spectral approximation to the Laplacian we have :math:`k_{max} =
-\pi/\Delta x`, or that the maximum stable time-step must be
+To maximize the damping rate of the least damped mode, one can show
+the optimal choice is :math:`\nu = k_{\rm min}`, which leads to all
+modes damping at the same rate (i.e., errors at all scales damp at the
+same rate). Typically, in 1D we have :math:`k_{min} = 2\pi/L`, where
+:math:`L` is the domain size. Note that the fastest *frequency* we
+must resolve is approximately :math:`k_{max}` and the time-step we
+must choose is :math:`k_{max} \Delta t \lt 2`. For simple spectral
+approximation to the Laplacian we have :math:`k_{max} = \pi/\Delta x`,
+or that the maximum stable time-step must be
 
 .. math::
 
    \Delta t \lt \frac{2 \Delta x}{\pi}.
 
-For central difference approximation :math:`\Delta t \lt \Delta
-x/\sqrt{2}`.
+For central difference approximation :math:`\Delta t \lt \Delta x`.
 
 In either case, as the (pseudo) time-step is *linearly* dependent on
 the cell spacing, indicates that the scheme will converge *linearly*
@@ -280,9 +289,7 @@ previous section has only a single second-order equation. The RDG
 implementation for the second-order system in Gkeyll has the *same
 cost* as the cost of a single first-order equation, and hence
 Nishikawa's scheme will be approximately four times more expensive (in
-3D) if the number of iterations are approximately the same. However,
-an advantage is that Nishikawa's scheme also gives us the gradient of
-:math:`f`, which is typically what is needed in many simulations.
+3D) if the number of iterations are approximately the same.
 
 Residual norm, updater structure
 --------------------------------
@@ -304,7 +311,10 @@ initial guess of zero, and hence the initial residual norm is
 always 1. Typically, I set the condition of :math:`R_2 \lt 10^{-8}` as
 the discretization error is typically larger than this. For some
 :math:`p=2` tests with high resolution one needs a more stringent
-error criteria.
+error criteria. (Typically, iterating to reduce the :math:`R_2` error
+beyond the discretization error seems pointless. However, for
+:math:`p=2` the errors are so small that one may need to use many more
+iterations to bring it below discretization error).
 
 An example of the use of the updater is below:
 
@@ -767,7 +777,6 @@ following code block:
      basis = basis,
      numQuad = 2*polyOrder+1,
      evaluate = function(t, xn)
-	local x, y = xn[1], xn[2]
 	return math.random()
      end,
   }
@@ -791,8 +800,57 @@ schemes.
 Note that even in this case the number of iterations scales linearly
 with the grid size. (I am not sure how to precisely initialize the
 source in a way that scaling with grid size can be properly
-studies. However, it does seem that the scaling holds in this case
+studied. However, it does seem that the scaling holds in this case
 also).
+
+How many iterations are needed?
+-------------------------------
+
+Greg worked out an estimate of how many iterations would be needed by
+the second order Richardson scheme to get an error of
+:math:`10^{-n}`. The formula is:
+
+.. math::
+
+   N_{\rm iter} = \frac{1}{2} \ln(10^n)
+   \left( \frac{\sqrt{N_d} (p+1) N_{\rm cells}}{\pi} +1 \right)
+
+where :math:`p` is the polyOrder, :math:`N_d` is the dimension of the
+domain, and :math:`N_{\rm cells}` are the number of cells in each
+direction (assuming a square domain with same number of cells in each
+direction). The following table shows the iterations computed from
+this formula and obtained using the 'richard2' scheme.
+
+.. list-table:: Number of expected iterations to converge to
+                :math:`10^{-n}` (:math:`n` between 8 and 9) compared
+                to actual iterations
+  :header-rows: 1
+  :widths: 25,25,25,25
+	   
+  * - Grid
+    - polyOrder
+    - :math:`N_{\rm iter}`
+    - :math:`N_{\rm gkyl}`
+  * - :math:`16`
+    - 1
+    - 106
+    - 101
+  * - :math:`16\times 16`
+    - 1
+    - 146
+    - 148
+  * - :math:`16`
+    - 2
+    - 168
+    - 171
+  * - :math:`16\times 16`
+    - 2
+    - 234
+    - 241
+
+
+Given this data is seems that IterPoisson is converging in a
+near-ideal manner.
 
 Some concluding notes
 ---------------------
@@ -834,6 +892,10 @@ done. Some concluding notes follow.
 - The iterative solver works in parallel. The :math:`64\times 64\times
   64`, :math:`p=1` problem runs about 1.98x faster on 2 cores and 3.4x
   faster on 4 cores.
+
+- Further improvements are possible, for example, applying some
+  preconditioner to the system. This could reduce the cost further at
+  the expense of a complicated implementation.
 
       
 References

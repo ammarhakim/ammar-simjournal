@@ -77,7 +77,8 @@ here
 is the enthalpy and the sound speed respectively. Also,
 
 .. math::
-  b &= \frac{1}{\rho}\frac{\partial p}{\partial \varepsilon}.
+   
+  b = \frac{1}{\rho}\frac{\partial p}{\partial \varepsilon}.
 
 Note that for ideal gas EOS we have
 

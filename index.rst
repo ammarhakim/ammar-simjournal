@@ -27,13 +27,15 @@ SimJournal: Ammar Hakim's Simulation Journal
    there are, literally, hundreds of them linked to my simulation
    journal.
 
-Below are a list of journal entries, documenting various problems that
-have been attempted with Gkeyll. The eventual goal of Gkeyll is to
-solve the gyrokinetic equations in the edge region of tokamaks,
-including the scrap-off-layer. However, Gkeyll provides a powerful
-framework to study various physics problems as well as test different
-algorithms in a modular way. Some of these are documented below, with
-links to the Lua scripts to run those problems.
+Below are a set of useful (to me) technical notes and a list of
+journal entries, documenting various problems that have I used to
+benchmark features in Gkeyll. I can not guarantee that everything here
+is correct or accurate. I am very careful in testing and teasing out
+physics, but to err is human and some humans err more than others. If
+you find any typos or errors please let me know!
+
+For Gkeyll documentation please `see
+<https://gkeyll.readthedocs.io/en/latest/>`_.
 
 Technical Notes
 ---------------
@@ -41,16 +43,17 @@ Technical Notes
 .. toctree::
   :maxdepth: 1
 
+  moment-eqns
   maxwell-eigensystem
   euler-eigensystem
   tenmom-eigensystem
   twofluid-sources
+  geometry-metric-symplectic
   hancock-muscl
-  noncanonical-hamiltonian
   multifluid-equilibrium
 
-Gkeyll Simulation Journal
--------------------------
+Simulation Journal
+------------------
 
 .. toctree::
   :maxdepth: 1

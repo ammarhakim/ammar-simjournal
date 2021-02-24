@@ -188,7 +188,7 @@ implementation.
 To see which modes actually grow, the follow plot shows the spectrum
 of the modes in the complex plane for the :math:`m_i/m_e = 1836.2`
 case. Only a very narrow range of low-frequency modes grow, while the
-higher frequency modes are merely oscillate.
+higher frequency modes merely oscillate.
 
 .. figure:: iso-bune-complex.png
   :width: 100%

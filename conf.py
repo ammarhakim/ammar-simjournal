@@ -37,7 +37,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'SimJournal'
-copyright = u'2019, Ammar Hakim'
+copyright = u'2021, Ammar Hakim'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -90,8 +90,9 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  Major themes that come with
 # Sphinx are currently 'default' and 'sphinxdoc'.
-html_theme = 'sphinxdoc'
+#html_theme = 'sphinxdoc'
 #html_theme = 'haiku'
+html_theme = "sphinx_rtd_theme"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -157,6 +158,12 @@ html_static_path = ['_static']
 # If nonempty, this is the file name suffix for HTML files (e.g. ".xhtml").
 #html_file_suffix = ''
 
+html_context = {
+    'css_files': [
+        '_static/theme_overrides.css',  # override wide tables in RTD theme
+        ],
+     }
+
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'iAmmardoc'
 
@@ -209,9 +216,5 @@ latex_preamble = r'''
 #latex_use_modindex = True
 
 # path to jsMath package
-#jsmath_path = 'jsMath/easy/load.js'
-#mathjax_path='http://warpx.org/MathJax/MathJax-1.0.1a/MathJax.js'
-#mathjax_path='/Users/ammar/software/MathJax/MathJax.js'
-#mathjax_path='http://mathjax.connectmv.com/MathJax.js'
-mathjax_path="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
-#mathjax_path="https://ice.txcorp.com/doc/MathJax/MathJax.js"
+#mathjax_path="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+
