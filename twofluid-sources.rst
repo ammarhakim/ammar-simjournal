@@ -1,6 +1,13 @@
 Handling two-fluid five-moment and ten-moment source terms
 ==========================================================
 
+.. note::
+
+   This note is largely superseded by our paper in `J. Comp. Physics
+   in 2020 <./_static/files/JCP-2020-Wang.pdf>`_. However, the
+   following serves as a summary of the algorithm described in greater
+   detail in the paper.
+
 The two-fluid system treats a plasma as a mixture of electron and ion
 fluids, coupled via the electromagnetic field and collisions. In the
 *ideal* two-fluid system collisions and heat-flux are neglected,
