@@ -41,6 +41,7 @@ Technical Notes
 ---------------
 
 .. toctree::
+  :numbered:
   :maxdepth: 1
 
   moment-eqns
@@ -48,6 +49,7 @@ Technical Notes
   euler-eigensystem
   tenmom-eigensystem
   twofluid-sources
+  fpo-notes
   fluid-kin-drifts
   geometry-metric-symplectic
   hancock-muscl
