@@ -17,6 +17,26 @@ struct euler_ctx {
     enum gkyl_wave_limiter limiter; // limiter to use
 };
 
+// Names of limiters to enum mapping
+static const struct { const char *nm; enum gkyl_wave_limiter lm; } lm_names[] = {
+  { "min-mod", GKYL_MIN_MOD  },
+  { "superbee", GKYL_SUPERBEE },
+  { "van-leer", GKYL_VAN_LEER },
+  { "monotonized-centered", GKYL_MONOTONIZED_CENTERED },
+  { "beam-warming", GKYL_BEAM_WARMING }
+};
+
+// Return limiter code given then name of the limiter
+static enum gkyl_wave_limiter
+get_limiter(const char *nm)
+{
+  int n = sizeof(lm_names)/sizeof(lm_names[0]);
+  for (int i=0; i<n; ++i)
+    if (strcmp(lm_names[i].nm, nm) == 0)
+      return lm_names[i].lm;
+  return GKYL_MONOTONIZED_CENTERED;
+}
+
 void
 evalEulerInit(double t, const double * restrict xn, double* restrict fout, void *ctx)
 {
@@ -59,6 +79,10 @@ create_ctx(rxi_ini_t *inp)
     fprintf(stderr, "Must provide 'tend'!\n");
     read_failed = 1;
   }
+
+  const char *lm_nm = 0;
+  if ( (lm_nm = rxi_ini_get(inp, "params", "limiter")) )
+    ctx.limiter = get_limiter(lm_nm);
 
   if (read_failed) {
     fprintf(stderr, "... aborting!\n");
