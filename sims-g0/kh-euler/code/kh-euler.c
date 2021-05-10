@@ -15,11 +15,12 @@ struct euler_ctx {
     int nframe; // number of frames to write
     double gas_gamma; // gas constant
     enum gkyl_wave_limiter limiter; // limiter to use
+    pcg32_random_t rng; // RNG for use in IC
 };
 
 // Names of limiters to enum mapping
 static const struct { const char *nm; enum gkyl_wave_limiter lm; } lm_names[] = {
-  { "min-mod", GKYL_MIN_MOD  },
+  { "min-mod", GKYL_MIN_MOD },
   { "superbee", GKYL_SUPERBEE },
   { "van-leer", GKYL_VAN_LEER },
   { "monotonized-centered", GKYL_MONOTONIZED_CENTERED },
@@ -50,8 +51,9 @@ evalEulerInit(double t, const double * restrict xn, double* restrict fout, void 
     rho = 2.0;
     vx = -0.5;
   }
-  vx = vx + 0.01*sin(M_PI*x);
-  double vy = 0.01*sin(M_PI*x);
+
+  vx = vx + 0.01*2*(0.5*gkyl_pcg32_rand_double(&app->rng)-1);
+  double vy = 0.01*2*(0.5*gkyl_pcg32_rand_double(&app->rng)-1);
   
   fout[0] = rho;
   fout[1] = rho*vx; fout[2] = rho*vy; fout[3] = 0.0;
@@ -64,7 +66,8 @@ create_ctx(rxi_ini_t *inp)
   struct euler_ctx ctx = {
     .gas_gamma = 1.4,
     .nframe = 1,
-    .limiter = GKYL_MONOTONIZED_CENTERED
+    .limiter = GKYL_MONOTONIZED_CENTERED,
+    .rng = gkyl_pcg32_init(true)
   };
 
   int read_failed = 0;
@@ -185,6 +188,7 @@ main(int argc, char **argv)
   // simulation complete, free resources
   gkyl_wv_eqn_release(euler);
   gkyl_moment_app_release(app);
+  rxi_ini_free(inp);
 
   printf("\n");
   printf("Number of update calls %ld\n", stat.nup);

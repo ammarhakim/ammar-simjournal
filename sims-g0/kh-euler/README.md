@@ -7,3 +7,6 @@ m1: 400x400 KH with MC limiters
 
 s1: 200x200 KH with Superbee limiters
 s2: 400x200 KH with Superbee limiters
+
+d1: 200x200 KH with min-mod limiters
+d2: 400x400 KH with min-mod limiters
