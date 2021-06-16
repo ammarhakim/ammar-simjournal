@@ -3,11 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <gkyl_moment.h>
-#include <gkyl_util.h>
-#include <gkyl_wv_euler.h>
-
 #include <rxi_ini.h>
+#include <gkylzero.h>
 
 struct euler_ctx {
     int cells[2]; // grid resolution
@@ -19,7 +16,7 @@ struct euler_ctx {
 };
 
 // Names of limiters to enum mapping
-static const struct { const char *nm; enum gkyl_wave_limiter lm; } lm_names[] = {
+static const struct { char const *const nm; enum gkyl_wave_limiter lm; } lm_names[] = {
   { "min-mod", GKYL_MIN_MOD },
   { "superbee", GKYL_SUPERBEE },
   { "van-leer", GKYL_VAN_LEER },
@@ -145,8 +142,8 @@ main(int argc, char **argv)
   };
 
   // construct sim name based on input file name
-  const char *inp_last_slash = strrchr(inp_name, '/');
-  const char *inp_no_slash = inp_last_slash ? inp_last_slash+1 : inp_name;
+  char const *const inp_last_slash = strrchr(inp_name, '/');
+  char const *const inp_no_slash = inp_last_slash ? inp_last_slash+1 : inp_name;
   strncpy(app_inp.name, inp_no_slash, strcspn(inp_no_slash, ".ini"));
 
   // create trigger for IO
@@ -155,7 +152,7 @@ main(int argc, char **argv)
   // create app object
   gkyl_moment_app *app = gkyl_moment_app_new(app_inp);
 
-  // start, end and initial time-step
+  // start, end
   double tcurr = 0.0, tend = ctx.tend;
 
   // initialize simulation
