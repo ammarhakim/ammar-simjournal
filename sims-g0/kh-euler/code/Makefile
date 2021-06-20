@@ -7,12 +7,12 @@ PREFIX = ${HOME}/gkylsoft
 
 G0_INC_DIR = ${PREFIX}/gkylzero/include
 G0_LIB_DIR = ${PREFIX}/gkylzero/lib
-G0_LIB_FLAGS = -lm -lgkylzero
+G0_LIB_FLAGS = -lgkylzero -lm
 
 all: kh-euler
 
 kh-euler: kh-euler.c
-	 ${CC} ${CFLAGS} -I${G0_INC_DIR} -L${G0_LIB_DIR} ${G0_LIB_FLAGS} kh-euler.c -o kh-euler
+	 ${CC} ${CFLAGS} -I${G0_INC_DIR} kh-euler.c -o kh-euler -L${G0_LIB_DIR} ${G0_LIB_FLAGS} 
 
 clean:
 	rm -rf kh-euler kh-euler.dSYM

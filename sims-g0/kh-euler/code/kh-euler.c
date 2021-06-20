@@ -179,7 +179,8 @@ main(int argc, char **argv)
 
     step += 1;
   }
-
+  gkyl_moment_app_stat_write(app);
+  
   struct gkyl_moment_stat stat = gkyl_moment_app_stat(app);
 
   // simulation complete, free resources
