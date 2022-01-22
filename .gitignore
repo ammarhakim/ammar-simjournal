@@ -3,6 +3,7 @@
 #*#
 .#*
 *.bp*
+*.gkyl
 *.log
 *.waf*
 *.lock*

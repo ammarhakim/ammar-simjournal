@@ -26,11 +26,11 @@ endif
 
 INCLUDES = -I${G0_INC_DIR} -I${LAPACK_INC}
 
-all: kh-euler
+all: fd-aniso-diff
 
-kh-euler: kh-euler.c
-	 ${CC} ${CFLAGS} ${INCLUDES} kh-euler.c -o kh-euler -L${G0_LIB_DIR} ${G0_LIBS} ${LAPACK_LIB}
+fd-aniso-diff: fd-aniso-diff.c
+	 ${CC} ${CFLAGS} ${INCLUDES} fd-aniso-diff.c -o fd-aniso-diff -L${G0_LIB_DIR} ${G0_LIBS} ${LAPACK_LIB}
 
 clean:
-	rm -rf kh-euler kh-euler.dSYM
+	rm -rf fd-aniso-diff fd-aniso-diff.dSYM
 
