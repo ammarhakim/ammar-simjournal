@@ -1,11 +1,3 @@
-#include "gkyl_array.h"
-#include "gkyl_array_ops.h"
-#include "gkyl_array_rio.h"
-#include "gkyl_elem_type.h"
-#include "gkyl_fv_proj.h"
-#include "gkyl_range.h"
-#include "gkyl_rect_grid.h"
-
 #include <math.h>
 #include <stdio.h>
 #include <gkylzero.h>
@@ -29,6 +21,8 @@ struct D_param {
 struct app_inp {
   int cells[2]; // number of cells in each direction
   double lower[2], upper[2]; // lower/upper bounds of domain
+
+  int nframe; // number of data-frames to write
   double tend; // end time for simulation
 
   struct src_params src_inp; // source parameters
@@ -37,16 +31,19 @@ struct app_inp {
 
 // Ansio diffusion "app"
 struct ad_app {
-  // grid and for cell-centered quantities
+  // grid and range for cell-centered quantities
   struct gkyl_rect_grid grid;
   struct gkyl_range range;
 
-  // grid and for nodal quantities
+  // grid and range for nodal quantities
   struct gkyl_rect_grid nc_grid;
   struct gkyl_range nc_range;
 
-  // temperature (nodal)
-  struct gkyl_array *T, *Tnew;
+  // range for nodes to update
+  struct gkyl_range nc_up_range;
+
+  // temperature and RHS of diffusion equation (nodal)
+  struct gkyl_array *T, *Tnew, *rhs;
   // heat source (nodal)
   struct gkyl_array *S;
 
@@ -82,6 +79,20 @@ init_source(struct gkyl_rect_grid grid, struct gkyl_range range,
 }
 
 ////// Diffusion tensor initialization
+
+// X-point field
+double
+xp_bx(double x, double y)
+{
+  double x0 = 0.5, y0 = 0.5;
+  return (y-y0)/sqrt(SQ(x-x0)+SQ(y-y0));
+}
+double
+xp_by(double x, double y)
+{
+  double x0 = 0.5, y0 = 0.5;
+  return (x-x0)/sqrt(SQ(x-x0)+SQ(y-y0));
+}
 
 // O-point field
 double
@@ -121,7 +132,6 @@ init_diff(struct gkyl_rect_grid grid, struct gkyl_range range,
   gkyl_fv_proj_release(fv_proj);
 }
 
-
 // Return new anisotropic-diffusion app object
 struct ad_app *
 ad_app_new(struct app_inp inp)
@@ -146,9 +156,16 @@ ad_app_new(struct app_inp inp)
   // create range to represent nodes
   gkyl_range_init_from_shape(&ad->nc_range, ad->nc_grid.ndim, ad->nc_grid.cells);
 
-  // allocate temperature and source on nodes
+  // create sub-range to loop over interior nodes
+  gkyl_sub_range_init(&ad->nc_up_range, &ad->nc_range,
+    (int[]) { ad->nc_range.lower[0]+1, ad->nc_range.lower[1]+1 },
+    (int[]) { ad->nc_range.upper[0]-1, ad->nc_range.upper[1]-1 }
+  );
+
+  // allocate temperatures, rhs and source on nodes
   ad->T = gkyl_array_new(GKYL_DOUBLE, 1, ad->nc_range.volume);
   ad->Tnew = gkyl_array_new(GKYL_DOUBLE, 1, ad->nc_range.volume);
+  ad->rhs = gkyl_array_new(GKYL_DOUBLE, 1, ad->nc_range.volume);
   ad->S = gkyl_array_new(GKYL_DOUBLE, 1, ad->nc_range.volume);  
   
   gkyl_array_clear(ad->T, 0.0); gkyl_array_clear(ad->Tnew, 0.0);
@@ -213,9 +230,54 @@ ad_app_calc_heat_flux(struct ad_app *ad)
     const double *D = gkyl_array_cfetch(ad->Dij, qidx);
     double *Q = gkyl_array_fetch(ad->Q, qidx);
 
-    Q[0] = D[XX]*dx_T + D[XY]*dy_T;
-    Q[1] = D[XY]*dx_T + D[YY]*dy_T;
+    Q[0] = -(D[XX]*dx_T + D[XY]*dy_T);
+    Q[1] = -(D[XY]*dx_T + D[YY]*dy_T);
   }
+}
+
+// compute RHS of anisotropic diffusion equation with current
+// temperature (ad->T)
+void
+ad_app_calc_rhs(struct ad_app *ad)
+{
+  enum { TR, BR, BL, TL }; // cells around a node
+
+  // compute offsets
+  long offsets[4];
+  offsets[TR] = 0; // (i,j)
+  offsets[TL] = gkyl_range_offset(&ad->range, (int[]) { -1,0 } ); // (i-1,j)
+  offsets[BR] = gkyl_range_offset(&ad->range, (int[]) { 0,-1 } ); // (i,j-1)
+  offsets[BL] = gkyl_range_offset(&ad->range, (int[]) { -1,-1 } ); // (i-1,j-1)
+
+  double dx = ad->grid.dx[0], dy = ad->grid.dx[1];
+
+  gkyl_array_clear(ad->rhs, 0.0);
+
+  // iterator over cells
+  struct gkyl_range_iter iter;
+  gkyl_range_iter_init(&iter, &ad->nc_up_range);
+
+  while (gkyl_range_iter_next(&iter)) {
+
+    // fetch heat-flux in four cells around node
+    long qidx = gkyl_range_idx(&ad->range, iter.idx);
+    
+    const double *Q_TR = gkyl_array_cfetch(ad->Q, qidx+offsets[TR]);
+    const double *Q_TL = gkyl_array_cfetch(ad->Q, qidx+offsets[TL]);
+    const double *Q_BR = gkyl_array_cfetch(ad->Q, qidx+offsets[BR]);
+    const double *Q_BL = gkyl_array_cfetch(ad->Q, qidx+offsets[BL]);
+
+    // compute divergence
+    double divQ = (0.5*(Q_TR[0]+Q_BR[0]) - 0.5*(Q_TL[0]+Q_BL[0]))/dx
+      + (0.5*(Q_TR[1]+Q_TL[1]) - 0.5*(Q_BR[1]+Q_BL[1]))/dy;
+
+    // compute final update by adding in source at node    
+    int nidx = gkyl_range_idx(&ad->nc_up_range, iter.idx);
+    const double *S = gkyl_array_cfetch(ad->S, nidx);
+    double *adrhs = gkyl_array_fetch(ad->rhs, nidx);
+
+    adrhs[0] = -divQ + S[0];
+  }  
 }
 
 void
@@ -250,7 +312,8 @@ get_app_inp(int argc, char *argv[])
     .lower = { 0, 0 },
     .upper = { 1.0, 1.0 },
 
-    .tend = 1.0,
+    .nframe = 20,
+    .tend = 2.0,
 
     .src_inp = {
       .xc = 0.25,
@@ -259,8 +322,8 @@ get_app_inp(int argc, char *argv[])
     },
 
     .D_inp = {
-      .bx = op_bx,
-      .by = op_by,
+      .bx = xp_bx,
+      .by = xp_by,
       .kpar = 1.0,
       .kperp = 1.0e-9
     }
@@ -274,6 +337,36 @@ main(int argc, char *argv[])
 
   struct ad_app *ad = ad_app_new(inp);
   ad_app_init(ad, inp.src_inp, inp.D_inp);
+
+  double cfl = 0.5;
+  double kpar = inp.D_inp.kpar;
+
+  // comput CFL frequency
+  double cfl_freq = kpar/SQ(ad->grid.dx[0]) + kpar/SQ(ad->grid.dx[1]);
+  double dt = cfl/cfl_freq;
+
+  // create trigger for IO
+  struct gkyl_tm_trigger io_trig = { .dt = inp.tend/inp.nframe };
+
+  if (gkyl_tm_trigger_check_and_bump(&io_trig, 0.0))
+    ad_app_write(ad, io_trig.curr-1);  
+
+  // main loop
+  double tcurr = 0.0, tend = inp.tend;
+  long step = 1;
+  while (tcurr < tend) {
+    printf("Taking time-step %ld at t = %g ...\n", step, tcurr);
+
+    // compute rhs and do first-order Euler update
+    ad_app_calc_heat_flux(ad); ad_app_calc_rhs(ad);
+    gkyl_array_accumulate_range(ad->T, dt, ad->rhs, ad->nc_range);
+
+    tcurr += dt; step += 1;
+
+    // write data if needed
+    if (gkyl_tm_trigger_check_and_bump(&io_trig, tcurr))
+      ad_app_write(ad, io_trig.curr-1);
+  }
 
   ad_app_release(ad);
 
