@@ -3,7 +3,7 @@
 # Sample Makefile to use installed gkylzero library: copy and modify
 # for your needs
 
-CFLAGS = -O3 -g -I.
+CFLAGS = -O3 -g -I. 
 PREFIX = ${HOME}/gkylsoft
 
 G0_INC_DIR = ${PREFIX}/gkylzero/include
