@@ -80,6 +80,20 @@ init_source(struct gkyl_rect_grid grid, struct gkyl_range range,
 
 ////// Diffusion tensor initialization
 
+// inclined field
+double
+in_bx(double x, double y)
+{
+  double alpha = M_PI/20;
+  return cos(alpha);
+}
+double
+in_by(double x, double y)
+{
+  double alpha = M_PI/20;
+  return sin(alpha);
+}
+
 // X-point field
 double
 xp_bx(double x, double y)
@@ -271,7 +285,7 @@ ad_app_calc_rhs(struct ad_app *ad)
     double divQ = (0.5*(Q_TR[0]+Q_BR[0]) - 0.5*(Q_TL[0]+Q_BL[0]))/dx
       + (0.5*(Q_TR[1]+Q_TL[1]) - 0.5*(Q_BR[1]+Q_BL[1]))/dy;
 
-    // compute final update by adding in source at node    
+    // compute final update by adding in source at node
     int nidx = gkyl_range_idx(&ad->nc_up_range, iter.idx);
     const double *S = gkyl_array_cfetch(ad->S, nidx);
     double *adrhs = gkyl_array_fetch(ad->rhs, nidx);
@@ -322,8 +336,8 @@ get_app_inp(int argc, char *argv[])
     },
 
     .D_inp = {
-      .bx = xp_bx,
-      .by = xp_by,
+      .bx = op_bx,
+      .by = op_by,
       .kpar = 1.0,
       .kperp = 1.0e-9
     }
