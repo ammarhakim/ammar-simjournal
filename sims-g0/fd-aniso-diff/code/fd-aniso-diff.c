@@ -291,7 +291,7 @@ ad_app_calc_rhs(struct ad_app *ad)
     double *adrhs = gkyl_array_fetch(ad->rhs, nidx);
 
     adrhs[0] = -divQ + S[0];
-  }  
+  }
 }
 
 void
