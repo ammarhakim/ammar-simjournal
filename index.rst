@@ -55,6 +55,14 @@ Technical Notes
   hancock-muscl
   multifluid-equilibrium
 
+Programming Notes
+-----------------
+
+.. toctree::
+   :maxdepth: 1
+
+   pe/pe0/pe0-minimalism.rst  
+
 Simulation Journal
 ------------------
 
