@@ -26,11 +26,11 @@ endif
 
 INCLUDES = -I${G0_INC_DIR} -I${LAPACK_INC}
 
-all: simple-ns
+all: incomp-ns
 
-simple-ns: simple-ns.c
-	 ${CC} ${CFLAGS} ${INCLUDES} simple-ns.c -o simple-ns -L${G0_LIB_DIR} ${G0_LIBS} ${LAPACK_LIB}
+incomp-ns: incomp-ns.c
+	 ${CC} ${CFLAGS} ${INCLUDES} incomp-ns.c -o incomp-ns -L${G0_LIB_DIR} ${G0_LIBS} ${LAPACK_LIB}
 
 clean:
-	rm -rf simple-ns simple-ns.dSYM
+	rm -rf incomp-ns incomp-ns.dSYM
 
