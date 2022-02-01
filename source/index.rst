@@ -61,7 +61,7 @@ Programming Notes
 .. toctree::
    :maxdepth: 1
 
-   pn/pn0/pn0-minimalism.rst
+   pn/pn0/pn0-minimalism.rst  
 
 Simulation Journal
 ------------------
@@ -104,5 +104,3 @@ Simulation Journal
   je/je33/je33-buneman.rst
   je/je34/je34-linear-dispersion.rst
   je/je35/je35-iter-poisson.rst   
-   
-
