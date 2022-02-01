@@ -1,40 +1,32 @@
-# Makefile for Sphinx documentation
+# Minimal makefile for Sphinx documentation
 #
 
 # You can set these variables from the command line.
 SPHINXOPTS    =
-SPHINXBUILD   = sphinx-build
-PAPER         =
+SPHINXBUILD   = python -msphinx
+SPHINXPROJ    = simj
+SOURCEDIR     = source
 BUILDDIR      = build
-PYTHON = python
 
-# Internal variables.
-PAPEROPT_a4     = -D latex_paper_size=a4
-PAPEROPT_letter = -D latex_paper_size=letter
-ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
+# Put it first so that "make" without argument is like "make help".
+help:
+	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
-.PHONY: clean html justhtml
-
-html:
+luarst:
 	@echo "Building RST files from Lua scripts ...."
-	cd sims; ${PYTHON} ./code/mkluarst.py; cd ..
-	cd sims; ${PYTHON} ./makesimindex.py; cd ..
-	cd sims-2/dg-maxwell; ${PYTHON} ../../sims/code/mkluarst.py; cd ../..
-	cd sims-2/dg-maxwell; ${PYTHON} ./makesimindex.py; cd ../..
-	cd sims-2/boltz-bgk; ${PYTHON} ../../sims/code/mkluarst.py; cd ../..
-	cd sims-2/boltz-bgk; ${PYTHON} ./makesimindex.py; cd ../..
-	cd sims-2/es-shock-1d; ${PYTHON} ../../sims/code/mkluarst.py; cd ../..
-	cd sims-2/es-shock-1d; ${PYTHON} ./makesimindex.py; cd ../..
-	cd sims-2/coupled-hw; ${PYTHON} ../../sims/code/mkluarst.py; cd ../..
-	@$(SPHINXBUILD) -b html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
-	@echo
-	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
+	cd source/sims; ${PYTHON} ./code/mkluarst.py; cd ../..
+	cd source/sims; ${PYTHON} ./makesimindex.py; cd ../..
+	cd source/sims-2/dg-maxwell; ${PYTHON} ../../sims/code/mkluarst.py; cd ../../..
+	cd source/sims-2/dg-maxwell; ${PYTHON} ./makesimindex.py; cd ../../..
+	cd source/sims-2/boltz-bgk; ${PYTHON} ../../sims/code/mkluarst.py; cd ../../..
+	cd source/sims-2/boltz-bgk; ${PYTHON} ./makesimindex.py; cd ../../..
+	cd source/sims-2/es-shock-1d; ${PYTHON} ../../sims/code/mkluarst.py; cd ../../..
+	cd source/sims-2/es-shock-1d; ${PYTHON} ./makesimindex.py; cd ../../..
+	cd source/sims-2/coupled-hw; ${PYTHON} ../../sims/code/mkluarst.py; cd ../../..
 
-justhtml:
-	@$(SPHINXBUILD) -b html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
-	@echo
-	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
+.PHONY: help Makefile luarst
 
-clean:
-	-rm -rf $(BUILDDIR)/*
-
+# Catch-all target: route all unknown targets to Sphinx using the new
+# "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
+%: Makefile
+	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
