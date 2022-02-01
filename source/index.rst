@@ -13,9 +13,7 @@ SimJournal: Ammar Hakim's Simulation Journal
   click those links and look at the Lua script. The initial conditions
   are in (obviously named) functions like init(). The script also
   contains other details like exact setup (resolution, algorithms,
-  limiters, time-steps, etc). My goal is that others can reproduce
-  these results. Hence, there is no "hidden hand-of-god", as one
-  commonly finds in some papers, etc.
+  limiters, time-steps, etc).
 
 .. warning::
 
@@ -26,6 +24,11 @@ SimJournal: Ammar Hakim's Simulation Journal
    nearly impossible for me to keep these input files up-to-date as
    there are, literally, hundreds of them linked to my simulation
    journal.
+
+   **Recently, many links to input files broke due to the way Sphinx
+   generators handle references to other internal RST files. I am not
+   sure how to fix these. If you know the input file name you can just
+   look it up on Github**
 
 Below are a set of useful (to me) technical notes and a list of
 journal entries, documenting various problems that have I used to
