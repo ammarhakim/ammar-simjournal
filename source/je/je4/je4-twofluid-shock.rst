@@ -142,8 +142,7 @@ equations. The results are shown below.
   :align: center
 
   Electron number density (red) compared with ion number density
-  (black) for simulation [:doc:`s36
-  <../../sims/s36/s36-twofluid-shock>`] with :math:`q_i/m_i =
+  (black) for simulation [:doc:`s36 <../../sims/s36/s36-twofluid-shock>`] with :math:`q_i/m_i =
   1`. Significant charge separation is seen.
 
 .. figure:: s36-twofluid-shock_up.png
