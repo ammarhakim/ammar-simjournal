@@ -49,6 +49,12 @@ Minimalism defined
    software development, leading to code bloat, unnecessary layering
    that eventually leads to an unmaintainable mess.
 
+#. Minimalist programs do not require complex processes, described in
+   long, never-to-be-read documents. Processes documents become stale
+   quickly. Processes also encourage a bureaucratic system, which is
+   completely antithetical to minimalist programming. Hence, minimize
+   process.
+
 #. Programming is never about lines of code or less typing or other
    such superficial measures. (Though all these are typically the
    outcome of minimalist design). Programming is about expressing
@@ -148,12 +154,14 @@ Use C and if needed, add a scripting layer
    surprisingly elegant designs and clean, tight code.
 
 #. Managing memory yourself is not a burden. Highly robust and
-   reliable software like the Linux kernel, redis, haproxy, sqlite etc
-   are written in C and all of them manage memory manually.
+   reliable software like the Linux kernel, `redis
+   <https://redis.io/>`_, `haproxy <https://www.haproxy.org/>`_,
+   `sqlite <https://sqlite.org/index.html>`_ etc are written in C and
+   all of them manage memory manually.
 
 #. Pay attention to all compiler warnings and use a static analysis
-   tool. Learn to use valgrind and all the tools it provides. Ensure
-   all code is "valgrind clean".
+   tool. Learn to use `valgrind <https://valgrind.org/>`_ and all the
+   tools it provides. Ensure all code is "valgrind clean".
 
 #. C code and C APIs are very easy to bind in multiple
    languages. Hence a good architectural motif (used in redis, haprox
@@ -161,8 +169,10 @@ Use C and if needed, add a scripting layer
    in C and use scripting to provide higher level control.
 
 #. Modern scripting languages are very flexible and powerful. Some
-   like Lua are specially designed for embedding in larger
-   applications and have a very tiny footprint. 
+   like `Lua <https://www.lua.org/>`_ are specially designed for
+   embedding in larger applications. Lua has a very tiny footprint, is
+   written in portable C, making it universally usable on all types
+   of systems, however constrained.
 
 #. Defer complex control to the scripting layer. Higher-level
    scripting languages allow more complex and elegant control

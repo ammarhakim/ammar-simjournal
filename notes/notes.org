@@ -1,0 +1,79 @@
+#+TITLE:     Code Journal
+#+AUTHOR:    Ammar Hakim
+#+EMAIL:     a.hakim777@gmail.com
+#+LANGUAGE:  en
+#+STARTUP: overview
+#+TAGS: code(c) philo(p) rant(r)
+
+* C/C++, math and programming blogs                                    :code:
+
+- https://floooh.github.io C stuff from graphics libraries (clean libraries for general use also)
+- https://nullprogram.com Really good, clean C ideas
+- https://gustedt.wordpress.com Modern C blog, with inside info from C standards
+- https://fgiesen.wordpress.com Games and programming related stuff
+- https://iquilezles.org/index.html demoscene stuff
+- https://github.com/Immediate-Mode-UI/Nuklear Single header ANSI-C UX imux
+- http://www.quelsolaar.com Interesting graphics stuff in C
+- http://www.gamepipeline.org Pure C code for many different useful things (Quelsolaar)
+- https://blog.regehr.org C/C++ mixed with personal things
+- https://zserge.com/posts/ Minimalist C (and Go) stuff. (see c-for-loop-tricks in particular)
+- https://www.youtube.com/watch?v=443UNeGrFoM (How I program C)
+- https://github.com/mattiasgustavsson/libs Some single-header C code
+- https://github.com/nothings/single_file_libs More single-header C code
+- https://github.com/tylov/STC C standard containers
+- https://github.com/imneme/pcg-c PCG random number generator
+- http://cat-v.org Considered harmful
+- http://xahlee.org/index.html Commentary and opinions on programming
+- See suckless software and its philosophy
+- http://www.mymathlib.com Set of C math functions
+- https://github.com/rxi Lua-driven text editor; other useful projects
+- https://gameprogrammingpatterns.com/ Game programming patterns
+- https://www.romanzolotarev.com Web and other stuff
+- https://theorangeduck.com/page/all C stuff, including Lua bindings:
+- https://github.com/orangeduck For C->Lua bindings and other
+  interesting projects.
+- https://bivector.net/index.html GA stuff
+- https://apibook.com/blog/archives/186 How to write a pure-C library
+- https://www.haproxy.org/ Haproxy: see for efficient code, lua
+  integration.
+- https://gotopia.tech/ Some videos/talks on software
+- https://yosefk.com/blog/ Random programming thoughts
+- https://gafferongames.com/ Games stuff
+- https://www.cantorsparadise.com/ Some math/physics stuff
+- https://randomascii.wordpress.com/ Programming, optimization stuff
+- https://herbie.uwplse.org/ Floating point
+
+* Some terms to avoid or define properly; things considered harmful
+
+- Synchronous: immediate; Asynchronous: delayed
+- Object-oriented programming is harmful. Do not use it; data and
+  functions should be separate; no need for inheritance; leads to
+  serious spaghetti mess of brittle inheritance hierarchies, weird
+  templates, friends allowed to touch one's privates, etc etc
+  etc. Avoid like the plague.
+- Do not use  C++ if you can avoid it. If you must, then:
+- Template meta-progamming. Do not do it. Just do NOT do it!
+- Boost libraries. Do not use them. Ugly, horrible crap. 
+  
+* Experience with C in G0 (Jan 2 2022)
+
+Why was the switch to C made? Experience with C++ during GPU hackathon
+prompted a fresh look to the Gkeyll infrastructure. How to make it
+portable, efficient and maintainable? Use C!
+
+Discuss advantages of C: abstractions are not needed. Close-to-metal,
+relatively easy to write efficient code. Portable and relatively
+simple. Very pleasant experience!
+
+* Reduce Process, Reduce Dependencies
+
+It is sad that the lead guy died. I think process-driven projects like
+this are prone to staleness as there are too many docs that are
+written and it is hard to modify and keep them all up-to date. Hence,
+I think for smaller projects (with small, tight community like
+Silo/G0) one should minimize the process docs. There should be some
+but they should be very few, and as compact as possible, with almost
+no external links to things you do not control. For example, even in
+this RFC there are broken links.
+
+(Add this to minimalist PN0)

@@ -25,11 +25,6 @@ SimJournal: Ammar Hakim's Simulation Journal
    there are, literally, hundreds of them linked to my simulation
    journal.
 
-   **Recently, many links to input files broke due to the way Sphinx
-   generators handle references to other internal RST files. I am not
-   sure how to fix these. If you know the input file name you can just
-   look it up on Github**
-
 Below are a set of useful (to me) technical notes and a list of
 journal entries, documenting various problems that have I used to
 benchmark features in Gkeyll. I can not guarantee that everything here
@@ -64,7 +59,8 @@ Programming Notes
 .. toctree::
    :maxdepth: 1
 
-   pn/pn0/pn0-minimalism.rst  
+   pn/pn0/pn0-minimalism.rst
+   pn/pn1/pn1-on-lang-longevity.rst
 
 Simulation Journal
 ------------------
