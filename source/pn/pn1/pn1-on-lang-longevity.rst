@@ -1,22 +1,21 @@
 :Author: Ammar Hakim
 :Date: Jan 14th 2022
 :Completed: 
-:Last Updated: Feb 1st 2022
+:Last Updated: Feb 6th 2022
 
 PN1: Why Some Programming Languages Survive
 ===========================================
 
 .. contents::
 
-Why do certain programming languages have such longevity? Is it merely
-the perverseness of some prominent people (bullying or coercion)? Or
-is there a fundamental reason for this? Why has 50 years of research
-not led to significant evolution of the most widely used (but old)
-languages? Of course, many new languages, some with very elegant
-concepts have appeared over the years. So what is the explanation that
-C remains so widely used? (C and C++ combined are 2x as popular as the
-next option, Python. Further, many other highly popular languages like
-C# and Java are also very C-like in their basic semantics).
+Why do certain programming languages have such longevity? Is there a
+fundamental reason for this? Why has 50 years of research not led to
+significant evolution of the most widely used (but old) languages? Of
+course, many new languages, some with elegant concepts have appeared
+over the years. So what is the explanation that C remains so widely
+used? (C and C++ combined are 2x as popular as the next option,
+Python. Further, many other popular languages like C# and Java are
+also C-like in their basic semantics).
 
 The reasons for these are manifold. First, just because 50 years of
 research have gone by it does not mean that any fundamental change has
@@ -37,16 +36,16 @@ architecture (von Neumann architecture) has not changed and this means
 that languages that target or mimic this architecture in software will
 naturally survive. The most important language that was specifically
 invented to program machines with the von Neumann architecture
-is C. The explicit goal of C design was to be one level above assembly
-that the hardware itself understands.  This means that as long as the
-von Neumann architecture is around, C will continue to dominate and
-survive. Even languages that wish to supplant C will need to follow
-its lead in being compact, have few orthogonal concepts that can be
-combined in non-trivial ways and have the ability to talk to the
-hardware directly. This essentially explains C’s longevity and
-continues wide-spread use and popularity. (Though it would not
-*appear* C is that popular given all the false fear of C that is
-cultivates, and lack of slick online marketing as compared to
+is C. The explicit goal of C design was to be one level above
+assembly, a language that the hardware itself understands. This means
+that as long as the von Neumann architecture is around, C will
+continue to dominate and survive. Even languages that wish to supplant
+C will need to follow its lead in being compact, have few orthogonal
+concepts that can be combined in non-trivial ways and have the ability
+to talk to the hardware directly. This essentially explains C’s
+longevity and continues wide-spread use and popularity. (Though it
+would not *appear* C is that popular given all the fear of C that is
+cultivated, and lack of slick online marketing as compared to
 JavaScript, Java and C++, for example).
 
 On the cost of abstractions
@@ -60,7 +59,7 @@ in high-performance computing or in core systems software, any
 abstraction that hides the details of the machine is bad. For
 computational physics the *correct* level of abstraction is that of
 *mathematics*, i.e. arrays and other mathematically defined
-data-structures (multi-dimensional index-sets, lists, graphs, trees
+data-structures (multi-dimensional index-sets, lists, graphs, trees,
 etc) and functions/operators that act on them.
 
 Some recent language evangelists have propagated the phrase "zero cost
@@ -92,8 +91,8 @@ that consumes gargantuan amounts of energy and yet underperforms.
   of the hardware limitations must be accounted for when doing
   numeric-intensive work.
 - Memory is finite and linearly addressed in a von Neumann
-  architecture.  Programs are treated as data (“stored program
-  architecture”, first invented by Charles Babbage). Hence, the
+  architecture.  Programs are treated as data ("stored program
+  architecture", first invented by Charles Babbage). Hence, the
   language must allow efficiently addressing the underlying memory and
   instructions via close-to-metal calls. This is particularly true
   when complex memory hierarchies, SIMD operations, pipelined CPUs and
@@ -106,10 +105,10 @@ that consumes gargantuan amounts of energy and yet underperforms.
   manner that remains close to the machine.
 - In languages like C++ and Java, abstractions are often expressed as
   deep inheritance hierarchies. These are difficult to understand and
-  highly brittle: modifying them is very difficult and probably
-  impossible in a production system. Worse, these deep inheritance
-  hierarchies can have significant cost, specially in
-  performance-critical software.
+  highly brittle: modifying them is difficult and probably impossible
+  in a production system. Worse, these deep inheritance hierarchies
+  can have significant cost, specially in performance-critical
+  software.
 - However, being one layer above assembly involves a cost in terms of
   safety, in that care must be taken to ensure one does not cross the
   process boundary. This requires discipline and consistent use of
@@ -123,9 +122,8 @@ that consumes gargantuan amounts of energy and yet underperforms.
   safety and automatic management of resources) adds unpredictable
   overhead. Further, reference leaking can still occur.
 - Error handling is also driven by the underlying von Neumann
-  architecture. Obviously, hardware can’t throw exceptions! Hence, the
-  hardware signals must be caught and propagated backwards via error
-  codes, undoing changes as needed.
+  architecture. Hence, errors must be caught and propagated backwards
+  via error codes, undoing changes as needed.
 - C++ exceptions create *non-locality of the control flow*. In
   general, it is not obvious where and why an exception was thrown and
   the only real option is often to merely abort.
@@ -143,7 +141,7 @@ that consumes gargantuan amounts of energy and yet underperforms.
   template meta-programming, exceptions, pure-interfaces, innumerable
   “decorators” etc, etc etc. Besides putting serious linguistic burden
   on the programmer, these promote programming practices that lead to
-  very inefficient code.
+  very inefficient code [#]_.
 
 On the elegance of Lisp. Fortran and APL
 ----------------------------------------
@@ -157,7 +155,7 @@ the foundations of mathematics. Lisp is a concrete implementation of
 these fundamental mathematical ideas. One reason, though, why Lisp did
 not become dominant is that the hardware to run Lisp efficiently never
 become mainstream, and was soon totally eclipsed by machines based on
-the von Neumann architecture.  Could things have turned out different,
+the von Neumann architecture. Could things have turned out different,
 and Lisp become dominant compared to C? I am not sure, as the
 fundamental data-structure in Lisp (a cons-cell) requires
 indirection. So it is possible that the von Neumann architecture is
@@ -173,7 +171,7 @@ coroutines and continuations) can be used to implement complicated
 control structures and iterators over data-structures efficiently.
 
 Fortran and APL family of languages also have had significant
-longevity. Again, this is as multi-dimensional array manipulations
+longevity. Again, this is as multi-dimensional array manipulations,
 that lie at the heart of Fortran and APL, are fundamental when
 mathematics is performed on a computer. APL family of languages (and
 its descendants like `J <https://www.jsoftware.com/#/>`_), in
@@ -196,3 +194,18 @@ not studied for the code they contain, but more for the mathematical
 William would say, as mathematics underlies Nature, it is natural and
 good that our machines and language should also express this
 fundamental feature of our Universe.
+
+Footnotes
+---------
+
+.. [#] C++ is particularly bad at the linguistic overload it has
+   introduced on programmers. If one uses C++, it is not enough to
+   focus on the problem at hand, but one ends up spending countless
+   hours navel-gazing obscure language features and quirks. In fact,
+   one ends fighting the language far more than focusing on the
+   problem at hand. Sadly, the C++ committee has gone on an offensive,
+   releasing new extensions to the language every 3 years, making it
+   impossible for an ordinary programmer, with real problems to solve,
+   to ever master it fully. C++ is an overweight and unwieldy beast
+   that is best avoided, unless one wants an ego boost from being
+   called an "C++ expert".
