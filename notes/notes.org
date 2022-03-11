@@ -7,7 +7,7 @@
 
 * C/C++, math and programming blogs                                    :code:
 
-- https://floooh.github.io C stuff from graphics libraries (clean libraries for general use also)
+- http://floooh.github.io C stuff from graphics libraries (clean libraries for general use also)
 - https://nullprogram.com Really good, clean C ideas
 - https://gustedt.wordpress.com Modern C blog, with inside info from C standards
 - https://fgiesen.wordpress.com Games and programming related stuff
@@ -42,6 +42,9 @@
 - https://www.cantorsparadise.com/ Some math/physics stuff
 - https://randomascii.wordpress.com/ Programming, optimization stuff
 - https://herbie.uwplse.org/ Floating point
+- https://williamaadams.wordpress.com/summaries/ LuaJIT and programming stuf
+- https://spin.atomicobject.com/2016/08/26/makefile-c-projects/ Makefile 
+- https://jugit.fz-juelich.de/mlz/libcerf Complex error functions
 
 * Some terms to avoid or define properly; things considered harmful
 

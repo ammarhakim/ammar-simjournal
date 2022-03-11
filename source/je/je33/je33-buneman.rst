@@ -30,8 +30,8 @@ becomes
 Hence, an *initial plasma current* will give rise to an electric
 field, that in turn drives plasma currents that tend to cancel those
 applied initially. An oscillation at the plasma frequency will be set
-up. This is will not happen when using Poisson equation, however, as
-the currents never appear in the field equation.
+up. This does not happen when using Poisson equation, however, as the
+currents never appear in the field equation.
 
 This is a manifestation of the fact a current flow will result in a
 magnetic field that balances it. However, this effect is missing in
