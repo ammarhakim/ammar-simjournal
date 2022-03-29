@@ -1,4 +1,5 @@
 *.pyc
+*.json
 *~
 #*#
 .#*
@@ -17,3 +18,8 @@ source/sims/*/*.rst
 source/sims-2/*/*/*.rst
 .cache
 compile_commands.json
+
+source/sims-g0/fd-aniso-diff/code/fd-aniso-diff
+source/sims-g0/incomp-ns/code/incomp-ns
+source/sims-g0/incomp-ns/code/simple-ns
+source/sims-g0/kh-euler/code/kh-euler
