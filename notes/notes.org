@@ -45,6 +45,8 @@
 - https://williamaadams.wordpress.com/summaries/ LuaJIT and programming stuf
 - https://spin.atomicobject.com/2016/08/26/makefile-c-projects/ Makefile 
 - https://jugit.fz-juelich.de/mlz/libcerf Complex error functions
+- https://themaximalist.org/ Maxima blog
+- https://maxima-solved.blogspot.com/ Maxima blog
 
 * Some terms to avoid or define properly; things considered harmful
 
