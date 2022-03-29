@@ -103,6 +103,70 @@ with the WavePropagationUpdater is not usually a good idea: the
 solution quality is very sensitive to the numerical flux, and best
 results are usually obtained when using Roe fluxes.
 
+Supersonic flow over wedge
+--------------------------
+
+In this test, I study the supersonic flow over a 2D wedge. This is a
+standard problem in compressible, invicid shock theory, and, for
+example, is described in detail in Chapter 4 of [#anderson-mcf]_. For
+this problem one can use the Rankine-Hugoniot relations to compute the
+exact fluid state just behind the oblique shock.
+
+The wedge has a half-angle of :math:`15` degrees, and a free-stream
+Mach 8 flow (with :math:`\rho_1=1` and :math:`p_1=1`) is
+imposed. Standard shock theory shows (see `this online calculator
+<http://www.dept.aoe.vt.edu/~devenpor/aoe3114/calc.html>`_, for
+example, or the book [#anderson-mcf]_) that an attached oblique shock
+should form, with shock angle of about :math:`20.9^o`, with the
+density and pressure behind the shock given by :math:`\rho_2/\rho_1 =
+3.71` and :math:`p_2/p_1=9.30`. The Mach number just behind the shock
+should be :math:`4.75`. (Subscript 1 is used for free-stream values,
+and 2 for just behind the shock). Two grid resolutions,
+:math:`100\times 200` and :math:`200\times 400` are used. Results are
+shown the following figure.
+
+.. figure:: s416-417-wedge-cmp.png
+  :width: 100%
+  :align: center
+
+  Density (top), pressure (middle) and Mach number (bottom) on
+  :math:`100\times 200` (left) [:doc:`s416
+  <../../sims/s416/s416-euler-wedge-2d>`] and :math:`200\times 400`
+  (right) [:doc:`s417 <../../sims/s417/s417-euler-wedge-2d>`] grid for
+  flow over :math:`15^o` half-angle wedge. Inflow speed is Mach 8. The
+  exact solution predicts a shock-angle of about :math:`20.86^o`. The
+  numerically computed angles are :math:`27^o` and :math:`25^o` for
+  the coarse and fine resolutions, respectively. These errors are due
+  to the boundary representation, which causes a the shock to detach
+  slightly at the tip of the wedge, leading to a much larger shock
+  angle.
+
+As seen in the above figure, the shock angle is poorly predicted. The
+reason for this are (a) the stair-stepped boundary causes the shock to
+detach from the tip of the wedge, opening up the shock angle somewhat,
+and (b) the use of a diffusive flux means that the effective wedge
+angle is larger, as the numerical diffusion "smears out" the boundary
+forming a numerical boundary layer over the surface.
+
+A vertical lineout of the density and pressure at :math:`x=0.9` are
+shown in the following figure.
+
+.. figure:: s416-417-wedge-lineout-cmp.png
+  :width: 100%
+  :align: center
+
+  Density (left), pressure (right) for Mach 8 flow over :math:`15^o`
+  half-angle wedge, on :math:`100\times 200` (black) [:doc:`s416
+  <../../sims/s416/s416-euler-wedge-2d>`] and :math:`200\times 400`
+  (red) [:doc:`s417 <../../sims/s417/s417-euler-wedge-2d>`] grids. The
+  solid magenta dots indicates the exact value just behind the
+  shock. Further, the pressure inside shock should be uniform. As seen
+  here Gkeyll over-predicts the jump across the shock, and also
+  over-predicts the shock angle. It should be noted that the jump
+  across the shock is very sensitive to the wedge angle, and hence a
+  small (even two degree) error can cause this level of
+  discrepancy.
+
 Double Mach reflection
 ----------------------
 
@@ -111,11 +175,12 @@ forming a complex Mach stem that separates the fluid into several
 regions with different flow properties. This problem has been
 extensively studied in the literature.
 
-The shock is created using an initial state, with :math:`\rho=8, u =
-8.25, p=116.5` for :math:`x<0.5` and :math:`\rho=1.4, u = 0, p=1.0`
-for :math:`x>0.5`. The domain is :math:`3\times 2` and a grid of
-:math:`450\times 300` is used. The wedge tip is at :math:`x=0`. The
-density at :math:`t=0.2` is shown below.
+Unlike the previous problem, the shock is created using an initial
+state, with :math:`\rho=8, u = 8.25, p=116.5` for :math:`x<0.5` and
+:math:`\rho=1.4, u = 0, p=1.0` for :math:`x>0.5`. The domain is
+:math:`3\times 2` and a grid of :math:`450\times 300` is used. The
+wedge tip is at :math:`x=0`. The density at :math:`t=0.2` is shown
+below.
 
 .. figure:: s418-euler-wedge-2d_q_10_rho.png
   :width: 100%
@@ -300,6 +365,8 @@ weak. However, this remains to be verified.
 
 References
 ----------
+
+.. [#anderson-mcf] John D. Anderson, Jr. "Modern Compressible Flow".
 
 .. [#berger-2003] M. J. Berger, C. Helzel and R. J. LeVeque "H-box
    methods for the approximation of one-dimensional conservation laws

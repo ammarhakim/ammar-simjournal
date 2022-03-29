@@ -102,4 +102,5 @@ Simulation Journal
   je/je32/je32-vlasov-test-ptcl.rst
   je/je33/je33-buneman.rst
   je/je34/je34-linear-dispersion.rst
-  je/je35/je35-iter-poisson.rst   
+  je/je35/je35-iter-poisson.rst
+  je/je36/je36-maxwell-cylindrical-waveguide.rst
