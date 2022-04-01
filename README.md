@@ -1,4 +1,4 @@
-This is a collection of input files and notes that make up my "Simulation Journal". The input files are from Gkeyll 1.0 and 2.0. These are very comprehensive set of input files that test almost all aspects of the Gkeyll 1.0 and 2.0 code. 
+This is a collection of input files and notes that make up my "Simulation Journal". The input files are from Gkeyll 1.0 and 2.0. These are very comprehensive set of input files that test almost all aspects of the Gkeyll 1.0 and 2.0, 0.0 code. 
 
 Please see my [Simulation Journal](http://ammar-hakim.org/sj/) where some of the tests are documented. Not all tests are documented there.
 

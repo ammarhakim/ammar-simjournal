@@ -1,6 +1,6 @@
 :Author: Ammar Hakim
 :Date: March 29th 2022
-:Completed: 
+:Completed: March 30th 2022
 :Last Updated:
 
 JE36: Benchmarking general geometry Maxwell solver with annular (cylindrical) waveguides
