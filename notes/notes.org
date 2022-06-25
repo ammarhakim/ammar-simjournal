@@ -47,6 +47,8 @@
 - https://jugit.fz-juelich.de/mlz/libcerf Complex error functions
 - https://themaximalist.org/ Maxima blog
 - https://maxima-solved.blogspot.com/ Maxima blog
+- https://mrob.com/pub/index.html  Integer
+- See the Lean formal mathematics program
 
 * Some terms to avoid or define properly; things considered harmful
 

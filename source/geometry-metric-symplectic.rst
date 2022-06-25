@@ -1,12 +1,8 @@
-Metric and symplectic geometry
-------------------------------
+Tutorial on Vector and Tensor Calculus
+--------------------------------------
 
-In this note I list some useful information about metric and
-symplectic geometry that allow easily transform various equations,
-including Hamiltonian systems, to arbitrary coordinate systems. I keep
-forgetting all this material and end up rederiving all expressions
-repeatedly when I need them. These notes are just a personal reminder
-to the things I forget. Hopefully, others will find the notes useful
-also.
+This tutorial outlines a geometric approach to working with equations
+of mathematical physics, allowing one to differ the introduction of
+coordinates to the last possible moment.
 
 `PDF of note <./_static/files/gk-geom.pdf>`_

@@ -42,6 +42,7 @@ Technical Notes
   :numbered:
   :maxdepth: 1
 
+  geometry-metric-symplectic	     
   moment-eqns
   maxwell-eigensystem
   euler-eigensystem
@@ -49,7 +50,6 @@ Technical Notes
   twofluid-sources
   fpo-notes
   fluid-kin-drifts
-  geometry-metric-symplectic
   hancock-muscl
   multifluid-equilibrium
 

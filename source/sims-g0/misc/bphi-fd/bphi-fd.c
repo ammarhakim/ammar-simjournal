@@ -13,16 +13,20 @@ struct app_inp {
   int nframe; // number of data-frames to write
   double tend; // end time for simulation
 
-  double eta; // diffusion constant
+  double eta; // diffusion constant (this is eta/mu)
   double jz, jrad; // current, radius of current
+  double mu0; 
 };
 
 struct init_ctx {
   double jz, jrad;
+  double mu0; 
 };
 
 // SImple Bphi app
 struct lm_app {
+  double eta, mu0;
+  
   // grid and ranges for cell-centered quantities
   struct gkyl_rect_grid grid;
   struct gkyl_range ext_range, range;
@@ -56,8 +60,9 @@ init_Bphi(double t, const double *xn, double *fout, void *ctx)
   struct init_ctx *ic = ctx;
   double r = xn[0];  
 
+  double mu0 = ic->mu0;
   double jrad = ic->jrad, jz = ic->jz;
-  double Bphi = r<jrad ? jz*r/2 : jz*jrad*jrad/2/r;
+  double Bphi = r<jrad ? mu0*jz*r/2 : mu0*jz*jrad*jrad/2/r;
   fout[0] = Bphi;
 }
 
@@ -70,11 +75,14 @@ lm_app_apply_bc(struct lm_app *ad, struct gkyl_array *Bphi)
   gkyl_wv_apply_bc_advance(ad->bc_lower[1], 0.0, &ad->range, Bphi);
 }
 
-// Return new anisotropic-diffusion app object
+// Return new magnetic field diffusion app
 struct lm_app *
 lm_app_new(struct app_inp inp)
 {
   struct lm_app *ad = gkyl_malloc(sizeof(struct lm_app));
+
+  ad->eta = inp.eta;
+  ad->mu0 = inp.mu0;
 
   // create grid and range to on cell-centered grid  
   gkyl_rect_grid_init(&ad->grid, 2, inp.lower, inp.upper, inp.cells);
@@ -106,7 +114,11 @@ lm_app_new(struct app_inp inp)
   ad->J = gkyl_array_new(GKYL_DOUBLE, 2, ad->ext_range.volume);
 
   // we are setting the initial field to that from a wire, and then ...
-  struct init_ctx ctx = { .jrad = inp.jrad, .jz = inp.jz };
+  struct init_ctx ctx = {
+    .jrad = inp.jrad,
+    .jz = inp.jz,
+    .mu0 = 1.25663753e-6
+  };
   gkyl_fv_proj *ic = gkyl_fv_proj_new(&ad->grid, 2, 1, init_Bphi, &ctx);
   gkyl_fv_proj_advance(ic, 0.0, &ad->ext_range, ad->Bphi);
 
@@ -144,6 +156,8 @@ lm_app_calc_rhs(struct lm_app *ad)
   double xc[GKYL_MAX_CDIM];
   double dr = ad->grid.dx[0], dz = ad->grid.dx[1];
 
+  double eta = ad->eta;
+
   gkyl_array_clear(ad->rhs, 0.0);
 
   // iterator over cells
@@ -165,19 +179,22 @@ lm_app_calc_rhs(struct lm_app *ad)
 
     double *rhs = gkyl_array_fetch(ad->rhs, bidx);
 
-    rhs[0] = (B_R[0]-2*B_I[0]+B_L[0])/(dr*dr)
+    rhs[0] = eta*(
+      (B_R[0]-2*B_I[0]+B_L[0])/(dr*dr)
       + (B_R[0]-B_L[0])/(2*r*dr)
       + (B_T[0]-2*B_I[0]+B_B[0])/(dz*dz)
       - B_I[0]/(r*r)
-      ;
+    );
   }
 }
 
-// compute RHS of induction equation
+// compute current
 void
 lm_app_calc_J(struct lm_app *ad)
 {
   enum { I, L, R, T, B }; // cells indexing
+
+  double mu0 = ad->mu0;
 
   // compute offsets
   long offsets[5];
@@ -213,8 +230,8 @@ lm_app_calc_J(struct lm_app *ad)
 
     double *J = gkyl_array_fetch(ad->J, bidx);
 
-    J[0] = -(B_T[0]-B_B[0])/(2*dz);
-    J[1] = (B_R[0]-B_L[0])/(2*dr) + B_I[0]/r;
+    J[0] = -(B_T[0]-B_B[0])/(2*dz)/mu0;
+    J[1] = ((B_R[0]-B_L[0])/(2*dr) + B_I[0]/r)/mu0;
   }
 }
 
@@ -259,17 +276,27 @@ lm_app_release(struct lm_app *ad)
 struct app_inp
 get_app_inp(void)
 {
+  double resist = 796.5e-9; // Ohm-m
+  double mu0 = 1.25773753e-6; // H/m
+
+  double cm2m = 1.0/100.0;
+  double rad = 5.0*cm2m;
+  double depth = 1.0*cm2m;
+  double jrad = 0.25*cm2m;
+  double jz = 100.0e3; // Amp
+  
   return (struct app_inp) {
-    .cells = { 40*5, 40 },
+    .cells = { 200, 40 },
     .lower = { 0, 0 },
-    .upper = { 5.0, 1.0 },
+    .upper = { rad, depth },
 
-    .nframe = 50,
-    .tend = 5.0,
+    .nframe = 10,
+    .tend = 25.0e-6,
 
-    .jrad = 0.5,
-    .jz = -1.0,
-    .eta = 1.0,
+    .jrad = jrad,
+    .jz = -jz,
+    .eta = resist/mu0,
+    .mu0 = mu0
   };
 }
 
