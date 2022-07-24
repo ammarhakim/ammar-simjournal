@@ -49,6 +49,7 @@
 - https://maxima-solved.blogspot.com/ Maxima blog
 - https://mrob.com/pub/index.html  Integer
 - See the Lean formal mathematics program
+- https://facil.io/ C Web Application Framework
 
 * Some terms to avoid or define properly; things considered harmful
 
