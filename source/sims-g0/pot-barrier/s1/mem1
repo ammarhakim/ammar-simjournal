@@ -1,0 +1,444 @@
+0x5586fc6c6980 [8904] 0.malloc: apps/vlasov.c gkyl_vlasov_app_new:13
+0x5586fc6c8c50 [232] 0.malloc: apps/vm_field.c vm_field_new:18
+0x5586fc6c8d40 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc6c8db0 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc6c8dc0 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc6c9e60 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc6c9ed0 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc6c9ee0 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc6caf80 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc6caff0 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc6cb000 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc6cc0a0 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc6cc110 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc6cc120 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc6cc560 [80] 0.malloc: zero/dynvec.c gkyl_dynvec_new:60
+0x5586fc6cc5c0 [48] 0.calloc: zero/dynvec.c gkyl_dynvec_new:68
+0x5586fc6d85d0 [8] 0.calloc: zero/dynvec.c gkyl_dynvec_new:69
+0x5586fc6da5e0 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc6da650 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc6da660 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc6da740 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc6da7b0 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc6da7c0 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc6da890 [8] 0.malloc: apps/vm_field.c vm_field_new:51
+0x5586fc6da8b0 [128] 0.malloc: zero/dg_maxwell.c gkyl_dg_maxwell_new:76
+0x5586fc6da940 [312] 0.malloc: zero/hyper_dg.c gkyl_hyper_dg_new:98
+0x5586fc6daa80 [16] 0.malloc: zero/dg_maxwell.c gkyl_maxwell_wall_bc_create:40
+0x5586fc6daaa0 [40] 0.malloc: zero/dg_maxwell.c gkyl_maxwell_wall_bc_create:44
+0x5586fc6daad0 [16] 0.malloc: zero/dg_maxwell.c gkyl_maxwell_wall_bc_create:40
+0x5586fc6daaf0 [40] 0.malloc: zero/dg_maxwell.c gkyl_maxwell_wall_bc_create:44
+0x5586fc6dab20 [16] 0.malloc: zero/dg_maxwell.c gkyl_maxwell_wall_bc_create:40
+0x5586fc6dab40 [40] 0.malloc: zero/dg_maxwell.c gkyl_maxwell_wall_bc_create:44
+0x5586fc6dab70 [24336] 0.malloc: apps/vlasov.c gkyl_vlasov_app_new:86
+0x5586fc6e0a90 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc6e0b00 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc6e0b20 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc6f1330 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc6f13a0 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc6f13c0 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc701bd0 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc701c40 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc701c60 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc712470 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc7124e0 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc712500 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc714610 [8] 0.malloc: apps/vm_species.c vm_species_init:116
+0x5586fc714630 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc7146a0 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc7146c0 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc7152d0 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc715340 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc715360 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc7163f0 [24] 0.malloc: zero/dg_updater_vlasov.c gkyl_dg_updater_vlasov_new:27
+0x5586fc716410 [432] 0.malloc: zero/dg_vlasov.c gkyl_dg_vlasov_new:113
+0x5586fc7165d0 [312] 0.malloc: zero/hyper_dg.c gkyl_hyper_dg_new:98
+0x5586fc716710 [72] 0.malloc: zero/mom_vlasov.c gkyl_mom_vlasov_new:26
+0x5586fc716760 [240] 0.malloc: zero/mom_calc.c gkyl_mom_calc_new:13
+0x5586fc716860 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc7168d0 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc7168e0 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc716b10 [96] 0.malloc: apps/vm_species.c vm_species_init:181
+0x5586fc716b80 [72] 0.malloc: zero/mom_vlasov.c gkyl_mom_vlasov_new:26
+0x5586fc716bd0 [240] 0.malloc: zero/mom_calc.c gkyl_mom_calc_new:13
+0x5586fc716cd0 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc716d40 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc716d60 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc716f80 [72] 0.malloc: zero/mom_vlasov.c gkyl_mom_vlasov_new:26
+0x5586fc716fd0 [240] 0.malloc: zero/mom_calc.c gkyl_mom_calc_new:13
+0x5586fc7170d0 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc717140 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc717160 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc717380 [72] 0.malloc: zero/mom_vlasov.c gkyl_mom_vlasov_new:26
+0x5586fc7173d0 [240] 0.malloc: zero/mom_calc.c gkyl_mom_calc_new:13
+0x5586fc7174d0 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc717540 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc717560 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc717780 [72] 0.malloc: zero/mom_vlasov.c gkyl_int_mom_vlasov_new:137
+0x5586fc7177d0 [240] 0.malloc: zero/mom_calc.c gkyl_mom_calc_new:13
+0x5586fc7178d0 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc717940 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc717960 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc717b80 [80] 0.malloc: zero/dynvec.c gkyl_dynvec_new:60
+0x5586fc717be0 [24] 0.calloc: zero/dynvec.c gkyl_dynvec_new:68
+0x5586fc71dbf0 [8] 0.calloc: zero/dynvec.c gkyl_dynvec_new:69
+0x5586fc71fc00 [16] 0.malloc: zero/dg_vlasov.c gkyl_vlasov_wall_bc_create:38
+0x5586fc71fc20 [40] 0.malloc: zero/dg_vlasov.c gkyl_vlasov_wall_bc_create:43
+0x5586fc71fc50 [16] 0.malloc: zero/dg_vlasov.c gkyl_vlasov_absorb_bc_create:65
+0x5586fc71fc70 [40] 0.malloc: zero/dg_vlasov.c gkyl_vlasov_absorb_bc_create:68
+0x5586fc71fca0 [16] 0.malloc: zero/dg_vlasov.c gkyl_vlasov_wall_bc_create:38
+0x5586fc71fcc0 [40] 0.malloc: zero/dg_vlasov.c gkyl_vlasov_wall_bc_create:43
+0x5586fc71fcf0 [16] 0.malloc: zero/dg_vlasov.c gkyl_vlasov_absorb_bc_create:65
+0x5586fc71fd10 [40] 0.malloc: zero/dg_vlasov.c gkyl_vlasov_absorb_bc_create:68
+0x5586fc71fd40 [16] 0.malloc: zero/dg_vlasov.c gkyl_vlasov_wall_bc_create:38
+0x5586fc71fd60 [40] 0.malloc: zero/dg_vlasov.c gkyl_vlasov_wall_bc_create:43
+0x5586fc71fd90 [16] 0.malloc: zero/dg_vlasov.c gkyl_vlasov_absorb_bc_create:65
+0x5586fc71fdb0 [40] 0.malloc: zero/dg_vlasov.c gkyl_vlasov_absorb_bc_create:68
+0x5586fc71fde0 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc71fe50 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc71fe60 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc730680 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc7306f0 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc730700 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc740f20 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc740f90 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc740fa0 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc7517c0 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc751830 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc751840 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc753960 [8] 0.malloc: apps/vm_species.c vm_species_init:116
+0x5586fc753980 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc7539f0 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc753a00 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc754620 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc754690 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc7546a0 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc755740 [24] 0.malloc: zero/dg_updater_vlasov.c gkyl_dg_updater_vlasov_new:27
+0x5586fc755760 [432] 0.malloc: zero/dg_vlasov.c gkyl_dg_vlasov_new:113
+0x5586fc755920 [312] 0.malloc: zero/hyper_dg.c gkyl_hyper_dg_new:98
+0x5586fc755a60 [72] 0.malloc: zero/mom_vlasov.c gkyl_mom_vlasov_new:26
+0x5586fc755ab0 [240] 0.malloc: zero/mom_calc.c gkyl_mom_calc_new:13
+0x5586fc755bb0 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc755c20 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc755c40 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc755e60 [96] 0.malloc: apps/vm_species.c vm_species_init:181
+0x5586fc755ed0 [72] 0.malloc: zero/mom_vlasov.c gkyl_mom_vlasov_new:26
+0x5586fc755f20 [240] 0.malloc: zero/mom_calc.c gkyl_mom_calc_new:13
+0x5586fc756020 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc756090 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc7560a0 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc7562d0 [72] 0.malloc: zero/mom_vlasov.c gkyl_mom_vlasov_new:26
+0x5586fc756320 [240] 0.malloc: zero/mom_calc.c gkyl_mom_calc_new:13
+0x5586fc756420 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc756490 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc7564a0 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc7566d0 [72] 0.malloc: zero/mom_vlasov.c gkyl_mom_vlasov_new:26
+0x5586fc756720 [240] 0.malloc: zero/mom_calc.c gkyl_mom_calc_new:13
+0x5586fc756820 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc756890 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc7568a0 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc756ad0 [72] 0.malloc: zero/mom_vlasov.c gkyl_int_mom_vlasov_new:137
+0x5586fc756b20 [240] 0.malloc: zero/mom_calc.c gkyl_mom_calc_new:13
+0x5586fc756c20 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc756c90 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc756ca0 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc756ed0 [80] 0.malloc: zero/dynvec.c gkyl_dynvec_new:60
+0x5586fc756f30 [24] 0.calloc: zero/dynvec.c gkyl_dynvec_new:68
+0x5586fc75cf40 [8] 0.calloc: zero/dynvec.c gkyl_dynvec_new:69
+0x5586fc75ef50 [16] 0.malloc: zero/dg_vlasov.c gkyl_vlasov_wall_bc_create:38
+0x5586fc75ef70 [40] 0.malloc: zero/dg_vlasov.c gkyl_vlasov_wall_bc_create:43
+0x5586fc75efa0 [16] 0.malloc: zero/dg_vlasov.c gkyl_vlasov_absorb_bc_create:65
+0x5586fc75efc0 [40] 0.malloc: zero/dg_vlasov.c gkyl_vlasov_absorb_bc_create:68
+0x5586fc75eff0 [16] 0.malloc: zero/dg_vlasov.c gkyl_vlasov_wall_bc_create:38
+0x5586fc75f010 [40] 0.malloc: zero/dg_vlasov.c gkyl_vlasov_wall_bc_create:43
+0x5586fc75f040 [16] 0.malloc: zero/dg_vlasov.c gkyl_vlasov_absorb_bc_create:65
+0x5586fc75f060 [40] 0.malloc: zero/dg_vlasov.c gkyl_vlasov_absorb_bc_create:68
+0x5586fc75f090 [16] 0.malloc: zero/dg_vlasov.c gkyl_vlasov_wall_bc_create:38
+0x5586fc75f0b0 [40] 0.malloc: zero/dg_vlasov.c gkyl_vlasov_wall_bc_create:43
+0x5586fc75f0e0 [16] 0.malloc: zero/dg_vlasov.c gkyl_vlasov_absorb_bc_create:65
+0x5586fc75f100 [40] 0.malloc: zero/dg_vlasov.c gkyl_vlasov_absorb_bc_create:68
+0x5586fc75f540 [272] 0.malloc: zero/proj_on_basis.c gkyl_proj_on_basis_inew:43
+0x5586fc75f660 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc75f6d0 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc75f6e0 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc75f720 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc75f790 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc75f7a0 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc75f7e0 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc75f850 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc75f860 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc75f8d0 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc75f940 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc75f960 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc75f960 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc75f940 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc75f8d0 1.free: zero/array.c array_free:56
+0x5586fc75f6e0 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc75f6d0 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc75f660 1.free: zero/array.c array_free:56
+0x5586fc75f7a0 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc75f790 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc75f720 1.free: zero/array.c array_free:56
+0x5586fc75f860 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc75f850 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc75f7e0 1.free: zero/array.c array_free:56
+0x5586fc75f540 1.free: zero/proj_on_basis.c gkyl_proj_on_basis_release:182
+0x5586fc75f540 [272] 0.malloc: zero/proj_on_basis.c gkyl_proj_on_basis_inew:43
+0x5586fc75f7e0 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc75fa30 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc75fa40 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc75f720 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc75faf0 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc75fb00 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc75f660 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc75fb70 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc75fb80 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc75f8d0 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc75fde0 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc75fe00 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc75fe00 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc75fde0 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc75f8d0 1.free: zero/array.c array_free:56
+0x5586fc75fa40 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc75fa30 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc75f7e0 1.free: zero/array.c array_free:56
+0x5586fc75fb00 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc75faf0 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc75f720 1.free: zero/array.c array_free:56
+0x5586fc75fb80 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc75fb70 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc75f660 1.free: zero/array.c array_free:56
+0x5586fc75f540 1.free: zero/proj_on_basis.c gkyl_proj_on_basis_release:182
+0x5586fc75f540 [272] 0.malloc: zero/proj_on_basis.c gkyl_proj_on_basis_inew:43
+0x5586fc75f660 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc75fe60 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc75fe80 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc75f720 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc75ff20 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc75ff40 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc75f7e0 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc75ffa0 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc75ffc0 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc75f8d0 [96] 0.malloc: zero/array.c gkyl_array_new:62
+0x5586fc760210 [1] 0.calloc: zero/alloc.c gkyl_aligned_alloc_:86
+0x5586fc760220 0.aligned_alloc: zero/array.c g_array_alloc:19
+0x5586fc760220 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc760210 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc75f8d0 1.free: zero/array.c array_free:56
+0x5586fc75fe80 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc75fe60 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc75f660 1.free: zero/array.c array_free:56
+0x5586fc75ff40 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc75ff20 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc75f720 1.free: zero/array.c array_free:56
+0x5586fc75ffc0 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc75ffa0 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc75f7e0 1.free: zero/array.c array_free:56
+0x5586fc75f540 1.free: zero/proj_on_basis.c gkyl_proj_on_basis_release:182
+0x5586fc760290 [49152] 0.realloc: zero/dynvec.c gkyl_dynvec_append:91
+0x5586fc717be0 [16384] 0.realloc: zero/dynvec.c gkyl_dynvec_append:92
+0x5586fc76c2a0 [49152] 0.realloc: zero/dynvec.c gkyl_dynvec_append:91
+0x5586fc71bbf0 [16384] 0.realloc: zero/dynvec.c gkyl_dynvec_append:92
+0x5586fc7782b0 [98304] 0.realloc: zero/dynvec.c gkyl_dynvec_append:91
+0x5586fc756f30 [16384] 0.realloc: zero/dynvec.c gkyl_dynvec_append:92
+0x5586fc7902c0 [73728] 0.realloc: zero/dynvec.c gkyl_dynvec_append:91
+0x5586fc760290 [24576] 0.realloc: zero/dynvec.c gkyl_dynvec_append:92
+0x5586fc7a22d0 [73728] 0.realloc: zero/dynvec.c gkyl_dynvec_append:91
+0x5586fc6cc5c0 [24576] 0.realloc: zero/dynvec.c gkyl_dynvec_append:92
+0x7f0b89778010 [147456] 0.realloc: zero/dynvec.c gkyl_dynvec_append:91
+0x5586fc756f30 [24576] 0.realloc: zero/dynvec.c gkyl_dynvec_append:92
+0x5586fc7662a0 [98304] 0.realloc: zero/dynvec.c gkyl_dynvec_append:91
+0x5586fc6d25d0 [32768] 0.realloc: zero/dynvec.c gkyl_dynvec_append:92
+0x5586fc7a22d0 [98304] 0.realloc: zero/dynvec.c gkyl_dynvec_append:91
+0x5586fc717be0 [32768] 0.realloc: zero/dynvec.c gkyl_dynvec_append:92
+0x7f0b89747010 [196608] 0.realloc: zero/dynvec.c gkyl_dynvec_append:91
+0x5586fc756f30 [32768] 0.realloc: zero/dynvec.c gkyl_dynvec_append:92
+0x5586fc7662a0 [122880] 0.realloc: zero/dynvec.c gkyl_dynvec_append:91
+0x5586fc7842b0 [40960] 0.realloc: zero/dynvec.c gkyl_dynvec_append:92
+0x5586fc7a22d0 [122880] 0.realloc: zero/dynvec.c gkyl_dynvec_append:91
+0x5586fc6cc5c0 [40960] 0.realloc: zero/dynvec.c gkyl_dynvec_append:92
+0x7f0b89747010 [245760] 0.realloc: zero/dynvec.c gkyl_dynvec_append:91
+0x5586fc78e2c0 [40960] 0.realloc: zero/dynvec.c gkyl_dynvec_append:92
+0x7f0b89722010 [147456] 0.realloc: zero/dynvec.c gkyl_dynvec_append:91
+0x5586fc760290 [49152] 0.realloc: zero/dynvec.c gkyl_dynvec_append:92
+0x5586fc7a22d0 [147456] 0.realloc: zero/dynvec.c gkyl_dynvec_append:91
+0x5586fc6cc5c0 [49152] 0.realloc: zero/dynvec.c gkyl_dynvec_append:92
+0x7f0b89747010 [294912] 0.realloc: zero/dynvec.c gkyl_dynvec_append:91
+0x5586fc78e2c0 [49152] 0.realloc: zero/dynvec.c gkyl_dynvec_append:92
+0x7f0b896f7010 [172032] 0.realloc: zero/dynvec.c gkyl_dynvec_append:91
+0x5586fc760290 [57344] 0.realloc: zero/dynvec.c gkyl_dynvec_append:92
+0x5586fc7a22d0 [172032] 0.realloc: zero/dynvec.c gkyl_dynvec_append:91
+0x5586fc6cc5c0 [57344] 0.realloc: zero/dynvec.c gkyl_dynvec_append:92
+0x7f0b89747010 [344064] 0.realloc: zero/dynvec.c gkyl_dynvec_append:91
+0x5586fc78e2c0 [57344] 0.realloc: zero/dynvec.c gkyl_dynvec_append:92
+0x7f0b896f7010 [196608] 0.realloc: zero/dynvec.c gkyl_dynvec_append:91
+0x5586fc760290 [65536] 0.realloc: zero/dynvec.c gkyl_dynvec_append:92
+0x5586fc7a22d0 [196608] 0.realloc: zero/dynvec.c gkyl_dynvec_append:91
+0x5586fc7702a0 [65536] 0.realloc: zero/dynvec.c gkyl_dynvec_append:92
+0x7f0b89696010 [393216] 0.realloc: zero/dynvec.c gkyl_dynvec_append:91
+0x5586fc78e2c0 [65536] 0.realloc: zero/dynvec.c gkyl_dynvec_append:92
+0x7f0b896f7010 [24576] 0.realloc: zero/dynvec.c gkyl_dynvec_clear:149
+0x5586fc760290 [8192] 0.realloc: zero/dynvec.c gkyl_dynvec_clear:150
+0x5586fc7a22d0 [24576] 0.realloc: zero/dynvec.c gkyl_dynvec_clear:149
+0x5586fc7702a0 [8192] 0.realloc: zero/dynvec.c gkyl_dynvec_clear:150
+0x7f0b89696010 [49152] 0.realloc: zero/dynvec.c gkyl_dynvec_clear:149
+0x5586fc78e2c0 [8192] 0.realloc: zero/dynvec.c gkyl_dynvec_clear:150
+0x5586fc6e0b20 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc6e0b00 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc6e0a90 1.free: zero/array.c array_free:56
+0x5586fc6f13c0 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc6f13a0 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc6f1330 1.free: zero/array.c array_free:56
+0x5586fc701c60 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc701c40 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc701bd0 1.free: zero/array.c array_free:56
+0x5586fc712500 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc7124e0 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc712470 1.free: zero/array.c array_free:56
+0x5586fc7146c0 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc7146a0 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc714630 1.free: zero/array.c array_free:56
+0x5586fc716710 1.free: zero/mom_vlasov.c gkyl_mom_free:17
+0x5586fc716760 1.free: zero/mom_calc.c gkyl_mom_calc_release:76
+0x5586fc7168e0 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc7168d0 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc716860 1.free: zero/array.c array_free:56
+0x5586fc716b80 1.free: zero/mom_vlasov.c gkyl_mom_free:17
+0x5586fc716bd0 1.free: zero/mom_calc.c gkyl_mom_calc_release:76
+0x5586fc716d60 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc716d40 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc716cd0 1.free: zero/array.c array_free:56
+0x5586fc716f80 1.free: zero/mom_vlasov.c gkyl_mom_free:17
+0x5586fc716fd0 1.free: zero/mom_calc.c gkyl_mom_calc_release:76
+0x5586fc717160 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc717140 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc7170d0 1.free: zero/array.c array_free:56
+0x5586fc717380 1.free: zero/mom_vlasov.c gkyl_mom_free:17
+0x5586fc7173d0 1.free: zero/mom_calc.c gkyl_mom_calc_release:76
+0x5586fc717560 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc717540 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc7174d0 1.free: zero/array.c array_free:56
+0x5586fc716b10 1.free: apps/vm_species.c vm_species_release:631
+0x5586fc717780 1.free: zero/mom_vlasov.c gkyl_mom_free:17
+0x5586fc7177d0 1.free: zero/mom_calc.c gkyl_mom_calc_release:76
+0x5586fc717960 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc717940 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc7178d0 1.free: zero/array.c array_free:56
+0x7f0b896f7010 1.free: zero/dynvec.c dynvec_free:52
+0x5586fc760290 1.free: zero/dynvec.c dynvec_free:53
+0x5586fc717b80 1.free: zero/dynvec.c dynvec_free:54
+0x5586fc716410 1.free: zero/dg_vlasov.c gkyl_vlasov_free:24
+0x5586fc7165d0 1.free: zero/hyper_dg.c gkyl_hyper_dg_release:126
+0x5586fc7163f0 1.free: zero/dg_updater_vlasov.c gkyl_dg_updater_vlasov_release:97
+0x5586fc715360 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc715340 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc7152d0 1.free: zero/array.c array_free:56
+0x5586fc71fc00 1.free: zero/dg_vlasov.c gkyl_vlasov_bc_release:86
+0x5586fc71fc20 1.free: zero/dg_vlasov.c gkyl_vlasov_bc_release:87
+0x5586fc71fc50 1.free: zero/dg_vlasov.c gkyl_vlasov_bc_release:86
+0x5586fc71fc70 1.free: zero/dg_vlasov.c gkyl_vlasov_bc_release:87
+0x5586fc71fca0 1.free: zero/dg_vlasov.c gkyl_vlasov_bc_release:86
+0x5586fc71fcc0 1.free: zero/dg_vlasov.c gkyl_vlasov_bc_release:87
+0x5586fc71fcf0 1.free: zero/dg_vlasov.c gkyl_vlasov_bc_release:86
+0x5586fc71fd10 1.free: zero/dg_vlasov.c gkyl_vlasov_bc_release:87
+0x5586fc71fd40 1.free: zero/dg_vlasov.c gkyl_vlasov_bc_release:86
+0x5586fc71fd60 1.free: zero/dg_vlasov.c gkyl_vlasov_bc_release:87
+0x5586fc71fd90 1.free: zero/dg_vlasov.c gkyl_vlasov_bc_release:86
+0x5586fc71fdb0 1.free: zero/dg_vlasov.c gkyl_vlasov_bc_release:87
+0x5586fc714610 1.free: apps/vm_species.c vm_species_release:711
+0x5586fc71fe60 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc71fe50 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc71fde0 1.free: zero/array.c array_free:56
+0x5586fc730700 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc7306f0 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc730680 1.free: zero/array.c array_free:56
+0x5586fc740fa0 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc740f90 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc740f20 1.free: zero/array.c array_free:56
+0x5586fc751840 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc751830 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc7517c0 1.free: zero/array.c array_free:56
+0x5586fc753a00 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc7539f0 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc753980 1.free: zero/array.c array_free:56
+0x5586fc755a60 1.free: zero/mom_vlasov.c gkyl_mom_free:17
+0x5586fc755ab0 1.free: zero/mom_calc.c gkyl_mom_calc_release:76
+0x5586fc755c40 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc755c20 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc755bb0 1.free: zero/array.c array_free:56
+0x5586fc755ed0 1.free: zero/mom_vlasov.c gkyl_mom_free:17
+0x5586fc755f20 1.free: zero/mom_calc.c gkyl_mom_calc_release:76
+0x5586fc7560a0 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc756090 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc756020 1.free: zero/array.c array_free:56
+0x5586fc7562d0 1.free: zero/mom_vlasov.c gkyl_mom_free:17
+0x5586fc756320 1.free: zero/mom_calc.c gkyl_mom_calc_release:76
+0x5586fc7564a0 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc756490 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc756420 1.free: zero/array.c array_free:56
+0x5586fc7566d0 1.free: zero/mom_vlasov.c gkyl_mom_free:17
+0x5586fc756720 1.free: zero/mom_calc.c gkyl_mom_calc_release:76
+0x5586fc7568a0 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc756890 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc756820 1.free: zero/array.c array_free:56
+0x5586fc755e60 1.free: apps/vm_species.c vm_species_release:631
+0x5586fc756ad0 1.free: zero/mom_vlasov.c gkyl_mom_free:17
+0x5586fc756b20 1.free: zero/mom_calc.c gkyl_mom_calc_release:76
+0x5586fc756ca0 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc756c90 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc756c20 1.free: zero/array.c array_free:56
+0x5586fc7a22d0 1.free: zero/dynvec.c dynvec_free:52
+0x5586fc7702a0 1.free: zero/dynvec.c dynvec_free:53
+0x5586fc756ed0 1.free: zero/dynvec.c dynvec_free:54
+0x5586fc755760 1.free: zero/dg_vlasov.c gkyl_vlasov_free:24
+0x5586fc755920 1.free: zero/hyper_dg.c gkyl_hyper_dg_release:126
+0x5586fc755740 1.free: zero/dg_updater_vlasov.c gkyl_dg_updater_vlasov_release:97
+0x5586fc7546a0 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc754690 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc754620 1.free: zero/array.c array_free:56
+0x5586fc75ef50 1.free: zero/dg_vlasov.c gkyl_vlasov_bc_release:86
+0x5586fc75ef70 1.free: zero/dg_vlasov.c gkyl_vlasov_bc_release:87
+0x5586fc75efa0 1.free: zero/dg_vlasov.c gkyl_vlasov_bc_release:86
+0x5586fc75efc0 1.free: zero/dg_vlasov.c gkyl_vlasov_bc_release:87
+0x5586fc75eff0 1.free: zero/dg_vlasov.c gkyl_vlasov_bc_release:86
+0x5586fc75f010 1.free: zero/dg_vlasov.c gkyl_vlasov_bc_release:87
+0x5586fc75f040 1.free: zero/dg_vlasov.c gkyl_vlasov_bc_release:86
+0x5586fc75f060 1.free: zero/dg_vlasov.c gkyl_vlasov_bc_release:87
+0x5586fc75f090 1.free: zero/dg_vlasov.c gkyl_vlasov_bc_release:86
+0x5586fc75f0b0 1.free: zero/dg_vlasov.c gkyl_vlasov_bc_release:87
+0x5586fc75f0e0 1.free: zero/dg_vlasov.c gkyl_vlasov_bc_release:86
+0x5586fc75f100 1.free: zero/dg_vlasov.c gkyl_vlasov_bc_release:87
+0x5586fc753960 1.free: apps/vm_species.c vm_species_release:711
+0x5586fc6dab70 1.free: apps/vlasov.c gkyl_vlasov_app_release:866
+0x5586fc6c8dc0 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc6c8db0 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc6c8d40 1.free: zero/array.c array_free:56
+0x5586fc6c9ee0 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc6c9ed0 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc6c9e60 1.free: zero/array.c array_free:56
+0x5586fc6cb000 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc6caff0 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc6caf80 1.free: zero/array.c array_free:56
+0x5586fc6da660 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc6da650 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc6da5e0 1.free: zero/array.c array_free:56
+0x5586fc6da7c0 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc6da7b0 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc6da740 1.free: zero/array.c array_free:56
+0x5586fc6cc120 1.aligned_free: zero/array.c g_array_free:28
+0x5586fc6cc110 1.free: zero/alloc.c gkyl_aligned_free_:121
+0x5586fc6cc0a0 1.free: zero/array.c array_free:56
+0x7f0b89696010 1.free: zero/dynvec.c dynvec_free:52
+0x5586fc78e2c0 1.free: zero/dynvec.c dynvec_free:53
+0x5586fc6cc560 1.free: zero/dynvec.c dynvec_free:54
+0x5586fc6da8b0 1.free: zero/dg_maxwell.c gkyl_maxwell_free:26
+0x5586fc6da940 1.free: zero/hyper_dg.c gkyl_hyper_dg_release:126
+0x5586fc6da890 1.free: apps/vm_field.c vm_field_release:275
+0x5586fc6daa80 1.free: zero/dg_maxwell.c gkyl_maxwell_bc_release:62
+0x5586fc6daaa0 1.free: zero/dg_maxwell.c gkyl_maxwell_bc_release:63
+0x5586fc6daad0 1.free: zero/dg_maxwell.c gkyl_maxwell_bc_release:62
+0x5586fc6daaf0 1.free: zero/dg_maxwell.c gkyl_maxwell_bc_release:63
+0x5586fc6dab20 1.free: zero/dg_maxwell.c gkyl_maxwell_bc_release:62
+0x5586fc6dab40 1.free: zero/dg_maxwell.c gkyl_maxwell_bc_release:63
+0x5586fc6c8c50 1.free: apps/vm_field.c vm_field_release:281
+0x5586fc6c6980 1.free: apps/vlasov.c gkyl_vlasov_app_release:877

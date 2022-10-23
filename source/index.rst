@@ -61,6 +61,7 @@ Programming Notes
 
    pn/pn0/pn0-minimalism.rst
    pn/pn1/pn1-on-lang-longevity.rst
+   pn/pn2/pn2-ane-lang.rst
 
 Simulation Journal
 ------------------

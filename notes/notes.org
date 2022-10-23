@@ -50,6 +50,8 @@
 - https://mrob.com/pub/index.html  Integer
 - See the Lean formal mathematics program
 - https://facil.io/ C Web Application Framework
+- https://concatenative.org/wiki/view/Front%20Page Concatenative programming (Forth, J(
+- See also tacit style of programming
 
 * Some terms to avoid or define properly; things considered harmful
 
@@ -85,3 +87,37 @@ no external links to things you do not control. For example, even in
 this RFC there are broken links.
 
 (Add this to minimalist PN0)
+* Command language for pgkyl/AnE
+
+AnE is the Silo Processing Language, an array oriented language
+that works with Gkeyll arrays. It uses concatenative and tacit methods
+to construct analysis sentences that avoid using names, allowing
+compact command sentences to be built.
+
+See the Wiki pages on concatenative style programming, and the above
+website for this style. Also see the paper on linear logic
+programming.
+
+An example of this is a typical command sequence to compute say the
+Mach number from DG data:
+
+calc-mach: interp -p2 -bms euler -v mach -g 1.4
+
+This interpolates the data and uses the euler command to compute the
+Mach number. The command can be used with any number of inputs as
+follows:
+
+pgkyl sim-1.gkyl sim-2.gkyl calc-mach plot
+
+Note the final plot command. This makes the plot from the output of
+calc-mach.
+  
+The structure of each command is essentially that of a Unix CLI
+program: it takes options and arguments and then applies some action
+to the active datasets, deactivating the input sets and pushing on the
+stack the datasets it created.
+
+AnE is nota  purely concatenative language: one can  also tag datasets
+or output of commands and then use them instead of the active datasets
+in  the downstream  commands. Hence,  when using  named datasets,  the
+command will use those datasets instead.
