@@ -83,3 +83,34 @@ In this stack-based language, we never need to pass an environment to
 a function, nor do we need to worry about binding variables to
 values. Everything occurs on the stack, including intermediate
 calculations.
+
+Now consider the following function in a typical language
+
+.. code::
+
+   double(x) : return 2*x
+
+To double the square of 5, say, we would need to do double(sq(5)). The
+nesting of calls is needed to pass the output of sq to double. In a
+concatenative language, on the other hand, the double function is
+defined as
+
+.. code::
+
+   double : 2 *
+
+that is, we push two on the stack and then the * function pops two
+values, multiplying them and pushing the result back on the stack. So,
+to double the sqaure of 5 we would write the following program
+
+.. code::
+
+   5 sq double
+
+When this program completes, the value of 50 will be on top of the
+stack. This way of combining functions by merely placing them one
+after another is the reason why *concatenative languages* are called
+such. Concatenative progamming allows chaining a series of functions,
+all working on the present state of the stack, to perform a
+computation. All this is achieved without introducing any variables in
+the program at all.
