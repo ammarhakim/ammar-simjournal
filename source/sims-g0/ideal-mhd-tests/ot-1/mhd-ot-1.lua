@@ -8,8 +8,8 @@ gasGamma = 5.0/3.0
 mhdApp = Moments.App {
    logToFile = true,
 
-   tEnd = 2.0, -- end time
-   nFrame = 40, -- number of output frame
+   tEnd = 0.5, -- end time
+   nFrame = 10, -- number of output frame
    lower = { -0.5, -0.5 }, -- lower left corner
    upper = { 0.5, 0.5 }, -- upper right corner
    cells = { 256, 256 }, -- number of cells
