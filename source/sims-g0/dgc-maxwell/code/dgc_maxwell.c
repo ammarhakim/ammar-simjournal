@@ -1,4 +1,13 @@
-#include <gkylzero.h>
+#include <dgc_maxwell.h>
+
+// ranges for use in BCs
+struct app_skin_ghost_ranges {
+  struct gkyl_range lower_skin[GKYL_MAX_DIM];
+  struct gkyl_range lower_ghost[GKYL_MAX_DIM];
+
+  struct gkyl_range upper_skin[GKYL_MAX_DIM];
+  struct gkyl_range upper_ghost[GKYL_MAX_DIM];
+};
 
 // multivector in 3D GA
 struct mv_array {
@@ -8,7 +17,22 @@ struct mv_array {
   struct gkyl_array *ps; // pseudoscalar
 };
 
-struct mv_array*
+// Create ghost and skin sub-ranges given a parent range
+static void
+skin_ghost_ranges_init(struct app_skin_ghost_ranges *sgr,
+  const struct gkyl_range *parent, const int *ghost)
+{
+  int ndim = parent->ndim;
+  
+  for (int d=0; d<ndim; ++d) {
+    gkyl_skin_ghost_ranges(&sgr->lower_skin[d], &sgr->lower_ghost[d],
+      d, GKYL_LOWER_EDGE, parent, ghost);
+    gkyl_skin_ghost_ranges(&sgr->upper_skin[d], &sgr->upper_ghost[d],
+      d, GKYL_UPPER_EDGE, parent, ghost);
+  }
+}
+
+static struct mv_array*
 mv_array_new(size_t sz)
 {
   struct mv_array *mva = gkyl_malloc(sizeof(*mva));
@@ -67,26 +91,17 @@ calc_offsets(const struct gkyl_range *range, long offsets[])
     offsets[i] = gkyl_range_offset(range, offset_idx[i]);
 }
 
-struct dgc_inp {
-  int ndim; // dimension
-
-  // lower, upper bounds and cells
-  double lower[GKYL_MAX_CDIM];
-  double upper[GKYL_MAX_CDIM];
-  int cells[GKYL_MAX_CDIM];
-
-  // initial condition and evaluation context
-  evalf_t init_E, init_B;
-  void *ctx;
-};
-
 // Discrete GC Maxwell solver app
 struct dgc_app {
+  double tend;
   struct gkyl_rect_grid grid;
   struct gkyl_range local, local_ext;
 
   struct mv_array *Fhalf_new, *Fhalf;
   struct mv_array *Ffull_new, *Ffull;
+
+  struct app_skin_ghost_ranges skin_ghost; // conf-space skin/ghost
+  struct mv_array *bc_buffer; // buffer for periodic BCs
 
   evalf_t init_E, init_B;
   void *ctx;
@@ -98,6 +113,8 @@ dgc_app_new(const struct dgc_inp *inp)
   struct dgc_app *app = gkyl_malloc(sizeof(*app));
 
   gkyl_rect_grid_init(&app->grid, inp->ndim, inp->lower, inp->upper, inp->cells);
+
+  app->tend = inp->tend;
 
   int nghost[GKYL_MAX_CDIM] = { 1, 1, 1 };
   gkyl_create_grid_ranges(&app->grid, nghost, &app->local_ext, &app->local);
@@ -112,11 +129,45 @@ dgc_app_new(const struct dgc_inp *inp)
   app->init_B = inp->init_B;
   app->ctx = inp->ctx;
 
+  skin_ghost_ranges_init(&app->skin_ghost, &app->local_ext, nghost);
+
+  // allocate buffer for applying BCs (used for periodic BCs)
+  long buff_sz = 0;
+  // compute buffer size needed
+  for (int d=0; d<inp->ndim; ++d) {
+    long vol = app->skin_ghost.lower_skin[d].volume;
+    buff_sz = buff_sz > vol ? buff_sz : vol;
+  }
+  app->bc_buffer = mv_array_new(buff_sz);
+
   return app;
 }
 
+// apply periodic BCs
+static void
+apply_periodic_bc(const struct dgc_app *app, struct gkyl_array *bc_buffer,
+  int dir, struct gkyl_array *f)
+{
+  gkyl_array_copy_to_buffer(bc_buffer->data, f, app->skin_ghost.lower_skin[dir]);
+  gkyl_array_copy_from_buffer(f, bc_buffer->data, app->skin_ghost.upper_ghost[dir]);
+
+  gkyl_array_copy_to_buffer(bc_buffer->data, f, app->skin_ghost.upper_skin[dir]);
+  gkyl_array_copy_from_buffer(f, bc_buffer->data, app->skin_ghost.lower_ghost[dir]);
+}
+
+static void
+apply_bc(const struct dgc_app *app, struct mv_array *mv_arr)
+{
+  for (int d=0; d<app->grid.ndim; ++d) {
+    apply_periodic_bc(app, app->bc_buffer->m0, d, mv_arr->m0);
+    apply_periodic_bc(app, app->bc_buffer->m1, d, mv_arr->m1);
+    apply_periodic_bc(app, app->bc_buffer->m2, d, mv_arr->m2);
+    apply_periodic_bc(app, app->bc_buffer->ps, d, mv_arr->ps);
+  }  
+}
+
 void
-init_fields(struct dgc_app *app)
+dgc_app_apply_ics(struct dgc_app *app)
 {
   // Initialize electric field
   struct gkyl_offset_descr offset_E[3] = {
@@ -133,7 +184,7 @@ init_fields(struct dgc_app *app)
       .offsets = offset_E
     }
   );
-  gkyl_eval_offset_fd_advance(ev_E, 0.0, &app->local_ext, app->Ffull->m1);
+  gkyl_eval_offset_fd_advance(ev_E, 0.0, &app->local, app->Ffull->m1);
   gkyl_eval_offset_fd_release(ev_E);
 
   // Initialize magnetic field
@@ -151,52 +202,53 @@ init_fields(struct dgc_app *app)
       .offsets = offset_B
     }
   );
-  gkyl_eval_offset_fd_advance(ev_B, 0.0, &app->local_ext, app->Ffull->m2);
-  gkyl_eval_offset_fd_release(ev_B);  
+  gkyl_eval_offset_fd_advance(ev_B, 0.0, &app->local, app->Ffull->m2);
+  gkyl_eval_offset_fd_release(ev_B);
+
+  apply_bc(app, app->Ffull);
 }
 
 void
-write_fields(struct dgc_app *app, int nframe)
+dgc_app_write(const struct dgc_app *app, double tm, int frame)
 {
   do {
     const char *fmt = "m0_%d.gkyl";
-    int sz = gkyl_calc_strlen(fmt, nframe);
+    int sz = gkyl_calc_strlen(fmt, frame);
     char fileNm[sz+1]; // ensures no buffer overflow
-    snprintf(fileNm, sizeof fileNm, fmt, nframe);
+    snprintf(fileNm, sizeof fileNm, fmt, frame);
 
     gkyl_grid_sub_array_write(&app->grid, &app->local, app->Ffull->m0, fileNm);
   } while (0);
 
   do {
     const char *fmt = "m1_%d.gkyl";
-    int sz = gkyl_calc_strlen(fmt, nframe);
+    int sz = gkyl_calc_strlen(fmt, frame);
     char fileNm[sz+1]; // ensures no buffer overflow
-    snprintf(fileNm, sizeof fileNm, fmt, nframe);
+    snprintf(fileNm, sizeof fileNm, fmt, frame);
 
     gkyl_grid_sub_array_write(&app->grid, &app->local, app->Ffull->m1, fileNm);
   } while (0);
 
   do {
     const char *fmt = "m2_%d.gkyl";
-    int sz = gkyl_calc_strlen(fmt, nframe);
+    int sz = gkyl_calc_strlen(fmt, frame);
     char fileNm[sz+1]; // ensures no buffer overflow
-    snprintf(fileNm, sizeof fileNm, fmt, nframe);
+    snprintf(fileNm, sizeof fileNm, fmt, frame);
 
     gkyl_grid_sub_array_write(&app->grid, &app->local, app->Ffull->m2, fileNm);
   } while (0);
 
   do {
     const char *fmt = "ps_%d.gkyl";
-    int sz = gkyl_calc_strlen(fmt, nframe);
+    int sz = gkyl_calc_strlen(fmt, frame);
     char fileNm[sz+1]; // ensures no buffer overflow
-    snprintf(fileNm, sizeof fileNm, fmt, nframe);
+    snprintf(fileNm, sizeof fileNm, fmt, frame);
 
     gkyl_grid_sub_array_write(&app->grid, &app->local, app->Ffull->ps, fileNm);
-  } while (0);    
-
+  } while (0);
 }
 
-void
+static void
 copy_fields(struct dgc_app *app, struct mv_array *fout, const struct mv_array *finp)
 {
   gkyl_array_copy(fout->m0, finp->m0);
@@ -206,8 +258,8 @@ copy_fields(struct dgc_app *app, struct mv_array *fout, const struct mv_array *f
 }
 
 // compute gradient of multivector f and store output in gradf
-void
-calc_grad_f(struct dgc_app *app, const struct mv_array *f, struct mv_array *gradf)
+static void
+calc_grad_f(const struct dgc_app *app, const struct mv_array *f, struct mv_array *gradf)
 {
   int ndim = app->grid.ndim;
   enum { IX1, IX2, IX3 }; // indexing
@@ -340,52 +392,8 @@ dgc_app_release(struct dgc_app *app)
 
   mv_array_release(app->Ffull);
   mv_array_release(app->Ffull_new);
+
+  mv_array_release(app->bc_buffer);
   
   gkyl_free(app);
-}
-
-void
-eval_Efld(double t, const double *xn, double* restrict fout, void *ctx)
-{
-  double x = xn[0], y = xn[1];
-  fout[0] = 0.0;
-  fout[1] = 0.0;
-  fout[2] = sin(2*M_PI*x)*sin(2*M_PI*y);
-}
-
-void
-eval_Bfld(double t, const double *xn, double* restrict fout, void *ctx)
-{
-  double x = xn[0], y = xn[1];
-  fout[0] = 2*M_PI*sin(2*M_PI*x)*cos(2*M_PI*y);
-  fout[1] = -2*M_PI*cos(2*M_PI*x)*sin(2*M_PI*y);
-  fout[2] = sin(2*M_PI*x)*sin(2*M_PI*y);
-}
-
-int
-main(void)
-{
-  struct dgc_inp inp = {
-    .ndim = 2,
-    
-    .lower = { 0.0, 0.0 },
-    .upper = { 1.0, 1.0 },
-    .cells = { 16, 16 },
-
-    .init_E = eval_Efld,
-    .init_B = eval_Bfld,
-  };
-
-  struct dgc_app *app = dgc_app_new( &inp );
-
-  init_fields(app);
-  write_fields(app, 0);
-
-  calc_grad_f(app, app->Ffull, app->Ffull_new);
-  copy_fields(app, app->Ffull, app->Ffull_new);
-  write_fields(app, 1);
-  
-  dgc_app_release(app);
-  
-  return 0;
 }
