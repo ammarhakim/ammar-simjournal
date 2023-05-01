@@ -156,7 +156,7 @@ ad_app_new(struct app_inp inp)
   gkyl_rect_grid_init(&ad->grid, 2, inp.lower, inp.upper, inp.cells);
   gkyl_range_init_from_shape(&ad->range, ad->grid.ndim, ad->grid.cells);
 
-  double dx = ad->grid.dx[0], dy = ad->grid.dx[0];
+  double dx = ad->grid.dx[0], dy = ad->grid.dx[1];
 
   // on 'nc_grid' the nodes of 'grid' are cell-centers: this is needed
   // as G0 and pgkyl assume that we only work with cell-centered
