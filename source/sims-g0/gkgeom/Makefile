@@ -23,7 +23,7 @@ PREFIX = ${HOME}/gkylsoft
 # Include config.mak file (if it exists)
 -include config.mak
 
-CFLAGS = -O3 -g -ffast-math -I.
+CFLAGS = -O3 -g -ffast-math -I. -fPIC
 
 G0_INC_DIR = ${PREFIX}/gkylzero/include
 G0_LIB_DIR = ${PREFIX}/gkylzero/lib
@@ -40,11 +40,19 @@ G0_RPATH = -Wl,-rpath,${G0_LIB_DIR}
 # determine OS we are running on
 UNAME = $(shell uname)
 
+EXTRA_LINK_FLAGS = 
+
 # On OSX we should use Accelerate framework
 ifeq ($(UNAME), Darwin)
 	LAPACK_INC = . # dummy
 	LAPACK_LIB = -framework Accelerate
 	CFLAGS += -DGKYL_USING_FRAMEWORK_ACCELERATE
+	EXTRA_LINK_FLAGS += -pagezero_size 10000 -image_base 100000000
+endif
+
+# On Linux we need to pass proper link flags to export all symbols
+ifeq ($(UNAME), Linux)
+	EXTRA_LINK_FLAGS += -Wl,-E
 endif
 
 # Read MPI paths and flags if needed 
@@ -59,15 +67,39 @@ ifeq (${USE_MPI}, 1)
 	CFLAGS += -DGKYL_HAVE_MPI
 endif
 
-INCLUDES = -I${G0_INC_DIR} -I${LAPACK_INC} -I${SUPERLU_INC} -I${MPI_INC_DIR}
-LIB_DIRS = -L${LAPACK_LIB_DIR} -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR}
-EXT_LIBS = ${LAPACK_LIB} ${SUPERLU_LIB} ${MPI_LIBS}
+# Read LUA paths and flags if needed 
+USING_LUA =
+LUA_INC_DIR = . # dummy
+LUA_LIB_DIR = .
+ifeq (${CONF_USE_LUA}, 1)
+	USING_LUA = yes
+	LUA_INC_DIR = ${CONF_LUA_INC}
+	LUA_LIB_DIR = ${CONF_LUA_LIB_DIR}
+	LUA_LIBS = ${CONF_LUA_LIBS}
+	CFLAGS += -DGKYL_HAVE_LUA
+endif
 
-all: dgc_maxwell.o
+INCLUDES = -I${G0_INC_DIR} -I${LAPACK_INC} -I${SUPERLU_INC} -I${MPI_INC_DIR} -I${LUA_INC_DIR}
+LIB_DIRS = -L${LAPACK_LIB_DIR} -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR}
+EXT_LIBS = ${LAPACK_LIB} ${SUPERLU_LIB} ${MPI_LIBS} 
 
-dgc_maxwell.o: dgc_maxwell.c dgc_maxwell.h
-	 ${CC} ${CFLAGS} ${INCLUDES} -c dgc_maxwell.c -o dgc_maxwell.o
+all: gkgeom
 
-clean:
-	rm -rf dgc_maxwell.o
+gkgeom.o: gkgeom.c gkgeom.h
+	 ${CC} ${CFLAGS} ${INCLUDES} -c gkgeom.c -o gkgeom.o
 
+gkgeom: gkgeom.o 
+	${CC} ${CFLAGS} ${INCLUDES} gkgeom.o -o gkgeom -L${G0_LIB_DIR} ${G0_RPATH} ${G0_LIBS} ${LIB_DIRS} ${EXT_LIBS}
+
+
+.PHONY: clean
+clean: ## Clean build outputs
+	rm -rf gkgeom.o gkgeom
+
+# From: https://www.client9.com/self-documenting-makefiles/
+.PHONY: help
+help: ## Show help
+	@echo "Following targets are defined:"
+	@awk -F ':|##' '/^[^\t].+?:.*?##/ {\
+        printf "\033[36m%-30s\033[0m %s\n", $$1, $$NF \
+        }' $(MAKEFILE_LIST)

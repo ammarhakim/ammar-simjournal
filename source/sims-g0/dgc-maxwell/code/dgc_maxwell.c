@@ -93,7 +93,11 @@ calc_offsets(const struct gkyl_range *range, long offsets[])
 
 // Discrete GC Maxwell solver app
 struct dgc_app {
-  double tend;
+  char name[128]; // name of app  
+  int ndim;
+  double tcurr;
+  double cfl;
+  
   struct gkyl_rect_grid grid;
   struct gkyl_range local, local_ext;
 
@@ -112,9 +116,10 @@ dgc_app_new(const struct dgc_inp *inp)
 {
   struct dgc_app *app = gkyl_malloc(sizeof(*app));
 
-  gkyl_rect_grid_init(&app->grid, inp->ndim, inp->lower, inp->upper, inp->cells);
+  int ndim = app->ndim = inp->ndim;
+  strcpy(app->name, inp->name);
 
-  app->tend = inp->tend;
+  gkyl_rect_grid_init(&app->grid, inp->ndim, inp->lower, inp->upper, inp->cells);
 
   int nghost[GKYL_MAX_CDIM] = { 1, 1, 1 };
   gkyl_create_grid_ranges(&app->grid, nghost, &app->local_ext, &app->local);
@@ -212,37 +217,37 @@ void
 dgc_app_write(const struct dgc_app *app, double tm, int frame)
 {
   do {
-    const char *fmt = "m0_%d.gkyl";
-    int sz = gkyl_calc_strlen(fmt, frame);
+    const char *fmt = "%s_m0_%d.gkyl";
+    int sz = gkyl_calc_strlen(fmt, app->name, frame);
     char fileNm[sz+1]; // ensures no buffer overflow
-    snprintf(fileNm, sizeof fileNm, fmt, frame);
-
+    snprintf(fileNm, sizeof fileNm, fmt, app->name, frame);
+    
     gkyl_grid_sub_array_write(&app->grid, &app->local, app->Ffull->m0, fileNm);
   } while (0);
 
   do {
-    const char *fmt = "m1_%d.gkyl";
-    int sz = gkyl_calc_strlen(fmt, frame);
+    const char *fmt = "%s_m1_%d.gkyl";
+    int sz = gkyl_calc_strlen(fmt, app->name, frame);
     char fileNm[sz+1]; // ensures no buffer overflow
-    snprintf(fileNm, sizeof fileNm, fmt, frame);
+    snprintf(fileNm, sizeof fileNm, fmt, app->name, frame);
 
     gkyl_grid_sub_array_write(&app->grid, &app->local, app->Ffull->m1, fileNm);
   } while (0);
 
   do {
-    const char *fmt = "m2_%d.gkyl";
-    int sz = gkyl_calc_strlen(fmt, frame);
+    const char *fmt = "%s_m2_%d.gkyl";
+    int sz = gkyl_calc_strlen(fmt, app->name, frame);
     char fileNm[sz+1]; // ensures no buffer overflow
-    snprintf(fileNm, sizeof fileNm, fmt, frame);
+    snprintf(fileNm, sizeof fileNm, fmt, app->name, frame);
 
     gkyl_grid_sub_array_write(&app->grid, &app->local, app->Ffull->m2, fileNm);
   } while (0);
 
   do {
-    const char *fmt = "ps_%d.gkyl";
-    int sz = gkyl_calc_strlen(fmt, frame);
+    const char *fmt = "%s_ps_%d.gkyl";
+    int sz = gkyl_calc_strlen(fmt, app->name, frame);
     char fileNm[sz+1]; // ensures no buffer overflow
-    snprintf(fileNm, sizeof fileNm, fmt, frame);
+    snprintf(fileNm, sizeof fileNm, fmt, app->name, frame);
 
     gkyl_grid_sub_array_write(&app->grid, &app->local, app->Ffull->ps, fileNm);
   } while (0);
