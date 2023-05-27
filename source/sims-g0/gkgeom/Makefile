@@ -83,18 +83,17 @@ INCLUDES = -I${G0_INC_DIR} -I${LAPACK_INC} -I${SUPERLU_INC} -I${MPI_INC_DIR} -I$
 LIB_DIRS = -L${LAPACK_LIB_DIR} -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR}
 EXT_LIBS = ${LAPACK_LIB} ${SUPERLU_LIB} ${MPI_LIBS} 
 
-all: gkgeom
+all: geotest1 ## build all targets
 
 gkgeom.o: gkgeom.c gkgeom.h
 	 ${CC} ${CFLAGS} ${INCLUDES} -c gkgeom.c -o gkgeom.o
 
-gkgeom: gkgeom.o 
-	${CC} ${CFLAGS} ${INCLUDES} gkgeom.o -o gkgeom -L${G0_LIB_DIR} ${G0_RPATH} ${G0_LIBS} ${LIB_DIRS} ${EXT_LIBS}
-
+geotest1: geotest1.c gkgeom.o
+	${CC} ${CFLAGS} ${INCLUDES} geotest1.c -o geotest1 gkgeom.o  -L${G0_LIB_DIR} ${G0_RPATH} ${G0_LIBS} ${LIB_DIRS} ${EXT_LIBS}
 
 .PHONY: clean
 clean: ## Clean build outputs
-	rm -rf gkgeom.o gkgeom
+	rm -rf gkgeom.o geotest1
 
 # From: https://www.client9.com/self-documenting-makefiles/
 .PHONY: help

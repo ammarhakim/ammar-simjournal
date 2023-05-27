@@ -1,0 +1,49 @@
+load("modal-basis")$
+load("basis-precalc/basisSer2x")$
+
+b1 : basisC[1]$
+b2 : basisC[2]$
+
+edgevals(psi, basis, fh) := block([psih],
+  psih : doExpand1(psi, basis),
+  printf(fh, "double psiL = ~a ~%", float(expand(subst(x=-1,psih)))),
+  printf(fh, "double psiR = ~a ~%", float(expand(subst(x=1,psih))))
+  )$
+
+fh : openw("~/max-out/psi-edge")$
+edgevals(psi,b1,fh)$
+edgevals(psi,b2,fh)$
+close(fh)$
+
+rpsiz(psi,basis,fh) := block([sol],
+  sol : solve(psi0 = doExpand1(psi,basis), x),
+  printf(fh, "rnorm = ~a ; ~%", float(expand(rhs(sol[1])))),
+  printf(fh, "drdznorm = ~a ; ~%", float(factor(rhs(diff(sol[1],y)))))
+  )$
+
+fh : openw("~/max-out/psi-root")$
+rpsiz(psi,b1,fh)$
+close(fh)$
+
+/* Some random stuff */
+psih : doExpand1(psi,b1)$
+RpsiZ : rhs(solve(psi0 = psih, x)[1])$
+
+/** p = 2 root finding is somewhat tricky. Construct the quadratic and find roots */
+
+fh : openw("~/max-out/psi-root-p2")$
+
+p2qeqn : expand(doExpand1(psi,b2) - psi0)$
+aq : coeff(p2qeqn, x^2)$
+bq : coeff(p2qeqn, x)$
+cq : expand(p2qeqn - aq*x^2 - bq*x)$
+
+flt(expr) := float(expand(expr))$
+
+printf(fh, "double aq = ~a; ~%", flt(aq))$
+printf(fh, "double bq = ~a; ~%", flt(bq))$
+printf(fh, "double cq = ~a; ~%", flt(cq))$
+printf(fh, "double delta2 = bq*bq - 4*aq*cq;~%")$
+
+
+close(fh)$
