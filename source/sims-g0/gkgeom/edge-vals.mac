@@ -47,5 +47,18 @@ printf(fh, "double bq = ~a; ~%", flt(bq))$
 printf(fh, "double cq = ~a; ~%", flt(cq))$
 printf(fh, "double delta2 = bq*bq - 4*aq*cq;~%")$
 
+close(fh)$
+
+p2d : subst(x=X(y),p2qeqn)$
+diff_p2d : expand( diff(p2d,y) )$
+dYdx_coeff : coeff(diff_p2d, diff(X(y),y))$
+c_coeff : expand( diff_p2d - dYdx_coeff*diff(X(y),y) )$
+
+fh : openw("~/max-out/psi-diff-root-p2")$
+printf(fh, "double C = ~a; ~%", flt( subst(X(y)=x, c_coeff) ))$
+printf(fh, "double A = ~a; ~%", flt( subst(X(y)=x, dYdx_coeff) ))$
 
 close(fh)$
+
+// cross-checking only
+dYdx_p2 : subst(X(y)=x, -c_coeff/dYdx_coeff)$

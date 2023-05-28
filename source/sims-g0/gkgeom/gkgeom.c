@@ -53,11 +53,25 @@ calc_RdR_p2(const double *psi, double psi0, double Z, double xc[2], double dx[2]
     int sidx = 0;
     if ((-1<=r1) && (r1 < 1)) {
       sol.nsol += 1;
-      sol.R[sidx++] = r1*dx[0]*0.5 + xc[0];
+      sol.R[sidx] = r1*dx[0]*0.5 + xc[0];
+
+      double x = r1;
+      double C = 5.809475019311126*psi[7]*x*y+3.354101966249685*psi[5]*y+2.904737509655563*psi[6]*SQ(x)+1.5*psi[3]*x-0.9682458365518543*psi[6]+0.8660254037844386*psi[2]; 
+      double A = 2.904737509655563*psi[7]*SQ(y)+5.809475019311126*psi[6]*x*y+1.5*psi[3]*y+3.354101966249685*psi[4]*x-0.9682458365518543*psi[7]+0.8660254037844386*psi[1];
+      sol.dRdZ[sidx] = -C/A*dx[0]/dx[1];
+      
+      sidx += 1;
     }
     if ((-1<=r2) && (r2 < 1)) {
       sol.nsol += 1;
-      sol.R[sidx++] = r2*dx[0]*0.5 + xc[0];
+      sol.R[sidx] = r2*dx[0]*0.5 + xc[0];
+
+      double x = r2;
+      double C = 5.809475019311126*psi[7]*x*y+3.354101966249685*psi[5]*y+2.904737509655563*psi[6]*SQ(x)+1.5*psi[3]*x-0.9682458365518543*psi[6]+0.8660254037844386*psi[2]; 
+      double A = 2.904737509655563*psi[7]*SQ(y)+5.809475019311126*psi[6]*x*y+1.5*psi[3]*y+3.354101966249685*psi[4]*x-0.9682458365518543*psi[7]+0.8660254037844386*psi[1];
+      sol.dRdZ[sidx] = -C/A*dx[0]/dx[1];
+      
+      sidx += 1;      
     }
   }
   return sol;
