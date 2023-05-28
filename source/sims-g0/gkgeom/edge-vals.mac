@@ -29,6 +29,8 @@ close(fh)$
 psih : doExpand1(psi,b1)$
 RpsiZ : rhs(solve(psi0 = psih, x)[1])$
 
+trimfloat(flt) := if abs(flt) < 1e-15 then 0 else flt $
+
 /** p = 2 root finding is somewhat tricky. Construct the quadratic and find roots */
 
 fh : openw("~/max-out/psi-root-p2")$

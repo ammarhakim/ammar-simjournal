@@ -5,11 +5,13 @@
 typedef struct gkgeom_app gkgeom_app;
 
 struct gkgeom_inp {
-  char name[128]; // name of app: used as output prefix
+  char name[128];
   
-  int polyOrder; // polynomial order
-  double lower[2], upper[2]; // lower, upper bounds
-  int cells[2]; // config-space cells
+  int polyOrder;
+  double lower[2], upper[2];
+  int cells[2];
+
+  bool use_proj_on_basis;
 
   evalf_t psi; // psi(R,Z)
   void *ctx; // eval context
@@ -22,8 +24,11 @@ gkgeom_app *gkgeom_app_new(const struct gkgeom_inp *inp);
 void gkgeom_app_calcgeom(gkgeom_app *app);
 
 // Compute R given psi and Z (not to be called directly; just for
-// testing). Output is in the R array
-void gkgeom_app_R_psiz(const gkgeom_app *app, double psi, double Z, double R[2], double dR[2]);
+// testing). Output is in the R array. Number of roots is
+// returned. The output array must be sufficiently large to hold the
+// roots found.
+int gkgeom_app_R_psiz(const gkgeom_app *app, double psi, double Z, int nmaxroots,
+  double *R, double *dR);
 
 // Release app
 void gkgeom_app_release(gkgeom_app *app);
