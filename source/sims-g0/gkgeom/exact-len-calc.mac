@@ -1,0 +1,15 @@
+/* Solovev equilibrium */
+
+B0 : 0.55$
+R0 : 0.85$
+k : 2$
+q0 : 2$
+Ztop : 1.5$
+psi0 : 0.1$
+
+sq(x) := x^2$
+psi : B0*k/(2*sq(R0)*q0)*(sq(R)*sq(Z)/sq(k) + sq(sq(R) - sq(R0))/4)$
+R : sqrt(R0^2 + (2*(-Z^2 + sqrt(2*k^3*psi0*q0*R0^2 - B0*k^2*R0^2*Z^2 + B0*Z^4)/sqrt(B0)))/k^2)$
+
+fR : sqrt(1+diff(R,Z)^2)$
+Ipsi : quad_qag(fR,Z,-1.5, 1.5, 3, 'epsrel=1e-10)$

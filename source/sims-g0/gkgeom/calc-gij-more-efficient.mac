@@ -1,0 +1,88 @@
+load("modal-basis")$
+load("recovery")$
+load("nodal_operations/nodal_functions")$
+load(stringproc)$
+load("out-scripts")$
+
+ndim : 2 $
+polyOrder : 1$
+/* Get nodes and nodal basis */
+evNodes : getNodes("Ser", ndim, polyOrder)$
+numCoeffs : length(evNodes)$
+N2M : calcNodToModWithNodes("Ser", ndim, polyOrder, evNodes)$
+
+zc_all : [x,y,z]$
+zc : makelist(zc_all[k],k,1,ndim)$
+
+mkzlist(S,N) := makelist(S[i],i,0,N-1)$
+/*x_zl will be an array indexed with [var, position] 
+  order of vars is of course x,y,z
+  oder of positions is [I, L, R, B, T]*/
+/* Extra cells needed corresponds to number of 2*ndim*/
+
+
+dirNames : [charlist("LIR"), charlist("BIT"), charlist("DIU")] $
+for i : 1 thru ndim do (
+  for j : 1 thru ndim do (
+    for k : 1 thru 3 do (
+      x_zl[i,j,k] : mkzlist(eval_string(concat("x",i,dirNames[j][k])), numCoeffs)
+    )
+  )
+)$
+
+/* xp[1,2] means recovery of xp[1] in direction 2 */
+/*x1I is expansion coeffs of X component of mapc2p, x2I is expansion coeffs of Y component*/
+/* 5th argument is continuity*/
+disp("doing recovery");
+for i : 1 thru ndim do (
+  for j : 1 thru ndim do (
+    xp[i,j] : calcRecov1CellGen("Ser", zc[j], zc, polyOrder, 1, dg(x_zl[i,j,1]), dg(x_zl[i,j,2]), dg(x_zl[i,j,3]))
+  )
+)$
+
+/* Compute the tangent vectors */
+/* dxdz[i,j] = dx[i]/dz[j] */
+disp("computing tangent vector");
+for i : 1 thru ndim do (
+  for j : 1 thru ndim do (
+    dxdz[i,j] : diff(xp[i,j],zc[j])
+  )
+)$
+
+sublist : makelist(makelist(zc[m] = evNodes[k][m], m,1,ndim),k,1,numCoeffs)$
+
+numEvNodes : matrix_size(evNodes)[1]$
+
+trimfloat(flt) := if abs(flt) < 1e-15 then 0 else flt $
+flt(expr) := float(expand(expr))$
+
+fh : openw("~/max-out/gij-calc.c")$
+
+printf(fh, "static inline double calc_metric(double dxdz[~a][~a], int i, int j) ~%", ndim, ndim)$
+printf(fh, "{ double sum = 0;   for (int k=0; k<~a; ++k) sum += dxdz[k][i]*dxdz[k][j]; return sum; } ~%~%", ndim)$
+
+printf(fh, "// some function signature ~%")$
+printf(fh, "double g11[~a], g12[~a], g13[~a], g22[~a], g23[~a], g33[~a]; ~%",
+  numEvNodes, numEvNodes, numEvNodes, numEvNodes, numEvNodes, numEvNodes)$
+
+/* Compute tangent vectors at each node */
+for n : 1 thru numEvNodes do (
+  printf(fh, "do { ~%"),
+  printf(fh, "  double dxdz[~a][~a]; ~%", ndim, ndim),
+  for i : 1 thru ndim do (
+    for j : 1 thru ndim do (
+      printf(fh, "  dxdz[~a][~a] = ~a; ~%", i-1, j-1, flt(subst(sublist[n], dxdz[i,j])))
+      )
+    ),
+  printf(fh, "  g11[~a] = calc_metric(dxdz, 1, 1); ~%", n-1),
+  if ndim > 1 then printf(fh, "  g12[~a] = calc_metric(dxdz, 1, 2); ~%", n-1),
+  if ndim > 2 then printf(fh, "  g13[~a] = calc_metric(dxdz, 1, 3); ~%", n-1),
+  if ndim > 1 then printf(fh, "  g22[~a] = calc_metric(dxdz, 2, 2); ~%", n-1),
+  if ndim > 2 then printf(fh, "  g23[~a] = calc_metric(dxdz, 2, 3); ~%", n-1),
+  if ndim > 2 then printf(fh, "  g33[~a] = calc_metric(dxdz, 3, 3); ~%", n-1),
+  printf(fh, " } while (0); ~%")
+  )$
+
+printf(fh, "// Convert nodal to modal for gij ~%")$
+
+close(fh)$

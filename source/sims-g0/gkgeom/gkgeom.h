@@ -30,5 +30,9 @@ void gkgeom_app_calcgeom(gkgeom_app *app);
 int gkgeom_app_R_psiz(const gkgeom_app *app, double psi, double Z, int nmaxroots,
   double *R, double *dR);
 
+// Integrate the psi contour from zmin to zmax
+double gkgeom_app_integrate_psi_contour(const gkgeom_app *app,
+  double zmin, double zmax, double psi);
+
 // Release app
 void gkgeom_app_release(gkgeom_app *app);

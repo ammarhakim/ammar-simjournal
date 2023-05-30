@@ -2,6 +2,9 @@
 
 #define SQ(x) ((x) * (x))
 
+// Adaptive quadrature
+double wp34s(double (*func)(double,void*), void *ctx, double a, double b, int n, double eps);
+
 struct RdRdZ_sol {
   int nsol;
   double R[2], dRdZ[2];
@@ -182,6 +185,32 @@ gkgeom_app_R_psiz(const gkgeom_app *app, double psi, double Z, int nmaxroots,
     if (sidx > nmaxroots) break;
   }
   return sidx;
+}
+
+struct countour_ctx {
+  const gkgeom_app *app;
+  double psi;
+  int ncall;
+};
+
+static inline double
+countour_func(double Z, void *ctx)
+{
+  struct countour_ctx *c = ctx;
+  c->ncall += 1;
+  double R[2], dR[2];
+  gkgeom_app_R_psiz(c->app, c->psi, Z, 2, R, dR);
+  return sqrt(1+dR[0]*dR[0]);
+}
+
+double
+gkgeom_app_integrate_psi_contour(const gkgeom_app *app,
+  double zmin, double zmax, double psi)
+{
+  struct countour_ctx c = { .app = app, .psi = psi, .ncall = 0 };
+  double res = wp34s(countour_func, &c, zmin, zmax, 10, 1e-8);
+  printf(">>> Number of evaluations %d\n", c.ncall);
+  return res;
 }
 
 void
