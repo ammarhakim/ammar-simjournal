@@ -23,6 +23,8 @@ gkgeom_app *gkgeom_app_new(const struct gkgeom_inp *inp);
 // Compute the geometry
 void gkgeom_app_calcgeom(gkgeom_app *app);
 
+// These are methods for debugging the geometry calculator
+
 // Compute R given psi and Z (not to be called directly; just for
 // testing). Output is in the R array. Number of roots is
 // returned. The output array must be sufficiently large to hold the

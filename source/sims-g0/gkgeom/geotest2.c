@@ -33,15 +33,14 @@ main(void)
     .upper = { 1.5, 1.5 },
     .cells = { 64, 128 },
 
-    .use_proj_on_basis = false,
-
     .psi = psi,
     .ctx = &ctx,
   };
 
   gkgeom_app *app = gkgeom_app_new(&inp);
 
-  double psi0 = 0.1, Z0 = 0.0;
+  //double psi0 = 0.05, Z0 = 0.1;
+  double psi0 = 0.1, Z0 = 0.1;
 
   long nloop = 1;
   int nroots;
@@ -63,12 +62,12 @@ main(void)
     double psiE[1];
     psi(0.0, (double[]) { R[i], Z0 }, psiE, &ctx);
     printf("  psi(%g,%g) = %g\n", R[i], Z0, psiE[0]);
-    printf("  dR/dZ(%g,%g) = %g\n", R[i], Z0, -0.25*Z0/(R[i]-2));
   }
 
-  double Ipsi = gkgeom_app_integrate_psi_contour(app, inp.lower[1], inp.upper[1], 0.1);
-  printf("Length of countour with psi=0.1 is %lg\n", Ipsi);
-  printf(" Error: %lg\n", Ipsi - 3.343782219297654);
+  double Ipsi = gkgeom_app_integrate_psi_contour(app, inp.lower[1], inp.upper[1], psi0);
+  printf("Length of countour with psi=%g is %lg\n", psi0, Ipsi);
+  printf(" Error: %lg percent \n", (Ipsi - 3.343782219297654)/4.052162043995597*100);
+  //printf(" Error: %lg percent \n", (Ipsi - 4.052162043995597)/4.052162043995597*100);
 
   gkgeom_app_release(app);
   
