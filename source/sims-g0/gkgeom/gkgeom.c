@@ -3,7 +3,9 @@
 #define SQ(x) ((x) * (x))
 
 // Adaptive quadrature
-double wp34s(double (*func)(double,void*), void *ctx, double a, double b, int n, double eps);
+double wp34s(double (*func)(double, void *), void *ctx, double a, double b, int n, double eps);
+// Root finder
+double ridders(double (*func)(double,void*), void *ctx, double x1, double x2, double f1, double f2, double eps);
 
 struct RdRdZ_sol {
   int nsol;
@@ -95,6 +97,9 @@ struct gkgeom_app {
   
   evalf_t psi;
   void *ctx;
+
+  // stats
+  long nfunc_calls;
 };
 
 static struct gkyl_array*
@@ -141,6 +146,8 @@ gkgeom_app_new(const struct gkgeom_inp *inp)
   app->calc_roots = calc_RdR_p1;
   if (inp->polyOrder == 2)  
     app->calc_roots = calc_RdR_p2;
+
+  app->nfunc_calls = 0;
   
   return app;
 }
@@ -152,6 +159,7 @@ gkgeom_app_R_psiz(const gkgeom_app *app, double psi, double Z, int nmaxroots,
   double Zlower = app->grid.lower[1], dZ = app->grid.dx[1];
 
   int zcell = app->local.lower[1] + (int) floor((Z-Zlower)/dZ);
+  zcell = zcell > app->local.upper[1] ? app->local.upper[1] : zcell;
 
   struct gkyl_range rangeR;
   gkyl_range_deflate(&rangeR, &app->local, (int[]) { 0, 1 }, (int[]) { 0, zcell });
@@ -189,7 +197,7 @@ gkgeom_app_R_psiz(const gkgeom_app *app, double psi, double Z, int nmaxroots,
 
 struct countour_ctx {
   const gkgeom_app *app;
-  double psi;
+  double psi, last_R;
   int ncall;
 };
 
@@ -198,19 +206,160 @@ countour_func(double Z, void *ctx)
 {
   struct countour_ctx *c = ctx;
   c->ncall += 1;
-  double R[2], dR[2];
-  gkgeom_app_R_psiz(c->app, c->psi, Z, 2, R, dR);
-  return sqrt(1+dR[0]*dR[0]);
+  double R[2] = { 0 }, dR[2] = { 0 };
+  int nr = gkgeom_app_R_psiz(c->app, c->psi, Z, 2, R, dR);
+
+  double dRdZ = 0;
+  
+  if (nr > 0) {
+    dRdZ = dR[0];
+    c->last_R = R[0];      
+    if (fabs(R[1]-c->last_R)  < fabs(R[0]-c->last_R)) {
+      dRdZ = dR[1];
+      c->last_R = R[1];
+    }
+  }
+  
+  return nr>0 ? sqrt(1+dRdZ*dRdZ) : 0.0;
 }
 
 double
-gkgeom_app_integrate_psi_contour(const gkgeom_app *app,
+gkgeom_app_integrate_psi_contour(const gkgeom_app *app, double rclose,
   double zmin, double zmax, double psi)
 {
-  struct countour_ctx c = { .app = app, .psi = psi, .ncall = 0 };
-  double res = wp34s(countour_func, &c, zmin, zmax, 10, 1e-8);
-  printf(">>> Number of evaluations %d\n", c.ncall);
+  struct countour_ctx c = { .app = app, .psi = psi, .ncall = 0, .last_R = rclose };
+  double res = wp34s(countour_func, &c, zmin, zmax, 10, 1e-10);
+  ((gkgeom_app *)app)->nfunc_calls += c.ncall;
   return res;
+}
+
+struct arc_length_ctx {
+  const gkgeom_app *app;
+  double psi, rclose, zmin, arcL;
+};
+
+static inline double
+arc_length_func(double Z, void *ctx)
+{
+  struct arc_length_ctx *actx = ctx;
+  double psi = actx->psi, rclose = actx->rclose, zmin = actx->zmin, arcL = actx->arcL;
+  return gkgeom_app_integrate_psi_contour(actx->app, rclose, zmin, Z, psi) - arcL;
+}
+
+static inline double
+choose_closest(int ref, double R[2], double out[2])
+{
+  return fabs(R[0]-ref) < fabs(R[1]-ref) ? out[0] : out[1];
+}
+
+static void
+write_nodal_coordinates(const gkgeom_app *app, struct gkyl_range *nrange,
+  struct gkyl_array *nodes)
+{
+  double lower[3] = { 0.0, 0.0, 0.0 };
+  double upper[3] = { 1.0, 1.0, 1.0 };
+  int cells[3];
+  for (int i=0; i<nrange->ndim; ++i)
+    cells[i] = gkyl_range_shape(nrange, i);
+  
+  struct gkyl_rect_grid grid;
+  gkyl_rect_grid_init(&grid, 2, lower, upper, cells);
+
+  char fileNm[1024]; // buffer for file name
+  const char *fmt = "%s_node_coords.gkyl";
+  snprintf(fileNm, sizeof fileNm, fmt, app->name);  
+  gkyl_grid_sub_array_write(&grid, nrange, nodes, fileNm);
+}
+
+void
+gkgeom_app_calcgeom(gkgeom_app *app, const struct gkyl_rect_grid *cgrid,
+  int poly_order, struct gkyl_array *mapc2p)
+{
+  int nodes[3] = { 1, 1, 1 };
+  if (poly_order == 1)
+    for (int d=0; d<cgrid->ndim; ++d)
+      nodes[d] = cgrid->cells[d]+1;
+  if (poly_order == 2)
+    for (int d=0; d<cgrid->ndim; ++d)
+      nodes[d] = 2*cgrid->cells[d]+1;
+
+  struct gkyl_range nrange;
+  gkyl_range_init_from_shape(&nrange, cgrid->ndim, nodes);
+  struct gkyl_array *mc2p = gkyl_array_new(GKYL_DOUBLE, cgrid->ndim, nrange.volume);
+
+  double dtheta = cgrid->dx[0], dphi = cgrid->dx[1], dalpha = cgrid->dx[2];
+  double theta_lo = cgrid->lower[0], phi_lo = cgrid->lower[1], alpha_lo = cgrid->lower[2];
+
+  double dx_fact = poly_order == 1 ? 1 : 0.5; // USE THE ACTUAL NODE LOCATIONS!
+  dtheta *= dx_fact; dphi *= dx_fact; dalpha *= dx_fact;
+
+  enum { TH_IDX, PH_IDX, AL_IDX }; // arrangement of computational coordinates
+  enum { R_IDX, Z_IDX }; // arrangement of physical coordinates
+
+  double R[2] = { 0 }, dR[2] = { 0 };
+  double Rmax = app->grid.upper[0];
+
+  struct arc_length_ctx arc_ctx = { .app = app };
+
+  int cidx[2] = { 0 };
+  for (int ip=nrange.lower[PH_IDX]; ip<=nrange.upper[PH_IDX]; ++ip) {
+
+    double zmin = app->grid.lower[1];
+    double zmax = app->grid.upper[1];
+    
+    double psi_curr = phi_lo + ip*dphi;
+    double arcL = gkgeom_app_integrate_psi_contour(app, Rmax, zmin, zmax, psi_curr);
+
+    double delta_arcL = arcL/(poly_order*cgrid->cells[TH_IDX]);
+
+    cidx[PH_IDX] = ip;
+
+    // set node coordinates of first node
+    cidx[TH_IDX] = nrange.lower[TH_IDX];
+    double *mc2p_n = gkyl_array_fetch(mc2p, gkyl_range_idx(&nrange, cidx));
+    mc2p_n[Z_IDX] = zmin;
+    int nr = gkgeom_app_R_psiz(app, psi_curr, zmin, 2, R, dR);
+    mc2p_n[R_IDX] = choose_closest(Rmax, R, R); // CHOOSE CLOSEST TO LAST R!!
+
+    // set node coordinates of rest of nodes
+    double arcL_curr = 0.0;
+    for (int it=nrange.lower[TH_IDX]+1; it<nrange.upper[TH_IDX]; ++it) {
+      arcL_curr += delta_arcL;
+
+      arc_ctx.psi = psi_curr;
+      arc_ctx.rclose = Rmax;
+      arc_ctx.zmin = zmin;
+      arc_ctx.arcL = arcL_curr;
+
+      double z_curr = ridders(arc_length_func, &arc_ctx, zmin, zmax, 0, arcL, 1e-10);
+      int nr = gkgeom_app_R_psiz(app, psi_curr, z_curr, 2, R, dR);
+      double r_curr = choose_closest(Rmax, R, R);
+
+      cidx[TH_IDX] = it;
+      double *mc2p_n = gkyl_array_fetch(mc2p, gkyl_range_idx(&nrange, cidx));
+      mc2p_n[Z_IDX] = z_curr;
+      mc2p_n[R_IDX] = r_curr;
+    }
+
+    // set node coordinates of last node
+    cidx[TH_IDX] = nrange.upper[TH_IDX];
+    mc2p_n = gkyl_array_fetch(mc2p, gkyl_range_idx(&nrange, cidx));
+    mc2p_n[Z_IDX] = zmax;
+    nr = gkgeom_app_R_psiz(app, psi_curr, zmax, 2, R, dR);
+    mc2p_n[R_IDX] = choose_closest(Rmax, R, R);
+  }
+
+  // write nodal coordinates for debugging
+  write_nodal_coordinates(app, &nrange, mc2p);
+  
+  gkyl_array_release(mc2p);
+  
+}
+
+long
+gkgeom_app_nroots(const gkgeom_app *app)
+{
+  return app->nfunc_calls;
 }
 
 void

@@ -1,3 +1,17 @@
+/* Elliptical flux surfaces */
+Zlo : -4.0$
+Zup : 4.0$
+psi : (R-2)^2 + Z^2/4$
+
+psi0 : 10.125$
+
+Zmin : max(-2*sqrt(psi0)+1e-12, Zlo)$
+Zmax : min(2*sqrt(psi0)-1e-12, Zup)$
+
+R : 2 + sqrt(psi0-Z^2/4)$
+fR : sqrt(1+diff(R,Z)^2)$
+Ipsi : quad_qag(fR,Z,Zmin,Zmax, 3, 'epsrel=1e-10)$
+
 /* Solovev equilibrium */
 
 B0 : 0.55$

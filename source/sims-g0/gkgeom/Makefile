@@ -83,7 +83,7 @@ INCLUDES = -I${G0_INC_DIR} -I${LAPACK_INC} -I${SUPERLU_INC} -I${MPI_INC_DIR} -I$
 LIB_DIRS = -L${LAPACK_LIB_DIR} -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR}
 EXT_LIBS = ${LAPACK_LIB} ${SUPERLU_LIB} ${MPI_LIBS} 
 
-all: geotest1 geotest2 geotest3 ## build all targets
+all: geotest1 geotest2 geotest3 geotest4 rid-test ## build all targets
 
 gkgeom.o: gkgeom.c gkgeom.h
 	 ${CC} ${CFLAGS} ${INCLUDES} -c gkgeom.c -o gkgeom.o
@@ -91,18 +91,27 @@ gkgeom.o: gkgeom.c gkgeom.h
 dbl-exp.o: dbl-exp.c
 	 ${CC} ${CFLAGS} ${INCLUDES} -c dbl-exp.c -o dbl-exp.o
 
-geotest1: geotest1.c gkgeom.o dbl-exp.o
-	${CC} ${CFLAGS} ${INCLUDES} geotest1.c -o geotest1 gkgeom.o dbl-exp.o  -L${G0_LIB_DIR} ${G0_RPATH} ${G0_LIBS} ${LIB_DIRS} ${EXT_LIBS}
+ridders.o: ridders.c
+	 ${CC} ${CFLAGS} ${INCLUDES} -c ridders.c -o ridders.o
 
-geotest2: geotest2.c gkgeom.o dbl-exp.o
-	${CC} ${CFLAGS} ${INCLUDES} geotest2.c -o geotest2 gkgeom.o dbl-exp.o  -L${G0_LIB_DIR} ${G0_RPATH} ${G0_LIBS} ${LIB_DIRS} ${EXT_LIBS}
+geotest1: geotest1.c gkgeom.o dbl-exp.o ridders.o
+	${CC} ${CFLAGS} ${INCLUDES} geotest1.c -o geotest1 gkgeom.o dbl-exp.o ridders.o -L${G0_LIB_DIR} ${G0_RPATH} ${G0_LIBS} ${LIB_DIRS} ${EXT_LIBS}
 
-geotest3: geotest3.c gkgeom.o dbl-exp.o
-	${CC} ${CFLAGS} ${INCLUDES} geotest3.c -o geotest3 gkgeom.o dbl-exp.o  -L${G0_LIB_DIR} ${G0_RPATH} ${G0_LIBS} ${LIB_DIRS} ${EXT_LIBS}
+geotest2: geotest2.c gkgeom.o dbl-exp.o ridders.o
+	${CC} ${CFLAGS} ${INCLUDES} geotest2.c -o geotest2 gkgeom.o dbl-exp.o ridders.o -L${G0_LIB_DIR} ${G0_RPATH} ${G0_LIBS} ${LIB_DIRS} ${EXT_LIBS}
+
+geotest3: geotest3.c gkgeom.o dbl-exp.o ridders.o
+	${CC} ${CFLAGS} ${INCLUDES} geotest3.c -o geotest3 gkgeom.o dbl-exp.o ridders.o -L${G0_LIB_DIR} ${G0_RPATH} ${G0_LIBS} ${LIB_DIRS} ${EXT_LIBS}
+
+geotest4: geotest4.c gkgeom.o dbl-exp.o ridders.o
+	${CC} ${CFLAGS} ${INCLUDES} geotest4.c -o geotest4 gkgeom.o dbl-exp.o ridders.o -L${G0_LIB_DIR} ${G0_RPATH} ${G0_LIBS} ${LIB_DIRS} ${EXT_LIBS}
+
+rid-test: rid-test.c gkgeom.o dbl-exp.o ridders.o
+	${CC} ${CFLAGS} ${INCLUDES} rid-test.c -o rid-test gkgeom.o dbl-exp.o ridders.o -L${G0_LIB_DIR} ${G0_RPATH} ${G0_LIBS} ${LIB_DIRS} ${EXT_LIBS}
 
 .PHONY: clean
 clean: ## Clean build outputs
-	rm -rf gkgeom.o geotest1 geotest2 geotest3
+	rm -rf gkgeom.o geotest1 geotest2 geotest3 geotest4
 
 # From: https://www.client9.com/self-documenting-makefiles/
 .PHONY: help

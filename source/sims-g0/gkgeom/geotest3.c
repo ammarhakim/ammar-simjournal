@@ -69,7 +69,8 @@ main(void)
     printf("  psi(%g,%g) = %g\n", R[i], Z0, psiE[0]);
   }
 
-  double Ipsi = gkgeom_app_integrate_psi_contour(app, inp.lower[1], 0.0, psi0);
+  double Ipsi = gkgeom_app_integrate_psi_contour(app, inp.upper[1],
+    inp.lower[1], 0.0, psi0);
   printf("Length of countour with psi=%g is %lg\n", psi0, Ipsi);
   //printf(" Error: %lg percent \n", (Ipsi - 3.343782219297654)/4.052162043995597*100);
   //printf(" Error: %lg percent \n", (Ipsi - 4.052162043995597)/4.052162043995597*100);

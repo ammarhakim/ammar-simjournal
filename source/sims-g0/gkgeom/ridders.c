@@ -17,9 +17,7 @@ ridders(double (*func)(double,void*), void *ctx,
     double xm = 0.5*(xl+xr);
     double fm = func(xm, ctx);
     double sr = sqrt(fm*fm - fl*fr);
-
     if (sr == 0) return res;
-    
     double xnew = xm + (xm-xl)*sgn(fl-fr)*fm/sr;
     if (fabs(xnew-res) < eps) return res;
     res = xnew;
@@ -38,6 +36,5 @@ ridders(double (*func)(double,void*), void *ctx,
     }
     if (fabs(xr-xl) < eps) iterating = 0;
   }
-  
   return res;
 }
