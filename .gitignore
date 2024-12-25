@@ -23,3 +23,5 @@ source/sims-g0/fd-aniso-diff/code/fd-aniso-diff
 source/sims-g0/incomp-ns/code/incomp-ns
 source/sims-g0/incomp-ns/code/simple-ns
 source/sims-g0/kh-euler/code/kh-euler
+
+source/sims-g0/incomp-ns/code/lid-driven

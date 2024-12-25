@@ -1,11 +1,42 @@
 #include <gkgeom.h>
+#include <float.h>
 
 #define SQ(x) ((x) * (x))
 
 // Adaptive quadrature
 double wp34s(double (*func)(double, void *), void *ctx, double a, double b, int n, double eps);
+double qthsh(double (*func)(double,void*), void *ctx, double a, double b, int n, double eps);
 // Root finder
 double ridders(double (*func)(double,void*), void *ctx, double x1, double x2, double f1, double f2, double eps);
+
+static inline double
+choose_closest(int ref, double R[2], double out[2])
+{
+  return fabs(R[0]-ref) < fabs(R[1]-ref) ? out[0] : out[1];
+}
+
+static inline double
+minmod_2(double x, double y)
+{
+  if (x>0 && y>0)
+    return fmin(x,y);
+  if (x<0 && y<0)
+    return fmax(x,y);
+  return 0.0;
+}
+
+static inline double
+median(double x, double y, double z)
+{
+  return x + minmod_2(y-x,z-x);
+}
+
+static inline int
+gidx(int loidx, int upidx, double xlo, double x, double dx)
+{
+  int idx = loidx + (int) floor((x-xlo)/dx);
+  return idx<=upidx ? idx : upidx;
+}
 
 struct RdRdZ_sol {
   int nsol;
@@ -161,10 +192,10 @@ gkgeom_app_R_psiz(const gkgeom_app *app, double psi, double Z, int nmaxroots,
   int zcell = app->local.lower[1] + (int) floor((Z-Zlower)/dZ);
   zcell = zcell > app->local.upper[1] ? app->local.upper[1] : zcell;
 
-  struct gkyl_range rangeR;
+  struct gkyl_range rangeR; // 1D range over R cells
   gkyl_range_deflate(&rangeR, &app->local, (int[]) { 0, 1 }, (int[]) { 0, zcell });
 
-  struct gkyl_range_iter riter;
+  struct gkyl_range_iter riter; // iterator over R cells
   gkyl_range_iter_init(&riter, &rangeR);
 
   int idx[2] = { 0, zcell };
@@ -198,7 +229,7 @@ gkgeom_app_R_psiz(const gkgeom_app *app, double psi, double Z, int nmaxroots,
 struct countour_ctx {
   const gkgeom_app *app;
   double psi, last_R;
-  int ncall;
+  long ncall;
 };
 
 static inline double
@@ -210,31 +241,72 @@ countour_func(double Z, void *ctx)
   int nr = gkgeom_app_R_psiz(c->app, c->psi, Z, 2, R, dR);
 
   double dRdZ = 0;
-  
-  if (nr > 0) {
+
+  if (nr == 1) {
     dRdZ = dR[0];
-    c->last_R = R[0];      
-    if (fabs(R[1]-c->last_R)  < fabs(R[0]-c->last_R)) {
-      dRdZ = dR[1];
-      c->last_R = R[1];
-    }
+    //c->last_R = R[0];
+  }
+  if (nr == 2) {
+    dRdZ = choose_closest(c->last_R, R, dR);
+    //c->last_R = choose_closest(c->last_R, R, R);
   }
   
   return nr>0 ? sqrt(1+dRdZ*dRdZ) : 0.0;
+}
+
+static double
+integrate_psi_contour_memo(const gkgeom_app *app, double rclose,
+  double zmin, double zmax, double psi,
+  bool use_memo, bool fill_memo, double *memo)
+{
+  struct countour_ctx c = { .app = app, .psi = psi, .ncall = 0, .last_R = rclose };
+
+  const double eps = 1e-10;
+  double dz = app->grid.dx[1];
+  double zlo = app->grid.lower[1];
+  int izlo = app->local.lower[1], izup = app->local.upper[1];
+  
+  int ilo = gidx(izlo, izup, zlo, zmin, dz);
+  int iup = gidx(izlo, izup, zlo, zmax, dz);
+
+  double res = 0.0;
+  for (int i=ilo; i<=iup; ++i) {
+    double z1 = median(zmin, zlo+(i-izlo)*dz, zlo+(i-izlo+1)*dz);
+    double z2 = median(zmax, zlo+(i-izlo)*dz, zlo+(i-izlo+1)*dz);
+    if (z1 < z2) {
+      if (use_memo) {
+        if (fill_memo) {
+          double res_local = wp34s(countour_func, &c, z1, z2, 10, eps);
+          memo[i-izlo] = res_local;
+          res += res_local;
+        }
+        else {
+          if (z2 - z1 == dz)
+            res += memo[i-izlo];
+          else
+          res += wp34s(countour_func, &c, z1, z2, 10, eps);
+        }
+      }
+      else
+        res += wp34s(countour_func, &c, z1, z2, 10, eps);
+    }
+  }
+
+  ((gkgeom_app *)app)->nfunc_calls += c.ncall;
+  //printf("psi: %lg. (%g %g) Func-calls: %ld\n", psi, zmin, zmax, c.ncall);
+  return res;
 }
 
 double
 gkgeom_app_integrate_psi_contour(const gkgeom_app *app, double rclose,
   double zmin, double zmax, double psi)
 {
-  struct countour_ctx c = { .app = app, .psi = psi, .ncall = 0, .last_R = rclose };
-  double res = wp34s(countour_func, &c, zmin, zmax, 10, 1e-10);
-  ((gkgeom_app *)app)->nfunc_calls += c.ncall;
-  return res;
+  return integrate_psi_contour_memo(app, rclose, zmin, zmax, psi, false, false, 0);
 }
 
 struct arc_length_ctx {
   const gkgeom_app *app;
+  double *arc_memo;
   double psi, rclose, zmin, arcL;
 };
 
@@ -242,14 +314,11 @@ static inline double
 arc_length_func(double Z, void *ctx)
 {
   struct arc_length_ctx *actx = ctx;
+  double *arc_memo = actx->arc_memo;
   double psi = actx->psi, rclose = actx->rclose, zmin = actx->zmin, arcL = actx->arcL;
-  return gkgeom_app_integrate_psi_contour(actx->app, rclose, zmin, Z, psi) - arcL;
-}
-
-static inline double
-choose_closest(int ref, double R[2], double out[2])
-{
-  return fabs(R[0]-ref) < fabs(R[1]-ref) ? out[0] : out[1];
+  //return gkgeom_app_integrate_psi_contour(actx->app, rclose, zmin, Z, psi) - arcL;
+  return integrate_psi_contour_memo(actx->app, rclose, zmin, Z, psi,
+    true, false, arc_memo) - arcL;
 }
 
 static void
@@ -299,16 +368,21 @@ gkgeom_app_calcgeom(gkgeom_app *app, const struct gkyl_rect_grid *cgrid,
   double R[2] = { 0 }, dR[2] = { 0 };
   double Rmax = app->grid.upper[0];
 
-  struct arc_length_ctx arc_ctx = { .app = app };
+  int nzcells = app->grid.cells[1];
+  double *arc_memo = gkyl_malloc(sizeof(double[nzcells]));
+
+  struct arc_length_ctx arc_ctx = { .app = app, .arc_memo = arc_memo };
 
   int cidx[2] = { 0 };
   for (int ip=nrange.lower[PH_IDX]; ip<=nrange.upper[PH_IDX]; ++ip) {
-
     double zmin = app->grid.lower[1];
     double zmax = app->grid.upper[1];
     
     double psi_curr = phi_lo + ip*dphi;
-    double arcL = gkgeom_app_integrate_psi_contour(app, Rmax, zmin, zmax, psi_curr);
+    double arcL = integrate_psi_contour_memo(app, Rmax, zmin, zmax, psi_curr,
+      true, true, arc_memo);
+
+    printf("Working on psi = %.8lg. Arc-length = %.8lg\n", psi_curr, arcL);
 
     double delta_arcL = arcL/(poly_order*cgrid->cells[TH_IDX]);
 
@@ -351,7 +425,8 @@ gkgeom_app_calcgeom(gkgeom_app *app, const struct gkyl_rect_grid *cgrid,
 
   // write nodal coordinates for debugging
   write_nodal_coordinates(app, &nrange, mc2p);
-  
+
+  gkyl_free(arc_memo);
   gkyl_array_release(mc2p);
   
 }

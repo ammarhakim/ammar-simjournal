@@ -8,9 +8,35 @@ psi(double t, const double *xn, double *fout, void *ctx)
 }
 
 void
+test_arc(struct gkgeom_inp *inp, gkgeom_app *app)
+{
+  double psi_curr = 8.5;
+
+  double zmin = inp->lower[1], zmax = inp->upper[1];
+  double zmid = 0.5*(zmin+zmax);
+
+  double arcL = gkgeom_app_integrate_psi_contour(app, 6.0, zmin, zmax, psi_curr);
+  double arcL2 = gkgeom_app_integrate_psi_contour(app, 6.0, zmin, zmid , psi_curr);
+  double arcL3 = gkgeom_app_integrate_psi_contour(app, 6.0, zmid, zmax, psi_curr);
+
+  printf("arcL[%g,%g] = %.10lg\n", zmin, zmax, arcL);  
+  printf("arcL2[%g,%g] = %.10lg\n", zmin, zmid, arcL2);
+  printf("arcL3[%g,%g] = %.10lg\n", zmid, zmax, arcL3);
+  printf("arcL2 + arcL3 = %lg (%lg)\n", arcL2 + arcL3, arcL2+arcL3-arcL);
+
+  int nr;
+  double R[2], dR[2];
+  nr = gkgeom_app_R_psiz(app, psi_curr, 0.0-1e-14, 2, R, dR);
+  printf("nr: %d. R = %lg. dR = %lg\n", nr, R[0], dR[0]);
+
+  nr = gkgeom_app_R_psiz(app, psi_curr, 0.0+1e-14, 2, R, dR);
+  printf("nr: %d. R = %lg. dR = %lg\n", nr, R[0], dR[0]);  
+}
+
+void
 basic_root_test(struct gkgeom_inp *inp, const struct gkgeom_app *app)
 {
-  double psi0 = 10.0, Z0 = 0.0;
+  double psi0 = 8.0, Z0 = 0.0;
   //double psi0 = 1.0, Z0 = 0.0;
   
   long nloop = 1;
@@ -62,6 +88,7 @@ main(void)
   gkgeom_app *app = gkgeom_app_new(&inp);
 
   //basic_root_test(&inp, app);
+  //test_arc(&inp, app);
 
   // Computational grid: theta X psi X alpha (only 2D for now)
   double lower[] = { -M_PI/2, 7.0 };
@@ -88,7 +115,7 @@ main(void)
   char fileNm[1024]; // buffer for file name
   do {
     const char *fmt = "%s_mapc2p.gkyl";
-    snprintf(fileNm, sizeof fileNm, fmt, inp.name);  
+    snprintf(fileNm, sizeof fileNm, fmt, inp.name);
     gkyl_grid_sub_array_write(&cgrid, &clocal, mapc2p, fileNm);
   } while (0);
   

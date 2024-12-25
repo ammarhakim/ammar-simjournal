@@ -17,9 +17,11 @@ grid, psi = interp.interpolate()
 for d in range(len(grid)):
     grid[d] = 0.5*(grid[d][:-1] + grid[d][1:])
 
-clevels = np.linspace(0.05, 0.1, 11)
-print(clevels)
+clevels = np.linspace(0.0496719, 0.1, 17)
 plt.contour(grid[0], grid[1], psi[:,:,0].transpose(), levels=clevels, colors="k")
+
+clevels = np.linspace(0.0, 0.0497, 5)
+plt.contour(grid[0], grid[1], psi[:,:,0].transpose(), levels=clevels, colors="r")
 
 plt.plot(R,Z,marker=".", color="k", linestyle="none")
 plt.scatter(R,Z, marker=".")

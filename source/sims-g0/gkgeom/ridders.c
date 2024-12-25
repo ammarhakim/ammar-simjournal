@@ -1,8 +1,7 @@
 #include <math.h>
 #include <float.h>
 
-static inline double sgn(double x) { return x >= 0 ? 1 : -1; }
-static inline double babs(double a, double b) { return b>=0 ? fabs(a) : -fabs(a); }
+static inline double dsign(double x) { return x >= 0 ? 1 : -1; }
 
 // Assume f1 and f2 have different signs: no checks are made
 double
@@ -11,30 +10,33 @@ ridders(double (*func)(double,void*), void *ctx,
 {
   double xl = x1, xr = x2, fl = f1, fr = f2;
   double res = DBL_MAX;
-  
-  int iterating = 1;
+
+  int nev = 0, nitr = 0, iterating = 1;
   while(iterating) {
     double xm = 0.5*(xl+xr);
-    double fm = func(xm, ctx);
-    double sr = sqrt(fm*fm - fl*fr);
-    if (sr == 0) return res;
-    double xnew = xm + (xm-xl)*sgn(fl-fr)*fm/sr;
-    if (fabs(xnew-res) < eps) return res;
+    double fm = func(xm, ctx); nev += 1;
+    double W = sqrt(fm*fm - fl*fr);
+    if (W == 0) { res = xm;  break; }
+    
+    double xnew = xm + (xm-xl)*dsign(fl-fr)*fm/W;
+    if (fabs(xnew-res) < eps) break;
     res = xnew;
-    double fnew = func(xnew, ctx);
-    if (fnew == 0.0) return res;
+    double fnew = func(xnew, ctx); nev += 1;
+    if (fnew == 0.0) break;
 
-    if (babs(fm, fnew) != fm) {
+    if (fm*fnew < 0) {
       xl = xm; fl = fm;
       xr = res; fr = fnew;
     }
-    else if (babs(fl,fnew) != fl) {
+    else if (fl*fnew < 0) {
       xr = res; fr = fnew;      
     }
-    else if (babs(fr,fnew) != fr) {
+    else if (fr*fnew < fr) {
       xl = res; fl = fnew;
     }
+
     if (fabs(xr-xl) < eps) iterating = 0;
+    nitr += 1;
   }
   return res;
 }

@@ -75,9 +75,9 @@ main(void)
   gkgeom_app *app = gkgeom_app_new(&inp);
 
   // Computational grid: theta X psi X alpha (only 2D for now)
-  double lower[] = { -M_PI/2, 0.05 };
+  double lower[] = { -M_PI/2, 0.0497 };
   double upper[] = { M_PI/2, 0.1 };
-  int cells[] = { 16, 10 };
+  int cells[] = { 12, 8 };
 
   struct gkyl_rect_grid cgrid;
   gkyl_rect_grid_init(&cgrid, 2, lower, upper, cells);
@@ -86,9 +86,9 @@ main(void)
   int nghost[GKYL_MAX_CDIM] = { 0, 0 };
   gkyl_create_grid_ranges(&cgrid, nghost, &clocal_ext, &clocal);
 
-  int cpoly_order = 1;
+  int cpoly_order = 2;
   struct gkyl_basis cbasis;
-  gkyl_cart_modal_serendip(&cbasis, 2, 1);
+  gkyl_cart_modal_serendip(&cbasis, 2, cpoly_order);
 
   struct gkyl_array *mapc2p = gkyl_array_new(GKYL_DOUBLE, 2*cbasis.num_basis, clocal_ext.volume);
   gkgeom_app_calcgeom(app, &cgrid, cpoly_order, mapc2p);

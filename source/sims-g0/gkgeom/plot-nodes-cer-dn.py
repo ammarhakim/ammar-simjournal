@@ -17,16 +17,16 @@ grid, psi = interp.interpolate()
 for d in range(len(grid)):
     grid[d] = 0.5*(grid[d][:-1] + grid[d][1:])
 
-psi_min = 0.001
+psi_min = 0.0001
 psi_max = 1.2
-npsi = 10
+npsi = 20
 dpsi = (psi_max-psi_min)/npsi
 
-clevels = np.linspace(psi_min, psi_min+dpsi, 3)
-plt.contour(grid[0], grid[1], psi[:,:,0].transpose(), levels=clevels, colors="k")
+clevels = np.linspace(psi_min, psi_max, npsi+1)
+plt.contour(grid[0], grid[1], psi[:,:,0].transpose(), levels=clevels, colors="k", linewidths=1.0)
 
 clevels = np.linspace(-0.25, 0.0, 5)
-plt.contour(grid[0], grid[1], psi[:,:,0].transpose(), levels=clevels, colors="r")
+plt.contour(grid[0], grid[1], psi[:,:,0].transpose(), levels=clevels, colors="r", linewidths=1.0)
 
 plt.plot(R,Z,marker=".", color="k", linestyle="none")
 plt.scatter(R,Z, marker=".")
