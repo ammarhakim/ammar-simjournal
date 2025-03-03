@@ -22,7 +22,7 @@ adiff.o: adiff.c
 	$(CC) $(CFLAGS) $(ARCH_FLAGS) -I. -I $(G0_INC_DIR) -c adiff.c
 
 sim-1d-const-adiff: sim-1d-const-adiff.c adiff.o
-	$(CC) $(CFLAGS) $(ARCH_FLAGS) -I. -I $(G0_INC_DIR) sim-1d-const-adiff.c -L $(G0_LIB_DIR) $(G0_LIB) -o sim-1d-const-adiff
+	$(CC) $(CFLAGS) $(ARCH_FLAGS) -I. -I $(G0_INC_DIR) sim-1d-const-adiff.c adiff.o -L $(G0_LIB_DIR) $(G0_LIB) -o sim-1d-const-adiff
 
 .PHONY: clean
 clean:
