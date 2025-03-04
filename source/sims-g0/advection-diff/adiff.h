@@ -2,6 +2,12 @@
 
 typedef struct adiff_app adiff_app;
 
+enum adiff_advection_scheme {
+  ADIFF_CENTRAL_2, // default
+  ADIFF_UPWIND_1,
+  ADIFF_UPWIND_3,
+};  
+
 struct adiff_app_inp {
   char name[128]; // name of simulation
   
@@ -14,6 +20,8 @@ struct adiff_app_inp {
   double tend; // time to run simulation
   double cfl_frac; // Adjust CFL number by this (< 1.0)
 
+  enum adiff_advection_scheme scheme; // scheme to use for advection term
+
   void *init_ctx; // context object for ICs
   evalf_t init; // initial conditions
 
@@ -22,6 +30,9 @@ struct adiff_app_inp {
   evalf_t velocity; // function for advection velocity
 
   double alpha; // diffusion coefficient (constant)
+
+  // for debugging only  
+  int max_steps;
 };
 
 /**
