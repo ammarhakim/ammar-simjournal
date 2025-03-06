@@ -27,6 +27,7 @@ static inline double
 calc_flux_upwind_3o(double vel, double fll, double fl, double fr, double frr)
 {
   // HOMEWORK: You need to implement this function!
+  fprintf(stderr, "**** HOMEWORK!!!\n"); // delete this line
   assert(false); // delete this line
   return 0.0;
 }
@@ -36,14 +37,14 @@ calc_flux_upwind_3o(double vel, double fll, double fl, double fr, double frr)
 
 // Second-order central
 static inline double
-calc_diff2_central_2o(double fll, double fl, double f0, double fr, double frr)
+calc_diff2_central_2o(double dx, double fll, double fl, double f0, double fr, double frr)
 {
-  return fl - 2.0*f0 + fr;
+  return (fl-2.0*f0+fr)/(dx*dx);
 }
 
 // Third-order central
 static inline double
-calc_diff2_central_4o(double fll, double fl, double f0, double fr, double frr)
+calc_diff2_central_4o(double dx, double fll, double fl, double f0, double fr, double frr)
 {
   // HOMEWORK: You need to implement this function!
   assert(false); // delete this line
@@ -54,7 +55,7 @@ calc_diff2_central_4o(double fll, double fl, double f0, double fr, double frr)
 typedef double (*advect_flux_t)(double vel, double fll, double fl, double fr, double frr);
 
 // function pointer types for computing diffusive term
-typedef double (*diff_stencil_t)(double fll, double fl, double f0, double fr, double frr);
+typedef double (*diff_stencil_t)(double dx, double fll, double fl, double f0, double fr, double frr);
 
 // Update status
 struct update_status {
@@ -333,18 +334,26 @@ advection_rhs(adiff_app* app, const struct gkyl_array *fin,
 {
   int ndim = app->ndim;
 
-  advect_flux_t flux_func;
+  advect_flux_t flux_func = 0;
 
-  if (app->scheme == SCHEME_C2_C2)
-    flux_func = calc_flux_central_2o;
-  else if (app->scheme == SCHEME_U1_C2)
-    flux_func = calc_flux_upwind_1o;
+  switch (app->scheme) {
+    case SCHEME_C2_C2:
+      flux_func = calc_flux_central_2o;
+      break;
 
+    case SCHEME_U1_C2:
+      flux_func = calc_flux_upwind_1o;
+      break;
+
+    case SCHEME_U3_C4:
+      flux_func = calc_flux_upwind_3o;
+      break;
+  };
+  
   gkyl_array_clear(app->cfl_freq, 0.0);
   
   double dx[3];
-  for (int d=0; d<ndim; ++d)
-    dx[d] = app->grid.dx[d];
+  for (int d=0; d<ndim; ++d) dx[d] = app->grid.dx[d];
 
   // labels for four cells attached to face: two on left, two on right
   enum { ILL, IL, IR, IRR };
@@ -392,10 +401,25 @@ diffusion_rhs(adiff_app* app, const struct gkyl_array *fin,
 {
   int ndim = app->ndim;
 
+  diff_stencil_t diff_stencil = 0;
+
+  switch (app->scheme) {
+    case SCHEME_C2_C2:
+      diff_stencil = calc_diff2_central_2o;
+      break;
+
+    case SCHEME_U1_C2:
+      diff_stencil = calc_diff2_central_2o;
+      break;
+
+    case SCHEME_U3_C4:
+      diff_stencil = calc_diff2_central_4o;
+      break;
+  };  
+  
   double alpha = app->alpha;
   double dx[3];
-  for (int d=0; d<ndim; ++d)
-    dx[d] = app->grid.dx[d];
+  for (int d=0; d<ndim; ++d) dx[d] = app->grid.dx[d];
 
   // labels for fice cells: two to the left, itself, two to the right
   enum { ILL, IL, I0, IR, IRR };
@@ -411,20 +435,20 @@ diffusion_rhs(adiff_app* app, const struct gkyl_array *fin,
     offsets[IR] = get_offset(d, 1, &app->local);
     offsets[IRR] = get_offset(d, 2, &app->local);
 
-    double alpha_dx2 = alpha/(dx[d]*dx[d]);
-
     struct gkyl_range_iter iter;
     gkyl_range_iter_init(&iter, &app->local);
     while (gkyl_range_iter_next(&iter)) {
       long loc = gkyl_range_idx(&app->local, iter.idx);
 
       double *rhs_p = gkyl_array_fetch(rhs, loc+offsets[I0]);
-      
+
+      const double *fll = gkyl_array_cfetch(fin, loc+offsets[ILL]);
       const double *fl = gkyl_array_cfetch(fin, loc+offsets[IL]);
       const double *f0 = gkyl_array_cfetch(fin, loc+offsets[I0]);
       const double *fr = gkyl_array_cfetch(fin, loc+offsets[IR]);
+      const double *frr = gkyl_array_cfetch(fin, loc+offsets[IRR]);
 
-      rhs_p[0] += alpha_dx2*(fl[0]-2*f0[0]+fr[0]);
+      rhs_p[0] += alpha*diff_stencil(dx[d], fll[0], fl[0], f0[0], fr[0], frr[0]);
     }
   }
 }
@@ -495,7 +519,7 @@ adiff_app_run(adiff_app *app)
   
   long step = 1;
   while ((tcurr < tend) && (step <= app->max_steps) ) {
-    fprintf(stdout, "Taking step %ld at t = %g ....\n", step, tcurr);
+    fprintf(stdout, "Taking step %6ld at t = %#11.8g with dt %#11.8g ....\n", step, tcurr, dt);
     struct update_status status = update_ssp_rk3(app, tcurr,  dt);
 
     tcurr += status.dt_actual;
@@ -503,6 +527,10 @@ adiff_app_run(adiff_app *app)
     write_data(&io_trig, app, tcurr);
     
     dt = status.dt_suggested;
+    // readjust dt to hit tend exactly
+    if (tcurr+dt > tend)
+      dt = (tend-tcurr)*(1+1e-6);
+    
     step += 1;
   }
 
