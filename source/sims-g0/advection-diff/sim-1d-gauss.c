@@ -20,7 +20,7 @@ int
 main(int argc, char **argv)
 {
   struct adiff_app_inp app_inp = {
-    .name = "sim-1d-const-adiff",
+    .name = "sim-1d-gauss",
 
     .ndim = 1,
     .cells = { 32 },
