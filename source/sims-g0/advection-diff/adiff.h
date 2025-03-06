@@ -3,9 +3,9 @@
 typedef struct adiff_app adiff_app;
 
 enum adiff_advection_scheme {
-  ADIFF_CENTRAL_2, // default
-  ADIFF_UPWIND_1,
-  ADIFF_UPWIND_3,
+  SCHEME_C2_C2, // second-order central for both advection and diffusion
+  SCHEME_U1_C2, // first-order upwind for advection, second-order central for diffusion
+  SCHEME_U3_C4, // second-order upwind for advection, fourth-order central for diffusion
 };  
 
 struct adiff_app_inp {

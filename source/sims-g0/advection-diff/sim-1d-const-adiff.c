@@ -5,7 +5,7 @@ static void
 velocity(double t, const double *xn, double *fout, void *ctx)
 {
   double x = xn[0];
-  fout[0] = 0.0;
+  fout[0] = 1.0;
 }
 
 // function to set initial conditions
@@ -31,12 +31,12 @@ main(int argc, char **argv)
     .tend = 2.0,
     .cfl_frac = 0.9,
 
-    .scheme = ADIFF_CENTRAL_2,
+    .scheme = SCHEME_C2_C2,
 
     .init = init,
     .velocity = velocity,
 
-    .alpha = 1.0e-1,
+    .alpha = 0.0
   };
 
   adiff_app *app = adiff_app_new(&app_inp);

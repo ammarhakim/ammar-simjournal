@@ -1,9 +1,60 @@
 #include <adiff.h>
 
 // std includes
+#include <assert.h>
 #include <float.h>
 #include <limits.h>
 #include <string.h>
+
+// Different numerical flux functions for advection
+
+// First-order upwind
+static inline double
+calc_flux_upwind_1o(double vel, double fll, double fl, double fr, double frr)
+{
+  return 0.5*vel*(fr+fl) - 0.5*fabs(vel)*(fr-fl);
+}
+
+// Second-order central
+static inline double
+calc_flux_central_2o(double vel, double fll, double fl, double fr, double frr)
+{
+  return 0.5*vel*(fr+fl);
+}
+
+// Third-order central
+static inline double
+calc_flux_upwind_3o(double vel, double fll, double fl, double fr, double frr)
+{
+  // HOMEWORK: You need to implement this function!
+  assert(false); // delete this line
+  return 0.0;
+}
+
+// Different stencils for second-order derivatives: the cell-spacing
+// is not included
+
+// Second-order central
+static inline double
+calc_diff2_central_2o(double fll, double fl, double f0, double fr, double frr)
+{
+  return fl - 2.0*f0 + fr;
+}
+
+// Third-order central
+static inline double
+calc_diff2_central_4o(double fll, double fl, double f0, double fr, double frr)
+{
+  // HOMEWORK: You need to implement this function!
+  assert(false); // delete this line
+  return 0.0;
+}
+
+// function pointer types for computing advective interface flux
+typedef double (*advect_flux_t)(double vel, double fll, double fl, double fr, double frr);
+
+// function pointer types for computing diffusive term
+typedef double (*diff_stencil_t)(double fll, double fl, double f0, double fr, double frr);
 
 // Update status
 struct update_status {
@@ -14,12 +65,11 @@ struct update_status {
 
 struct adiff_app {
   char name[128];
-  
+
+  int max_steps;  
   int nframe;
   double tend;
   double cfl;
-
-  int max_steps;
 
   int ndim;
   struct gkyl_rect_grid grid;
@@ -240,18 +290,6 @@ get_offset(int dir, int loc, const struct gkyl_range *range)
   return gkyl_range_offset(range, idx);
 }
 
-static inline double
-calc_flux_upwind(double vel, double fl, double fr)
-{
-  return 0.5*vel*(fr+fl) - 0.5*fabs(vel)*(fr-fl);
-}
-
-static inline double
-calc_flux_central(double vel, double fl, double fr)
-{
-  return 0.5*vel*(fr+fl);
-}
-
 static double
 calc_max_dt(adiff_app* app)
 {
@@ -295,11 +333,12 @@ advection_rhs(adiff_app* app, const struct gkyl_array *fin,
 {
   int ndim = app->ndim;
 
-  double (*flux_func)(double vel, double fl, double fr);
-  if (app->scheme == ADIFF_CENTRAL_2)
-    flux_func = calc_flux_central;
-  else if (app->scheme == ADIFF_UPWIND_1)
-    flux_func = calc_flux_upwind;
+  advect_flux_t flux_func;
+
+  if (app->scheme == SCHEME_C2_C2)
+    flux_func = calc_flux_central_2o;
+  else if (app->scheme == SCHEME_U1_C2)
+    flux_func = calc_flux_upwind_1o;
 
   gkyl_array_clear(app->cfl_freq, 0.0);
   
@@ -307,14 +346,17 @@ advection_rhs(adiff_app* app, const struct gkyl_array *fin,
   for (int d=0; d<ndim; ++d)
     dx[d] = app->grid.dx[d];
 
-  // labels for two cells attached to face: left, right
-  enum { IL, IR };
+  // labels for four cells attached to face: two on left, two on right
+  enum { ILL, IL, IR, IRR };
   
   // outer loop is over directions
   for (int d=0; d<ndim; ++d) {
-    long offsets[3];
+    long offsets[4];
+
+    offsets[ILL] = get_offset(d, -2, &app->local);
     offsets[IL] = get_offset(d, -1, &app->local);
     offsets[IR] = get_offset(d, 0, &app->local);
+    offsets[IRR] = get_offset(d, 1, &app->local);
 
     // inner loop is over faces: we update right and left cells
     // attached to face
@@ -324,10 +366,14 @@ advection_rhs(adiff_app* app, const struct gkyl_array *fin,
       long loc = gkyl_range_idx(&app->local, iter.idx);
 
       const double *vel = gkyl_array_cfetch(app->vel, loc+offsets[IR]);
+
+      const double *fll = gkyl_array_cfetch(fin, loc+offsets[ILL]);      
       const double *fl = gkyl_array_cfetch(fin, loc+offsets[IL]);
       const double *fr = gkyl_array_cfetch(fin, loc+offsets[IR]);
+      const double *frr = gkyl_array_cfetch(fin, loc+offsets[IRR]);
+      
       // compute flux
-      double flux = flux_func(vel[d], fl[0], fr[0]);
+      double flux = flux_func(vel[d], fll[0], fl[0], fr[0], frr[0]);
 
       // we update two cells
       double *rhsl_p = gkyl_array_fetch(rhs, loc+offsets[IL]);
@@ -351,17 +397,19 @@ diffusion_rhs(adiff_app* app, const struct gkyl_array *fin,
   for (int d=0; d<ndim; ++d)
     dx[d] = app->grid.dx[d];
 
-  // labels for three cells: left, center, right
-  enum { IL, I0, IR };
+  // labels for fice cells: two to the left, itself, two to the right
+  enum { ILL, IL, I0, IR, IRR };
   
   // outer loop is over directions: the RHS is updated direction by
   // direction
   for (int d=0; d<ndim; ++d) {
 
-    long offsets[3];
+    long offsets[5];
+    offsets[ILL] = get_offset(d, -2, &app->local);
     offsets[IL] = get_offset(d, -1, &app->local);
     offsets[I0] = get_offset(d, 0, &app->local);
     offsets[IR] = get_offset(d, 1, &app->local);
+    offsets[IRR] = get_offset(d, 2, &app->local);
 
     double alpha_dx2 = alpha/(dx[d]*dx[d]);
 

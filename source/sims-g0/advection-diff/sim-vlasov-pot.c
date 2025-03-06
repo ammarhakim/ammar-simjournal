@@ -32,7 +32,7 @@ main(void)
 
     .ndim = 2,
     .cells = { 64, 64 },
-    // [0, 2 pi] x [-6, 6]
+    // [0, 2 pi] x [-6vth, 6vth]
     .lower = { 0.0, -6.0 },
     .upper = { 2*GKYL_PI, 6.0 },
 
@@ -40,7 +40,7 @@ main(void)
     .tend = 3.0,
     .cfl_frac = 0.9,
 
-    .scheme = ADIFF_CENTRAL_2,
+    .scheme = SCHEME_C2_C2,
 
     .init = init,
     .velocity = velocity,
