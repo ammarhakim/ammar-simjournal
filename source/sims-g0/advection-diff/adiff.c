@@ -13,37 +13,34 @@ struct update_status {
 };
 
 struct adiff_app {
-  char name[128]; // name of simulation
+  char name[128];
   
-  int nframe; // number of output frames to write
-  double tend; // time to run simulation
-  double cfl; // CFL condition
+  int nframe;
+  double tend;
+  double cfl;
 
-  int max_steps; // maxmimum steps to run (for debugging only)
+  int max_steps;
 
   int ndim;
   struct gkyl_rect_grid grid;
   struct gkyl_range local, local_ext;
-  struct gkyl_range face_range; // range for quantities faces
+  struct gkyl_range face_range;
 
   enum adiff_advection_scheme scheme;  
   
   void *init_ctx; // context object for ICs
   evalf_t init_func; // initial conditions
 
-  bool is_flow_dynamic; // set to true if velocity is time-dependent
   void *vel_ctx; // context object for advection velocity
   evalf_t vel_func; // function for advection velocity
   
   double alpha; // diffusion coefficient
 
-  // arrays needed in the update
-  struct gkyl_array *f, *f1, *fnew, *rhs;
+  struct gkyl_array *f, *f1, *f2, *fnew;
   struct gkyl_array *vel;
   struct gkyl_array *cfl_freq;
 
-  // integrated diagnostics
-  gkyl_dynvec fint;
+  gkyl_dynvec fint; // integrated f, and integrated f2
 
   struct gkyl_comm *comm; // parallel communicator  
 };
@@ -52,7 +49,6 @@ adiff_app *
 adiff_app_new(const struct adiff_app_inp *inp)
 {
   adiff_app *app = gkyl_malloc(sizeof *app);
-
   strncpy(app->name, inp->name, sizeof(inp->name));
   
   app->nframe = inp->nframe;
@@ -81,14 +77,13 @@ adiff_app_new(const struct adiff_app_inp *inp)
   app->init_ctx = inp->init_ctx;
   app->init_func = inp->init;
 
-  app->is_flow_dynamic = inp->is_flow_dynamic;
   app->vel_ctx = inp->velocity_ctx;
   app->vel_func = inp->velocity;
 
   app->f = gkyl_array_new(GKYL_DOUBLE, 1, app->local_ext.volume);
   app->f1 = gkyl_array_new(GKYL_DOUBLE, 1, app->local_ext.volume);
   app->fnew = gkyl_array_new(GKYL_DOUBLE, 1, app->local_ext.volume);
-  app->rhs = gkyl_array_new(GKYL_DOUBLE, 1, app->local_ext.volume);
+  app->f2 = gkyl_array_new(GKYL_DOUBLE, 1, app->local_ext.volume);
   app->vel = gkyl_array_new(GKYL_DOUBLE, ndim, app->local_ext.volume);
   app->cfl_freq = gkyl_array_new(GKYL_DOUBLE, 1, app->local_ext.volume);
 
@@ -257,9 +252,44 @@ calc_flux_central(double vel, double fl, double fr)
   return 0.5*vel*(fr+fl);
 }
 
+static double
+calc_max_dt(adiff_app* app)
+{
+  double dx[3];
+  for (int d=0; d<app->ndim; ++d)
+    dx[d] = app->grid.dx[d];
+
+  // compute maximum time-step due to diffusion term
+  double alpha = app->alpha;
+  double cfl_freq = 0.0;
+  for (int d=0; d<app->ndim; ++d)
+    cfl_freq += fmax(alpha, DBL_MIN)/(dx[d]*dx[d]);
+  double max_dt_diff = 0.5*app->cfl/cfl_freq;
+
+  gkyl_array_clear(app->cfl_freq, 0.0);
+  // compute maximum time-step due to advection term
+  for (int d=0; d<app->ndim; ++d) {
+  
+    struct gkyl_range_iter iter;
+    gkyl_range_iter_init(&iter, &app->face_range);
+    while (gkyl_range_iter_next(&iter)) {
+      long loc = gkyl_range_idx(&app->local, iter.idx);
+      const double *vel = gkyl_array_cfetch(app->vel, loc);
+
+      double *cfl_freq_p = gkyl_array_fetch(app->cfl_freq, loc);
+      cfl_freq_p[0] += fabs(vel[d])/dx[d];      
+    }
+  }
+  double global_cfl_freq[1];
+  gkyl_array_reduce_range(global_cfl_freq, app->cfl_freq, GKYL_MAX, &app->face_range);
+  double max_dt_adv = app->cfl/global_cfl_freq[0];
+  
+  return fmin(max_dt_adv, max_dt_diff);
+}
+
 // Computes contribution to RHS from advection term, returning maximum
 // stable time-step
-static double
+static void
 advection_rhs(adiff_app* app, const struct gkyl_array *fin,
   struct gkyl_array *rhs)
 {
@@ -273,7 +303,6 @@ advection_rhs(adiff_app* app, const struct gkyl_array *fin,
 
   gkyl_array_clear(app->cfl_freq, 0.0);
   
-  double cfl_freq = 0.0;
   double dx[3];
   for (int d=0; d<ndim; ++d)
     dx[d] = app->grid.dx[d];
@@ -283,7 +312,6 @@ advection_rhs(adiff_app* app, const struct gkyl_array *fin,
   
   // outer loop is over directions
   for (int d=0; d<ndim; ++d) {
-
     long offsets[3];
     offsets[IL] = get_offset(d, -1, &app->local);
     offsets[IR] = get_offset(d, 0, &app->local);
@@ -307,36 +335,21 @@ advection_rhs(adiff_app* app, const struct gkyl_array *fin,
 
       rhsl_p[0] += -flux/dx[d];
       rhsr_p[0] += flux/dx[d];
-
-      double *cfl_freq_p = gkyl_array_fetch(app->cfl_freq, loc+offsets[IR]);
-      cfl_freq_p[0] += fabs(vel[d])/dx[d];
     }
   }
+ }
 
-  double global_cfl_freq[1];
-  gkyl_array_reduce_range(global_cfl_freq, app->cfl_freq, GKYL_MAX, &app->local);
-
-  return app->cfl/global_cfl_freq[0];
-  
-  return DBL_MAX;
-}
-
-// Computes contribution to RHS from diffusion term, returning maximum
-// stable time-step
-static double
+// Computes contribution to RHS from diffusion term
+static void
 diffusion_rhs(adiff_app* app, const struct gkyl_array *fin,
   struct gkyl_array *rhs)
 {
   int ndim = app->ndim;
 
   double alpha = app->alpha;
-  double cfl_freq = 0.0;
   double dx[3];
-  for (int d=0; d<ndim; ++d) {
+  for (int d=0; d<ndim; ++d)
     dx[d] = app->grid.dx[d];
-    // not sure why there is a 2 here
-    cfl_freq += 2.0*fmax(alpha, DBL_MIN)/(dx[d]*dx[d]);
-  }
 
   // labels for three cells: left, center, right
   enum { IL, I0, IR };
@@ -366,61 +379,55 @@ diffusion_rhs(adiff_app* app, const struct gkyl_array *fin,
       rhs_p[0] += alpha_dx2*(fl[0]-2*f0[0]+fr[0]);
     }
   }
-
-  return app->cfl/cfl_freq;
 }
 
-// Take a forward Euler step with the suggested time-step dt. This may
-// not be the actual time-step taken. However, the function will never
-// take a time-step larger than dt even if it is allowed by
-// stability. The actual time-step and dt_suggested are returned in
-// the status object.
 static void
 forward_euler(adiff_app* app, double tcurr, double dt,
   const struct gkyl_array *fin, struct gkyl_array *fout,
   struct update_status *st)
 {
-  double dt1, dtmin = DBL_MAX;
-
   gkyl_array_clear_range(fout, 0.0, &app->local);
-  
-  dt1 = advection_rhs(app, fin, fout);
-  dtmin = fmin(dt1, dtmin);
+  // fout will have the RHS of advection and diffusion semi-discrete
+  // operators accumulated
+  advection_rhs(app, fin, fout);
+  diffusion_rhs(app, fin, fout);
 
-  dt1 = diffusion_rhs(app, fin, fout);
-  dtmin = fmin(dt1, dtmin);
-
-  double dt_max_rel_diff = 0.01;
-  // check if dtmin is slightly smaller than dt. Use dt if it is
-  // (avoids retaking steps if dt changes are very small).
-  double dt_rel_diff = (dt-dtmin)/dt;
-  if (dt_rel_diff > 0 && dt_rel_diff < dt_max_rel_diff)
-    dtmin = dt;
-
-  // don't take a time-step larger that input dt
-  double dta = st->dt_actual = dt < dtmin ? dt : dtmin;
-  st->dt_suggested = dtmin;
-
-  // complete the forward Euler update
-  gkyl_array_accumulate_range(gkyl_array_scale_range(fout, dta, &app->local),
+  // complete forward Euler update:
+  // fout = fin + dt*fout
+  gkyl_array_accumulate_range(gkyl_array_scale_range(fout, dt, &app->local),
     1.0, fin, &app->local);
   apply_bc(app, fout);
+
+  st->dt_actual = st->dt_suggested = dt;
 }
 
 static struct update_status
-update_ssp_rk3(adiff_app* app, double dt0)
+update_ssp_rk3(adiff_app* app, double tcurr, double dt0)
 {
   struct update_status st = { .success = true };
-  
-  return st;
-}
 
-static struct update_status
-update_rk1(adiff_app* app, double tcurr, double dt0)
-{
-  struct update_status st = { .success = true };
-  forward_euler(app, tcurr, dt0, app->f, app->fnew, &st);
-  gkyl_array_copy_range(app->f, app->fnew, &app->local_ext);
+  // Stage 1:
+  // f1 = FE[fn]
+  forward_euler(app, tcurr, dt0, app->f, app->f1, &st);
+  apply_bc(app, app->f1);
+
+  // Stage 2:
+  // f2 = 3/4*fn + 1/4*FE[f1]
+  forward_euler(app, tcurr+dt0, dt0, app->f1, app->f2, &st);
+  gkyl_array_accumulate_range(gkyl_array_scale_range(app->f2, 1.0/4.0, &app->local),
+    3.0/4.0, app->f, &app->local);
+  apply_bc(app, app->f2);
+
+  // Stage 3:
+  // fnew = 1/3*fn + 2/3*FE[f2]
+  forward_euler(app, tcurr+0.5*dt0, dt0, app->f2, app->fnew, &st);
+  gkyl_array_accumulate_range(gkyl_array_scale_range(app->fnew, 2.0/3.0, &app->local),
+    1.0/3.0, app->f, &app->local);
+  apply_bc(app, app->fnew);
+
+  // copy solution over for use in next time-step
+  gkyl_array_copy_range(app->f, app->fnew, &app->local_ext);  
+
   return st;
 }
 
@@ -435,16 +442,13 @@ adiff_app_run(adiff_app *app)
   calc_diagnostics(app, 0.0);
   write_data(&io_trig, app, 0.0);
 
-  struct update_status (*stepper)(adiff_app* app, double tcurr, double dt0)
-    = update_rk1;
-
   double tcurr = 0.0, tend = app->tend;
-  double dt = tend-tcurr;
-
+  double dt = calc_max_dt(app);
+  
   long step = 1;
   while ((tcurr < tend) && (step <= app->max_steps) ) {
     fprintf(stdout, "Taking step %ld at t = %g ....\n", step, tcurr);
-    struct update_status status = stepper(app, tcurr,  dt);
+    struct update_status status = update_ssp_rk3(app, tcurr,  dt);
 
     tcurr += status.dt_actual;
     calc_diagnostics(app, tcurr);
@@ -463,7 +467,7 @@ adiff_app_release(adiff_app *app)
   gkyl_array_release(app->f);
   gkyl_array_release(app->f1);
   gkyl_array_release(app->fnew);
-  gkyl_array_release(app->rhs);
+  gkyl_array_release(app->f2);
   gkyl_array_release(app->vel);
   gkyl_array_release(app->cfl_freq);
 

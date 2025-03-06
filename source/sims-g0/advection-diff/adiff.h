@@ -25,7 +25,6 @@ struct adiff_app_inp {
   void *init_ctx; // context object for ICs
   evalf_t init; // initial conditions
 
-  bool is_flow_dynamic; // set to true if velocity is time-dependent
   void *velocity_ctx; // context object for advection velocity
   evalf_t velocity; // function for advection velocity
 

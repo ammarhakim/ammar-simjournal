@@ -7,37 +7,37 @@ static inline double sq(double x) { return x*x; }
 static void
 velocity(double t, const double *xn, double *fout, void *ctx)
 {
-  double x = xn[0], y = xn[1];
-  // solid-body rotation about (0.5, 0.5)
-  double ux = -y+0.5;
-  double uy = x-0.5;
-  fout[0] = ux; fout[1] = uy;
+  double x = xn[0], v = xn[1];
+  // characteristics for Vlasov with a fixed potential of
+  // phi(x) = cos(x)
+  double ux = v; // characteristic vel in conf space
+  double Ex = sin(x); // Ex = -grad phi
+  fout[0] = ux; fout[1] = Ex;
 }
 
 // function to set initial conditions
 static void
 init(double t, const double *xn, double *fout, void *ctx)
 {
-  double x = xn[0], y = xn[1];
-  double r0 = 0.2;
-  double x0 = 0.25, y0 = 0.5;
-  double r = fmin(sqrt(sq(x-x0) + sq(y-y0)), r0)/r0;
-  fout[0] = 0.25*(1 + cos(GKYL_PI*r));
+  double x = xn[0], v = xn[1];
+  // Mawellian with vth = 1
+  fout[0] = 1/sqrt(2*GKYL_PI)*exp(-v*v/2);
 }
 
 int
 main(void)
 {
   struct adiff_app_inp app_inp = {
-    .name = "sim-2d-rotflow",
+    .name = "sim-vlasov-pot",
 
     .ndim = 2,
     .cells = { 64, 64 },
-    .lower = { 0.0, 0.0 },
-    .upper = { 1.0, 1.0 },
+    // [0, 2 pi] x [-6, 6]
+    .lower = { 0.0, -6.0 },
+    .upper = { 2*GKYL_PI, 6.0 },
 
     .nframe = 16,
-    .tend = 2.0*GKYL_PI,
+    .tend = 3.0,
     .cfl_frac = 0.9,
 
     .scheme = ADIFF_CENTRAL_2,
@@ -45,7 +45,7 @@ main(void)
     .init = init,
     .velocity = velocity,
 
-    .alpha = 0e-6,
+    .alpha = 0.0,
   };
 
   adiff_app *app = adiff_app_new(&app_inp);
