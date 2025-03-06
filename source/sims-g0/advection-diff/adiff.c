@@ -376,7 +376,7 @@ advection_rhs(adiff_app* app, const struct gkyl_array *fin,
 
       const double *vel = gkyl_array_cfetch(app->vel, loc+offsets[IR]);
 
-      const double *fll = gkyl_array_cfetch(fin, loc+offsets[ILL]);      
+      const double *fll = gkyl_array_cfetch(fin, loc+offsets[ILL]);
       const double *fl = gkyl_array_cfetch(fin, loc+offsets[IL]);
       const double *fr = gkyl_array_cfetch(fin, loc+offsets[IR]);
       const double *frr = gkyl_array_cfetch(fin, loc+offsets[IRR]);
