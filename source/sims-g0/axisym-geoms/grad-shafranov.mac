@@ -1,0 +1,42 @@
+kill(all)$
+load("clifford")$
+load("cliffordan")$
+
+clifford(ee,3)$
+
+cross(a,b) := cliffsimpall( (a & b) | cinv(%iv) )$
+
+declare([r, phi], scalar)$
+
+/* Cylindrical polar coordinates */
+xpos : r*cos(phi)*ee[1] + r*sin(phi)*ee[2] + z*ee[3]$
+
+/* Tangent vectors */
+g[1] : diff(xpos,r)$
+g[2] : diff(xpos,phi)$
+g[3] : diff(xpos,z)$
+
+/* Dual vectors */
+gd[1] : mvectdiff(r,xpos)$
+gd[2] : mvectdiff(phi,xpos)$
+gd[3] : mvectdiff(z,xpos)$
+
+/* Flux function */
+declare([psi], scalar)$
+depends([psi], [r,z])$
+declare([F], scalar)$
+depends([F], [psi])$
+
+/* Poloidal B field = grad(psi) X grad(phi) + F(psi) grad(phi) */
+/* Note our ephi is not normalized and we need a r^2 */
+B : cross(mvectdiff(psi,xpos), mvectdiff(phi,xpos)) + F*mvectdiff(phi,xpos)$
+
+/* Vector derivative of B: contains scalar and bivector parts (scalar part is zero as div(B) = 0) */
+DB : trigsimp( mvectdiff(B, xpos) )$
+/* Curl B can be computed from the bivector part */
+curlB : - grpart(DB,2) | %iv $
+
+/* Grad-Shafranov operator is ephi component of curl B */
+gradShaf : trigsimp( curlB | g[2] )$
+
+B_pc : trigsimp( [ B | gd[1], B | gd[2], B | gd[3] ] )$

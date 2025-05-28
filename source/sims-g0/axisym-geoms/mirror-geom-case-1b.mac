@@ -1,0 +1,76 @@
+/* sqrt(psi), phi, z */
+
+kill(all)$
+load("clifford")$
+load("cliffordan")$
+
+clifford(ee,3)$
+
+cross(a,b) := cliffsimpall( (a & b) | cinv(%iv) )$
+
+declare([r, z, phi], scalar)$
+declare([psi, eta], scalar)$
+depends([psi], [r,z])$
+depends([eta], z)$
+assume(r>0)$
+assume(diff(psi,r)>0)$
+assume(diff(eta,z)>0)$
+
+/* Cylindrical polar coordinates */
+xpos : r*cos(phi)*ee[1] + r*sin(phi)*ee[2] + z*ee[3]$
+
+/* Tangent vectors */
+g[1] : diff(xpos,r)$
+g[2] : diff(xpos,phi)$
+g[3] : diff(xpos,z)$
+
+Jac : cliffsimpall (g[1] & g[2] & g[3]) | cinv(%iv)$
+
+/* Dual vectors */
+gd[1] : cliffsimpall( 1/Jac*( g[2] & g[3] ) | cinv(%iv) )$
+gd[2] : cliffsimpall( -1/Jac*( g[1] & g[3] ) | cinv(%iv) )$
+gd[3] : cliffsimpall( 1/Jac*( g[1] & g[2] ) | cinv(%iv) )$
+
+/* Magnetic field: grad(psi) x e^phi */
+B : cross( mvectdiff(psi, xpos), gd[2] )$
+
+/* Field-line dual vectors */
+fgd[1] : mvectdiff(sqrt(psi), xpos)$
+fgd[2] : mvectdiff(phi, xpos)$
+fgd[3] : mvectdiff(z, xpos)$
+
+/* Volume enclosed by the field-line following duals */
+fJacd : cliffsimpall (fgd[1] & fgd[2] & fgd[3]) | cinv(%iv) $
+
+/* Field-line following tangents */
+fg[1] : cliffsimpall( 1/fJacd*( fgd[2] & fgd[3] ) | cinv(%iv) )$
+fg[2] : cliffsimpall( -1/fJacd*( fgd[1] & fgd[3] ) | cinv(%iv) )$
+fg[3] : cliffsimpall( 1/fJacd*( fgd[1] & fgd[2] ) | cinv(%iv) )$
+
+/* Field-line following Jacobian */
+fJac : cliffsimpall (fg[1] & fg[2] & fg[3]) | cinv(%iv)$
+
+g11 : trigsimp( cliffsimpall( fg[1] | fg[1] ) )$
+g12 : trigsimp( cliffsimpall( fg[1] | fg[2] ) )$
+g13 : trigsimp( cliffsimpall( fg[1] | fg[3] ) )$
+g22 : trigsimp( cliffsimpall( fg[2] | fg[2] ) )$
+g23 : trigsimp( cliffsimpall( fg[2] | fg[3] ) )$
+g33 : trigsimp( cliffsimpall( fg[3] | fg[3] ) )$
+
+lg : matrix(  [g11, g12, g13], [g12, g22, g23], [g13, g23, g33] )$
+
+/* Cross-check B*Jc/sqrt(g33) = C */
+C : 2*sqrt(psi)$
+isOne : fullratsimp( trigsimp( norm(B)*fJac/sqrt(g33)/C ) )$
+
+/** Compute components of tangents and duals on polar basis */
+fg1_pc : trigsimp( [ fg[1] | gd[1], fg[1] | gd[2], fg[1] | gd[3] ] )$
+fg2_pc : trigsimp( [ fg[2] | gd[1], fg[2] | gd[2], fg[2] | gd[3] ] )$
+fg3_pc : trigsimp( [ fg[3] | gd[1], fg[3] | gd[2], fg[3] | gd[3] ] )$
+
+fgd1_pc : trigsimp( [ fgd[1] | gd[1], fgd[1] | gd[2], fgd[1] | gd[3] ] )$
+fgd2_pc : trigsimp( [ fgd[2] | gd[1], fgd[2] | gd[2], fgd[2] | gd[3] ] )$
+fgd3_pc : trigsimp( [ fgd[3] | gd[1], fgd[3] | gd[2], fgd[3] | gd[3] ] )$
+
+/* Compue components of B */
+B_pc : trigsimp( [ B | gd[1], B | gd[2], B | gd[3] ] )$

@@ -23,7 +23,7 @@ main(int argc, char **argv)
     .name = "sim-1d-gauss",
 
     .ndim = 1,
-    .cells = { 32 },
+    .cells = { 64 },
     .lower = { -1.0 },
     .upper = { 1.0 },
 
@@ -31,7 +31,7 @@ main(int argc, char **argv)
     .tend = 2.0,
     .cfl_frac = 0.9,
 
-    .scheme = SCHEME_C2_C2,
+    .scheme = SCHEME_U3_C4,
 
     .init = init,
     .velocity = velocity,

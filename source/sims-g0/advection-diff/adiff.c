@@ -22,14 +22,17 @@ calc_flux_central_2o(double vel, double fll, double fl, double fr, double frr)
   return 0.5*vel*(fr+fl);
 }
 
-// Third-order central
+// Third-order upwind
 static inline double
 calc_flux_upwind_3o(double vel, double fll, double fl, double fr, double frr)
 {
-  // HOMEWORK: You need to implement this function!
-  fprintf(stderr, "**** HOMEWORK!!!\n"); // delete this line
-  assert(false); // delete this line
-  return 0.0;
+  double f = 0;
+  if (vel>0)
+    f = vel*(3*fr + 6*fl - fll)/8.0;
+  else
+    f = vel*(3*fl + 6*fr - frr)/8.0;
+  
+  return f;
 }
 
 // Different stencils for second-order derivatives: the cell-spacing
@@ -42,12 +45,10 @@ calc_diff2_central_2o(double dx, double fll, double fl, double f0, double fr, do
   return (fl-2.0*f0+fr)/(dx*dx);
 }
 
-// Third-order central
+// Fourth-order central
 static inline double
 calc_diff2_central_4o(double dx, double fll, double fl, double f0, double fr, double frr)
 {
-  // HOMEWORK: You need to implement this function!
-  assert(false); // delete this line
   return 0.0;
 }
 
@@ -270,7 +271,8 @@ write_data(struct gkyl_tm_trigger* iot, adiff_app* app, double t_curr)
   if (gkyl_tm_trigger_check_and_bump(iot, t_curr)) {
     int frame = iot->curr - 1;
     write_f(app, t_curr, frame);
-    write_vel(app, t_curr, frame);
+    if (frame == 0)
+      write_vel(app, t_curr, frame);
   }
 }
 

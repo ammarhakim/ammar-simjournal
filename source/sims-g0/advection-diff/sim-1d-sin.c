@@ -31,12 +31,12 @@ main(int argc, char **argv)
     .tend = 2.0,
     .cfl_frac = 0.9,
 
-    .scheme = SCHEME_C2_C2,
+    .scheme = SCHEME_U3_C4,
 
     .init = init,
     .velocity = velocity,
 
-    .alpha = 0.05
+    .alpha = 0.0
   };
 
   adiff_app *app = adiff_app_new(&app_inp);

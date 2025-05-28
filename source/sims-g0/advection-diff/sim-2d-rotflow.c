@@ -40,12 +40,12 @@ main(void)
     .tend = 2.0*GKYL_PI,
     .cfl_frac = 0.9,
 
-    .scheme = SCHEME_C2_C2,
+    .scheme = SCHEME_U3_C4,
 
     .init = init,
     .velocity = velocity,
 
-    .alpha = 1e-5,
+    .alpha = 0e-5,
   };
 
   adiff_app *app = adiff_app_new(&app_inp);
