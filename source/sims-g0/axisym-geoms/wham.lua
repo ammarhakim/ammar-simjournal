@@ -7,11 +7,11 @@ write_psi_cubic = true -- write the bicubic interpolation to psi
 -- field-line coordinate to use. one of:
 -- sqrt_psi_cart_z
 -- psi_cart_z
-field_line_coordinate = psi_cart_z
+field_line_coordinate = sqrt_psi_cart_z
 
 -- lower and upper extents of computational space grid
 -- (psi, phi, z)
 lower = { 2.0e-6, 0.0, -2.0 }
-upper = { 1.0e-3, 2*math.pi, 2.0 }
-cells = { 10, 16, 64 }
+upper = { 3.0e-3, 2*math.pi, 2.0 }
+cells = { 8, 16, 32 }
 

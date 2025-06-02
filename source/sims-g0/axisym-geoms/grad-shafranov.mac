@@ -22,8 +22,8 @@ gd[2] : mvectdiff(phi,xpos)$
 gd[3] : mvectdiff(z,xpos)$
 
 /* Flux function */
-declare([psi], scalar)$
-depends([psi], [r,z])$
+declare([psi, zeta], scalar)$
+depends([psi, zeta], [r,z])$
 declare([F], scalar)$
 depends([F], [psi])$
 
@@ -39,4 +39,8 @@ curlB : - grpart(DB,2) | %iv $
 /* Grad-Shafranov operator is ephi component of curl B */
 gradShaf : trigsimp( curlB | g[2] )$
 
-B_pc : trigsimp( [ B | gd[1], B | gd[2], B | gd[3] ] )$
+
+/** LHS of toroidal field expression */
+LHS : cliffsimpall(
+  cross(mvectdiff(psi,xpos), mvectdiff(zeta,xpos)) | g[2]
+  )$
