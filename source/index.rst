@@ -105,3 +105,4 @@ Simulation Journal
   je/je34/je34-linear-dispersion.rst
   je/je35/je35-iter-poisson.rst
   je/je36/je36-maxwell-cylindrical-waveguide.rst
+  je/je37/je37-variable-diffusion.rst

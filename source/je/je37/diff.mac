@@ -1,0 +1,134 @@
+kill(all)$
+load("modal-basis")$
+load("recovery")$
+load("basis-precalc/basisSer1x")$
+
+/* Numerical Inner product of functions f1 and f2 with weight w */
+numInnerProd(vars, w, f1, f2) := block([n, r],
+  n : length(vars),
+  if n = 0 then return (w*f1*f2),
+  r : quad_qags(w*f1*f2, vars[1], -1, 1),
+  return (r[1])
+  )$
+
+numCalcInnerProdList(vars, w, funcList, f) := fullratsimp(makelist(
+    numInnerProd(vars, w, funcList[i], f), i, 1, length(funcList))
+  )$
+
+/* Function to project function on DG basis */
+projectOnBasisGrid(func, bc, xL, xR, N) := block([dx],
+  dx : (xR-xL)/N,
+  return (
+    makelist(
+      numCalcInnerProdList([x],1,bc,
+        subst(z=x*dx/2+(xL+(i-1/2)*dx), apply(func, [z]))),
+      i, 1, N)
+    )
+  )$
+
+calcL2Norm(dgField, dx) := sqrt(dx*sum(sum(dgField[i][k]^2,k,1,length(dgField[1])), i, 1, length(dgField)))$
+
+polyOrder : 2$
+dgbas : if polyOrder < 1 then [1/sqrt(2)] else  basisC[polyOrder]$
+
+/* Values and derivatives of f on left edge */
+rpoly : calcRecov2CellGen("Ser", x, [x], polyOrder, dg(fL), dg(fC))$
+ve_fL : subst(x=0, rpoly)$
+ve_dfL : subst(x=0, diff(rpoly,x))$
+
+/* Values and derivatives of f on right edge */
+rpoly : calcRecov2CellGen("Ser", x, [x], polyOrder, dg(fC), dg(fR))$
+ve_fR : subst(x=0, rpoly)$
+ve_dfR : subst(x=0, diff(rpoly,x))$
+
+/* Value of D on left edge */
+rpoly : calcRecov2CellGen("Ser", x, [x], polyOrder, dg(DL), dg(DC))$
+ve_DL : subst(x=0, rpoly)$
+
+/* Value of D on right edge */
+rpoly : calcRecov2CellGen("Ser", x, [x], polyOrder, dg(DC), dg(DR))$
+ve_DR : subst(x=0, rpoly)$
+
+fCh : calcRecov1CellGen("Ser", x, [x], polyOrder, 1, dg(fL), dg(fC), dg(fR))$
+DCh : doExpand(DC, dgbas)$
+
+gh : block([gh, surfL, surfR, vol],
+  gh : [],
+  for i: 1 thru length(dgbas) do (
+    surfL : subst(x=-1,dgbas[i])*ve_DL*ve_dfL,
+    surfR : subst(x=1,dgbas[i])*ve_DR*ve_dfR,
+    vol : innerProd(varsC, 1, 1, diff(dgbas[i],x)*DCh*diff(fCh,x)),
+    gh : append(gh, [surfR-surfL-vol])
+    ),
+  return (gh)
+  )$
+
+calcRecoveryRHS(Dh, fh, stencil, xlower, xupper) := block(
+  [N, dx, rhs, slist],
+  N : length(Dh),
+  dx : (xR-xL)/N,
+  rhs : [],
+  for i : 2 thru NX-1 do (
+    slist : flatten(
+      makelist([DL[k]=Dh[i-1][k],DC[k]=Dh[i][k],DR[k]=Dh[i+1][k],
+        fL[k]=fh[i-1][k],fC[k]=fh[i][k],fR[k]=fh[i+1][k]],
+        k, 1, polyOrder+1)
+      ),
+    rhs : append(rhs,
+      [subst(slist, stencil)]
+      )
+    ),
+  return (rhs)
+  )$
+
+/* Test cases */
+
+xlower : -2$
+xupper : 2$
+xlen : xupper-xlower$
+
+D_t(x) := 1 + exp(-10*x^2)$
+f_t(x) := 2 + sin(2*%pi*(x-1/2)/xlen)$
+g_t(x) := diff(D_t(x)*diff(f_t(x),x),x)$
+
+NX : 12$
+dx : (xupper-xlower)/NX$
+
+Dh_t : float( projectOnBasisGrid(D_t, dgbas, xlower, xupper, NX) )$
+fh_t : float( projectOnBasisGrid(f_t, dgbas, xlower, xupper, NX) )$
+
+/* Compute recovery-based solution */
+rech_t : float( calcRecoveryRHS(Dh_t, fh_t, gh*4/dx^2, xlower, xupper) )$
+
+/* Project exact solution on basis */
+gh_t : float( projectOnBasisGrid(g_t, dgbas, xlower, xupper, NX) )$
+
+del_sol : block([del_sol],
+  del_sol : [],
+  for i: 1 thru NX-2 do (
+    del_sol : append(del_sol, [ gh_t[i+1]-rech_t[i] ])
+    ),
+  return (del_sol)
+  )$
+
+err : calcL2Norm(del_sol, dx)$
+
+createDrawCommands(fh, bc, xL, xR, precmd) := block([dcmd, dx, xjm, xjp, xmid, N],
+  N : length(fh),
+  dx : (xR-xL)/N,
+  return (
+    append(precmd,
+      makelist(
+        explicit(subst(x=(z-(xL+(i-1/2)*dx))/(dx/2), doExpand(fh[i],bc)), z, xL+(i-1)*dx, xL+i*dx),
+        i, 1, N
+        )
+      )
+    )
+  )$
+
+gh_args : createDrawCommands(gh_t, dgbas, xlower, xupper, [color=blue])$
+rech_args : createDrawCommands(rech_t, dgbas, xlower+dx, xupper-dx, [color=orange])$
+
+/* Make final plot */
+d2d_args : [grid=true, color=red,explicit(g_t(x),x,xlower,xupper)]$
+apply(wxdraw2d, append(d2d_args, gh_args, rech_args))$
