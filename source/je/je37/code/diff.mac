@@ -41,7 +41,7 @@ calcL2Norm(dgField, dx) := sqrt(dx*sum(sum(dgField[i][k]^2,k,1,length(dgField[1]
 
 calcErrOrder(err, err2) := float(log(err/err2)/log(2))$
 
-polyOrder : 1$
+polyOrder : 2$
 dgbas : if polyOrder < 1 then [1/sqrt(2)] else  basisC[polyOrder]$
 
 /* Values and derivatives of f on left edge */
@@ -118,7 +118,7 @@ D_t(x) := 1 + exp(-10*x^2)$
 f_t(x) := 2 + sin(2*%pi*(x-1/2)/xlen)$
 g_t(x) := diff(D_t(x)*diff(f_t(x),x),x)$
 
-NX : 12$
+NX : 8$
 dx : (xupper-xlower)/NX$
 
 Dh_t : float( numProjectOnBasisGrid(D_t, dgbas, xlower, xupper, NX) )$

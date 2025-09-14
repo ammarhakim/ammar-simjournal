@@ -137,3 +137,36 @@ the cell-averages.
   Recovery solution for :math:`p = 1`, :math:`N_x = 24` (black) for
   :math:`g(x)` (red) compared to the projection of the exact solution
   (sky blue).
+
+.. list-table:: Convergence for **Scheme 2** for :math:`g(x)`, :math:`p=2`
+  :header-rows: 1
+  :widths: 10,22,15,25,25
+	   
+  * - :math:`N_x`
+    - :math:`l_2`-error
+    - Order
+    - :math:`l_2`-error (:math:`\overline{g}`)
+    - Order (:math:`\overline{g}`)
+  * - 8
+    - :math:`1.127 \times 10^{-1}`
+    - 
+    - :math:`3.903 \times 10^{-2}`
+    - 
+  * - 16
+    - :math:`7.552 \times 10^{-3}`
+    - 3.90
+    - :math:`3.224 \times 10^{-3}`
+    - 3.52
+  * - 32
+    - :math:`1.783 \times 10^{-4}`
+    - 5.4
+    - :math:`6.189\times 10^{-5}`
+    - 5.7
+
+.. figure:: gcalc-p2-nx-10.svg
+  :width: 100%
+  :align: center
+
+  Recovery solution for :math:`p = 2`, :math:`N_x = 10` (black) for
+  :math:`g(x)` (red) compared to the projection of the exact solution
+  (sky blue).
