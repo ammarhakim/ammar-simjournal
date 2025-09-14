@@ -15,8 +15,8 @@ numCalcInnerProdList(vars, w, funcList, f) := fullratsimp(makelist(
     numInnerProd(vars, w, funcList[i], f), i, 1, length(funcList))
   )$
 
-/* Function to project function on DG basis */
-projectOnBasisGrid(func, bc, xL, xR, N) := block([dx],
+/* Function to numerically project function on DG basis */
+numProjectOnBasisGrid(func, bc, xL, xR, N) := block([dx],
   dx : (xR-xL)/N,
   return (
     makelist(
@@ -26,9 +26,22 @@ projectOnBasisGrid(func, bc, xL, xR, N) := block([dx],
     )
   )$
 
+/* Function to project function on DG basis */
+projectOnBasisGrid(func, bc, xL, xR, N) := block([dx],
+  dx : (xR-xL)/N,
+  return (
+    makelist(
+      calcInnerProdList([x],1,bc,
+        subst(z=x*dx/2+(xL+(i-1/2)*dx), apply(func, [z]))),
+      i, 1, N)
+    )
+  )$
+
 calcL2Norm(dgField, dx) := sqrt(dx*sum(sum(dgField[i][k]^2,k,1,length(dgField[1])), i, 1, length(dgField)))$
 
-polyOrder : 2$
+calcErrOrder(err, err2) := float(log(err/err2)/log(2))$
+
+polyOrder : 1$
 dgbas : if polyOrder < 1 then [1/sqrt(2)] else  basisC[polyOrder]$
 
 /* Values and derivatives of f on left edge */
@@ -68,16 +81,30 @@ calcRecoveryRHS(Dh, fh, stencil, xlower, xupper) := block(
   N : length(Dh),
   dx : (xR-xL)/N,
   rhs : [],
+  /* Handle i=1 case with periodic BCs */
+  i : 1,
+  slist : flatten(
+    makelist([DL[k]=Dh[NX][k],DC[k]=Dh[i][k],DR[k]=Dh[i+1][k],
+      fL[k]=fh[NX][k],fC[k]=fh[i][k],fR[k]=fh[i+1][k]],
+      k, 1, polyOrder+1)
+    ),
+  rhs : append(rhs, [subst(slist, stencil)]),
   for i : 2 thru NX-1 do (
     slist : flatten(
       makelist([DL[k]=Dh[i-1][k],DC[k]=Dh[i][k],DR[k]=Dh[i+1][k],
         fL[k]=fh[i-1][k],fC[k]=fh[i][k],fR[k]=fh[i+1][k]],
         k, 1, polyOrder+1)
       ),
-    rhs : append(rhs,
-      [subst(slist, stencil)]
-      )
+    rhs : append(rhs,[subst(slist, stencil)])
     ),
+  /* Handle i=NX case with periodic BCs */
+  i : NX,
+  slist : flatten(
+    makelist([DL[k]=Dh[i-1][k],DC[k]=Dh[i][k],DR[k]=Dh[1][k],
+      fL[k]=fh[i-1][k],fC[k]=fh[i][k],fR[k]=fh[1][k]],
+      k, 1, polyOrder+1)
+    ),    
+  rhs : append(rhs, [subst(slist, stencil)]),
   return (rhs)
   )$
 
@@ -94,24 +121,20 @@ g_t(x) := diff(D_t(x)*diff(f_t(x),x),x)$
 NX : 12$
 dx : (xupper-xlower)/NX$
 
-Dh_t : float( projectOnBasisGrid(D_t, dgbas, xlower, xupper, NX) )$
-fh_t : float( projectOnBasisGrid(f_t, dgbas, xlower, xupper, NX) )$
+Dh_t : float( numProjectOnBasisGrid(D_t, dgbas, xlower, xupper, NX) )$
+fh_t : float( numProjectOnBasisGrid(f_t, dgbas, xlower, xupper, NX) )$
 
 /* Compute recovery-based solution */
 rech_t : float( calcRecoveryRHS(Dh_t, fh_t, gh*4/dx^2, xlower, xupper) )$
 
 /* Project exact solution on basis */
-gh_t : float( projectOnBasisGrid(g_t, dgbas, xlower, xupper, NX) )$
+gh_t : float( numProjectOnBasisGrid(g_t, dgbas, xlower, xupper, NX) )$
 
-del_sol : block([del_sol],
-  del_sol : [],
-  for i: 1 thru NX-2 do (
-    del_sol : append(del_sol, [ gh_t[i+1]-rech_t[i] ])
-    ),
-  return (del_sol)
-  )$
-
+del_sol : gh_t-rech_t$
 err : calcL2Norm(del_sol, dx)$
+
+del_sol_0 : makelist([gh_t[i][1]-rech_t[i][1]], i, 1, NX)$
+err_0 : calcL2Norm(del_sol_0, dx)$
 
 createDrawCommands(fh, bc, xL, xR, precmd) := block([dcmd, dx, xjm, xjp, xmid, N],
   N : length(fh),
@@ -126,9 +149,10 @@ createDrawCommands(fh, bc, xL, xR, precmd) := block([dcmd, dx, xjm, xjp, xmid, N
     )
   )$
 
-gh_args : createDrawCommands(gh_t, dgbas, xlower, xupper, [color=blue])$
-rech_args : createDrawCommands(rech_t, dgbas, xlower+dx, xupper-dx, [color=orange])$
+gh_args : createDrawCommands(gh_t, dgbas, xlower, xupper, [color=skyblue])$
+rech_args : createDrawCommands(rech_t, dgbas, xlower, xupper, [color=black])$
 
 /* Make final plot */
-d2d_args : [grid=true, color=red,explicit(g_t(x),x,xlower,xupper)]$
-apply(wxdraw2d, append(d2d_args, gh_args, rech_args))$
+preamble : [ user_preamble="" ]$
+d2d_args : [grid=true, xlabel="X", ylabel="g", color=red,explicit(g_t(x),x,xlower,xupper)]$
+apply(wxdraw2d, append(preamble, d2d_args, gh_args, rech_args))$
