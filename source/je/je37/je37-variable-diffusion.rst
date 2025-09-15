@@ -136,7 +136,8 @@ the cell-averages.
 
   Recovery solution for :math:`p = 1`, :math:`N_x = 24` (black) for
   :math:`g(x)` (red) compared to the projection of the exact solution
-  (sky blue).
+  (sky blue). The exact and recovered solutions are visually
+  indistinguishable.
 
 .. list-table:: Convergence for **Scheme 2** for :math:`g(x)`, :math:`p=2`
   :header-rows: 1
@@ -169,4 +170,5 @@ the cell-averages.
 
   Recovery solution for :math:`p = 2`, :math:`N_x = 10` (black) for
   :math:`g(x)` (red) compared to the projection of the exact solution
-  (sky blue).
+  (sky blue). The exact and recovered solutions are visually
+  indistinguishable.

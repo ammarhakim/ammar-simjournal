@@ -118,7 +118,7 @@ D_t(x) := 1 + exp(-10*x^2)$
 f_t(x) := 2 + sin(2*%pi*(x-1/2)/xlen)$
 g_t(x) := diff(D_t(x)*diff(f_t(x),x),x)$
 
-NX : 8$
+NX : 10$
 dx : (xupper-xlower)/NX$
 
 Dh_t : float( numProjectOnBasisGrid(D_t, dgbas, xlower, xupper, NX) )$
@@ -149,10 +149,10 @@ createDrawCommands(fh, bc, xL, xR, precmd) := block([dcmd, dx, xjm, xjp, xmid, N
     )
   )$
 
-gh_args : createDrawCommands(gh_t, dgbas, xlower, xupper, [color=skyblue])$
-rech_args : createDrawCommands(rech_t, dgbas, xlower, xupper, [color=black])$
+gh_args : createDrawCommands(gh_t, dgbas, xlower, xupper, [color=skyblue,line_width=3])$
+rech_args : createDrawCommands(rech_t, dgbas, xlower, xupper, [color=black,line_width=3 ])$
 
 /* Make final plot */
-preamble : [ user_preamble="" ]$
-d2d_args : [grid=true, xlabel="X", ylabel="g", color=red,explicit(g_t(x),x,xlower,xupper)]$
+preamble : [ user_preamble="set xtics font \"Helvecta,20\"; set ytics font \"Helvecta,20\"; set xlabel font \"Helvecta,20\"; set ylabel font \"Helvecta,20\" " ]$
+d2d_args : [line_width=2, grid=true, xlabel="X", ylabel="g", color=red,explicit(g_t(x),x,xlower,xupper)]$
 apply(wxdraw2d, append(preamble, d2d_args, gh_args, rech_args))$
