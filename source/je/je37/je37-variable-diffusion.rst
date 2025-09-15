@@ -1,10 +1,17 @@
 :Author: Ammar Hakim
 :Date: September 8th 2025
-:Completed: 
+:Completed: September 14th 2025
 :Last Updated:
 
 JE37: Recovery schemes for variable coefficient diffusion
 =========================================================
+
+.. note::
+
+   The Maxima code used in this note is `linked here
+   <../../_static/files/je37/diff.mac>`_. It requires use of Gkeyll
+   CAS repo and Maxima setup as described `in the documentation
+   <https://gkeyll.readthedocs.io/en/latest/dev/onmaxima.html>`_.
 
 .. contents::
 
@@ -85,13 +92,13 @@ on the domain :math:`-2\le x \le 2`.
     - :math:`l_2`-error
     - Order
   * - 12
-    - 1.420246267211268
+    - 1.420
     - 
   * - 24
-    - 0.4913373585178838
+    - :math:`4.913\times 10^{-1}`
     - 1.53
   * - 48
-    - 0.140716487605041
+    - :math:`1.407\times 10^{-1}`
     - 1.80
 
 .. figure:: gcalc-p0-nx-48.svg
@@ -172,3 +179,12 @@ the cell-averages.
   :math:`g(x)` (red) compared to the projection of the exact solution
   (sky blue). The exact and recovered solutions are visually
   indistinguishable.
+
+Conclusion
+----------
+
+It seems that to get the proper approximation to :math:`g(x)` need to
+use Scheme 2. However, it is likely that both Scheme 1 and Scheme 2
+will work for solving parabolic equations, as the initial errors in
+slopes (and higher-moments) of the DG representation will be damped
+rapidly. However, this remains to be seen.
