@@ -61,13 +61,10 @@ appears in the volume term, leading to two possible schemes:
 Note that in each of the above cases we will use the DG representation
 of :math:`\kappa` for the volume term.
 
-Computing second derivatives
-----------------------------
-
 Before we use the schemes in solving the diffusion equation, we will
-see how each of the schemes behave for computing the diffusion term,
-that is, the projection of :math:`g` on basis functions. For the tests
-presented below we will choose
+see how each of the schemes behave for computing the second
+derivative, that is, the projection of :math:`g` on basis
+functions. For the tests presented below we will choose
 
 .. math::
 
@@ -76,13 +73,46 @@ presented below we will choose
 
 on the domain :math:`-2\le x \le 2`. 
 
-.. note::
+Computing second derivatives: Scheme 1
+--------------------------------------
 
-   In the follow tables and figures we show results using
-   Scheme 2. The Scheme 1, even in the constant diffusion case,
-   **gives incorrect slopes (and higher order terms)** for computing
-   :math:`g`. However, Scheme 1 predicts exactly the *same
-   cell-averaged* values for :math:`g` as Scheme 2.
+Scheme 1, as described above, uses the DG exapansion of :math:`f` in
+the volume term. It turns out that this scheme leads to an
+*inconsistent* discretization of the second-order derivative as the
+**mean slope is mispredicted**. See below for :math:`p=1` case. This
+figure shows that though the cell-centers are converging correctly,
+the slopes are incorrect, and, in fact, do not converge as the grid is
+refined.
+
+.. figure:: gcalc-s1-p1-nx-48.svg
+  :width: 100%
+  :align: center
+
+  Recovery solution for :math:`p = 1`, :math:`N_x = 48` (black) for
+  :math:`g(x)` (red) compared to the projection of the exact solution
+  (sky blue). This figure shows that Scheme 1 is *inconsistent*, that
+  is, the mean slope of :math:`g` is mispredicted.
+
+Higher-order DG recovery also shows the same behavior with Scheme 1:
+the **higher (that cell-averages) coefficients are all systematically
+mispredicted.** 
+
+Note that this misprediction is not a bug: one can compute the exact
+errors in the mean slopes and higher-moments by a careful analysis of
+the stencil for Scheme 1.
+
+.. figure:: gcalc-s1-p2-nx-10.svg
+  :width: 100%
+  :align: center
+
+  Recovery solution for :math:`p = 2`, :math:`N_x = 10` (black) for
+  :math:`g(x)` (red) compared to the projection of the exact solution
+  (sky blue). This figure shows that Scheme 1 is *inconsistent*, that
+  is, the mean slope and quadratic moment of :math:`g` are
+  mispredicted.
+
+Computing second derivatives: Scheme 2
+--------------------------------------
 
 .. list-table:: Convergence for **Scheme 2** for :math:`g(x)`, :math:`p=0`
   :header-rows: 1
