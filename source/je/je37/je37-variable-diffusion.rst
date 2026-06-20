@@ -15,8 +15,8 @@ JE37: Recovery schemes for variable coefficient diffusion
 
 .. contents::
 
-Introduction
-------------
+Computing Second Derivative
+---------------------------
 
 Consider computing the weak-form of the term
 
@@ -74,7 +74,7 @@ functions. For the tests presented below we will choose
 on the domain :math:`-2\le x \le 2`. 
 
 Computing second derivatives: Scheme 1
---------------------------------------
+++++++++++++++++++++++++++++++++++++++
 
 Scheme 1, as described above, uses the DG exapansion of :math:`f` in
 the volume term. It turns out that this scheme leads to an
@@ -99,7 +99,8 @@ mispredicted.**
 
 Note that this misprediction is not a bug: one can compute the exact
 errors in the mean slopes and higher-moments by a careful analysis of
-the stencil for Scheme 1.
+the stencil for Scheme 1. Further, this issue also persists even with
+a constant diffusion coefficient.
 
 .. figure:: gcalc-s1-p2-nx-10.svg
   :width: 100%
@@ -112,7 +113,7 @@ the stencil for Scheme 1.
   mispredicted.
 
 Computing second derivatives: Scheme 2
---------------------------------------
+++++++++++++++++++++++++++++++++++++++
 
 .. list-table:: Convergence for **Scheme 2** for :math:`g(x)`, :math:`p=0`
   :header-rows: 1

@@ -105,3 +105,4 @@ Simulation Journal
   je/je35/je35-iter-poisson.rst
   je/je36/je36-maxwell-cylindrical-waveguide.rst
   je/je37/je37-variable-diffusion.rst
+  je/je38/je38-advection-diffusion.rst
