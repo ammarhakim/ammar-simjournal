@@ -15,11 +15,12 @@ JE38: Finite-Difference Schemes for Advection-Diffusion
 
    The complete code for the solver is in two files. Each individual
    simulation driver below is in its own C file. To build the code and
-   the simulation driver download this zip file and type "make" in
-   your terminal. Of course, for this to work you must have Gkyell
-   installed. You do not need the complete Gkeyll source, just the
-   core library. For building Gkeyll please see instructions on the
-   `Github page <https://github.com/ammarhakim/gkeyll>`_.
+   the simulation driver download `this zip file
+   <../../_static/files/je38-code.zip>`_ and type "make" in your terminal. Of
+   course, for this to work you must have Gkyell installed. You do not
+   need the complete Gkeyll source, just the core library. For
+   building Gkeyll please see instructions on the `Github page
+   <https://github.com/ammarhakim/gkeyll>`_.
 
 .. contents::
 
@@ -140,7 +141,8 @@ In the first set of problems a Gaussian distribution
 where :math:`\sigma = 0.05` is advected on a domain :math:`x \in
 [-1/2, 1/2]` with advection speed :math:`u_x = 1.0` to time :math:`T =
 1.0`. The diffusion coefficient is set to zero. Results with two
-schemes are shown below: central difference and upwind. 
+schemes are shown below: central difference and upwind. The simulation
+is implemented in the "cs-1d-guassian-advection.c" file.
 
 In the central difference scheme one sees significant dispersion
 errors, though the :math:`L_2` error is conserved. (The :math:`L_2`
@@ -177,3 +179,89 @@ now decay due to the numerical diffusion from the upwinding.
   errors are much smaller as compared to the central scheme, but still
   present. This indicates some form of limiters are required to reduce
   these errors further.
+
+Rigid-body rotating flow
+------------------------
+
+In this test a rigid body rotating flow is initialized by selecting
+the flow velocity :math:`(u_x,v_x) = (-y+1/2, x-1/2)` which represents
+a counter-clockwise rigid body rotation about
+:math:`(x_c,y_c)=(1/2,1/2)` with period :math:`2\pi`. Hence,
+structures in :math:`\chi` will perform a circular motion about
+:math:`(x_c,y_c)`, returning to their original position at
+:math:`t=2\pi`. See :doc:`JE 12 <../je12/je12-poisson-bracket>` for
+the same problem but with the DG scheme. The simulation is implemented
+in the "cs-2d-rotflow.c" file.
+
+Two simulations were performed: one with central scheme and the other
+with upwinding. The diffusion was set to zero. The results are shown
+below. The central scheme shows more dispersion and phase errors than
+the upwind scheme. However, it is clear that neither schemes are not
+competitive with the DG scheme presented in :doc:`JE 12
+<../je12/je12-poisson-bracket>`. In general, this reflects the fact
+that the sub-cell resolution in DG allows greater control in designing
+schemes, allowing both greater accuracy and more efficiency, with much
+reduced dispersion.
+
+.. figure:: csd-2d-rotflow-2d.png
+  :width: 100%
+  :align: center
+
+  Advection of a blob in a rigid-body rotating flow. The blob has
+  returned to its original position. Note the faint blue in the
+  central difference result that shows dispersion errors. Such errors
+  are also present in the upwind scheme, but are much smaller. See
+  lineout plots below.
+
+.. figure:: csd-2d-rotflow-2d-lineout.png
+  :width: 100%
+  :align: center
+
+  Advection of a blob in a rigid-body rotating flow. Shown is a
+  lineout at :math:`x=0.25`. The blob has returned to its original
+  position. The central difference scheme shows latger dispersion and
+  phase errorss than the upwind scheme.
+
+Charged Particles in a :math:`\cos(x)` Potential
+------------------------------------------------
+
+As we allow arbitrary flow velocity we can simulate the flow of
+particles in phase-space by initializing the advection velocity as the
+phase-space velocity of Vlasov equation. If we denote the domain by
+:math:`(x,v)` we set :math:`u_x = v` and :math:`u_v = -\partial \phi /
+\partial x`, where :math:`\phi(x)` is the electrostatic poential. For
+this test we set :math:`\phi(x) = \cos(x)` and evolve a thermal
+distribution on a domain :math:`[0, 2\pi]\times [-6, 6]` on a
+:math:`64\times 64` grid, with the thermal velocity set to
+:math:`1.0`. We use an upwind scheme with diffusion set to zero. The
+simulation is implemented in "cs-vlasov-cos-pot.c" file.
+
+.. figure:: cs-vlasov-cos-pot-u3.png
+  :width: 100%
+  :align: center
+
+  Charged particles advecting in a cos potential :math:`\phi(x) =
+  \cos(x)`. Shown is the phase-space evolution of the distribution
+  function :math:`f(x,v,t)` at various times. Seen are the 
+  particles trapped in the potential well, with a passing particle
+  population that are too energetic to be trapped.
+
+Conclusions
+-----------
+
+We have shown how a simple advection-diffusion solver that allows
+setting arbitrary advection velocities can be used for many
+interesting problems, including advecting charged particles in a given
+electrostatic field. As advection-diffusion equations form the basis
+for a large class of kinetic equations that arise in plasma physics
+and other fields, extensions of these finite-difference schemes can be
+used to solve much more complex systems. 
+
+In general, however, we should mention that the disconinous-Galerkin
+schemes are far superior to the finite-difference algorithms presented
+in this note. DG schemes have natural sub-cell resolution that allows
+greater control on the scheme, and can give higher quality results on
+a relatively coarse mesh. Further, DG schemes are ideal for GPUs as
+the are FLOP-heavy, requiring only data in three cells, instead of a
+wide stencil as in high-order finite-difference methods presented
+above.

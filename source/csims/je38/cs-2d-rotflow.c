@@ -1,5 +1,6 @@
 #include <adiff.h>
 #include <math.h>
+#include <string.h>
 
 #include <gkyl_const.h>
 
@@ -25,33 +26,65 @@ init(double t, const double *xn, double *fout, void *ctx)
   fout[0] = 0.25*(1 + cos(GKYL_PI*r));
 }
 
-int
-main(void)
+struct sim_params {
+  const char *name;
+  int nx;
+  double cfl_frac;
+  double ux;
+  double alpha;
+  enum adiff_advection_scheme a_scheme;
+  enum adiff_diffusion_scheme d_scheme;
+};
+
+static void
+run_sim(struct sim_params params)
 {
   struct adiff_app_inp app_inp = {
-    .name = "cs-2d-rotflow",
-
     .ndim = 2,
     .cells = { 64, 64 },
     .lower = { 0.0, 0.0 },
     .upper = { 1.0, 1.0 },
 
-    .nframe = 16,
-    .tend = 4.0*GKYL_PI,
+    .nframe = 1,
+    .tend = 2.0*GKYL_PI,
     .cfl_frac = 0.9,
 
-    .a_scheme = ADV_SCHEME_U3,
-    .d_scheme = DIF_SCHEME_C2,
+    .a_scheme = params.a_scheme,
+    .d_scheme = params.d_scheme,
 
     .init = init,
     .velocity = velocity,
 
-    .alpha = 0e-5,
+    .alpha = params.alpha
   };
+  strcpy(app_inp.name, params.name);
 
   adiff_app *app = adiff_app_new(&app_inp);
   adiff_app_run(app);
   adiff_app_release(app);
+}
+
+int
+main(void)
+{
+
+  // upwind scheme scans
+  run_sim( (struct sim_params) {
+      .name = "cs-2d-rotflow-c",
+      .alpha = 0.0,
+      .a_scheme = ADV_SCHEME_C2,
+      .d_scheme = DIF_SCHEME_C2,
+    }
+  );
+
+  // upwind scheme scans
+  run_sim( (struct sim_params) {
+      .name = "cs-2d-rotflow-u",
+      .alpha = 0.0,
+      .a_scheme = ADV_SCHEME_U3,
+      .d_scheme = DIF_SCHEME_C2,
+    }
+  );  
   
   return 0;
 }

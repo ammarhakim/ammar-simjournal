@@ -139,7 +139,7 @@ BINS := $(SRCS:.c=)
 .PHONY: all clean help moments moments-unit moments-regression
 
 # Default target: build all if no FILE specified, otherwise build specific file
-all: cs-1d-guassian-advection cs-2d-rotflow
+all: cs-1d-guassian-advection cs-2d-rotflow cs-vlasov-cos-pot
 
 # Help target to show usage
 help:
@@ -150,6 +150,9 @@ help:
 	@echo "  make help      - Show this help message"
 
 cs-2d-rotflow: cs-2d-rotflow.c adiff.c 
+	${CC} ${CFLAGS} -I. ${INCLUDES} adiff.c $< -o $@ -L${G0_LIB_DIR} ${G0_RPATH} ${G0_LIBS} ${LIB_DIRS} ${EXT_LIBS}
+
+cs-vlasov-cos-pot: cs-vlasov-cos-pot.c adiff.c 
 	${CC} ${CFLAGS} -I. ${INCLUDES} adiff.c $< -o $@ -L${G0_LIB_DIR} ${G0_RPATH} ${G0_LIBS} ${LIB_DIRS} ${EXT_LIBS}
 
 cs-1d-guassian-advection: cs-1d-guassian-advection.c adiff.c 
