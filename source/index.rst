@@ -25,6 +25,10 @@ SimJournal: Ammar Hakim's Simulation Journal
    there are, literally, hundreds of them linked to my simulation
    journal.
 
+   The journal entries starting from JE38 require you to install
+   Gkeyll. The code in those notes use Gkeyll as a library to
+   construct simulations and solvers.
+
 Below are a set of useful (to me) technical notes and a list of
 journal entries, documenting various problems that have I used to
 benchmark features in Gkeyll. I can not guarantee that everything here

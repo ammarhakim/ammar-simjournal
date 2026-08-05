@@ -7,6 +7,7 @@
 // parameters for source initialization
 struct src_params {
   double xc, yc, sig;
+  bool add_sink;
 };
 
 // parameters for diffusion tensor initialization
@@ -65,7 +66,12 @@ src_func(double t, const double * restrict xn, double* restrict fout, void *ctx)
   double sig = sp->sig;
   double x = xn[0], y = xn[1];
   double r2 = SQ(x-xc) + SQ(y-yc);
-  fout[0] = exp(-r2/(2.0*SQ(sig)));
+  double src = exp(-r2/(2.0*SQ(sig)));
+
+  double xc_s = sp->xc+0.5, yc_s = sp->yc;
+  double r2_s = SQ(x-xc_s) + SQ(y-yc_s);  
+  double sink = sp->add_sink ? -exp(-r2_s/(2.0*SQ(sig))) : 0.0;
+  fout[0] = src + sink;
 }
 
 void
@@ -195,13 +201,23 @@ ad_app_new(struct app_inp inp)
 void
 ad_app_init(struct ad_app *ad, struct src_params sp, struct D_param dp)
 {
+  struct gkyl_msgpack_map_elem elist[] = {
+    { .key = "time", .elem_type = GKYL_MP_DOUBLE, .dval = 0.0 },
+    { .key = "frame", .elem_type = GKYL_MP_INT, .ival = 0 },
+  };
+  
+
+  struct gkyl_msgpack_data *meta = gkyl_msgpack_create(2, elist); 
+  
   // initialize source
   init_source(ad->nc_grid, ad->nc_range, ad->S, sp);
-  gkyl_grid_sub_array_write(&ad->nc_grid, &ad->nc_range, ad->S, "source.gkyl");
+  gkyl_grid_sub_array_write(&ad->nc_grid, &ad->nc_range, meta, ad->S, "source.gkyl");
 
   // initialize diffusion tensor
   init_diff(ad->grid, ad->range, ad->Dij, dp);
-  gkyl_grid_sub_array_write(&ad->grid, &ad->range, ad->Dij, "Dij.gkyl");
+  gkyl_grid_sub_array_write(&ad->grid, &ad->range, meta, ad->Dij, "Dij.gkyl");
+
+  gkyl_msgpack_data_release(meta);  
 }
 
 // compute heat-flux vector from temperature (and diffusion tensor)
@@ -295,13 +311,22 @@ ad_app_calc_rhs(struct ad_app *ad)
 }
 
 void
-ad_app_write(struct ad_app *ad, int frame)
+ad_app_write(struct ad_app *ad, double tm, int frame)
 {
+  struct gkyl_msgpack_map_elem elist[] = {
+    { .key = "time", .elem_type = GKYL_MP_DOUBLE, .dval = tm },
+    { .key = "frame", .elem_type = GKYL_MP_INT, .ival = frame },
+  };
+
+  struct gkyl_msgpack_data *meta = gkyl_msgpack_create(2, elist);
+  
   const char *fmt = "T_%d.gkyl";
   int sz = gkyl_calc_strlen(fmt, frame);
   char fileNm[sz+1]; // ensures no buffer overflow
   snprintf(fileNm, sizeof fileNm, fmt, frame);  
-  gkyl_grid_sub_array_write(&ad->nc_grid, &ad->nc_range, ad->T, fileNm);
+  gkyl_grid_sub_array_write(&ad->nc_grid, &ad->nc_range, meta, ad->T, fileNm);
+
+  gkyl_msgpack_data_release(meta);    
 }
 
 // free memory for app
@@ -327,19 +352,20 @@ get_app_inp(int argc, char *argv[])
     .upper = { 1.0, 1.0 },
 
     .nframe = 20,
-    .tend = 2.0,
+    .tend = 1.0,
 
     .src_inp = {
       .xc = 0.25,
       .yc = 0.5,
       .sig = 0.05,
+      .add_sink = false
     },
 
     .D_inp = {
-      .bx = op_bx,
-      .by = op_by,
+      .bx = xp_bx,
+      .by = xp_by,
       .kpar = 1.0,
-      .kperp = 1.0e-9
+      .kperp = 0.0
     }
   };
 }
@@ -363,7 +389,7 @@ main(int argc, char *argv[])
   struct gkyl_tm_trigger io_trig = { .dt = inp.tend/inp.nframe };
 
   if (gkyl_tm_trigger_check_and_bump(&io_trig, 0.0))
-    ad_app_write(ad, io_trig.curr-1);  
+    ad_app_write(ad, 0.0, io_trig.curr-1);  
 
   // main loop
   double tcurr = 0.0, tend = inp.tend;
@@ -373,27 +399,16 @@ main(int argc, char *argv[])
 
     // compute rhs and do first-order Euler update
     ad_app_calc_heat_flux(ad); ad_app_calc_rhs(ad);
-    gkyl_array_accumulate_range(ad->T, dt, ad->rhs, ad->nc_range);
+    gkyl_array_accumulate_range(ad->T, dt, ad->rhs, &ad->nc_range);
 
     tcurr += dt; step += 1;
 
     // write data if needed
     if (gkyl_tm_trigger_check_and_bump(&io_trig, tcurr))
-      ad_app_write(ad, io_trig.curr-1);
+      ad_app_write(ad, tcurr, io_trig.curr-1);
   }
 
   ad_app_release(ad);
 
   return 0;
 }
-
-
-/*
-  // for testing initialize T
-  gkyl_array_copy(ad->T, ad->S);
-  ad_app_write(ad, 0);
-  
-  ad_app_calc_heat_flux(ad);
-  gkyl_grid_sub_array_write(&ad->grid, &ad->range, ad->Q, "Q.gkyl");
-
-*/
