@@ -27,6 +27,8 @@ dt_p : cdirdiff(p, u, xpos) + gamma*p*div(u)$
 /* Split into components and put into a list */
 dt_All : [dt_rho, dt_u | ee[1], dt_u | ee[2], dt_u | ee[3], dt_p ]$
 
+meqn : length(dt_All)$
+
 let(sqrt(p*rho*gamma)/rho, cs)$
 let(p*gamma/rho, cs^2)$
 let(u|u, u2)$
@@ -35,7 +37,7 @@ let(u|u, u2)$
 phi_v : [rho, rho*(u|ee[1]), rho*(u|ee[2]), rho*(u|ee[3]), 1/2*rho*(u | u) + p/(gamma-1)]$
 primvec : [rho, u|ee[1], u|ee[2], u|ee[3], p ]$
 phi_prime_ij [i,j] := diff(phi_v[i], primvec[j])$
-phi_prime : genmatrix(phi_prime_ij, 5, 5)$
+phi_prime : genmatrix(phi_prime_ij, meqn, meqn)$
 
 /** Compute inverse transform */
 phi_prime_inv : fullratsimp(invert(phi_prime))$
@@ -85,9 +87,9 @@ F2[d] := [ flux_rho | ee[d], mom(ee[1],ee[d]), mom(ee[2],ee[d]), mom(ee[3],ee[d]
 Fdir(g) := [ flux_rho | g, mom(ee[1],g), mom(ee[2],g), mom(ee[3],g), flux_E | g ]$
 
 /** Code generation is below */
-qv : transpose(makelist(q[i-1], i, 1, 5))$
-vv1 : transpose(makelist(v1[i-1], i, 1, 5))$
-vin1 : transpose(makelist(vin[i-1], i, 1, 5))$
+qv : transpose(makelist(q[i-1], i, 1, meqn))$
+vv1 : transpose(makelist(v1[i-1], i, 1, meqn))$
+vin1 : transpose(makelist(vin[i-1], i, 1, meqn))$
 slist : [uu[1] = ux, uu[2] = uy, uu[3] = uz, gamma = gas_gamma]$
 
 let(ux^2, euler_sq(ux))$
@@ -154,7 +156,7 @@ printf(fh, "  double uy = q[2]/q[0]; ~%")$
 printf(fh, "  double uz = q[3]/q[0]; ~%")$
 printf(fh, "  double u2 = ux*ux + uy*uy + uz*uz; ~%")$
 out : subst(slist, phi_prime . vin1)$
-for i : 1 thru 5 do (
+for i : 1 thru meqn do (
   printf(fh, "  vout[~a] = ~a; ~%", i-1, float(out[i][1]))
   )$
 
@@ -172,7 +174,7 @@ printf(fh, "  double uy = q[2]/q[0]; ~%")$
 printf(fh, "  double uz = q[3]/q[0]; ~%")$
 printf(fh, "  double u2 = ux*ux + uy*uy + uz*uz; ~%")$
 out : factor( subst(slist, phi_prime_inv . vin1) )$
-for i : 1 thru 5 do (
+for i : 1 thru meqn do (
   printf(fh, "  vout[~a] = ~a; ~%", i-1, float(out[i][1]))
   )$
 
@@ -193,7 +195,7 @@ for d : 1 thru 3 do (
   printf(fh, "  double E = q[4]; ~%"),  
   printf(fh, "  double p = (gas_gamma-1)*(E-0.5*rho*u2); ~%"),
   out : letsimp(subst(slist, F[d])),
-  for i : 1 thru 5 do (
+  for i : 1 thru meqn do (
     printf(fh, "  fout[~a] = ~a; ~%", i-1, float(out[i]))
   ), 
   printf(fh, "} ~%"),
@@ -214,7 +216,7 @@ printf(fh, "  double E = q[4]; ~%")$
 printf(fh, "  double p = (gas_gamma-1)*(E-0.5*rho*u2); ~%")$
 vv : cvect(vec1)$
 out : letsimp(subst(append(slist, makelist(vec1[i]=vec[i-1],i,1,3)), Fdir(vv)))$
-for i : 1 thru 5 do (
+for i : 1 thru meqn do (
   printf(fh, "  fout[~a] = ~a; ~%", i-1, float(out[i]))
   )$ 
 printf(fh, "} ~%")$
@@ -238,7 +240,7 @@ for d : 1 thru 3 do (
   printf(fh, "  euler_mulby_phi_prime_inv(ctx, q, vin, v1); ~%"),
   res : calcev(d),
   out : letsimp(subst(slist, res[3] . vv1)),
-  for i : 1 thru 5 do (
+  for i : 1 thru meqn do (
     printf(fh, "  vout[~a] = ~a; ~%", i-1, float(out[i][1]))
   ),   
   printf(fh, "} ~%"),
@@ -262,7 +264,7 @@ for d : 1 thru 3 do (
   printf(fh, "  double v1[5]; ~%"),
   res : calcev(d),
   out : letsimp(subst(slist, res[2] . vin1)),
-  for i : 1 thru 5 do (
+  for i : 1 thru meqn do (
     printf(fh, "  v1[~a] = ~a; ~%", i-1, float(out[i][1]))
   ),
   printf(fh, "  euler_mulby_phi_prime(ctx, q, v1, vout); ~%"),
@@ -288,7 +290,7 @@ for d : 1 thru 3 do (
   printf(fh, "  double *vout; ~%"),  
   res : calcev(d),
   Rev : res[2],
-  for i : 1 thru 5 do (
+  for i : 1 thru meqn do (
     out : letsimp(subst(slist, w[i-1]*col(Rev,i) )),
     for j : 1 thru 5 do (
       printf(fh, "  v1[~a] = ~a; ~%", j-1, float(out[j][1]))
@@ -318,7 +320,7 @@ for d : 1 thru 3 do (
   printf(fh, "  double cs = sqrt(gas_gamma*p/rho); ~%"),  
   res : calcev(d),
   out : letsimp(subst(slist, res[1])),
-  for i : 1 thru 5 do (
+  for i : 1 thru meqn do (
     printf(fh, "  ev[~a] = ~a; ~%", i-1, out[i])
   ),
   printf(fh, "  return fabs(q[~a]/q[0]) + cs; ~%", d),
