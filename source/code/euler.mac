@@ -247,7 +247,7 @@ for d : 1 thru 3 do (
 
 /* Reconstruct with right eigenvectors */
 for d : 1 thru 3 do (
-  printf(fh, "static void ~%euler_recwith_right_ev_~a(void *ctx, const double *q, const double *vin, double *vout) ~%", d-1),
+  printf(fh, "static inline void ~%euler_recwith_right_ev_~a(void *ctx, const double *q, const double *vin, double *vout) ~%", d-1),
   printf(fh, "{ ~%"),
   printf(fh, "  struct euler_eqn *eqn = ctx; ~%"),
   printf(fh, "  double gas_gamma = eqn->gas_gamma; ~%"),
@@ -304,7 +304,7 @@ for d : 1 thru 3 do (
 
 /* Eigenvalues */
 for d : 1 thru 3 do (
-  printf(fh, "static double ~%euler_ev_~a(void *ctx, const double *q, double *ev) ~%", d-1),
+  printf(fh, "static inline double ~%euler_ev_~a(void *ctx, const double *q, double *ev) ~%", d-1),
   printf(fh, "{ ~%"),
   printf(fh, "  struct euler_eqn *eqn = ctx; ~%"),
   printf(fh, "  double gas_gamma = eqn->gas_gamma; ~%"),
