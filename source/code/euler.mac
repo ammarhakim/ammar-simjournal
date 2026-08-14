@@ -1,0 +1,370 @@
+kill(all)$
+/* This requires the Clifford algebra package in your Maxima load path */
+/* GitHUb: https://github.com/dprodanov/clifford */
+load("clifford")$
+load("cliffordan")$
+
+clifford(ee,3)$
+declare([x, y, z], scalar)$
+ct_coords : [x, y, z]$
+xpos : x*ee[1] + y*ee[2] + z*ee[3]$
+
+curl(A) := -grpart( mvectdiff(A,xpos), 2 ) | %iv$
+div(A) := grpart( mvectdiff(A,xpos), 0 )$
+cross(A,B) := -(A & B) | %iv$
+
+depends([uu], [x,y,z])$
+depends([p, rho], [x,y,z])$
+declare([gamma, p, rho], scalar)$
+
+u : cvect(uu)$
+
+/* Construct the Euler equations in quasilinear form */
+dt_rho : grpart(mvectdiff(rho*u, xpos), 0)$
+dt_u : cdirdiff(u, u, xpos) + 1/rho*mvectdiff(p,xpos)$
+dt_p : cdirdiff(p, u, xpos) + gamma*p*div(u)$
+
+/* Split into components and put into a list */
+dt_All : [dt_rho, dt_u | ee[1], dt_u | ee[2], dt_u | ee[3], dt_p ]$
+
+let(sqrt(p*rho*gamma)/rho, cs)$
+let(p*gamma/rho, cs^2)$
+let(u|u, u2)$
+
+/* Transform from primitive to conserved variables */
+phi_v : [rho, rho*(u|ee[1]), rho*(u|ee[2]), rho*(u|ee[3]), 1/2*rho*(u | u) + p/(gamma-1)]$
+primvec : [rho, u|ee[1], u|ee[2], u|ee[3], p ]$
+phi_prime_ij [i,j] := diff(phi_v[i], primvec[j])$
+phi_prime : genmatrix(phi_prime_ij, 5, 5)$
+
+/** Compute inverse transform */
+phi_prime_inv : fullratsimp(invert(phi_prime))$
+
+phi_prime : letsimp(phi_prime)$
+phi_prime_inv : letsimp( factor(phi_prime_inv) )$
+
+calcev(dir) := block([diff_list,v:ct_coords[dir], Atm, vals, vects, Evs, Rev, Rev_fj, Lev_fj],
+  
+  diff_list : [ diff(rho,v), diff(uu[1],v), diff(uu[2],v), diff(uu[3],v), diff(p,v) ],
+
+  Atm : coefmatrix(dt_All, diff_list),
+  [vals, vects] : eigenvectors(Atm),
+  
+  Evs : (Evs : [], for i from 1 thru length(vals[1])
+        do (for j from 1 thru vals[2][i]
+	  do (Evs : append(Evs, [vals[1][i]]))), Evs),
+
+  Rev : (Rev : matrix([]), for i from 1 thru length (vals[1]) 
+        do (for j from 1 thru vals[2][i] 
+          do ( (Rev : addcol(Rev, transpose(matrix(vects[i][j])))))), Rev),
+
+  Evs : letsimp( expand(Evs) ),
+  Rev : letsimp( Rev ),
+  Lev : invert(Rev),
+
+  return ([Evs, Rev, Lev])
+  )$
+
+res : calcev(1)$
+
+/** Right/left eigenvectors of flux Jacobian */
+Rev_fj : phi_prime . res[2]$
+Lev_fj : res[3] . phi_prime_inv$
+
+/* Fluxes for conserved variables */
+flux_rho : rho*u$
+flux_mom[i] := rho*(ee[i]|u)*u + p*ee[i]$
+flux_E : (E+p)*u$
+
+F[d] := [ flux_rho | ee[d], flux_mom[d] | ee[1], flux_mom[d] | ee[2], flux_mom[d] | ee[3], flux_E | ee[d] ]$
+
+/* Flux written as a rank-2 tensor (maps two vectors to a scalar) */
+mom(a, b) := rho*(a|u)*(b|u) + p*(a|b)$
+
+F2[d] := [ flux_rho | ee[d], mom(ee[1],ee[d]), mom(ee[2],ee[d]), mom(ee[3],ee[d]), flux_E | ee[d] ]$
+Fdir(g) := [ flux_rho | g, mom(ee[1],g), mom(ee[2],g), mom(ee[3],g), flux_E | g ]$
+
+/** Code generation is below */
+qv : transpose(makelist(q[i-1], i, 1, 5))$
+vv1 : transpose(makelist(v1[i-1], i, 1, 5))$
+vin1 : transpose(makelist(vin[i-1], i, 1, 5))$
+slist : [uu[1] = ux, uu[2] = uy, uu[3] = uz, gamma = gas_gamma]$
+
+let(ux^2, euler_sq(ux))$
+let(uy^2, euler_sq(uy))$
+let(uz^2, euler_sq(uz))$
+let(cs^2, euler_sq(cs))$
+
+fh : openw("~/max-out/eqn_euler.h")$
+printf(fh, "#pragma once ~%")$
+printf(fh, "// Auto-generated code. Do not edit by hand ~%")$
+printf(fh, "~%")$
+printf(fh, "#include <math.h>~%")$
+printf(fh, "~%")$
+
+printf(fh, "~%")$
+printf(fh, "static inline double euler_sq(double x) { return x*x; } ~%")$
+printf(fh, "~%")$
+
+printf(fh, "~%")$
+printf(fh, "struct euler_eqn { ~%")$
+printf(fh, "  double gas_gamma; ~%")$
+printf(fh, "}; ~%")$
+printf(fh, "~%")$
+
+/* Declare functions */
+printf(fh, "static void euler_mulby_phi_prime(void *ctx, const double *q, const double *vin, double *vout); ~%")$
+printf(fh, "static void euler_mulby_phi_prime_inv(void *ctx, const double *q, const double *vin, double *vout); ~%")$
+
+printf(fh, "static void euler_flux_0(void *ctx, const double *q, double *fout); ~%")$
+printf(fh, "static void euler_flux_1(void *ctx, const double *q, double *fout); ~%")$
+printf(fh, "static void euler_flux_2(void *ctx, const double *q, double *fout); ~%")$
+printf(fh, "static void euler_flux_dot_vec(void *ctx, const double *vec, const double *q, double *fout); ~%")$
+
+printf(fh, "static void euler_projon_left_ev_0(void *ctx, const double *q, const double *vin, double *vout); ~%")$
+printf(fh, "static void euler_projon_left_ev_1(void *ctx, const double *q, const double *vin, double *vout); ~%")$
+printf(fh, "static void euler_projon_left_ev_2(void *ctx, const double *q, const double *vin, double *vout); ~%")$
+
+printf(fh, "static void euler_recwith_right_ev_0(void *ctx, const double *q, const double *vin, double *vout); ~%")$
+printf(fh, "static void euler_recwith_right_ev_1(void *ctx, const double *q, const double *vin, double *vout); ~%")$
+printf(fh, "static void euler_recwith_right_ev_2(void *ctx, const double *q, const double *vin, double *vout); ~%")$
+
+printf(fh, "static void euler_rescale_right_ev_0(void *ctx, const double *q, const double *w, double *revout); ~%")$
+printf(fh, "static void euler_rescale_right_ev_1(void *ctx, const double *q, const double *w, double *revout); ~%")$
+printf(fh, "static void euler_rescale_right_ev_2(void *ctx, const double *q, const double *w, double *revout); ~%")$
+
+
+printf(fh, "static double euler_ev_0(void *ctx, const double *q, double *ev); ~%")$
+printf(fh, "static double euler_ev_1(void *ctx, const double *q, double *ev); ~%")$
+printf(fh, "static double euler_ev_2(void *ctx, const double *q, double *ev); ~%")$
+
+printf(fh, "static void euler_ravg(void *ctx, const double *ql, const double *qr, double *qavg); ~%")$
+
+
+printf(fh, "~%")$
+
+/* Define function for multiplying by phi_prime */
+printf(fh, "static inline void ~%euler_mulby_phi_prime(void *ctx, const double *q, const double *vin, double *vout) ~%")$
+printf(fh, "{ ~%")$
+printf(fh, "  struct euler_eqn *eqn = ctx; ~%")$
+printf(fh, "  double gas_gamma = eqn->gas_gamma; ~%")$
+printf(fh, "  double rho = q[0]; ~%")$
+printf(fh, "  double ux = q[1]/q[0]; ~%")$
+printf(fh, "  double uy = q[2]/q[0]; ~%")$
+printf(fh, "  double uz = q[3]/q[0]; ~%")$
+printf(fh, "  double u2 = ux*ux + uy*uy + uz*uz; ~%")$
+out : subst(slist, phi_prime . vin1)$
+for i : 1 thru 5 do (
+  printf(fh, "  vout[~a] = ~a; ~%", i-1, float(out[i][1]))
+  )$
+
+printf(fh, "} ~%")$
+printf(fh, "~%")$
+
+/* Define function for multiplying by phi_prime_inv */
+printf(fh, "static inline void ~%euler_mulby_phi_prime_inv(void *ctx, const double *q, const double *vin, double *vout) ~%")$
+printf(fh, "{ ~%")$
+printf(fh, "  struct euler_eqn *eqn = ctx; ~%")$
+printf(fh, "  double gas_gamma = eqn->gas_gamma; ~%")$
+printf(fh, "  double rho = q[0]; ~%")$
+printf(fh, "  double ux = q[1]/q[0]; ~%")$
+printf(fh, "  double uy = q[2]/q[0]; ~%")$
+printf(fh, "  double uz = q[3]/q[0]; ~%")$
+printf(fh, "  double u2 = ux*ux + uy*uy + uz*uz; ~%")$
+out : factor( subst(slist, phi_prime_inv . vin1) )$
+for i : 1 thru 5 do (
+  printf(fh, "  vout[~a] = ~a; ~%", i-1, float(out[i][1]))
+  )$
+
+printf(fh, "} ~%")$
+printf(fh, "~%")$
+
+/* Flux in x, y and z direction */
+for d : 1 thru 3 do (
+  printf(fh, "static inline void ~%euler_flux_~a(void *ctx, const double *q, double *fout) ~%", d-1),
+  printf(fh, "{ ~%"),
+  printf(fh, "  struct euler_eqn *eqn = ctx; ~%"),
+  printf(fh, "  double gas_gamma = eqn->gas_gamma; ~%"),
+  printf(fh, "  double rho = q[0]; ~%"),
+  printf(fh, "  double ux = q[1]/q[0]; ~%"),
+  printf(fh, "  double uy = q[2]/q[0]; ~%"),
+  printf(fh, "  double uz = q[3]/q[0]; ~%"),
+  printf(fh, "  double u2 = ux*ux + uy*uy + uz*uz; ~%"),
+  printf(fh, "  double E = q[4]; ~%"),  
+  printf(fh, "  double p = (gas_gamma-1)*(E-0.5*rho*u2); ~%"),
+  out : letsimp(subst(slist, F[d])),
+  for i : 1 thru 5 do (
+    printf(fh, "  fout[~a] = ~a; ~%", i-1, float(out[i]))
+  ), 
+  printf(fh, "} ~%"),
+  printf(fh, "~%")
+  )$
+
+/* Flux dotted with vector vec */
+printf(fh, "static inline void ~%euler_flux_dot_vec(void *ctx, const double *vec, const double *q, double *fout) ~%")$
+printf(fh, "{ ~%")$
+printf(fh, "  struct euler_eqn *eqn = ctx; ~%")$
+printf(fh, "  double gas_gamma = eqn->gas_gamma; ~%")$
+printf(fh, "  double rho = q[0]; ~%")$
+printf(fh, "  double ux = q[1]/q[0]; ~%")$
+printf(fh, "  double uy = q[2]/q[0]; ~%")$
+printf(fh, "  double uz = q[3]/q[0]; ~%")$
+printf(fh, "  double u2 = ux*ux + uy*uy + uz*uz; ~%")$
+printf(fh, "  double E = q[4]; ~%")$  
+printf(fh, "  double p = (gas_gamma-1)*(E-0.5*rho*u2); ~%")$
+vv : cvect(vec1)$
+out : letsimp(subst(append(slist, makelist(vec1[i]=vec[i-1],i,1,3)), Fdir(vv)))$
+for i : 1 thru 5 do (
+  printf(fh, "  fout[~a] = ~a; ~%", i-1, float(out[i]))
+  )$ 
+printf(fh, "} ~%")$
+printf(fh, "~%")$
+
+/* Project on left eigenvectors */
+for d : 1 thru 3 do (
+  printf(fh, "static void ~%euler_projon_left_ev_~a(void *ctx, const double *q, const double *vin, double *vout) ~%", d-1),
+  printf(fh, "{ ~%"),
+  printf(fh, "  struct euler_eqn *eqn = ctx; ~%"),
+  printf(fh, "  double gas_gamma = eqn->gas_gamma; ~%"),
+  printf(fh, "  double rho = q[0]; ~%"),
+  printf(fh, "  double ux = q[1]/q[0]; ~%"),
+  printf(fh, "  double uy = q[2]/q[0]; ~%"),
+  printf(fh, "  double uz = q[3]/q[0]; ~%"),
+  printf(fh, "  double u2 = ux*ux + uy*uy + uz*uz; ~%"),
+  printf(fh, "  double E = q[4]; ~%"),  
+  printf(fh, "  double p = (gas_gamma-1)*(E-0.5*rho*u2); ~%"),
+  printf(fh, "  double cs = sqrt(gas_gamma*p/rho); ~%"),  
+  printf(fh, "  double v1[5]; ~%"),
+  printf(fh, "  euler_mulby_phi_prime_inv(ctx, q, vin, v1); ~%"),
+  res : calcev(d),
+  out : letsimp(subst(slist, res[3] . vv1)),
+  for i : 1 thru 5 do (
+    printf(fh, "  vout[~a] = ~a; ~%", i-1, float(out[i][1]))
+  ),   
+  printf(fh, "} ~%"),
+  printf(fh, "~%")
+  )$
+
+/* Reconstruct with right eigenvectors */
+for d : 1 thru 3 do (
+  printf(fh, "static void ~%euler_recwith_right_ev_~a(void *ctx, const double *q, const double *vin, double *vout) ~%", d-1),
+  printf(fh, "{ ~%"),
+  printf(fh, "  struct euler_eqn *eqn = ctx; ~%"),
+  printf(fh, "  double gas_gamma = eqn->gas_gamma; ~%"),
+  printf(fh, "  double rho = q[0]; ~%"),
+  printf(fh, "  double ux = q[1]/q[0]; ~%"),
+  printf(fh, "  double uy = q[2]/q[0]; ~%"),
+  printf(fh, "  double uz = q[3]/q[0]; ~%"),
+  printf(fh, "  double u2 = ux*ux + uy*uy + uz*uz; ~%"),
+  printf(fh, "  double E = q[4]; ~%"),  
+  printf(fh, "  double p = (gas_gamma-1)*(E-0.5*rho*u2); ~%"),
+  printf(fh, "  double cs = sqrt(gas_gamma*p/rho); ~%"),  
+  printf(fh, "  double v1[5]; ~%"),
+  res : calcev(d),
+  out : letsimp(subst(slist, res[2] . vin1)),
+  for i : 1 thru 5 do (
+    printf(fh, "  v1[~a] = ~a; ~%", i-1, float(out[i][1]))
+  ),
+  printf(fh, "  euler_mulby_phi_prime(ctx, q, v1, vout); ~%"),
+  printf(fh, "} ~%"),
+  printf(fh, "~%")
+  )$
+
+/* Rescale right eigenvectors */
+for d : 1 thru 3 do (
+  printf(fh, "static void ~%euler_rescale_right_ev_~a(void *ctx, const double *q, const double *w, double *revout) ~%", d-1),
+  printf(fh, "{ ~%"),
+  printf(fh, "  struct euler_eqn *eqn = ctx; ~%"),
+  printf(fh, "  double gas_gamma = eqn->gas_gamma; ~%"),
+  printf(fh, "  double rho = q[0]; ~%"),
+  printf(fh, "  double ux = q[1]/q[0]; ~%"),
+  printf(fh, "  double uy = q[2]/q[0]; ~%"),
+  printf(fh, "  double uz = q[3]/q[0]; ~%"),
+  printf(fh, "  double u2 = ux*ux + uy*uy + uz*uz; ~%"),
+  printf(fh, "  double E = q[4]; ~%"),  
+  printf(fh, "  double p = (gas_gamma-1)*(E-0.5*rho*u2); ~%"),
+  printf(fh, "  double cs = sqrt(gas_gamma*p/rho); ~%"),  
+  printf(fh, "  double v1[5]; ~%"),
+  printf(fh, "  double *vout; ~%"),  
+  res : calcev(d),
+  Rev : res[2],
+  for i : 1 thru 5 do (
+    out : letsimp(subst(slist, w[i-1]*col(Rev,i) )),
+    for j : 1 thru 5 do (
+      printf(fh, "  v1[~a] = ~a; ~%", j-1, float(out[j][1]))
+      ),
+    printf(fh, "  vout = &revout[5*~a]; ~%", i-1),
+    printf(fh, "  euler_mulby_phi_prime(ctx, q, v1, vout); ~%"),
+    printf(fh, "~%")
+  ),
+
+  printf(fh, "} ~%"),
+  printf(fh, "~%")
+  )$
+
+/* Eigenvalues */
+for d : 1 thru 3 do (
+  printf(fh, "static double ~%euler_ev_~a(void *ctx, const double *q, double *ev) ~%", d-1),
+  printf(fh, "{ ~%"),
+  printf(fh, "  struct euler_eqn *eqn = ctx; ~%"),
+  printf(fh, "  double gas_gamma = eqn->gas_gamma; ~%"),
+  printf(fh, "  double rho = q[0]; ~%"),
+  printf(fh, "  double ux = q[1]/q[0]; ~%"),
+  printf(fh, "  double uy = q[2]/q[0]; ~%"),
+  printf(fh, "  double uz = q[3]/q[0]; ~%"),
+  printf(fh, "  double u2 = ux*ux + uy*uy + uz*uz; ~%"),
+  printf(fh, "  double E = q[4]; ~%"),  
+  printf(fh, "  double p = (gas_gamma-1)*(E-0.5*rho*u2); ~%"),
+  printf(fh, "  double cs = sqrt(gas_gamma*p/rho); ~%"),  
+  res : calcev(d),
+  out : letsimp(subst(slist, res[1])),
+  for i : 1 thru 5 do (
+    printf(fh, "  ev[~a] = ~a; ~%", i-1, out[i])
+  ),
+  printf(fh, "  return fabs(q[~a]/q[0]) + cs; ~%", d),
+  printf(fh, "} ~%"),
+  printf(fh, "~%")
+  )$
+
+/* Roe averages */
+printf(fh, "static inline void ~%euler_ravg(void *ctx, const double *ql, const double *qr, double *qavg) ~%")$
+printf(fh, "{ ~%")$
+printf(fh, "  struct euler_eqn *eqn = ctx; ~%")$
+printf(fh, "  double gas_gamma = eqn->gas_gamma; ~%")$
+
+printf(fh, "  double rhol = ql[0]; ~%")$
+printf(fh, "  double uxl = ql[1]/ql[0]; ~%")$
+printf(fh, "  double uyl = ql[2]/ql[0]; ~%")$
+printf(fh, "  double uzl = ql[3]/ql[0]; ~%")$
+printf(fh, "  double u2l = uxl*uxl + uyl*uyl + uzl*uzl; ~%")$
+printf(fh, "  double El = ql[4]; ~%")$
+printf(fh, "  double pl = (gas_gamma-1)*(El-0.5*rhol*u2l); ~%")$
+printf(fh, "  double hl = (El+pl)/rhol; ~%")$
+  
+printf(fh, "  double rhor = qr[0]; ~%")$
+printf(fh, "  double uxr = qr[1]/qr[0]; ~%")$
+printf(fh, "  double uyr = qr[2]/qr[0]; ~%")$
+printf(fh, "  double uzr = qr[3]/qr[0]; ~%")$
+printf(fh, "  double u2r = uxr*uxr + uyr*uyr + uzr*uzr; ~%")$
+printf(fh, "  double Er = qr[4]; ~%")$  
+printf(fh, "  double pr = (gas_gamma-1)*(Er-0.5*rhor*u2r); ~%")$
+printf(fh, "  double hr = (Er+pr)/rhor; ~%")$
+
+printf(fh, "  double rho = 0.5*(sqrt(rhol)+sqrt(rhor)); ~%")$
+printf(fh, "  double ux = (uxl*sqrt(rhol)+uxr*sqrt(rhor))/(sqrt(rhol)+sqrt(rhor)); ~%")$
+printf(fh, "  double uy = (uyl*sqrt(rhol)+uyr*sqrt(rhor))/(sqrt(rhol)+sqrt(rhor)); ~%")$
+printf(fh, "  double uz = (uzl*sqrt(rhol)+uzr*sqrt(rhor))/(sqrt(rhol)+sqrt(rhor)); ~%")$
+printf(fh, "  double h = (hl*sqrt(rhol)+hr*sqrt(rhor))/(sqrt(rhol)+sqrt(rhor)); ~%")$
+printf(fh, "  double u2 = ux*ux + uy*uy + uz*uz; ~%")$
+printf(fh, "  double p = (gas_gamma-1)/gas_gamma*(rho*h-0.5*rho*u2); ~%")$
+
+printf(fh, "  qavg[0] = rho; ~%")$
+printf(fh, "  qavg[1] = rho*ux; ~%")$
+printf(fh, "  qavg[2] = rho*uy; ~%")$
+printf(fh, "  qavg[3] = rho*uz; ~%")$
+printf(fh, "  qavg[4] = 0.5*rho*u2 + p/(gas_gamma-1); ~%")$
+
+printf(fh, "} ~%")$
+printf(fh, "~%")$
+
+close(fh)$
