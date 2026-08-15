@@ -1,0 +1,55 @@
+kill(all)$
+/* This requires the Clifford algebra package in your Maxima load path */
+/* GitHUb: https://github.com/dprodanov/clifford */
+load("clifford")$
+load("cliffordan")$
+
+clifford(ee,3)$
+declare([x, y, z], scalar)$
+ct_coords : [x, y, z]$
+xpos : x*ee[1] + y*ee[2] + z*ee[3]$
+
+curl(A) := -grpart( mvectdiff(A,xpos), 2 ) | %iv$
+div(A) := grpart( mvectdiff(A,xpos), 0 )$
+cross(A,B) := -(A & B) | %iv$
+
+depends([BB, EE, psi, phi], [t,x,y,z])$
+declare([gamma, chi, psi, phi], scalar)$
+
+B : cvect(BB)$
+E : cvect(EE)$
+
+F : cliffsimpall(phi + E + B . %iv + psi*%iv)$
+max_eqns : diff(F,t) + mvectdiff(F, xpos)$
+
+dt_E : -c^2*curl(B) + c^2*chi*mvectdiff(phi, xpos)$
+dt_B : curl(E) + gamma*mvectdiff(psi, xpos)$
+dt_phi : chi*div(E)$
+dt_psi : gamma*c^2*div(B)$
+
+/* Split into components and put into a list [E, B, phi, psi] */
+dt_All : [dt_E|ee[1], dt_E|ee[2], dt_E|ee[3], dt_B|ee[1], dt_B|ee[2], dt_B|ee[3], dt_phi, dt_psi]$
+
+meqn : length(dt_All)$
+
+calcev(dir) := block([diff_list,v:ct_coords[dir], Atm, vals, vects, Evs, Rev, Rev_fj, Lev_fj],
+
+  diff_list : [ diff(EE[1],v), diff(EE[2],v), diff(EE[3],v), diff(BB[1],v), diff(BB[2],v), diff(BB[3],v), diff(phi,v), diff(psi,v) ],
+
+  Atm : coefmatrix(dt_All, diff_list),
+  [vals, vects] : eigenvectors(Atm),
+  
+  Evs : (Evs : [], for i from 1 thru length(vals[1])
+        do (for j from 1 thru vals[2][i]
+	  do (Evs : append(Evs, [vals[1][i]]))), Evs),
+
+  Rev : (Rev : matrix([]), for i from 1 thru length (vals[1]) 
+        do (for j from 1 thru vals[2][i] 
+          do ( (Rev : addcol(Rev, transpose(matrix(vects[i][j])))))), Rev),
+
+  Evs : letsimp( expand(Evs) ),
+  Rev : letsimp( Rev ),
+  Lev : invert(Rev),
+
+  return ([Evs, Rev, Lev])
+  )$
