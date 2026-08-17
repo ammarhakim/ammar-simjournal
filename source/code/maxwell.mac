@@ -15,12 +15,14 @@ cross(A,B) := -(A & B) | %iv$
 
 depends([BB, EE, psi, phi], [t,x,y,z])$
 declare([gamma, chi, psi, phi], scalar)$
+declare([c], scalar)$
+
+assume(gamma>0)$
+assume(chi>0)$
+assume(c>0)$
 
 B : cvect(BB)$
 E : cvect(EE)$
-
-F : cliffsimpall(phi + E + B . %iv + psi*%iv)$
-max_eqns : diff(F,t) + mvectdiff(F, xpos)$
 
 dt_E : -c^2*curl(B) + c^2*chi*mvectdiff(phi, xpos)$
 dt_B : curl(E) + gamma*mvectdiff(psi, xpos)$
@@ -53,3 +55,226 @@ calcev(dir) := block([diff_list,v:ct_coords[dir], Atm, vals, vects, Evs, Rev, Re
 
   return ([Evs, Rev, Lev])
   )$
+
+calcadq(dir) := block([res, ev, rev, lev, apdq, amdq, dq1],
+  res : calcev(dir),
+  ev : res[1],
+  rev : res[2],
+  lev : res[3],
+  apdq : transpose(makelist(0, i, 1, meqn)),
+  amdq : transpose(makelist(0, i, 1, meqn)),
+  dq1 : transpose(makelist(dq[i-1], i, 1, meqn)),
+  for i from 1 thru meqn do (
+    apdq : apdq +  max(ev[i],0)*((col(rev,i).row(lev,i)) . dq1),
+    amdq : amdq +  min(ev[i],0)*((col(rev,i).row(lev,i)) . dq1)
+    ),
+  return ([apdq, amdq])
+  )$
+
+F(dir) := block([diff_list,v:ct_coords[dir], Atm, var_list],
+  diff_list : [ diff(EE[1],v), diff(EE[2],v), diff(EE[3],v), diff(BB[1],v), diff(BB[2],v), diff(BB[3],v), diff(phi,v), diff(psi,v) ],
+  var_list : transpose([ EE[1], EE[2], EE[3], BB[1], BB[2], BB[3], phi, psi ]),
+  Atm : coefmatrix(dt_All, diff_list),
+  return (Atm . var_list)
+  )$
+
+/** Code generation is below */
+qv : transpose(makelist(q[i-1], i, 1, meqn))$
+vv1 : transpose(makelist(v1[i-1], i, 1, meqn))$
+vin1 : transpose(makelist(vin[i-1], i, 1, meqn))$
+
+let(c^2, c2)$
+elist : makelist( EE[i] = q[i-1], i, 1, 3)$
+blist : makelist( BB[i] = q[3+i-1], i, 1, 3)$
+plist : [ phi = q[6], psi = q[7] ]$
+slist : append([ chi = efact, gamma = bfact ], elist, blist, plist)$
+
+fh : openw("~/max-out/eqn_maxwell.h")$
+printf(fh, "#pragma once ~%")$
+printf(fh, "// Auto-generated code. Do not edit by hand ~%")$
+printf(fh, "~%")$
+printf(fh, "#include <math.h>~%")$
+printf(fh, "~%")$
+
+printf(fh, "~%")$
+printf(fh, "static inline double maxwell_sq(double x) { return x*x; } ~%")$
+printf(fh, "~%")$
+
+printf(fh, "~%")$
+printf(fh, "struct maxwell_eqn { ~%")$
+printf(fh, "  double c, efact, bfact; ~%")$
+printf(fh, "}; ~%")$
+printf(fh, "~%")$
+
+/* Declare functions */
+
+printf(fh, "static void maxwell_flux_0(void *ctx, const double *q, double *fout); ~%")$
+printf(fh, "static void maxwell_flux_1(void *ctx, const double *q, double *fout); ~%")$
+printf(fh, "static void maxwell_flux_2(void *ctx, const double *q, double *fout); ~%")$
+printf(fh, "static void maxwell_flux_dot_vec(void *ctx, const double *vec, const double *q, double *fout); ~%")$
+
+printf(fh, "static void maxwell_projon_left_ev_0(void *ctx, const double *q, const double *vin, double *vout); ~%")$
+printf(fh, "static void maxwell_projon_left_ev_1(void *ctx, const double *q, const double *vin, double *vout); ~%")$
+printf(fh, "static void maxwell_projon_left_ev_2(void *ctx, const double *q, const double *vin, double *vout); ~%")$
+
+printf(fh, "static void maxwell_recwith_right_ev_0(void *ctx, const double *q, const double *vin, double *vout); ~%")$
+printf(fh, "static void maxwell_recwith_right_ev_1(void *ctx, const double *q, const double *vin, double *vout); ~%")$
+printf(fh, "static void maxwell_recwith_right_ev_2(void *ctx, const double *q, const double *vin, double *vout); ~%")$
+
+printf(fh, "static void maxwell_rescale_right_ev_0(void *ctx, const double *q, const double *w, double *revout); ~%")$
+printf(fh, "static void maxwell_rescale_right_ev_1(void *ctx, const double *q, const double *w, double *revout); ~%")$
+printf(fh, "static void maxwell_rescale_right_ev_2(void *ctx, const double *q, const double *w, double *revout); ~%")$
+
+
+printf(fh, "static double maxwell_ev_0(void *ctx, const double *q, double *ev); ~%")$
+printf(fh, "static double maxwell_ev_1(void *ctx, const double *q, double *ev); ~%")$
+printf(fh, "static double maxwell_ev_2(void *ctx, const double *q, double *ev); ~%")$
+
+printf(fh, "static void maxwell_ravg(void *ctx, const double *ql, const double *qr, double *qavg); ~%")$
+
+printf(fh, "static double maxwell_fluct_0(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq); ~%")$
+printf(fh, "static double maxwell_fluct_1(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq); ~%")$
+printf(fh, "static double maxwell_fluct_2(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq); ~%")$
+
+printf(fh, "~%")$
+
+/* Flux in x, y and z direction */
+for d : 1 thru 3 do (
+  printf(fh, "static inline void ~%maxwell_flux_~a(void *ctx, const double *q, double *fout) ~%", d-1),
+  printf(fh, "{ ~%"),
+  printf(fh, "  struct maxwell_eqn *eqn = ctx; ~%"),
+  printf(fh, "  double c = eqn->c; ~%"),  
+  printf(fh, "  double c2 = eqn->c*eqn->c; ~%"),
+  printf(fh, "  double efact = eqn->efact; ~%"),
+  printf(fh, "  double bfact = eqn->bfact; ~%"),  
+  out : letsimp(subst(slist, F(d))),
+  for i : 1 thru meqn do (
+    printf(fh, "  fout[~a] = ~a; ~%", i-1, float(out[i][1]))
+  ), 
+  printf(fh, "} ~%"),
+  printf(fh, "~%")
+  )$
+
+printf(fh, "~%")$
+
+/* Project on left eigenvectors */
+for d : 1 thru 3 do (
+  printf(fh, "static void ~%maxwell_projon_left_ev_~a(void *ctx, const double *q, const double *vin, double *vout) ~%", d-1),
+  printf(fh, "{ ~%"),
+  printf(fh, "  struct maxwell_eqn *eqn = ctx; ~%"),
+  printf(fh, "  double c = eqn->c; ~%"),  
+  printf(fh, "  double c2 = eqn->c*eqn->c; ~%"),
+  printf(fh, "  double efact = eqn->efact; ~%"),
+  printf(fh, "  double bfact = eqn->bfact; ~%"),  
+  res : calcev(d),
+  out : letsimp(subst(slist, res[3] . vin1)),
+  for i : 1 thru meqn do (
+    printf(fh, "  vout[~a] = ~a; ~%", i-1, float(out[i][1]))
+  ),   
+  printf(fh, "} ~%"),
+  printf(fh, "~%")
+  )$
+
+/* Reconstruct with right eigenvectors */
+for d : 1 thru 3 do (
+  printf(fh, "static inline void ~%maxwell_recwith_right_ev_~a(void *ctx, const double *q, const double *vin, double *vout) ~%", d-1),
+  printf(fh, "{ ~%"),
+  printf(fh, "  struct maxwell_eqn *eqn = ctx; ~%"),
+  printf(fh, "  double c = eqn->c; ~%"),  
+  printf(fh, "  double c2 = eqn->c*eqn->c; ~%"),
+  printf(fh, "  double efact = eqn->efact; ~%"),
+  printf(fh, "  double bfact = eqn->bfact; ~%"),  
+  res : calcev(d),
+  out : letsimp(subst(slist, res[2] . vin1)),
+  for i : 1 thru meqn do (
+    printf(fh, "  vout[~a] = ~a; ~%", i-1, float(out[i][1]))
+  ),
+  printf(fh, "} ~%"),
+  printf(fh, "~%")
+  )$
+
+/* Rescale right eigenvectors */
+for d : 1 thru 3 do (
+  printf(fh, "static void ~%maxwell_rescale_right_ev_~a(void *ctx, const double *q, const double *w, double *revout) ~%", d-1),
+  printf(fh, "{ ~%"),
+  printf(fh, "  struct maxwell_eqn *eqn = ctx; ~%"),
+  printf(fh, "  double c = eqn->c; ~%"),  
+  printf(fh, "  double c2 = eqn->c*eqn->c; ~%"),
+  printf(fh, "  double efact = eqn->efact; ~%"),
+  printf(fh, "  double bfact = eqn->bfact; ~%"),    
+  printf(fh, "  double v1[8]; ~%"),
+  printf(fh, "  double *vout; ~%"), 
+  res : calcev(d),
+  Rev : res[2],
+  for i : 1 thru meqn do (
+    printf(fh, "  vout = &revout[8*~a]; ~%", i-1),    
+    out : letsimp(subst(slist, w[i-1]*col(Rev,i) )),
+    for j : 1 thru meqn do (
+      printf(fh, "  vout[~a] = ~a; ~%", j-1, float(out[j][1]))
+      ),
+    printf(fh, "~%")
+  ),
+
+  printf(fh, "} ~%"),
+  printf(fh, "~%")
+  )$
+
+/* Eigenvalues */
+for d : 1 thru 3 do (
+  printf(fh, "static inline double ~%maxwell_ev_~a(void *ctx, const double *q, double *ev) ~%", d-1),
+  printf(fh, "{ ~%"),
+  printf(fh, "  struct maxwell_eqn *eqn = ctx; ~%"),
+  printf(fh, "  double c = eqn->c; ~%"),  
+  printf(fh, "  double c2 = eqn->c*eqn->c; ~%"),
+  printf(fh, "  double efact = eqn->efact; ~%"),
+  printf(fh, "  double bfact = eqn->bfact; ~%"),  
+  res : calcev(d),
+  out : letsimp(subst(slist, res[1])),
+  for i : 1 thru meqn do (
+    printf(fh, "  ev[~a] = ~a; ~%", i-1, out[i])
+  ),
+  printf(fh, "  return c; ~%", d),
+  printf(fh, "} ~%"),
+  printf(fh, "~%")
+  )$
+
+printf(fh, "~%")$
+
+/* Roe averages */
+printf(fh, "static inline void ~%maxwell_ravg(void *ctx, const double *ql, const double *qr, double *qavg) ~%")$
+printf(fh, "{ ~%")$
+for i : 1 thru meqn do (
+  printf(fh, "  qavg[~a] = 0.5*(ql[~a]+qr[~a]); ~%", i-1, i-1, i-1)
+)$
+printf(fh, "} ~%")$
+printf(fh, "~%")$
+
+/* Fluctuation */
+for d : 1 thru 3 do (
+  printf(fh, "static inline double ~%maxwell_fluct_~a(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq) ~%", d-1),
+  printf(fh, "{ ~%"),
+  printf(fh, "  struct maxwell_eqn *eqn = ctx; ~%"),
+  printf(fh, "  double c = eqn->c; ~%"),  
+  printf(fh, "  double c2 = eqn->c*eqn->c; ~%"),
+  printf(fh, "  double efact = eqn->efact; ~%"),
+  printf(fh, "  double bfact = eqn->bfact; ~%"),
+  printf(fh, "  double dq[8]; ~%"),  
+  for i : 1 thru meqn do (
+    printf(fh, "  dq[~a] = qr[~a]-ql[~a]; ~%", i-1, i-1, i-1)
+  ),  
+  res : calcadq(d),
+  out : letsimp(subst(slist, res[1])),
+  for i : 1 thru meqn do (
+    printf(fh, "  apdq[~a] = ~a; ~%", i-1, float(out[i][1]))
+  ),
+  out : letsimp(subst(slist, res[2])),
+  for i : 1 thru meqn do (
+    printf(fh, "  amdq[~a] = ~a; ~%", i-1, float(out[i][1]))
+  ),
+  printf(fh, "  return c; ~%", d),
+  printf(fh, "} ~%"),
+  printf(fh, "~%")
+  )$
+
+close(fh)$
+
