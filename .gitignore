@@ -31,3 +31,4 @@ source/csims/je38/cs-2d-rotflow
 /source/code/gen-harness/test_app
 /source/code/gen-harness/ctest_eqn_maxwell
 /source/code/gen-harness/ctest_eqn_burgers
+/source/code/gen-harness/ctest_eqn_isoeuler

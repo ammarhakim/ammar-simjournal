@@ -139,6 +139,9 @@ printf(fh, "static double isoeuler_ev_2(void *ctx, const double *q, double *ev);
 
 printf(fh, "static void isoeuler_ravg(void *ctx, const double *ql, const double *qr, double *qavg); ~%")$
 
+printf(fh, "static double isoeuler_roe_fluct_0(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq); ~%")$
+printf(fh, "static double isoeuler_roe_fluct_1(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq); ~%")$
+printf(fh, "static double isoeuler_roe_fluct_2(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq); ~%")$
 
 printf(fh, "~%")$
 
@@ -280,7 +283,7 @@ for d : 1 thru 3 do (
     for j : 1 thru meqn do (
       printf(fh, "  v1[~a] = ~a; ~%", j-1, float(out[j][1]))
       ),
-    printf(fh, "  vout = &revout[5*~a]; ~%", i-1),
+    printf(fh, "  vout = &revout[4*~a]; ~%", i-1),
     printf(fh, "  isoeuler_mulby_phi_prime(ctx, q, v1, vout); ~%"),
     printf(fh, "~%")
   ),
@@ -340,5 +343,41 @@ printf(fh, "  qavg[3] = rho*uz; ~%")$
 
 printf(fh, "} ~%")$
 printf(fh, "~%")$
+
+/* Fluctuation */
+for d : 1 thru 3 do (
+  printf(fh, "static inline double ~%isoeuler_roe_fluct_~a(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq) ~%", d-1),
+  printf(fh, "{ ~%"),
+  printf(fh, "  struct isoeuler_eqn *eqn = ctx; ~%"),
+  printf(fh, "  double dq[4]; ~%"),
+  printf(fh, "
+  for (int i=0; i<4; ++i) dq[i] = qr[i]-ql[i];
+
+  double qavg[4];
+  isoeuler_ravg(eqn, ql, qr, qavg);
+
+  double w[4];
+  isoeuler_projon_left_ev_~a(eqn, qavg, dq, w);
+  double wrev[4*4];
+  isoeuler_rescale_right_ev_~a(eqn, qavg, w, wrev);
+    
+  double ev[4];
+  isoeuler_ev_~a(eqn, qavg, ev);
+  double amax = 0.0;
+
+  for (int i=0; i<4; ++i) {
+    amdq[i] = apdq[i] = 0.0;
+      
+    for (int j=0; j<4; ++j){
+      apdq[i] += fmax(0.0, ev[j])*wrev[j*4+i];
+      amdq[i] += fmin(0.0, ev[j])*wrev[j*4+i];
+    }
+    amax = fmax(amax, fabs(ev[i]));
+  }
+    ", d-1, d-1, d-1),
+  printf(fh, "  return amax; ~%", d),
+  printf(fh, "} ~%"),
+  printf(fh, "~%")
+  )$
 
 close(fh)$
