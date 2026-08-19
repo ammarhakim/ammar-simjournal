@@ -552,29 +552,29 @@ euler_roe_fluct_0(void *ctx, const double *ql, const double *qr, double *apdq, d
   double gas_gamma = eqn->gas_gamma; 
   double dq[5]; 
 
-    for (int i=0; i<5; ++i) dq[i] = qr[i]-ql[i];
+  for (int i=0; i<5; ++i) dq[i] = qr[i]-ql[i];
 
-    double qavg[5];
-    euler_ravg(eqn, ql, qr, qavg);
+  double qavg[5];
+  euler_ravg(eqn, ql, qr, qavg);
 
-    double w[5];
-    euler_projon_left_ev_0(eqn, qavg, dq, w);
-    double wrev[5*5];
-    euler_rescale_right_ev_0(eqn, qavg, w, wrev);
+  double w[5];
+  euler_projon_left_ev_0(eqn, qavg, dq, w);
+  double wrev[5*5];
+  euler_rescale_right_ev_0(eqn, qavg, w, wrev);
     
-    double ev[5];
-    euler_ev_0(eqn, qavg, ev);
-    double amax = 0.0;
+  double ev[5];
+  euler_ev_0(eqn, qavg, ev);
+  double amax = 0.0;
 
-    for (int i=0; i<5; ++i) {
-      amdq[i] = apdq[i] = 0.0;
+  for (int i=0; i<5; ++i) {
+    amdq[i] = apdq[i] = 0.0;
       
-      for (int j=0; j<5; ++j){
-        apdq[i] += fmax(0.0, ev[j])*wrev[j*5+i];
-        amdq[i] += fmin(0.0, ev[j])*wrev[j*5+i];
-      }
-      amax = fmax(amax, ev[i]);
+    for (int j=0; j<5; ++j){
+      apdq[i] += fmax(0.0, ev[j])*wrev[j*5+i];
+      amdq[i] += fmin(0.0, ev[j])*wrev[j*5+i];
     }
+    amax = fmax(amax, fabs(ev[i]));
+  }
       return amax; 
 } 
 
@@ -585,29 +585,29 @@ euler_roe_fluct_1(void *ctx, const double *ql, const double *qr, double *apdq, d
   double gas_gamma = eqn->gas_gamma; 
   double dq[5]; 
 
-    for (int i=0; i<5; ++i) dq[i] = qr[i]-ql[i];
+  for (int i=0; i<5; ++i) dq[i] = qr[i]-ql[i];
 
-    double qavg[5];
-    euler_ravg(eqn, ql, qr, qavg);
+  double qavg[5];
+  euler_ravg(eqn, ql, qr, qavg);
 
-    double w[5];
-    euler_projon_left_ev_1(eqn, qavg, dq, w);
-    double wrev[5*5];
-    euler_rescale_right_ev_1(eqn, qavg, w, wrev);
+  double w[5];
+  euler_projon_left_ev_1(eqn, qavg, dq, w);
+  double wrev[5*5];
+  euler_rescale_right_ev_1(eqn, qavg, w, wrev);
     
-    double ev[5];
-    euler_ev_1(eqn, qavg, ev);
-    double amax = 0.0;
+  double ev[5];
+  euler_ev_1(eqn, qavg, ev);
+  double amax = 0.0;
 
-    for (int i=0; i<5; ++i) {
-      amdq[i] = apdq[i] = 0.0;
+  for (int i=0; i<5; ++i) {
+    amdq[i] = apdq[i] = 0.0;
       
-      for (int j=0; j<5; ++j){
-        apdq[i] += fmax(0.0, ev[j])*wrev[j*5+i];
-        amdq[i] += fmin(0.0, ev[j])*wrev[j*5+i];
-      }
-      amax = fmax(amax, ev[i]);
+    for (int j=0; j<5; ++j){
+      apdq[i] += fmax(0.0, ev[j])*wrev[j*5+i];
+      amdq[i] += fmin(0.0, ev[j])*wrev[j*5+i];
     }
+    amax = fmax(amax, fabs(ev[i]));
+  }
       return amax; 
 } 
 
@@ -618,29 +618,29 @@ euler_roe_fluct_2(void *ctx, const double *ql, const double *qr, double *apdq, d
   double gas_gamma = eqn->gas_gamma; 
   double dq[5]; 
 
-    for (int i=0; i<5; ++i) dq[i] = qr[i]-ql[i];
+  for (int i=0; i<5; ++i) dq[i] = qr[i]-ql[i];
 
-    double qavg[5];
-    euler_ravg(eqn, ql, qr, qavg);
+  double qavg[5];
+  euler_ravg(eqn, ql, qr, qavg);
 
-    double w[5];
-    euler_projon_left_ev_2(eqn, qavg, dq, w);
-    double wrev[5*5];
-    euler_rescale_right_ev_2(eqn, qavg, w, wrev);
+  double w[5];
+  euler_projon_left_ev_2(eqn, qavg, dq, w);
+  double wrev[5*5];
+  euler_rescale_right_ev_2(eqn, qavg, w, wrev);
     
-    double ev[5];
-    euler_ev_2(eqn, qavg, ev);
-    double amax = 0.0;
+  double ev[5];
+  euler_ev_2(eqn, qavg, ev);
+  double amax = 0.0;
 
-    for (int i=0; i<5; ++i) {
-      amdq[i] = apdq[i] = 0.0;
+  for (int i=0; i<5; ++i) {
+    amdq[i] = apdq[i] = 0.0;
       
-      for (int j=0; j<5; ++j){
-        apdq[i] += fmax(0.0, ev[j])*wrev[j*5+i];
-        amdq[i] += fmin(0.0, ev[j])*wrev[j*5+i];
-      }
-      amax = fmax(amax, ev[i]);
+    for (int j=0; j<5; ++j){
+      apdq[i] += fmax(0.0, ev[j])*wrev[j*5+i];
+      amdq[i] += fmin(0.0, ev[j])*wrev[j*5+i];
     }
+    amax = fmax(amax, fabs(ev[i]));
+  }
       return amax; 
 } 
 
