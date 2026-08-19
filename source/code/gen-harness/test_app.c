@@ -45,6 +45,21 @@ noop_recwith_right_ev_0(void *ctx, const double *q, const double *vin, double *v
   for (int i=0; i<5; ++i) vout[i] = vin[i];
 }
 
+struct eqn_sys
+eqn_euler_init(void *ctx)
+{
+  return (struct eqn_sys) {
+    .meqn = 5,
+    .mwave = 5,
+    .eqn_ctx = &ctx,
+    .flux = { euler_flux_0, euler_flux_1, euler_flux_2  },
+    .recwith_right_ev = { euler_recwith_right_ev_0, euler_recwith_right_ev_1, euler_recwith_right_ev_2 },
+    .rescale_right_ev = { euler_rescale_right_ev_0, euler_rescale_right_ev_1, euler_rescale_right_ev_2 },
+    .ev = { euler_ev_0, euler_ev_1, euler_ev_2 },
+    .fluct = { euler_roe_fluct_0, euler_roe_fluct_1, euler_roe_fluct_2 }
+  };
+}
+
 int
 main(void)
 {
@@ -52,16 +67,7 @@ main(void)
     .gas_gamma = 1.4    
   };
 
-  struct eqn_sys euler = {
-    .meqn = 5,
-    .mwave = 5,
-    .eqn_ctx = &ctx,
-
-    .flux = { euler_flux_0, euler_flux_1, euler_flux_2  },
-    .recwith_right_ev = { euler_recwith_right_ev_0, euler_recwith_right_ev_1, euler_recwith_right_ev_2 },
-    .rescale_right_ev = { euler_rescale_right_ev_0, euler_rescale_right_ev_1, euler_rescale_right_ev_2 },
-    .ev = { euler_ev_0, euler_ev_1, euler_ev_2 }
-  };
+  struct eqn_sys euler = eqn_euler_init(&ctx);
   
   struct hyper_app_inp inp = {
     .name = "euler_sod",

@@ -139,7 +139,7 @@ BINS := $(SRCS:.c=)
 .PHONY: all clean help moments moments-unit moments-regression
 
 # Default target: build all if no FILE specified, otherwise build specific file
-all: test_app ctest_euler_eqn
+all: test_app ctest_eqn_euler
 
 # Help target to show usage
 help:
@@ -152,8 +152,8 @@ help:
 test_app: test_app.c app.h app.c
 	${CC} ${CFLAGS} -I. ${INCLUDES} app.c $< -o $@ -L${G0_LIB_DIR} ${G0_RPATH} ${G0_LIBS} ${LIB_DIRS} ${EXT_LIBS}
 
-ctest_euler_eqn: ctest_eqn_euler.c eqn_euler.h
+ctest_eqn_euler: ctest_eqn_euler.c eqn_euler.h
 	${CC} ${CFLAGS} -I. ${INCLUDES} $< -o $@ -L${G0_LIB_DIR} ${G0_RPATH} ${G0_LIBS} ${LIB_DIRS} ${EXT_LIBS}
 
 clean:
-	rm -rf $(BINS) *.d wk
+	rm -rf test_app ctest_eqn_euler

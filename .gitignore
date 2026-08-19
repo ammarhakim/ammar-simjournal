@@ -27,3 +27,5 @@ source/sims-g0/kh-euler/code/kh-euler
 source/sims-g0/incomp-ns/code/lid-driven
 
 source/csims/je38/cs-2d-rotflow
+/source/code/gen-harness/ctest_eqn_euler
+/source/code/gen-harness/test_app

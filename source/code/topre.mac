@@ -1,0 +1,11 @@
+
+
+/** Some caveats: only works with single expressions. Subscripted vars need will not work as expected */
+topre(expr) := block([sube, rv],
+  if atom(expr) then return(string (expr)),
+  rv : sconcat("(", op(expr)),
+  for sube in args(expr) do (
+    rv : sconcat(rv, " ", topre(sube))
+    ),
+  return (sconcat(rv, ")"))
+  )$

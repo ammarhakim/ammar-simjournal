@@ -142,6 +142,9 @@ printf(fh, "static double euler_ev_2(void *ctx, const double *q, double *ev); ~%
 
 printf(fh, "static void euler_ravg(void *ctx, const double *ql, const double *qr, double *qavg); ~%")$
 
+printf(fh, "static double euler_roe_fluct_0(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq); ~%")$
+printf(fh, "static double euler_roe_fluct_1(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq); ~%")$
+printf(fh, "static double euler_roe_fluct_2(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq); ~%")$
 
 printf(fh, "~%")$
 
@@ -368,5 +371,42 @@ printf(fh, "  qavg[4] = 0.5*rho*u2 + p/(gas_gamma-1); ~%")$
 
 printf(fh, "} ~%")$
 printf(fh, "~%")$
+
+/* Fluctuation */
+for d : 1 thru 3 do (
+  printf(fh, "static inline double ~%euler_roe_fluct_~a(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq) ~%", d-1),
+  printf(fh, "{ ~%"),
+  printf(fh, "  struct euler_eqn *eqn = ctx; ~%"),
+  printf(fh, "  double gas_gamma = eqn->gas_gamma; ~%"),
+  printf(fh, "  double dq[5]; ~%"),
+  printf(fh, "
+    for (int i=0; i<5; ++i) dq[i] = qr[i]-ql[i];
+
+    double qavg[5];
+    euler_ravg(eqn, ql, qr, qavg);
+
+    double w[5];
+    euler_projon_left_ev_~a(eqn, qavg, dq, w);
+    double wrev[5*5];
+    euler_rescale_right_ev_~a(eqn, qavg, w, wrev);
+    
+    double ev[5];
+    euler_ev_~a(eqn, qavg, ev);
+    double amax = 0.0;
+
+    for (int i=0; i<5; ++i) {
+      amdq[i] = apdq[i] = 0.0;
+      
+      for (int j=0; j<5; ++j){
+        apdq[i] += fmax(0.0, ev[j])*wrev[j*5+i];
+        amdq[i] += fmin(0.0, ev[j])*wrev[j*5+i];
+      }
+      amax = fmax(amax, ev[i]);
+    }
+    ", d-1, d-1, d-1),
+  printf(fh, "  return amax; ~%", d),
+  printf(fh, "} ~%"),
+  printf(fh, "~%")
+  )$
 
 close(fh)$

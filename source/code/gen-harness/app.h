@@ -63,16 +63,18 @@ typedef void (*eqn_projon_left_ev_t)(void *ctx, const double *q, const double *v
 typedef void (*eqn_recwith_right_ev_t)(void *ctx, const double *q, const double *vin, double *vout);
 typedef void  (*eqn_rescale_right_ev_t)(void *ctx, const double *q, const double *w, double *revout);
 typedef double (*eqn_ev_t)(void *ctx, const double *q, double *ev);
+typedef double (*fluct_t)(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq);
 
 struct eqn_sys {
   int meqn, mwave;
   void *eqn_ctx;
 
   eqn_flux_t flux[GKYL_MAX_DIM];
-  eqn_projon_left_ev_t proj_on_left_ev[GKYL_MAX_DIM];
+  eqn_projon_left_ev_t projon_left_ev[GKYL_MAX_DIM];
   eqn_recwith_right_ev_t recwith_right_ev[GKYL_MAX_DIM];
   eqn_rescale_right_ev_t rescale_right_ev[GKYL_MAX_DIM];
   eqn_ev_t ev[GKYL_MAX_DIM];
+  fluct_t fluct[GKYL_MAX_DIM];
 };
 
 typedef struct hyper_app hyper_app;
