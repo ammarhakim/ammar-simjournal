@@ -38,44 +38,37 @@ dt_p : cdirdiff(p, u, xpos) + gamma*p*div(u)$
 /* Split into components and put into a list */
 dt_All : [dt_rho, dt_u | ee[1], dt_u | ee[2], dt_u | ee[3], dt_B | ee[1], dt_B | ee[2], dt_B | ee[3], dt_p ]$
 
-diff_list : [diff(rho,x),
-  diff(uu[1],x), diff(uu[2],x), diff(uu[3],x),
-  diff(BB[1],x), diff(BB[2],x), diff(BB[3],x),
-  diff(p,x)
-  ]$
-
-Atm : coefmatrix(dt_All, diff_list)$
-
-[vals, vects] : eigenvectors(Atm)$
-
-/** Create list of eigenvalues, including repeated ones */
-Evs : (Evs : [], for i from 1 thru length(vals[1])
-        do (for j from 1 thru vals[2][i]
-	  do (Evs : append(Evs, [vals[1][i]]))), Evs)$
-
-/** Right eigenvectors. This nastiness is needed as the eigensystem is
-returned as a list of nested lists. These nested lists are taken apart
-based on eigenvalue multiplicity and put as columns in a matrix of
-right-eigenvectors */
-
-Rev : (Rev : matrix([]), for i from 1 thru length (vals[1]) 
-        do (for j from 1 thru vals[2][i] 
-          do ( (Rev : addcol(Rev, transpose(matrix(vects[i][j])))))), Rev)$
-
-/** Compute left-eigenvectors */
-Lev : fullratsimp( invert(Rev) )$
-/** Compute check: this should be an identiy matrix */
-id : fullratsimp( Lev . Rev )$
+meqn : length(dt_All)$
 
 /* Transform from primitive to conserved variables */
 phi_v : [rho, rho*(u|ee[1]), rho*(u|ee[2]), rho*(u|ee[3]), B|ee[1], B|ee[2], B|ee[3], 1/2*rho*(u | u) + p/(gamma-1) + (B|B)/(2*mu_0)]$
 primvec : [rho, u|ee[1], u|ee[2], u|ee[3], B|ee[1], B|ee[2], B|ee[3], p ]$
 phi_prime_ij [i,j] := diff(phi_v[i], primvec[j])$
-phi_prime : genmatrix(phi_prime_ij, 8, 8)$
+phi_prime : genmatrix(phi_prime_ij, meqn, meqn)$
 
 /** Compute inverse transform */
 phi_prime_inv : fullratsimp(invert(phi_prime))$
 
-/** Right/left eigenvectors of flux Jacobian */
-Rev_fj : phi_prime . Rev$
-Lev_fj : Lev . phi_prime_inv$
+calcev(dir) := block([diff_list,v:ct_coords[dir], Atm, vals, vects, Evs, Rev, Rev_fj, Lev_fj],
+
+  diff_list : [diff(rho,v), diff(uu[1],v), diff(uu[2],v), diff(uu[3],v), diff(BB[1],v), diff(BB[2],v), diff(BB[3],v),  diff(p,v) ],
+
+  Atm : coefmatrix(dt_All, diff_list),
+  [vals, vects] : eigenvectors(Atm),
+  
+  Evs : (Evs : [], for i from 1 thru length(vals[1])
+        do (for j from 1 thru vals[2][i]
+	  do (Evs : append(Evs, [vals[1][i]]))), Evs),
+
+  Rev : (Rev : matrix([]), for i from 1 thru length (vals[1]) 
+        do (for j from 1 thru vals[2][i] 
+          do ( (Rev : addcol(Rev, transpose(matrix(vects[i][j])))))), Rev),
+
+  Evs : letsimp( expand(Evs) ),
+  Rev : letsimp( Rev ),
+  Lev : invert(Rev),
+
+  return ([Evs, Rev, Lev])
+  )$
+
+res : calcev(1)$

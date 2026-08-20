@@ -229,7 +229,7 @@ for d : 1 thru 3 do (
   printf(fh, "  double uy = q[2]/q[0]; ~%"),
   printf(fh, "  double uz = q[3]/q[0]; ~%"),
   printf(fh, "  double u2 = ux*ux + uy*uy + uz*uz; ~%"),
-  printf(fh, "  double E = q[4]; ~%"),  
+  printf(fh, "   ~%"),  
   printf(fh, "  double v1[4]; ~%"),
   printf(fh, "  isoeuler_mulby_phi_prime_inv(ctx, q, vin, v1); ~%"),
   res : calcev(d),

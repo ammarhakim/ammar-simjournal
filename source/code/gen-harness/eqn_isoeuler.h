@@ -140,7 +140,7 @@ isoeuler_projon_left_ev_0(void *ctx, const double *q, const double *vin, double 
   double uy = q[2]/q[0]; 
   double uz = q[3]/q[0]; 
   double u2 = ux*ux + uy*uy + uz*uz; 
-  double E = q[4]; 
+   
   double v1[4]; 
   isoeuler_mulby_phi_prime_inv(ctx, q, vin, v1); 
   vout[0] = 0.5*v1[0]-(0.5*v1[1]*rho)/cs; 
@@ -159,7 +159,7 @@ isoeuler_projon_left_ev_1(void *ctx, const double *q, const double *vin, double 
   double uy = q[2]/q[0]; 
   double uz = q[3]/q[0]; 
   double u2 = ux*ux + uy*uy + uz*uz; 
-  double E = q[4]; 
+   
   double v1[4]; 
   isoeuler_mulby_phi_prime_inv(ctx, q, vin, v1); 
   vout[0] = 0.5*v1[0]-(0.5*v1[2]*rho)/cs; 
@@ -178,7 +178,7 @@ isoeuler_projon_left_ev_2(void *ctx, const double *q, const double *vin, double 
   double uy = q[2]/q[0]; 
   double uz = q[3]/q[0]; 
   double u2 = ux*ux + uy*uy + uz*uz; 
-  double E = q[4]; 
+   
   double v1[4]; 
   isoeuler_mulby_phi_prime_inv(ctx, q, vin, v1); 
   vout[0] = 0.5*v1[0]-(0.5*v1[3]*rho)/cs; 
