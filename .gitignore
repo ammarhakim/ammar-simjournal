@@ -27,9 +27,9 @@ source/sims-g0/kh-euler/code/kh-euler
 source/sims-g0/incomp-ns/code/lid-driven
 
 source/csims/je38/cs-2d-rotflow
-/source/code/gen-harness/ctest_eqn_euler
-/source/code/gen-harness/test_app
-/source/code/gen-harness/ctest_eqn_maxwell
-/source/code/gen-harness/ctest_eqn_burgers
-/source/code/gen-harness/ctest_eqn_isoeuler
-/source/code/gen-harness/ctest_eqn_shallow_water
+/source/code/hyper-harness/ctest_eqn_euler
+/source/code/hyper-harness/test_app
+/source/code/hyper-harness/ctest_eqn_maxwell
+/source/code/hyper-harness/ctest_eqn_burgers
+/source/code/hyper-harness/ctest_eqn_isoeuler
+/source/code/hyper-harness/ctest_eqn_shallow_water
