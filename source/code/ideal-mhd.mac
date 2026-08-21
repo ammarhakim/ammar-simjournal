@@ -46,6 +46,15 @@ primvec : [rho, u|ee[1], u|ee[2], u|ee[3], B|ee[1], B|ee[2], B|ee[3], p ]$
 phi_prime_ij [i,j] := diff(phi_v[i], primvec[j])$
 phi_prime : genmatrix(phi_prime_ij, meqn, meqn)$
 
+transexpr(expr) := block([],
+  expr : ratsubst(rho*cs^2, p*gamma, expr),
+  expr : ratsubst(cax*sqrt(mu_0*rho), BB[1], expr),
+  expr : ratsubst(cay*sqrt(mu_0*rho), BB[2], expr),
+  expr : ratsubst(caz*sqrt(mu_0*rho), BB[3], expr),
+  expr : ratsubst(ca^2, cax^2+cay^2+caz^2, expr),
+  return (expr)
+  )$
+
 /** Compute inverse transform */
 phi_prime_inv : fullratsimp(invert(phi_prime))$
 
@@ -53,7 +62,7 @@ calcev(dir) := block([diff_list,v:ct_coords[dir], Atm, vals, vects, Evs, Rev, Re
 
   diff_list : [diff(rho,v), diff(uu[1],v), diff(uu[2],v), diff(uu[3],v), diff(BB[1],v), diff(BB[2],v), diff(BB[3],v),  diff(p,v) ],
 
-  Atm : coefmatrix(dt_All, diff_list),
+  Atm : transexpr( coefmatrix(dt_All, diff_list) ),
   [vals, vects] : eigenvectors(Atm),
   
   Evs : (Evs : [], for i from 1 thru length(vals[1])

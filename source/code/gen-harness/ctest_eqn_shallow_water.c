@@ -6,7 +6,7 @@ struct eqn_sys
 eqn_shallow_water_init(void *ctx)
 {
   return (struct eqn_sys) {
-    .meqn = 3,
+    .meqn = 4, // bottom topo is stored in the q
     .mwave = 3,
     .eqn_ctx = &ctx,
     .flux = { shallow_water_flux_0, shallow_water_flux_1 },

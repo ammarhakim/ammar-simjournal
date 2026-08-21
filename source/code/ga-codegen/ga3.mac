@@ -1,0 +1,435 @@
+kill(all)$
+load("clifford")$
+load("cliffordan")$
+
+clifford(ee,3)$
+
+blist : [ [1], [ee[1], ee[2], ee[3]], [ee[1].ee[2], ee[1].ee[3], ee[2].ee[3]], [ee[1].ee[2].ee[3]] ]$
+
+nv : 3$
+
+fh : openw("/home/gandalf/research/ammar-notes/code-fragments/ga-codegen/ga3_generated.h")$
+
+printf(fh, "#pragma once ~%")$
+printf(fh, "// Ga(3) auto-generated code. Do not edit by hand. ~%")$
+printf(fh, "// Include the ga.h header rather than this directly. ~%")$
+printf(fh, "~%")$
+printf(fh, "// k-vector types ~%")$
+for i : 0 thru nv do (
+  printf(fh, "typedef struct ga3_vec~a { double x[~a]; } ga3_vec~a; ~%", i, binomial(3,i), i)
+  )$
+
+printf(fh, "~%")$
+printf(fh, "typedef struct ga3_mv { ~%")$
+printf(fh, "  ga3_vec0 v0; ~%")$
+printf(fh, "  ga3_vec1 v1; ~%")$
+printf(fh, "  ga3_vec2 v2; ~%")$
+printf(fh, "  ga3_vec3 v3; ~%")$
+printf(fh, "} ga3_mv; ~%")$
+
+printf(fh, "~%")$
+printf(fh, "typedef struct ga3_even { ~%")$
+printf(fh, "  ga3_vec0 v0; ~%")$
+printf(fh, "  ga3_vec2 v2; ~%")$
+printf(fh, "} ga3_even; ~%")$
+
+printf(fh, "~%")$
+
+printf(fh, "static inline int idx3x3(int r, int c) { return c*3+r; }")$
+
+printf(fh, "~%")$
+
+/* Declare scale functions */
+for i : 1 thru nv do (
+  printf(fh, "static ga3_vec~a ", i),
+  printf(fh, "ga3_scale_vec~a(double s, ga3_vec~a a); ~%", i, i)
+  )$
+
+printf(fh, "static ga3_even ")$
+printf(fh, "ga3_scale_even(double s, ga3_even a); ~%")$
+
+printf(fh, "~%")$
+
+/* Declare reverse functions */
+for i : 1 thru nv do (
+  printf(fh, "static ga3_vec~a ", i),
+  printf(fh, "ga3_reverse_vec~a(ga3_vec~a a); ~%", i, i)
+  )$
+
+printf(fh, "static ga3_even ")$
+printf(fh, "ga3_reverse_even(ga3_even a); ~%")$
+
+printf(fh, "~%")$
+
+/* Declare Hodge functions */
+for i : 0 thru nv do (
+  printf(fh, "static ga3_vec~a ", nv-i),
+  printf(fh, "ga3_hodge_vec~a(ga3_vec~a a); ~%", i, i)
+  )$
+
+printf(fh, "~%")$
+
+/* Declare linear combination functions */
+for i : 0 thru nv do (
+  printf(fh, "static ga3_vec~a ", i),
+  printf(fh, "ga3_sum_vec~a(double sa, ga3_vec~a a, double sb, ga3_vec~a b); ~%", i, i, i)
+  )$
+
+printf(fh, "~%")$
+
+/* Declare dot-product functions */
+for i : 1 thru nv do (
+  for j : 1 thru nv do (
+    printf(fh, "static ga3_vec~a ", abs(j-i)),
+    printf(fh, "ga3_dot_v~a_v~a(ga3_vec~a a, ga3_vec~a b); ~%", i, j, i, j)
+    )
+  )$
+
+printf(fh, "~%")$
+
+/* Declare wedge-product functions */
+for i : 1 thru nv do (
+  for j : 1 thru 3-i do (
+    printf(fh, "static ga3_vec~a ", j+i),
+    printf(fh, "ga3_wedge_v~a_v~a(ga3_vec~a a, ga3_vec~a b); ~%", i, j, i, j)
+    )
+  )$
+
+printf(fh, "~%")$
+
+/* Declare grade-selection operators */
+for i : 0 thru nv do (
+  printf(fh, "static ga3_vec~a ga3_sel_~a(ga3_mv mv); ~%", i, i)
+  )$
+
+printf(fh, "~%")$
+
+printf(fh, "static ga3_even ")$
+printf(fh, "ga3_gp_even(ga3_even M, ga3_even N); ~%")$
+printf(fh, "static ga3_mv ")$
+printf(fh, "ga3_gp_mv_mv(ga3_mv M, ga3_mv N); ~%")$
+printf(fh, "static double ")$
+printf(fh, "ga3_scalar_mv_mv(ga3_mv M, ga3_mv N); ~%")$
+
+printf(fh, "~%")$
+
+printf(fh, "// R is a rotor: R reverse(R) = 1 ~%")$
+printf(fh, "static void ga3_rotmat_vec1(ga3_even R, double rmat[3*3]);")$
+
+printf(fh, "~%")$
+
+printf(fh, "// Scale k-vectors ~%")$
+/* Scale k-vectors */
+for i : 1 thru nv do (
+  printf(fh, "static inline ga3_vec~a ~%", i),
+  printf(fh, "ga3_scale_vec~a(double s, ga3_vec~a a) ~%", i, i),
+  printf(fh, "{~%"),
+  printf(fh, "  ga3_vec~a rv; ~%", i),
+  for k : 1 thru binomial(3,i) do (
+    printf(fh, "  rv.x[~a] = s*a.x[~a]; ~%", k-1, k-1)
+    ),
+  printf(fh, "  return rv;~%"),
+  printf(fh, "}~%"),
+  printf(fh, "~%")
+  )$
+
+/* Scale even-grade object */
+printf(fh, "static inline ga3_even ~%")$
+printf(fh, "ga3_scale_even(double s, ga3_even a) ~%")$
+printf(fh, "{~%")$
+printf(fh, "  ga3_even rv; ~%")$
+printf(fh, "  rv.v0.x[0] = s*a.v0.x[0]; ~%")$
+printf(fh, "  rv.v2 = ga3_scale_vec2(s, a.v2); ~%")$
+printf(fh, "  return rv;~%")$
+printf(fh, "}~%")$
+printf(fh, "~%")$
+
+printf(fh, "// Reverse k-vectors ~%")$
+/* Reverse of k-vectors */
+for i : 1 thru nv do (
+  printf(fh, "static inline ga3_vec~a ~%", i),
+  printf(fh, "ga3_reverse_vec~a(ga3_vec~a a) ~%", i, i),
+  printf(fh, "{~%"),
+  aaslist : makelist(a[k] = ax[k-1], k, 1, binomial(3,i)),
+  aa : cmvect(a, i),
+  printf(fh, "  const double *ax = a.x; ~%"),
+  printf(fh, "  ga3_vec~a rv; ~%", i),
+  expr : subst(aaslist, creverse(aa)),
+  for k : 1 thru binomial(3,i) do (
+    printf(fh, "  rv.x[~a] = ~a; ~%", k-1, expand(coeff(expr, blist[i+1][k])))
+    ),
+  printf(fh, "  return rv;~%"),
+  printf(fh, "}~%"),
+  printf(fh, "~%")
+  )$
+
+/* reverse even-grade object */
+printf(fh, "static inline ga3_even ~%")$
+printf(fh, "ga3_reverse_even(ga3_even a) ~%")$
+printf(fh, "{~%")$
+printf(fh, "  ga3_even rv; ~%")$
+printf(fh, "  rv.v0.x[0] = a.v0.x[0]; ~%")$
+printf(fh, "  rv.v2 = ga3_reverse_vec2(a.v2); ~%")$
+printf(fh, "  return rv;~%")$
+printf(fh, "}~%")$
+printf(fh, "~%")$
+
+
+
+printf(fh, "// Hodge-dual of k-vectors: A^dagger = A I_3 ~%")$
+/* Hodge of k-vectors */
+for i : 0 thru nv do (
+  printf(fh, "static inline ga3_vec~a ~%", nv-i),
+  printf(fh, "ga3_hodge_vec~a(ga3_vec~a a) ~%", i, i),
+  printf(fh, "{~%"),
+  aaslist : makelist(a[k] = ax[k-1], k, 1, binomial(3,i)),
+  printf(fh, "  const double *ax = a.x; ~%"),
+  printf(fh, "  ga3_vec~a rv; ~%", nv-i),
+  aa : if i > 0 then cmvect(a, i) else a[1],
+  expr : subst(aaslist, aa | %iv),
+  for k : 1 thru binomial(3,nv-i) do (
+    if nv-i = 0 then (
+      printf(fh, "  rv.x[~a] = ~a; ~%", k-1, expand(expr))
+      )
+    else (
+      printf(fh, "  rv.x[~a] = ~a; ~%", k-1, expand(coeff(expr, blist[nv-i+1][k])))
+      )
+    ),
+  printf(fh, "  return rv;~%"),
+  printf(fh, "}~%"),
+  printf(fh, "~%")
+  )$
+
+
+printf(fh, "// Linear combination of k-vectors ~%")$
+for i : 0 thru nv do (
+  printf(fh, "static ga3_vec~a ~%", i),
+  printf(fh, "ga3_sum_vec~a(double sa, ga3_vec~a a, double sb, ga3_vec~a b) ~%", i, i, i),
+  printf(fh, "{~%"),
+  printf(fh, "  ga3_vec~a rv; ~%", i),
+  for k : 1 thru binomial(3,i) do (
+    printf(fh, "  rv.x[~a] = sa*a.x[~a] + sb*b.x[~a]; ~%", k-1, k-1, k-1)
+    ),
+  printf(fh, "  return rv;~%"),  
+  printf(fh, "}~%")
+  )$
+
+printf(fh, "~%")$
+
+printf(fh, "// Dot products between k-vectors ~%")$
+/* Dot product of k-vectors */
+for i : 1 thru nv do (
+  aa : cmvect(a, i),
+  aaslist : makelist(a[k] = ax[k-1], k, 1, binomial(3,i)),  
+  for j : 1 thru nv do (
+    bb : cmvect(b, j),
+    bbslist : makelist(b[k] = bx[k-1], k, 1, binomial(3,j)),
+    printf(fh, "static inline ga3_vec~a ~%", abs(j-i)),
+    printf(fh, "ga3_dot_v~a_v~a(ga3_vec~a a, ga3_vec~a b)~%", i, j, i, j),
+    printf(fh, "{~%"),
+    printf(fh, "  const double *ax = a.x; ~%"),
+    printf(fh, "  const double *bx = b.x; ~%"),
+    printf(fh, "  ga3_vec~a rv; ~%", abs(j-i)),
+    expr : subst(append(aaslist, bbslist), aa | bb),
+    for k : 1 thru binomial(3,abs(j-i)) do (
+      if j-i = 0 then (
+        printf(fh, "  rv.x[~a] = ~a; ~%", k-1, expand(expr))
+        )
+      else (
+        printf(fh, "  rv.x[~a] = ~a; ~%", k-1, expand(coeff(expr, blist[abs(j-i)+1][k])))
+        )
+      ),
+    printf(fh, "  return rv;~%"),
+    printf(fh, "}~%"),
+    printf(fh, "~%")
+    ),
+  printf(fh, "~%")
+  )$
+
+printf(fh, "~%")$
+
+printf(fh, "// Wedge products between k-vectors ~%")$
+/* Wedge product of k-vectors */
+for i : 1 thru nv do (
+  aa : cmvect(a, i),
+  aaslist : makelist(a[k] = ax[k-1], k, 1, binomial(3,i)),  
+  for j : 1 thru 3-i do (
+    bb : cmvect(b, j),
+    bbslist : makelist(b[k] = bx[k-1], k, 1, binomial(3,i)),
+    printf(fh, "static inline ga3_vec~a ~%", j+i),
+    printf(fh, "ga3_wedge_v~a_v~a(ga3_vec~a a, ga3_vec~a b)~%", i, j, i, j),
+    printf(fh, "{~%"),
+    printf(fh, "  const double *ax = a.x; ~%"),
+    printf(fh, "  const double *bx = b.x; ~%"),
+    printf(fh, "  ga3_vec~a rv; ~%", j+i),
+    expr : subst(append(aaslist, bbslist), aa & bb),
+    for k : 1 thru binomial(3,j+i) do (
+      printf(fh, "  rv.x[~a] = ~a; ~%", k-1, expand(coeff(expr, blist[j+i+1][k])))
+      ),
+    printf(fh, "  return rv;~%"),
+    printf(fh, "}~%"),
+    printf(fh, "~%")
+    ),
+  printf(fh, "~%")
+  )$
+
+for i : 0 thru nv do (
+  printf(fh, "static inline ga3_vec~a ~%", i),
+  printf(fh, "ga3_sel_~a(ga3_mv mv) ~%", i), 
+  printf(fh, "{~%"),
+  printf(fh, "  return mv.v~a; ~%", i),
+  printf(fh, "}~%")
+  )$
+
+
+printf(fh, "~%")$
+
+/* Even-grade multiplication */
+declare([m0, n0], scalar)$
+M : m0 + cmvect(m2, 2)$
+N : n0 + cmvect(n2, 2)$
+
+MN : cliffsimpall( M . N )$
+
+slist : [
+  m0 = mv0[0],
+  m1[1] = mv1[0], m1[2] = mv1[1], m1[3] = mv1[2],
+  m2[1] = mv2[0], m2[2] = mv2[1], m2[3] = mv2[2],
+  m3[1] = mv3[0],
+  n0 = nv0[0],
+  n1[1] = nv1[0], n1[2] = nv1[1], n1[3] = nv1[2],
+  n2[1] = nv2[0], n2[2] = nv2[1], n2[3] = nv2[2],
+  n3[1] = nv3[0]
+  ]$
+
+printf(fh, "static inline ga3_even ~%")$
+printf(fh, "ga3_gp_even(ga3_even M, ga3_even N) ~%")$
+printf(fh, "{~%")$
+printf(fh, "  const double *mv0 = M.v0.x; ~%")$
+printf(fh, "  const double *mv2 = M.v2.x; ~%")$
+printf(fh, "~%")$
+printf(fh, "  const double *nv0 = N.v0.x; ~%")$
+printf(fh, "  const double *nv2 = N.v2.x; ~%")$
+printf(fh, "~%")$
+printf(fh, "  struct ga3_even rv; ~%")$
+printf(fh, "  double *rvv[4]; ~%")$
+printf(fh, "  rvv[0] = rv.v0.x; ~%")$
+printf(fh, "  rvv[2] = rv.v2.x; ~%")$
+printf(fh, "~%")$
+printf(fh, "  rvv[0][0] = ~a; ~%", subst(slist, grpart(MN,0)))$
+for i : 2 thru 2 do (
+  expr : subst(slist, grpart(MN, i)),
+  for k : 1 thru binomial(3,i) do (
+    printf(fh, "  rvv[~a][~a] = ~a; ~%", i, k-1, coeff(expr, blist[i+1][k]))
+    ),
+  printf(fh, "~%")
+  )$
+printf(fh, "  return rv; ~%")$
+printf(fh, "}~%")$
+
+/* Multi-vector multiplication */
+declare([m0, n0], scalar)$
+M : m0 + cmvect(m1, 1) + cmvect(m2, 2) + cmvect(m3, 3)$
+N : n0 + cmvect(n1, 1) + cmvect(n2, 2) + cmvect(n3, 3)$
+
+MN : cliffsimpall( M . N )$
+
+slist : [
+  m0 = mv0[0],
+  m1[1] = mv1[0], m1[2] = mv1[1], m1[3] = mv1[2],
+  m2[1] = mv2[0], m2[2] = mv2[1], m2[3] = mv2[2],
+  m3[1] = mv3[0],
+  n0 = nv0[0],
+  n1[1] = nv1[0], n1[2] = nv1[1], n1[3] = nv1[2],
+  n2[1] = nv2[0], n2[2] = nv2[1], n2[3] = nv2[2],
+  n3[1] = nv3[0]
+  ]$
+
+printf(fh, "static inline ga3_mv ~%")$
+printf(fh, "ga3_gp_mv_mv(ga3_mv M, ga3_mv N) ~%")$
+printf(fh, "{~%")$
+printf(fh, "  const double *mv0 = M.v0.x; ~%")$
+printf(fh, "  const double *mv1 = M.v1.x; ~%")$
+printf(fh, "  const double *mv2 = M.v2.x; ~%")$
+printf(fh, "  const double *mv3 = M.v3.x; ~%")$
+printf(fh, "~%")$
+printf(fh, "  const double *nv0 = N.v0.x; ~%")$
+printf(fh, "  const double *nv1 = N.v1.x; ~%")$
+printf(fh, "  const double *nv2 = N.v2.x; ~%")$
+printf(fh, "  const double *nv3 = N.v3.x; ~%")$
+printf(fh, "~%")$
+printf(fh, "  struct ga3_mv rv; ~%")$
+printf(fh, "  double *rvv[4]; ~%")$
+printf(fh, "  rvv[0] = rv.v0.x; ~%")$
+printf(fh, "  rvv[1] = rv.v1.x; ~%")$
+printf(fh, "  rvv[2] = rv.v2.x; ~%")$
+printf(fh, "  rvv[3] = rv.v3.x; ~%")$
+printf(fh, "~%")$
+printf(fh, "  rvv[0][0] = ~a; ~%", subst(slist, grpart(MN,0)))$
+for i : 1 thru 3 do (
+  expr : subst(slist, grpart(MN, i)),
+  for k : 1 thru binomial(3,i) do (
+    printf(fh, "  rvv[~a][~a] = ~a; ~%", i, k-1, coeff(expr, blist[i+1][k]))
+    ),
+  printf(fh, "~%")
+  )$
+printf(fh, "  return rv; ~%")$
+printf(fh, "}~%")$
+
+printf(fh, "~%")$
+
+/* Scalar part of mv-mv multiplication */
+
+printf(fh, "static inline double ~%")$
+printf(fh, "ga3_scalar_mv_mv(ga3_mv M, ga3_mv N) ~%")$
+printf(fh, "{~%")$
+printf(fh, "  const double *mv0 = M.v0.x; ~%")$
+printf(fh, "  const double *mv1 = M.v1.x; ~%")$
+printf(fh, "  const double *mv2 = M.v2.x; ~%")$
+printf(fh, "  const double *mv3 = M.v3.x; ~%")$
+printf(fh, "~%")$
+printf(fh, "  const double *nv0 = N.v0.x; ~%")$
+printf(fh, "  const double *nv1 = N.v1.x; ~%")$
+printf(fh, "  const double *nv2 = N.v2.x; ~%")$
+printf(fh, "  const double *nv3 = N.v3.x; ~%")$
+printf(fh, "~%")$
+printf(fh, "  return ~a; ~%", subst(slist, grpart(MN,0)))$
+printf(fh, "}~%")$
+
+printf(fh, "~%")$
+
+declare([m0], scalar)$
+MM : m0 + cmvect(m2, 2)$
+
+slist : [
+  m0 = mv0[0],
+  m1[1] = mv1[0], m1[2] = mv1[1], m1[3] = mv1[2],
+  m2[1] = mv2[0], m2[2] = mv2[1], m2[3] = mv2[2],
+  m3[1] = mv3[0]
+  ]$
+
+let(mv0[0]^2, mv0_0_2)$
+let(mv2[0]^2, mv2_0_2)$
+let(mv2[1]^2, mv2_1_2)$
+let(mv2[2]^2, mv2_2_2)$
+
+printf(fh, "~%")$
+printf(fh, "static void~%")$
+printf(fh, "ga3_rotmat_vec1(ga3_even M, double R[3*3]) ~%")$
+printf(fh, "{~%")$
+printf(fh, "  const double *mv0 = M.v0.x; ~%")$
+printf(fh, "  const double *mv2 = M.v2.x; ~%")$
+printf(fh, "  double mv0_0_2 = mv0[0]*mv0[0]; ~%")$
+printf(fh, "  double mv2_0_2 = mv2[0]*mv2[0]; ~%")$
+printf(fh, "  double mv2_1_2 = mv2[1]*mv2[1]; ~%")$
+printf(fh, "  double mv2_2_2 = mv2[2]*mv2[2]; ~%")$
+printf(fh, "~%")$
+for j : 0 thru 2 do (
+  for i : 0 thru 2 do (
+    rij : cliffsimpall( ee[i+1] | ( MM . (ee[j+1] . creverse(MM)) ) ),
+    printf(fh, "  R[~a] = ~a; ~%", j*3+i,  letsimp( subst(slist, rij)) )
+    )
+  )$
+printf(fh, "}~%")$
+
+close(fh)$
