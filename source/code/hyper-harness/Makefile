@@ -149,6 +149,8 @@ help:
 	@echo "  make clean     - Remove all executables and generated files"
 	@echo "  make help      - Show this help message"
 
+.PHONY: eqn_euler.h eqn_maxwell.h eqn_burgers.h eqn_isoeuler.h eqn_shallow_water.h
+
 eqn_euler.h: euler.mac
 	maxima -b euler.mac
 
