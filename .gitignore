@@ -33,3 +33,4 @@ source/csims/je38/cs-2d-rotflow
 /source/code/hyper-harness/ctest_eqn_burgers
 /source/code/hyper-harness/ctest_eqn_isoeuler
 /source/code/hyper-harness/ctest_eqn_shallow_water
+/source/code/ga-codegen/ctest_ga3

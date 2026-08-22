@@ -33,6 +33,8 @@ static void euler_ravg(void *ctx, const double *ql, const double *qr, double *qa
 static double euler_roe_fluct_0(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq); 
 static double euler_roe_fluct_1(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq); 
 static double euler_roe_fluct_2(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq); 
+static void euler_rotate_to_local(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qloc, double *qglo); 
+static void euler_rotate_to_global(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qglo, double *qloc); 
 
 static inline void 
 euler_mulby_phi_prime(void *ctx, const double *q, const double *vin, double *vout) 
@@ -642,5 +644,25 @@ euler_roe_fluct_2(void *ctx, const double *ql, const double *qr, double *apdq, d
     amax = fmax(amax, fabs(ev[i]));
   }
       return amax; 
+} 
+
+static inline void 
+euler_rotate_to_local(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qloc, double *qglo) 
+{ 
+  qglo[0] = qloc[0]; 
+  qglo[1] = n[0]*qglo[1]+n[1]*qglo[2]+n[2]*qglo[3]; 
+  qglo[2] = tau1[0]*qglo[1]+tau1[1]*qglo[2]+tau1[2]*qglo[3]; 
+  qglo[3] = tau2[0]*qglo[1]+tau2[1]*qglo[2]+tau2[2]*qglo[3]; 
+  qglo[4] = qloc[4]; 
+} 
+
+static inline void 
+euler_rotate_to_global(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qglo, double *qloc) 
+{ 
+  qloc[0] = qglo[0]; 
+  qloc[1] = n[0]*qloc[1]+tau1[0]*qloc[2]+tau2[0]*qloc[2]; 
+  qloc[2] = n[1]*qloc[1]+tau1[1]*qloc[2]+tau2[1]*qloc[2]; 
+  qloc[3] = qloc[1]*n[2]+qloc[2]*tau1[2]+qloc[2]*tau2[2]; 
+  qloc[4] = qglo[4]; 
 } 
 

@@ -94,7 +94,7 @@ let(uy^2, isoeuler_sq(uy))$
 let(uz^2, isoeuler_sq(uz))$
 let(cs^2, isoeuler_sq(cs))$
 
-fh : openw("~/max-out/eqn_isoeuler.h")$
+fh : openw("/home/gandalf/research/ammar-simjournal/source/code/hyper-harness/eqn_isoeuler.h")$
 printf(fh, "#pragma once ~%")$
 printf(fh, "// Auto-generated code. Do not edit by hand ~%")$
 printf(fh, "~%")$

@@ -149,6 +149,21 @@ help:
 	@echo "  make clean     - Remove all executables and generated files"
 	@echo "  make help      - Show this help message"
 
+eqn_euler.h: euler.mac
+	maxima -b euler.mac
+
+eqn_maxwell.h: maxwell.mac
+	maxima -b maxwell.mac
+
+eqn_burgers.h: burgers.mac
+	maxima -b burgers.mac
+
+eqn_isoeuler.h: isoeuler.mac
+	maxima -b isoeuler.mac
+
+eqn_shallow_water.h: shallow-water.mac
+	maxima -b shallow-water.mac
+
 test_app: test_app.c app.h app.c
 	${CC} ${CFLAGS} -I. ${INCLUDES} app.c $< -o $@ -L${G0_LIB_DIR} ${G0_RPATH} ${G0_LIBS} ${LIB_DIRS} ${EXT_LIBS}
 
@@ -168,4 +183,5 @@ ctest_eqn_shallow_water: ctest_eqn_shallow_water.c eqn_shallow_water.h
 	${CC} ${CFLAGS} -I. ${INCLUDES} $< -o $@ -L${G0_LIB_DIR} ${G0_RPATH} ${G0_LIBS} ${LIB_DIRS} ${EXT_LIBS}
 
 clean:
-	rm -rf test_app ctest_eqn_euler ctest_eqn_maxwell
+	rm -rf test_app ctest_eqn_euler ctest_eqn_maxwell ctest_eqn_isoeuler ctest_eqn_shallow_water ctest_eqn_burgers
+	rm -rf eqn_euler.h eqn_maxwell.h eqn_isoeuler.h eqn_shallow_water.h eqn_burgers.h

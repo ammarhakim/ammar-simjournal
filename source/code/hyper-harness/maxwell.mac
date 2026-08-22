@@ -94,7 +94,7 @@ blist : makelist( BB[i] = q[3+i-1], i, 1, 3)$
 plist : [ phi = q[6], psi = q[7] ]$
 slist : append([ chi = efact, gamma = bfact ], elist, blist, plist)$
 
-fh : openw("~/max-out/eqn_maxwell.h")$
+fh : openw("/home/gandalf/research/ammar-simjournal/source/code/hyper-harness/eqn_maxwell.h")$
 printf(fh, "#pragma once ~%")$
 printf(fh, "// Auto-generated code. Do not edit by hand ~%")$
 printf(fh, "~%")$

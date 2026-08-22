@@ -84,7 +84,7 @@ let(h^2, shallow_water_sq(h))$
 let(ux^2, shallow_water_sq(ux))$
 let(uy^2, shallow_water_sq(uy))$
 
-fh : openw("~/max-out/eqn_shallow_water.h")$
+fh : openw("/home/gandalf/research/ammar-simjournal/source/code/hyper-harness/eqn_shallow_water.h")$
 printf(fh, "#pragma once ~%")$
 printf(fh, "// Auto-generated code. Do not edit by hand ~%")$
 printf(fh, "~%")$

@@ -59,7 +59,7 @@ qv : transpose(makelist(q[i-1], i, 1, meqn))$
 vv1 : transpose(makelist(v1[i-1], i, 1, meqn))$
 vin1 : transpose(makelist(vin[i-1], i, 1, meqn))$
 
-fh : openw("~/max-out/eqn_burgers.h")$
+fh : openw("/home/gandalf/research/ammar-simjournal/source/code/hyper-harness/eqn_burgers.h")$
 printf(fh, "#pragma once ~%")$
 printf(fh, "// Auto-generated code. Do not edit by hand ~%")$
 printf(fh, "~%")$

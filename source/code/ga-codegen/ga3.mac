@@ -8,7 +8,7 @@ blist : [ [1], [ee[1], ee[2], ee[3]], [ee[1].ee[2], ee[1].ee[3], ee[2].ee[3]], [
 
 nv : 3$
 
-fh : openw("/home/gandalf/research/ammar-notes/code-fragments/ga-codegen/ga3_generated.h")$
+fh : openw("/home/gandalf/research/ammar-simjournal/source/code/ga-codegen/ga3_generated.h")$
 
 printf(fh, "#pragma once ~%")$
 printf(fh, "// Ga(3) auto-generated code. Do not edit by hand. ~%")$
@@ -20,18 +20,20 @@ for i : 0 thru nv do (
   )$
 
 printf(fh, "~%")$
-printf(fh, "typedef struct ga3_mv { ~%")$
-printf(fh, "  ga3_vec0 v0; ~%")$
-printf(fh, "  ga3_vec1 v1; ~%")$
-printf(fh, "  ga3_vec2 v2; ~%")$
-printf(fh, "  ga3_vec3 v3; ~%")$
-printf(fh, "} ga3_mv; ~%")$
+printf(fh,
+  "typedef struct ga3_mv { 
+  ga3_vec0 v0; 
+  ga3_vec1 v1; 
+  ga3_vec2 v2; 
+  ga3_vec3 v3; 
+  } ga3_mv; ~%")$
 
 printf(fh, "~%")$
-printf(fh, "typedef struct ga3_even { ~%")$
-printf(fh, "  ga3_vec0 v0; ~%")$
-printf(fh, "  ga3_vec2 v2; ~%")$
-printf(fh, "} ga3_even; ~%")$
+printf(fh,
+  "typedef struct ga3_even {
+  ga3_vec0 v0;
+  ga3_vec2 v2;
+} ga3_even; ~%")$
 
 printf(fh, "~%")$
 
