@@ -64,6 +64,9 @@ typedef void (*eqn_recwith_right_ev_t)(void *ctx, const double *q, const double 
 typedef void  (*eqn_rescale_right_ev_t)(void *ctx, const double *q, const double *w, double *revout);
 typedef double (*eqn_ev_t)(void *ctx, const double *q, double *ev);
 typedef double (*fluct_t)(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq);
+typedef void (*rotate_to_local_t)(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qloc, double *qglo);
+typedef void (*rotate_to_global_t)(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qglo, double *qloc);
+
 
 struct eqn_sys {
   int meqn, mwave;
@@ -75,6 +78,8 @@ struct eqn_sys {
   eqn_rescale_right_ev_t rescale_right_ev[GKYL_MAX_DIM];
   eqn_ev_t ev[GKYL_MAX_DIM];
   fluct_t fluct[GKYL_MAX_DIM];
+  rotate_to_local_t rotate_to_local;
+  rotate_to_global_t rotate_to_global;
 };
 
 typedef struct hyper_app hyper_app;

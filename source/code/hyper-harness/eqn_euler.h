@@ -33,8 +33,8 @@ static void euler_ravg(void *ctx, const double *ql, const double *qr, double *qa
 static double euler_roe_fluct_0(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq); 
 static double euler_roe_fluct_1(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq); 
 static double euler_roe_fluct_2(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq); 
-static void euler_rotate_to_local(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qloc, double *qglo); 
-static void euler_rotate_to_global(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qglo, double *qloc); 
+static void euler_rotate_to_local(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qglobal, double *qlocal); 
+static void euler_rotate_to_global(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qlocal, double *qglobal); 
 
 static inline void 
 euler_mulby_phi_prime(void *ctx, const double *q, const double *vin, double *vout) 
@@ -647,22 +647,22 @@ euler_roe_fluct_2(void *ctx, const double *ql, const double *qr, double *apdq, d
 } 
 
 static inline void 
-euler_rotate_to_local(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qloc, double *qglo) 
+euler_rotate_to_local(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qglobal, double *qlocal) 
 { 
-  qglo[0] = qloc[0]; 
-  qglo[1] = n[0]*qglo[1]+n[1]*qglo[2]+n[2]*qglo[3]; 
-  qglo[2] = tau1[0]*qglo[1]+tau1[1]*qglo[2]+tau1[2]*qglo[3]; 
-  qglo[3] = tau2[0]*qglo[1]+tau2[1]*qglo[2]+tau2[2]*qglo[3]; 
-  qglo[4] = qloc[4]; 
+  qlocal[0] = qglobal[0]; 
+  qlocal[1] = n[0]*qglobal[1]+n[1]*qglobal[2]+n[2]*qglobal[3]; 
+  qlocal[2] = tau1[0]*qglobal[1]+tau1[1]*qglobal[2]+tau1[2]*qglobal[3]; 
+  qlocal[3] = tau2[0]*qglobal[1]+tau2[1]*qglobal[2]+tau2[2]*qglobal[3]; 
+  qlocal[4] = qglobal[4]; 
 } 
 
 static inline void 
-euler_rotate_to_global(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qglo, double *qloc) 
+euler_rotate_to_global(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qlocal, double *qglobal) 
 { 
-  qloc[0] = qglo[0]; 
-  qloc[1] = n[0]*qloc[1]+tau1[0]*qloc[2]+tau2[0]*qloc[2]; 
-  qloc[2] = n[1]*qloc[1]+tau1[1]*qloc[2]+tau2[1]*qloc[2]; 
-  qloc[3] = qloc[1]*n[2]+qloc[2]*tau1[2]+qloc[2]*tau2[2]; 
-  qloc[4] = qglo[4]; 
+  qglobal[0] = qlocal[0]; 
+  qglobal[1] = n[0]*qlocal[1]+tau1[0]*qlocal[2]+tau2[0]*qlocal[3]; 
+  qglobal[2] = n[1]*qlocal[1]+tau1[1]*qlocal[2]+tau2[1]*qlocal[3]; 
+  qglobal[3] = qlocal[1]*n[2]+qlocal[2]*tau1[2]+tau2[2]*qlocal[3]; 
+  qglobal[4] = qlocal[4]; 
 } 
 

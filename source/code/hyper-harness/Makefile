@@ -138,8 +138,7 @@ BINS := $(SRCS:.c=)
 
 .PHONY: all clean help moments moments-unit moments-regression
 
-# Default target: build all if no FILE specified, otherwise build specific file
-all: test_app ctest_eqn_euler ctest_eqn_maxwell ctest_eqn_burgers ctest_eqn_isoeuler ctest_eqn_shallow_water
+all: ctest_eqn_euler ctest_eqn_maxwell ctest_eqn_burgers ctest_eqn_isoeuler ctest_eqn_shallow_water
 
 # Help target to show usage
 help:
@@ -149,21 +148,11 @@ help:
 	@echo "  make clean     - Remove all executables and generated files"
 	@echo "  make help      - Show this help message"
 
-.PHONY: eqn_euler.h eqn_maxwell.h eqn_burgers.h eqn_isoeuler.h eqn_shallow_water.h
-
-eqn_euler.h: euler.mac
-	maxima -b euler.mac
-
-eqn_maxwell.h: maxwell.mac
-	maxima -b maxwell.mac
-
-eqn_burgers.h: burgers.mac
+eqn_headers:
 	maxima -b burgers.mac
-
-eqn_isoeuler.h: isoeuler.mac
+	maxima -b euler.mac
 	maxima -b isoeuler.mac
-
-eqn_shallow_water.h: shallow-water.mac
+	maxima -b maxwell.mac
 	maxima -b shallow-water.mac
 
 test_app: test_app.c app.h app.c

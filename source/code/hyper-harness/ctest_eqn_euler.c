@@ -14,7 +14,9 @@ eqn_euler_init(void *ctx)
     .recwith_right_ev = { euler_recwith_right_ev_0, euler_recwith_right_ev_1, euler_recwith_right_ev_2 },
     .rescale_right_ev = { euler_rescale_right_ev_0, euler_rescale_right_ev_1, euler_rescale_right_ev_2 },
     .ev = { euler_ev_0, euler_ev_1, euler_ev_2 },
-    .fluct = { euler_roe_fluct_0, euler_roe_fluct_1, euler_roe_fluct_2 }
+    .fluct = { euler_roe_fluct_0, euler_roe_fluct_1, euler_roe_fluct_2 },
+    .rotate_to_local = euler_rotate_to_local,
+    .rotate_to_global = euler_rotate_to_global,
   };
 }
 
@@ -130,10 +132,41 @@ test_flux_jump_roe(void)
   }
 }
 
+void
+test_rotate(void)
+{
+  double g = 1.4;
+  struct euler_eqn euler = { .gas_gamma = g };
+  struct eqn_sys eqn_euler = eqn_euler_init(&euler);
+  
+  double n[3] = { 0, 1.0, 0.0 };
+  double tau1[3] = { -1.0, 0.0, 0.0 };
+  double tau2[3] = { 0.0, 0.0, 1.0 };
+
+  double rhol = 1.0, uxl = 1.5, uyl = 2.5, uzl = 3.5, pl = 0.1;
+  
+  double qglobal[5];
+  prim_to_cons(g, rhol, uxl, uyl, uzl, pl, qglobal);
+
+  double qlocal[5];
+  eqn_euler.rotate_to_local(&euler, n, tau1, tau2, qglobal, qlocal);
+  double flocal[5];
+  eqn_euler.flux[0](&euler, qlocal, flocal);
+  double fglobal[5];
+  eqn_euler.rotate_to_global(&euler, n, tau1, tau2, flocal, fglobal);
+
+  double fy[5];
+  eqn_euler.flux[1](&euler, qglobal, fy);
+
+  for (int i=0; i<5; ++i)
+    TEST_CHECK( gkyl_compare_double( fglobal[i], fy[i], 1e-14) );
+}
+
 TEST_LIST = {
   { "test_phi_prime", test_phi_prime },
   { "test_ev", test_ev },
   { "test_rescale_ev", test_rescale_ev },
-  { "test_flux_jump_roe", test_flux_jump_roe },   
+  { "test_flux_jump_roe", test_flux_jump_roe },
+  { "test_rotate", test_rotate },
   { NULL, NULL },
 };    
