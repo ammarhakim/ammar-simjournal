@@ -106,6 +106,8 @@ printf(fh, "static double burgers_fluct_0(void *ctx, const double *ql, const dou
 printf(fh, "static double burgers_fluct_1(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq); ~%")$
 printf(fh, "static double burgers_fluct_2(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq); ~%")$
 
+printf(fh, "static void burgers_rotate_to_local(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qglobal, double *qlocal); ~%")$
+printf(fh, "static void burgers_rotate_to_global(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qlocal, double *qglobal); ~%")$
 
 printf(fh, "~%")$
 
@@ -184,5 +186,17 @@ for d : 1 thru 3 do (
   printf(fh, "} ~%"),
   printf(fh, "~%")
   )$
+
+printf(fh, "static inline void ~%burgers_rotate_to_local(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qglobal, double *qlocal) ~%")$
+printf(fh, "{ ~%")$
+printf(fh, "  qlocal[0] = qglobal[0]; ~%")$
+printf(fh, "} ~%")$
+printf(fh, "~%")$
+
+printf(fh, "static inline void ~%burgers_rotate_to_global(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qlocal, double *qglobal) ~%")$
+printf(fh, "{ ~%")$
+printf(fh, "  qglobal[0] = qlocal[0]; ~%")$
+printf(fh, "} ~%")$
+printf(fh, "~%")$
 
 close(fh)$
