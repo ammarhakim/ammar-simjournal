@@ -141,6 +141,9 @@ printf(fh, "static double maxwell_fluct_0(void *ctx, const double *ql, const dou
 printf(fh, "static double maxwell_fluct_1(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq); ~%")$
 printf(fh, "static double maxwell_fluct_2(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq); ~%")$
 
+printf(fh, "static void maxwell_rotate_to_local(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qglobal, double *qlocal); ~%")$
+printf(fh, "static void maxwell_rotate_to_global(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qlocal, double *qglobal); ~%")$
+
 printf(fh, "~%")$
 
 /* Flux in x, y and z direction */
@@ -280,6 +283,43 @@ for d : 1 thru 3 do (
   printf(fh, "} ~%"),
   printf(fh, "~%")
   )$
+
+nv : cvect(nn)$
+t1v : cvect(tt1)$
+t2v : cvect(tt2)$
+Egv : qglobal[0]*ee[1] + qglobal[1]*ee[2] + qglobal[2]*ee[3]$
+Bgv : qglobal[3]*ee[1] + qglobal[4]*ee[2] + qglobal[5]*ee[3]$
+
+Elv : qlocal[0]*nv + qlocal[1]*t1v + qlocal[2]*t2v$
+Blv : qlocal[3]*nv + qlocal[4]*t1v + qlocal[5]*t2v$
+
+islist : append( makelist(nn[i]=n[i-1],i,1,3), makelist(tt1[i]=tau1[i-1],i,1,3), makelist(tt2[i]=tau2[i-1],i,1,3) )$
+
+printf(fh, "static inline void ~%maxwell_rotate_to_local(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qglobal, double *qlocal) ~%")$
+printf(fh, "{ ~%")$
+printf(fh, "  qlocal[0] = ~a; ~%", subst(islist, Egv|nv))$
+printf(fh, "  qlocal[1] = ~a; ~%", subst(islist, Egv|t1v))$
+printf(fh, "  qlocal[2] = ~a; ~%", subst(islist, Egv|t2v))$
+printf(fh, "  qlocal[3] = ~a; ~%", subst(islist, Bgv|nv))$
+printf(fh, "  qlocal[4] = ~a; ~%", subst(islist, Bgv|t1v))$
+printf(fh, "  qlocal[5] = ~a; ~%", subst(islist, Bgv|t2v))$
+printf(fh, "  qlocal[6] = qglobal[6]; ~%")$
+printf(fh, "  qlocal[7] = qglobal[7]; ~%")$
+printf(fh, "} ~%")$
+printf(fh, "~%")$
+
+printf(fh, "static inline void ~%maxwell_rotate_to_global(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qlocal, double *qglobal) ~%")$
+printf(fh, "{ ~%")$
+printf(fh, "  qglobal[0] = ~a; ~%", subst(islist, Elv|ee[1]))$
+printf(fh, "  qglobal[1] = ~a; ~%", subst(islist, Elv|ee[2]))$
+printf(fh, "  qglobal[2] = ~a; ~%", subst(islist, Elv|ee[3]))$
+printf(fh, "  qglobal[3] = ~a; ~%", subst(islist, Blv|ee[1]))$
+printf(fh, "  qglobal[4] = ~a; ~%", subst(islist, Blv|ee[2]))$
+printf(fh, "  qglobal[5] = ~a; ~%", subst(islist, Blv|ee[3]))$
+printf(fh, "  qglobal[6] = qlocal[6]; ~%")$
+printf(fh, "  qglobal[7] = qlocal[7]; ~%")$
+printf(fh, "} ~%")$
+printf(fh, "~%")$
 
 close(fh)$
 

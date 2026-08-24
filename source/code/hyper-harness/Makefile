@@ -175,4 +175,3 @@ ctest_eqn_shallow_water: ctest_eqn_shallow_water.c eqn_shallow_water.h
 
 clean:
 	rm -rf test_app ctest_eqn_euler ctest_eqn_maxwell ctest_eqn_isoeuler ctest_eqn_shallow_water ctest_eqn_burgers
-	rm -rf eqn_euler.h eqn_maxwell.h eqn_isoeuler.h eqn_shallow_water.h eqn_burgers.h

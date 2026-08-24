@@ -14,7 +14,9 @@ eqn_isoeuler_init(void *ctx)
     .recwith_right_ev = { isoeuler_recwith_right_ev_0, isoeuler_recwith_right_ev_1, isoeuler_recwith_right_ev_2 },
     .rescale_right_ev = { isoeuler_rescale_right_ev_0, isoeuler_rescale_right_ev_1, isoeuler_rescale_right_ev_2 },
     .ev = { isoeuler_ev_0, isoeuler_ev_1, isoeuler_ev_2 },
-    .fluct = { isoeuler_roe_fluct_0, isoeuler_roe_fluct_1, isoeuler_roe_fluct_2 }
+    .fluct = { isoeuler_roe_fluct_0, isoeuler_roe_fluct_1, isoeuler_roe_fluct_2 },
+    .rotate_to_local = isoeuler_rotate_to_local,
+    .rotate_to_global = isoeuler_rotate_to_global,    
   };
 }
 
@@ -127,10 +129,40 @@ test_flux_jump_roe(void)
   }
 }
 
+void
+test_rotate1(void)
+{
+  struct isoeuler_eqn isoeuler = { .cs = 1.5 };
+  struct eqn_sys eqn_isoeuler = eqn_isoeuler_init(&isoeuler);
+  
+  double n[3] = { 0, 1.0, 0.0 };
+  double tau1[3] = { -1.0, 0.0, 0.0 };
+  double tau2[3] = { 0.0, 0.0, 1.0 };
+
+  double rhol = 1.0, uxl = 1.5, uyl = 2.5, uzl = 3.5;
+  
+  double qglobal[4];
+  prim_to_cons(rhol, uxl, uyl, uzl, qglobal);
+
+  double qlocal[4];
+  eqn_isoeuler.rotate_to_local(&isoeuler, n, tau1, tau2, qglobal, qlocal);
+  double flocal[4];
+  eqn_isoeuler.flux[0](&isoeuler, qlocal, flocal);
+  double fglobal[4];
+  eqn_isoeuler.rotate_to_global(&isoeuler, n, tau1, tau2, flocal, fglobal);
+
+  double fy[4];
+  eqn_isoeuler.flux[1](&isoeuler, qglobal, fy);
+
+  for (int i=0; i<4; ++i)
+    TEST_CHECK( gkyl_compare_double( fglobal[i], fy[i], 1e-14) );
+}
+
 TEST_LIST = {
   { "test_phi_prime", test_phi_prime },
   { "test_ev", test_ev },
-  { "test_rescale_ev", test_rescale_ev },
-  { "test_flux_jump_roe", test_flux_jump_roe },   
+  { "test_rescale_ev", test_rescale_ev },  
+  { "test_flux_jump_roe", test_flux_jump_roe },
+  { "test_rotate", test_rotate1 },    
   { NULL, NULL },
 };    

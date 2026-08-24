@@ -33,6 +33,8 @@ static void isoeuler_ravg(void *ctx, const double *ql, const double *qr, double 
 static double isoeuler_roe_fluct_0(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq); 
 static double isoeuler_roe_fluct_1(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq); 
 static double isoeuler_roe_fluct_2(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq); 
+static void isoeuler_rotate_to_local(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qglobal, double *qlocal); 
+static void isoeuler_rotate_to_global(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qlocal, double *qglobal); 
 
 static inline void 
 isoeuler_mulby_phi_prime(void *ctx, const double *q, const double *vin, double *vout) 
@@ -537,5 +539,23 @@ isoeuler_roe_fluct_2(void *ctx, const double *ql, const double *qr, double *apdq
     amax = fmax(amax, fabs(ev[i]));
   }
       return amax; 
+} 
+
+static inline void 
+isoeuler_rotate_to_local(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qglobal, double *qlocal) 
+{ 
+  qlocal[0] = qglobal[0]; 
+  qlocal[1] = n[0]*qglobal[1]+n[1]*qglobal[2]+n[2]*qglobal[3]; 
+  qlocal[2] = tau1[0]*qglobal[1]+tau1[1]*qglobal[2]+tau1[2]*qglobal[3]; 
+  qlocal[3] = tau2[0]*qglobal[1]+tau2[1]*qglobal[2]+tau2[2]*qglobal[3]; 
+} 
+
+static inline void 
+isoeuler_rotate_to_global(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qlocal, double *qglobal) 
+{ 
+  qglobal[0] = qlocal[0]; 
+  qglobal[1] = n[0]*qlocal[1]+tau1[0]*qlocal[2]+tau2[0]*qlocal[3]; 
+  qglobal[2] = n[1]*qlocal[1]+tau1[1]*qlocal[2]+tau2[1]*qlocal[3]; 
+  qglobal[3] = qlocal[1]*n[2]+qlocal[2]*tau1[2]+tau2[2]*qlocal[3]; 
 } 
 

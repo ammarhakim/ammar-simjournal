@@ -14,7 +14,9 @@ eqn_maxwell_init(void *ctx)
     .recwith_right_ev = { maxwell_recwith_right_ev_0, maxwell_recwith_right_ev_1, maxwell_recwith_right_ev_2 },
     .rescale_right_ev = { maxwell_rescale_right_ev_0, maxwell_rescale_right_ev_1, maxwell_rescale_right_ev_2 },
     .ev = { maxwell_ev_0, maxwell_ev_1, maxwell_ev_2 },
-    .fluct = { maxwell_fluct_0, maxwell_fluct_1, maxwell_fluct_2 }
+    .fluct = { maxwell_fluct_0, maxwell_fluct_1, maxwell_fluct_2 },
+    .rotate_to_local = maxwell_rotate_to_local,
+    .rotate_to_global = maxwell_rotate_to_global,
   };
 }
 
@@ -95,9 +97,36 @@ test_flux_jump_roe(void)
   }
 }
 
+void
+test_rotate(void)
+{
+  struct maxwell_eqn maxwell = { .c = 1.0, .efact = 1.0, .bfact = 1.0 };
+  struct eqn_sys eqn_maxwell = eqn_maxwell_init(&maxwell);
+  
+  double n[3] = { 0, 1.0, 0.0 };
+  double tau1[3] = { -1.0, 0.0, 0.0 };
+  double tau2[3] = { 0.0, 0.0, 1.0 };
+
+  double qglobal[8] = { 1.0, 1.5, 2.5, 3.5, 10.5, 1.0, 1.5, 2.5 };  
+ 
+  double qlocal[8];
+  eqn_maxwell.rotate_to_local(&maxwell, n, tau1, tau2, qglobal, qlocal);
+  double flocal[8];
+  eqn_maxwell.flux[0](&maxwell, qlocal, flocal);
+  double fglobal[8];
+  eqn_maxwell.rotate_to_global(&maxwell, n, tau1, tau2, flocal, fglobal);
+
+  double fy[8];
+  eqn_maxwell.flux[1](&maxwell, qglobal, fy);
+
+  for (int i=0; i<8; ++i)
+    TEST_CHECK( gkyl_compare_double( fglobal[i], fy[i], 1e-14) );
+}
+
 TEST_LIST = {
   { "test_ev", test_ev },
   { "test_rescale_ev", test_rescale_ev },
   { "test_flux_jump_roe", test_flux_jump_roe },
+  { "test_rotate", test_rotate },  
   { NULL, NULL },
 };    

@@ -31,6 +31,8 @@ static void maxwell_ravg(void *ctx, const double *ql, const double *qr, double *
 static double maxwell_fluct_0(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq); 
 static double maxwell_fluct_1(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq); 
 static double maxwell_fluct_2(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq); 
+static void maxwell_rotate_to_local(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qglobal, double *qlocal); 
+static void maxwell_rotate_to_global(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qlocal, double *qglobal); 
 
 static inline void 
 maxwell_flux_0(void *ctx, const double *q, double *fout) 
@@ -648,5 +650,31 @@ maxwell_fluct_2(void *ctx, const double *ql, const double *qr, double *apdq, dou
   amdq[6] = -1.0*(0.5*dq[6]-(0.5*dq[2])/c)*c*efact; 
   amdq[7] = -1.0*c*(0.5*dq[7]-0.5*dq[5]*c)*bfact; 
   return c; 
+} 
+
+static inline void 
+maxwell_rotate_to_local(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qglobal, double *qlocal) 
+{ 
+  qlocal[0] = n[0]*qglobal[0]+n[1]*qglobal[1]+n[2]*qglobal[2]; 
+  qlocal[1] = qglobal[0]*tau1[0]+qglobal[1]*tau1[1]+qglobal[2]*tau1[2]; 
+  qlocal[2] = qglobal[0]*tau2[0]+qglobal[1]*tau2[1]+qglobal[2]*tau2[2]; 
+  qlocal[3] = n[0]*qglobal[3]+n[1]*qglobal[4]+n[2]*qglobal[5]; 
+  qlocal[4] = tau1[0]*qglobal[3]+tau1[1]*qglobal[4]+tau1[2]*qglobal[5]; 
+  qlocal[5] = tau2[0]*qglobal[3]+tau2[1]*qglobal[4]+tau2[2]*qglobal[5]; 
+  qlocal[6] = qglobal[6]; 
+  qlocal[7] = qglobal[7]; 
+} 
+
+static inline void 
+maxwell_rotate_to_global(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qlocal, double *qglobal) 
+{ 
+  qglobal[0] = n[0]*qlocal[0]+tau1[0]*qlocal[1]+tau2[0]*qlocal[2]; 
+  qglobal[1] = qlocal[0]*n[1]+qlocal[1]*tau1[1]+tau2[1]*qlocal[2]; 
+  qglobal[2] = qlocal[0]*n[2]+qlocal[1]*tau1[2]+qlocal[2]*tau2[2]; 
+  qglobal[3] = n[0]*qlocal[3]+tau1[0]*qlocal[4]+tau2[0]*qlocal[5]; 
+  qglobal[4] = n[1]*qlocal[3]+tau1[1]*qlocal[4]+tau2[1]*qlocal[5]; 
+  qglobal[5] = n[2]*qlocal[3]+tau1[2]*qlocal[4]+tau2[2]*qlocal[5]; 
+  qglobal[6] = qlocal[6]; 
+  qglobal[7] = qlocal[7]; 
 } 
 
