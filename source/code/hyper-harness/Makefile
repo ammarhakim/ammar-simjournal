@@ -138,7 +138,7 @@ BINS := $(SRCS:.c=)
 
 .PHONY: all clean help moments moments-unit moments-regression
 
-all: ctest_eqn_euler ctest_eqn_maxwell ctest_eqn_burgers ctest_eqn_isoeuler ctest_eqn_shallow_water
+all: ctest_eqn_euler ctest_eqn_maxwell ctest_eqn_burgers ctest_eqn_isoeuler ctest_eqn_shallow_water test_app
 
 # Help target to show usage
 help:

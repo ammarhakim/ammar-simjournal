@@ -56,7 +56,9 @@ eqn_euler_init(void *ctx)
     .recwith_right_ev = { euler_recwith_right_ev_0, euler_recwith_right_ev_1, euler_recwith_right_ev_2 },
     .rescale_right_ev = { euler_rescale_right_ev_0, euler_rescale_right_ev_1, euler_rescale_right_ev_2 },
     .ev = { euler_ev_0, euler_ev_1, euler_ev_2 },
-    .fluct = { euler_roe_fluct_0, euler_roe_fluct_1, euler_roe_fluct_2 }
+    .fluct = { euler_roe_fluct_0, euler_roe_fluct_1, euler_roe_fluct_2 },
+    .rotate_to_local = euler_rotate_to_local,
+    .rotate_to_global = euler_rotate_to_global,    
   };
 }
 
@@ -81,6 +83,7 @@ main(void)
     .upper = { 1.0 },
 
     .scheme_type = SCHEME_FD,
+    .use_char_limiters = false,
     .hyper_eqn = euler,
 
     .has_diffusive_eqn = false,

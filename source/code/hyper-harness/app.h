@@ -110,11 +110,11 @@ struct hyper_app_inp {
   struct eqn_sys diff_eqn;
 
   enum mp_recon recon_type;
+  bool use_char_limiters;
   
   evalf_t init;
   void *init_ctx;
 };
 
 hyper_app *hyper_app_new(struct hyper_app_inp *inp);
-double hyper_app_calc_rhs(hyper_app *app, const struct gkyl_array *qin, struct gkyl_array *rhs);
 void hyper_app_release(hyper_app *app);
