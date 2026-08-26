@@ -283,7 +283,7 @@ hyper_app_new(struct hyper_app_inp *inp)
 
   inp0.narray = HYPER_LAST;
   for (int i=0; i<inp0.narray; ++i)
-    inp0.arr_info[i] = (struct app_0_array_inp) { .ncomp = inp->hyper_eqn.meqn, .ncoeff = 1 };
+    inp0.arr_info[i] = (struct app_0_array_inp) { .ncomp = inp->hyper_eqn.mtotal, .ncoeff = 1 };
 
   app->app0 = app_0_new(&inp0);
   app_0_fv_init(app->app0, HYPER_F0, 0.0, inp->init, inp->init_ctx);
@@ -315,10 +315,12 @@ hyper_app_new(struct hyper_app_inp *inp)
   app->amdq = gkyl_array_new(GKYL_DOUBLE, inp->hyper_eqn.meqn, app->app0->local_ext.volume);
 
   recovery_fn_t rfun[16];
-  rfun[MP_U3] = u3_recovery;
-  rfun[MP_U1] = u1_recovery;
   rfun[MP_C2] = c2_recovery;
   rfun[MP_C4] = c4_recovery;
+  rfun[MP_C6] = c6_recovery;
+  rfun[MP_U1] = u1_recovery;
+  rfun[MP_U3] = u3_recovery;
+  rfun[MP_U5] = u5_recovery;
 
   app->recon_type = inp->recon_type;
   app->recon_fn = rfun[inp->recon_type];
@@ -410,7 +412,7 @@ static double
 hyper_app_calc_rhs(hyper_app *app, const struct gkyl_array *qin, struct gkyl_array *rhs)
 {
   int ndim = app->app0->ndim;
-  int meqn = app->hyper_eqn.meqn, mwave = app->hyper_eqn.mwave;
+  int meqn = app->hyper_eqn.meqn;
   const struct gkyl_range *range = &app->app0->local;
 
   enum { I3M, I2M, IM, IP, I2P, I3P }; // interface is between IM and IP
@@ -426,6 +428,8 @@ hyper_app_calc_rhs(hyper_app *app, const struct gkyl_array *qin, struct gkyl_arr
       qrec_with_right[i] = &ptr[meqn*i];
   } while(0);
 
+  double amax = 0.0; // maximum absolute eigenvalue
+  
   gkyl_array_clear_range(rhs, 0.0, range);
   for (int dir=0; dir<ndim; ++dir) {
     double dx = app->app0->grid.dx[dir];
@@ -450,6 +454,7 @@ hyper_app_calc_rhs(hyper_app *app, const struct gkyl_array *qin, struct gkyl_arr
     while (gkyl_range_iter_next(&iter)) {
       long loc = gkyl_range_idx(range, iter.idx);
 
+      // use arithmetic averages for use in characterisitic limiting
       double qifc[meqn];
       for (int m=0; m<meqn; ++m) qifc[m] = 0.5*(qavg[IM][m]+qavg[IP][m]);
       
@@ -464,13 +469,13 @@ hyper_app_calc_rhs(hyper_app *app, const struct gkyl_array *qin, struct gkyl_arr
         qul, qur);
 
       for (int m=0; m<meqn; ++m) {
-          qur[m] = mp_limiter(qur[m],
-            qavg[I3P][m], qavg[I2P][m], qavg[IP][m],
-            qavg[IM][m], qavg[I2M][m]);
-          
-          qul[m] = mp_limiter(qul[m],
-            qavg[I3M][m], qavg[I2M][m], qavg[IM][m],
-            qavg[IP][m], qavg[I2P][m]);
+        qur[m] = mp_limiter(qur[m],
+          qavg[I3P][m], qavg[I2P][m], qavg[IP][m],
+          qavg[IM][m], qavg[I2M][m]);
+        
+        qul[m] = mp_limiter(qul[m],
+          qavg[I3M][m], qavg[I2M][m], qavg[IM][m],
+          qavg[IP][m], qavg[I2P][m]);
       }
 
       // qle is left of edge (right edge of left cell), qre right of
@@ -484,12 +489,47 @@ hyper_app_calc_rhs(hyper_app *app, const struct gkyl_array *qin, struct gkyl_arr
       double *amdq_p = gkyl_array_fetch(app->amdq, loc+offsets[IM]);
       double *apdq_p = gkyl_array_fetch(app->apdq, loc+offsets[IP]);
 
-      app->hyper_eqn.fluct[dir](app->hyper_eqn.eqn_ctx, qle, qre, apdq_p, amdq_p);
+      double a = app->hyper_eqn.fluct[dir](app->hyper_eqn.eqn_ctx, qle, qre, apdq_p, amdq_p);
+      amax = fmax(amax, a);
+    }
+
+    double fle[meqn], fre[meqn];
+    // Update RHS with contribution from flux jumps. Note this loop is
+    // over interior cells
+    gkyl_range_iter_init(&iter, range);
+    while (gkyl_range_iter_next(&iter)) {
+      long loc = gkyl_range_idx(range, iter.idx);
+
+      const double *qle = gkyl_array_cfetch(app->ql, loc);
+      const double *qre = gkyl_array_cfetch(app->qr, loc);
+      
+      app->hyper_eqn.flux[dir](app->hyper_eqn.eqn_ctx, qle, fle);
+      app->hyper_eqn.flux[dir](app->hyper_eqn.eqn_ctx, qre, fre);
+
+      const double *amdq_p = gkyl_array_cfetch(app->amdq, loc);
+      const double *apdq_p = gkyl_array_cfetch(app->apdq, loc);
+
+      double *rhs_p = gkyl_array_fetch(rhs, loc);
+      for (int m=0; m<meqn; ++m)
+        rhs_p[m] += -(fre[m]-fle[m])/dx - (apdq_p[m]+amdq_p[m])/dx;
+      
     }
   }
 
-  return 0;
+  return amax;
 }
+
+struct gkyl_update_status
+hyper_app_update(hyper_app *app, double dt)
+{
+
+  return (struct gkyl_update_status) {
+    .dt_actual = dt,
+    .dt_suggested = dt,
+    .success = true
+  };
+}
+
 
 void
 hyper_app_release(struct hyper_app *app)

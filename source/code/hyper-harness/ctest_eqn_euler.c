@@ -7,7 +7,7 @@ eqn_euler_init(void *ctx)
 {
   return (struct eqn_sys) {
     .meqn = 5,
-    .mwave = 5,
+    .mtotal = 5,
     .eqn_ctx = &ctx,
     .flux = { euler_flux_0, euler_flux_1, euler_flux_2  },
     .projon_left_ev = { euler_projon_left_ev_0, euler_projon_left_ev_1, euler_projon_left_ev_2  },

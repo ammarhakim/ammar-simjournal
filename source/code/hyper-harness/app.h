@@ -1,3 +1,4 @@
+#include <gkyl_app.h>
 #include <gkyl_array.h>
 #include <gkyl_array_rio.h>
 #include <gkyl_basis.h>
@@ -67,9 +68,8 @@ typedef double (*fluct_t)(void *ctx, const double *ql, const double *qr, double 
 typedef void (*rotate_to_local_t)(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qloc, double *qglo);
 typedef void (*rotate_to_global_t)(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qglo, double *qloc);
 
-
 struct eqn_sys {
-  int meqn, mwave;
+  int meqn, mtotal;
   void *eqn_ctx;
 
   eqn_flux_t flux[GKYL_MAX_DIM];
@@ -89,9 +89,11 @@ enum hyper_scheme_type { SCHEME_FD, SCHEME_FV };
 // Base reconstruction scheme to use
 enum mp_recon {
   MP_U3, // upwind-biased 3rd order
+  MP_U5, // upwind-biased 5th order
   MP_U1, // upwind-biased 1st order
   MP_C2, // centered second-order
   MP_C4, // centered fourth-order
+  MP_C6, // centered sixth-order
 };
 
 struct hyper_app_inp {
@@ -117,4 +119,5 @@ struct hyper_app_inp {
 };
 
 hyper_app *hyper_app_new(struct hyper_app_inp *inp);
+struct gkyl_update_status hyper_app_update(hyper_app *app, double dt);
 void hyper_app_release(hyper_app *app);

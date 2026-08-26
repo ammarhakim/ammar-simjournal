@@ -7,7 +7,7 @@ eqn_maxwell_init(void *ctx)
 {
   return (struct eqn_sys) {
     .meqn = 8,
-    .mwave = 8,
+    .mtotal = 8,
     .eqn_ctx = &ctx,
     .flux = { maxwell_flux_0, maxwell_flux_1, maxwell_flux_2  },
     .projon_left_ev = { maxwell_projon_left_ev_0, maxwell_projon_left_ev_1, maxwell_projon_left_ev_2  },

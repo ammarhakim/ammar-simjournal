@@ -50,7 +50,7 @@ eqn_euler_init(void *ctx)
 {
   return (struct eqn_sys) {
     .meqn = 5,
-    .mwave = 5,
+    .mtotal = 5,
     .eqn_ctx = &ctx,
     .flux = { euler_flux_0, euler_flux_1, euler_flux_2  },
     .recwith_right_ev = { euler_recwith_right_ev_0, euler_recwith_right_ev_1, euler_recwith_right_ev_2 },

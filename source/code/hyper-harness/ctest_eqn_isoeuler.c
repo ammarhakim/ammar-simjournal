@@ -7,7 +7,7 @@ eqn_isoeuler_init(void *ctx)
 {
   return (struct eqn_sys) {
     .meqn = 4,
-    .mwave = 4,
+    .mtotal = 4,
     .eqn_ctx = &ctx,
     .flux = { isoeuler_flux_0, isoeuler_flux_1, isoeuler_flux_2  },
     .projon_left_ev = { isoeuler_projon_left_ev_0, isoeuler_projon_left_ev_1, isoeuler_projon_left_ev_2  },

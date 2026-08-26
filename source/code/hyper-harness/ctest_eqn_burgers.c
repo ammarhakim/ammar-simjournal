@@ -7,7 +7,7 @@ eqn_burgers_init(void *ctx)
 {
   return (struct eqn_sys) {
     .meqn = 1,
-    .mwave = 1,
+    .mtotal = 1,
     .eqn_ctx = &ctx,
     .flux = { burgers_flux_0, burgers_flux_1, burgers_flux_2  },
     .projon_left_ev = { burgers_projon_left_ev_0, burgers_projon_left_ev_1, burgers_projon_left_ev_2  },
