@@ -1,0 +1,90 @@
+kill(all)$
+/* This requires the Clifford algebra package in your Maxima load path */
+/* GitHUb: https://github.com/dprodanov/clifford */
+load("clifford")$
+load("cliffordan")$
+
+clifford(ee,3)$
+declare([x, y, z], scalar)$
+ct_coords : [x, y, z]$
+xpos : x*ee[1] + y*ee[2] + z*ee[3]$
+
+curl(A) := -grpart( mvectdiff(A,xpos), 2 ) | %iv$
+div(A) := grpart( mvectdiff(A,xpos), 0 )$
+cross(A,B) := -(A & B) | %iv$
+
+declare([gamma, p, rho, eps], scalar)$
+depends([uu], [x,y,z])$
+depends([p, rho, eps], [x,y,z])$
+depends([p], [rho,eps])$
+
+u : cvect(uu)$
+
+/* Construct the Euler equations in quasilinear form */
+dt_rho : grpart(mvectdiff(rho*u, xpos), 0)$
+dt_u : cdirdiff(u, u, xpos) + 1/rho*mvectdiff(p,xpos)$
+dt_eps : cdirdiff(eps, u, xpos) + p/rho*div(u)$
+
+/* Split into components and put into a list */
+dt_All : [dt_rho, dt_u | ee[1], dt_u | ee[2], dt_u | ee[3], dt_eps ]$
+vars_All : [ rho, uu[1], uu[2], uu[3], eps ]$
+
+meqn : length(dt_All)$
+
+let(u|u, u2)$
+let(sqrt(p*('diff(p,eps))+('diff(p,rho))*rho^2)/rho, cs)$
+
+/* Transform from primitive to conserved variables */
+phi_v : [rho, rho*(u|ee[1]), rho*(u|ee[2]), rho*(u|ee[3]), 1/2*rho*(u | u) + rho*eps]$
+primvec : [rho, u|ee[1], u|ee[2], u|ee[3], eps ]$
+phi_prime_ij [i,j] := diff(phi_v[i], primvec[j])$
+phi_prime : genmatrix(phi_prime_ij, meqn, meqn)$
+
+/** Compute inverse transform */
+phi_prime_inv : fullratsimp(invert(phi_prime))$
+
+phi_prime : letsimp(phi_prime)$
+phi_prime_inv : letsimp( factor(phi_prime_inv) )$
+
+calcev(dir) := block([diff_list,v:ct_coords[dir], Atm, vals, vects, Evs, Rev, Rev_fj, Lev_fj],
+  
+  diff_list : makelist(diff(vars_All[i], v), i, 1, meqn),
+
+  Atm : coefmatrix(dt_All, diff_list),
+  [vals, vects] : eigenvectors(Atm),
+  
+  Evs : (Evs : [], for i from 1 thru length(vals[1])
+        do (for j from 1 thru vals[2][i]
+	  do (Evs : append(Evs, [vals[1][i]]))), Evs),
+
+  Rev : (Rev : matrix([]), for i from 1 thru length (vals[1]) 
+        do (for j from 1 thru vals[2][i] 
+          do ( (Rev : addcol(Rev, transpose(matrix(vects[i][j])))))), Rev),
+
+  Evs : letsimp( expand(Evs) ),
+  Rev : letsimp( Rev ),
+  Lev : invert(Rev),
+
+  return ([Evs, Rev, Lev])
+  )$
+
+res : calcev(1)$
+
+/** Right/left eigenvectors of flux Jacobian */
+Rev_fj : phi_prime . res[2]$
+Lev_fj : res[3] . phi_prime_inv$
+
+/* Fluxes for conserved variables */
+flux_rho : rho*u$
+flux_mom[i] := rho*(ee[i]|u)*u + p*ee[i]$
+flux_E : (E+p)*u$
+
+F[d] := [ flux_rho | ee[d], flux_mom[d] | ee[1], flux_mom[d] | ee[2], flux_mom[d] | ee[3], flux_E | ee[d] ]$
+
+/* Flux written as a rank-2 tensor (maps two vectors to a scalar) */
+mom(a, b) := rho*(a|u)*(b|u) + p*(a|b)$
+
+F2[d] := [ flux_rho | ee[d], mom(ee[1],ee[d]), mom(ee[2],ee[d]), mom(ee[3],ee[d]), flux_E | ee[d] ]$
+Fdir(g) := [ flux_rho | g, mom(ee[1],g), mom(ee[2],g), mom(ee[3],g), flux_E | g ]$
+
+

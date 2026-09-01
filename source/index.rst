@@ -47,6 +47,7 @@ Technical Notes
   :maxdepth: 1
 
   geometry-metric-symplectic	     
+  maxima-clifford
   moment-eqns
   maxwell-eigensystem
   euler-eigensystem
