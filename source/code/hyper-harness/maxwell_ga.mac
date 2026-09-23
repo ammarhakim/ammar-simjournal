@@ -1,0 +1,28 @@
+load("clifford")$
+load("cliffordan")$
+
+clifford(ee,3)$
+declare([x, y, z], scalar)$
+declare([rho], scalar)$
+depends([BB,EE,JJ], [t, x, y, z])$
+
+xpos : x*ee[1] + y*ee[2] + z*ee[3]$
+B : cvect(BB)$
+E : cvect(EE)$
+J : cvect(JJ)$
+
+/* EM multivector */
+F : cliffsimpall( E + %iv.B )$
+/* Maxwell equations */
+maxwell_eqn : cliffsimpall( mvectdiff(F, t+xpos)  - (rho - J) )$
+
+/* Split into grades to get the familiar form of the equations */
+divE : grpart(maxwell_eqn, 0)$
+ampere : grpart(maxwell_eqn, 1)$
+induction : -cliffsimpall( grpart(maxwell_eqn, 2) . %iv )$
+divB : -cliffsimpall( grpart(maxwell_eqn, 3) . %iv )$
+
+/* EM energy-momentum multivector */
+EMM : cliffsimpall( creverse(F) . F )$
+
+
