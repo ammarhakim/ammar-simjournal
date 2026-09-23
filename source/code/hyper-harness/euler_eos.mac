@@ -13,7 +13,7 @@ curl(A) := -grpart( mvectdiff(A,xpos), 2 ) | %iv$
 div(A) := grpart( mvectdiff(A,xpos), 0 )$
 cross(A,B) := -(A & B) | %iv$
 
-declare([gamma, p, rho, eps], scalar)$
+declare([p, rho, eps], scalar)$
 depends([uu], [x,y,z])$
 depends([p, rho, eps], [x,y,z])$
 depends([p], [rho,eps])$
@@ -86,5 +86,4 @@ mom(a, b) := rho*(a|u)*(b|u) + p*(a|b)$
 
 F2[d] := [ flux_rho | ee[d], mom(ee[1],ee[d]), mom(ee[2],ee[d]), mom(ee[3],ee[d]), flux_E | ee[d] ]$
 Fdir(g) := [ flux_rho | g, mom(ee[1],g), mom(ee[2],g), mom(ee[3],g), flux_E | g ]$
-
 

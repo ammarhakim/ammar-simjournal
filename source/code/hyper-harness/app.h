@@ -1,11 +1,4 @@
-#include <gkyl_app.h>
-#include <gkyl_array.h>
-#include <gkyl_array_rio.h>
-#include <gkyl_basis.h>
-#include <gkyl_evalf_def.h>
-#include <gkyl_range.h>
-#include <gkyl_rect_grid.h>
-#include <gkyl_ref_count.h>
+#include <mug.h>
 
 #ifndef APP_MAX_NARRAY
 #define APP_MAX_NARRAY 16
@@ -48,7 +41,6 @@ struct app_0_write_inp {
 app_0 *app_0_new(struct app_0_inp *inp);
 app_0 *app_0_acquire(const app_0 *inp);
 void app_0_fv_init(app_0 *app, int n, double tm, evalf_t init, void *ctx);
-void app_0_dg_init(app_0 *app, struct gkyl_basis *basis, int n, double tm, evalf_t init, void *ctx);
 enum gkyl_array_rio_status app_0_write(app_0 *app, struct app_0_write_inp *inp);
 void app_0_release(app_0 *app);
 

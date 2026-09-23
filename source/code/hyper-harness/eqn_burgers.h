@@ -31,6 +31,8 @@ static void burgers_ravg(void *ctx, const double *ql, const double *qr, double *
 static double burgers_fluct_0(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq); 
 static double burgers_fluct_1(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq); 
 static double burgers_fluct_2(void *ctx, const double *ql, const double *qr, double *apdq, double *amdq); 
+static void burgers_rotate_to_local(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qglobal, double *qlocal); 
+static void burgers_rotate_to_global(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qlocal, double *qglobal); 
 
 static inline void 
 burgers_flux_0(void *ctx, const double *q, double *fout) 
@@ -165,5 +167,17 @@ burgers_fluct_2(void *ctx, const double *ql, const double *qr, double *apdq, dou
       apdq[0] = fmax(0.0, c)*(qr[0]-ql[0]);
       amdq[0] = fmin(0.0, c)*(qr[0]-ql[0]);      
       return fabs(c); 
+} 
+
+static inline void 
+burgers_rotate_to_local(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qglobal, double *qlocal) 
+{ 
+  qlocal[0] = qglobal[0]; 
+} 
+
+static inline void 
+burgers_rotate_to_global(void *ctx, double n[3], double tau1[3], double tau2[3], const double *qlocal, double *qglobal) 
+{ 
+  qglobal[0] = qlocal[0]; 
 } 
 

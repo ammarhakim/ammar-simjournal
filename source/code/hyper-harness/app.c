@@ -1,12 +1,4 @@
 #include <app.h>
-
-#include <gkyl_alloc.h>
-#include <gkyl_array_rio.h>
-#include <gkyl_fv_proj.h>
-#include <gkyl_proj_on_basis.h>
-#include <gkyl_rect_decomp.h>
-#include <gkyl_array_ops.h>
-
 #include <string.h>
 
 //
@@ -106,17 +98,6 @@ app_0_fv_init(struct app_0 *app, int n, double tm, evalf_t init, void *ctx)
   gkyl_fv_proj *fv_proj = gkyl_fv_proj_new(&app->grid, num_quad, nc, init, ctx);
   gkyl_fv_proj_advance(fv_proj, tm, &app->local, app->f[n]);
   gkyl_fv_proj_release(fv_proj);
-}
-
-void
-app_0_dg_init(struct app_0 *app, struct gkyl_basis *basis, int n, double tm, evalf_t init, void *ctx)
-{
-  int poly_order = basis->poly_order;
-  int nc = app->finfo[n].ncomp;
-  gkyl_proj_on_basis *pob = gkyl_proj_on_basis_new(&app->grid, basis,
-    poly_order+1, nc, init, ctx);
-  gkyl_proj_on_basis_advance(pob, tm, &app->local, app->f[n]);
-  gkyl_proj_on_basis_release(pob);
 }
 
 void
@@ -512,7 +493,6 @@ hyper_app_calc_rhs(hyper_app *app, const struct gkyl_array *qin, struct gkyl_arr
       double *rhs_p = gkyl_array_fetch(rhs, loc);
       for (int m=0; m<meqn; ++m)
         rhs_p[m] += -(fre[m]-fle[m])/dx - (apdq_p[m]+amdq_p[m])/dx;
-      
     }
   }
 
