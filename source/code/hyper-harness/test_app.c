@@ -33,18 +33,6 @@ init_euler_sod(double t, const double * restrict xn, double* restrict fout, void
   }
 }
 
-static inline void
-noop_projon_left_ev(void *ctx, const double *q, const double *vin, double *vout)
-{
-  for (int i=0; i<5; ++i) vout[i] = vin[i];
-}
-
-static inline void
-noop_recwith_right_ev_0(void *ctx, const double *q, const double *vin, double *vout)
-{
-  for (int i=0; i<5; ++i) vout[i] = vin[i];
-}
-
 struct eqn_sys
 eqn_euler_init(void *ctx)
 {

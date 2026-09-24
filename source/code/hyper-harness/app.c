@@ -2,111 +2,6 @@
 #include <string.h>
 
 //
-// Base app
-//
-
-struct app_0 {
-  int ndim;
-  struct gkyl_rect_grid grid;
-  struct gkyl_range local, local_ext;
-  int narray;
-  struct gkyl_array **f;
-  struct app_0_array_inp *finfo;
-  struct gkyl_ref_count ref_count;
-};
-
-static void
-app_0_free(const struct gkyl_ref_count* rc)
-{
-  struct app_0 *app = container_of(rc, struct app_0, ref_count);
-  
-  for (int i=0; i<app->narray; ++i)
-    gkyl_array_release(app->f[i]);
-  gkyl_free(app->finfo);
-  gkyl_free(app->f);
-  gkyl_free(app);  
-}
-
-struct app_0 *
-app_0_new(struct app_0_inp *inp)
-{
-  struct app_0 *app = gkyl_malloc(sizeof(*app));
-
-  app->ndim = inp->ndim;
-  gkyl_rect_grid_init(&app->grid, inp->ndim, inp->lower, inp->upper, inp->cells);
-
-  int nghost[GKYL_MAX_DIM] = { 0 };
-  for (int d=0; d<inp->ndim; ++d) nghost[d] = inp->nghost;
-  gkyl_create_grid_ranges(&app->grid, nghost, &app->local_ext, &app->local);
-
-  app->narray = inp->narray;
-  app->f = gkyl_malloc(inp->narray*sizeof(struct gkyl_aray *));
-  app->finfo = gkyl_malloc(sizeof(struct app_0_array_inp[inp->narray]));
-
-  for (int i=0; i<inp->narray; ++i) {
-    int nc = inp->arr_info[i].ncomp*inp->arr_info[i].ncoeff;
-    app->f[i] = gkyl_array_new(GKYL_DOUBLE, nc, app->local_ext.volume);
-    
-    app->finfo[i].ncomp = inp->arr_info[i].ncomp;
-    app->finfo[i].ncoeff = inp->arr_info[i].ncoeff;
-  }
-
-  app->ref_count = gkyl_ref_count_init(app_0_free);
-  
-  return app;
-}
-
-struct app_0 *
-app_0_acquire(const struct app_0 *app)
-{
-  gkyl_ref_count_inc(&app->ref_count);
-  return (struct app_0 *) app;
-}
-
-enum gkyl_array_rio_status
-app_0_write(struct app_0 *app, struct app_0_write_inp *inp)
-{
-  int nelem = 0;
-  struct gkyl_msgpack_map_elem elist[4];
-
-  if (inp->array_type == ARRAY_FV) {
-    elist[0] = GKYL_MSGPACK_MAP_ELEM("time", inp->tm);
-    elist[1] = GKYL_MSGPACK_MAP_ELEM("frame", inp->frame);
-    nelem = 2;
-  }
-  else if (inp->array_type == ARRAY_DG) {
-    elist[0] = GKYL_MSGPACK_MAP_ELEM("time", inp->tm);
-    elist[1] = GKYL_MSGPACK_MAP_ELEM("frame", inp->frame);
-    elist[2] = GKYL_MSGPACK_MAP_ELEM("poly_order", inp->poly_order);
-    elist[3] = GKYL_MSGPACK_MAP_ELEM("basis_type", inp->basis_type);
-    nelem = 4;
-  }
-
-  struct gkyl_msgpack_data *meta = gkyl_msgpack_create(nelem, elist);
-  enum gkyl_array_rio_status status =
-    gkyl_grid_sub_array_write(&app->grid, &app->local, meta, app->f[inp->n], inp->nm);
-  gkyl_msgpack_data_release(meta);
-
-  return status;
-}
-
-void
-app_0_fv_init(struct app_0 *app, int n, double tm, evalf_t init, void *ctx)
-{
-  int num_quad = 2;
-  int nc = app->finfo[n].ncomp;
-  gkyl_fv_proj *fv_proj = gkyl_fv_proj_new(&app->grid, num_quad, nc, init, ctx);
-  gkyl_fv_proj_advance(fv_proj, tm, &app->local, app->f[n]);
-  gkyl_fv_proj_release(fv_proj);
-}
-
-void
-app_0_release(struct app_0 *app)
-{
-  gkyl_ref_count_dec(&app->ref_count);
-}
-
-//
 // Hyperbolic solver app
 //
 
@@ -121,13 +16,18 @@ typedef void (*recovery_fn_t)(
 
 struct hyper_app {
   char name[128];
-  struct app_0 *app0;
+
+  int ndim;
+  struct gkyl_rect_grid grid;
+  struct gkyl_range local, local_ext;
+  
   enum hyper_scheme_type scheme_type;
   struct eqn_sys hyper_eqn;
   bool has_diffusive_eqn;
   struct eqn_sys diff_eqn;
 
   gkyl_mem_buff q_on_left_ev_buff, q_with_right_ev_buff;
+  struct gkyl_array *q0, *rhs, *qnew;  
   struct gkyl_array *ql, *qr;
   struct gkyl_array *apdq, *amdq;
 
@@ -244,56 +144,70 @@ u5_recovery(int meqn,
   }
 }
 
+static void
+hyper_app_apply_ic(struct hyper_app *app, double tm, evalf_t init, void *ctx)
+{
+  int num_quad = 2;
+  int nc = app->q0->ncomp;
+  gkyl_fv_proj *fv_proj = gkyl_fv_proj_new(&app->grid, num_quad, nc, init, ctx);
+  gkyl_fv_proj_advance(fv_proj, tm, &app->local, app->q0);
+  gkyl_fv_proj_release(fv_proj);
+}
+
+static enum gkyl_array_rio_status
+hyper_app_write(struct hyper_app *app, double tm, int frame, const struct gkyl_array *out)
+{
+  const char *fmt = "%s-f_%d.gkyl";
+  int sz = gkyl_calc_strlen(fmt, app->name, 0);
+  char fileNm[sz+1]; // ensures no buffer overflow
+  snprintf(fileNm, sizeof fileNm, fmt, app->name, 0);
+
+  int nelem = 0;
+  struct gkyl_msgpack_map_elem elist[4];
+
+  elist[0] = GKYL_MSGPACK_MAP_ELEM("time", tm);
+  elist[1] = GKYL_MSGPACK_MAP_ELEM("frame", frame);
+  nelem = 2;
+
+  struct gkyl_msgpack_data *meta = gkyl_msgpack_create(nelem, elist);
+  enum gkyl_array_rio_status status =
+    gkyl_grid_sub_array_write(&app->grid, &app->local, meta, out, fileNm);
+  gkyl_msgpack_data_release(meta);
+
+  return status;
+}
+
 struct hyper_app *
 hyper_app_new(struct hyper_app_inp *inp)
 {
   struct hyper_app *app = gkyl_malloc(sizeof *app);
   strcpy(app->name, inp->name);
 
-  // create base app
-  struct app_0_inp inp0 = {
-    .ndim = inp->ndim,
-    .nghost = 3
-  };
-  
-  for (int d=0; d<inp->ndim; ++d) {
-    inp0.cells[d] = inp->cells[d];
-    inp0.lower[d] = inp->lower[d];
-    inp0.upper[d] = inp->upper[d];
-  }
+  app->ndim = inp->ndim;
+  gkyl_rect_grid_init(&app->grid, inp->ndim, inp->lower, inp->upper, inp->cells);
 
-  inp0.narray = HYPER_LAST;
-  for (int i=0; i<inp0.narray; ++i)
-    inp0.arr_info[i] = (struct app_0_array_inp) { .ncomp = inp->hyper_eqn.mtotal, .ncoeff = 1 };
-
-  app->app0 = app_0_new(&inp0);
-  app_0_fv_init(app->app0, HYPER_F0, 0.0, inp->init, inp->init_ctx);
-
-  do {
-    const char *fmt = "%s-f_%d.gkyl";
-    int sz = gkyl_calc_strlen(fmt, app->name, 0);
-    char fileNm[sz+1]; // ensures no buffer overflow
-    snprintf(fileNm, sizeof fileNm, fmt, app->name, 0);
-    app_0_write(app->app0, &(struct app_0_write_inp) {
-        .frame = 0,
-        .tm = 0.0,
-        .array_type = ARRAY_FV,
-        .n = HYPER_F0,
-        .nm = fileNm
-      }
-    );
-    
-  } while (0);
+  int nghost[GKYL_MAX_DIM] = { 0 };
+  for (int d=0; d<inp->ndim; ++d) nghost[d] = 3;
+  gkyl_create_grid_ranges(&app->grid, nghost, &app->local_ext, &app->local);
 
   app->hyper_eqn = inp->hyper_eqn;
+  
+  // the 6 below is for the widest possible stencil we support
   app->q_on_left_ev_buff = gkyl_mem_buff_new(sizeof(double[6*app->hyper_eqn.meqn]));
   app->q_with_right_ev_buff = gkyl_mem_buff_new(sizeof(double[6*app->hyper_eqn.meqn]));
 
-  app->ql = gkyl_array_new(GKYL_DOUBLE, inp->hyper_eqn.meqn, app->app0->local_ext.volume);
-  app->qr = gkyl_array_new(GKYL_DOUBLE, inp->hyper_eqn.meqn, app->app0->local_ext.volume);
+  app->q0 = gkyl_array_new(GKYL_DOUBLE, inp->hyper_eqn.meqn, app->local_ext.volume);
+  app->rhs = gkyl_array_new(GKYL_DOUBLE, inp->hyper_eqn.meqn, app->local_ext.volume);
+  app->qnew = gkyl_array_new(GKYL_DOUBLE, inp->hyper_eqn.meqn, app->local_ext.volume);
+  
+  app->ql = gkyl_array_new(GKYL_DOUBLE, inp->hyper_eqn.meqn, app->local_ext.volume);
+  app->qr = gkyl_array_new(GKYL_DOUBLE, inp->hyper_eqn.meqn, app->local_ext.volume);
 
-  app->apdq = gkyl_array_new(GKYL_DOUBLE, inp->hyper_eqn.meqn, app->app0->local_ext.volume);
-  app->amdq = gkyl_array_new(GKYL_DOUBLE, inp->hyper_eqn.meqn, app->app0->local_ext.volume);
+  app->apdq = gkyl_array_new(GKYL_DOUBLE, inp->hyper_eqn.meqn, app->local_ext.volume);
+  app->amdq = gkyl_array_new(GKYL_DOUBLE, inp->hyper_eqn.meqn, app->local_ext.volume);
+
+  hyper_app_apply_ic(app, 0.0, inp->init, inp->init_ctx);  
+  hyper_app_write(app, 0.0, 0, app->q0);
 
   recovery_fn_t rfun[16];
   rfun[MP_C2] = c2_recovery;
@@ -392,9 +306,9 @@ mp_limiter(double qe, double q2m, double q1m, double q0, double q1p, double q2p)
 static double
 hyper_app_calc_rhs(hyper_app *app, const struct gkyl_array *qin, struct gkyl_array *rhs)
 {
-  int ndim = app->app0->ndim;
+  int ndim = app->ndim;
   int meqn = app->hyper_eqn.meqn;
-  const struct gkyl_range *range = &app->app0->local;
+  const struct gkyl_range *range = &app->local;
 
   enum { I3M, I2M, IM, IP, I2P, I3P }; // interface is between IM and IP
 
@@ -413,7 +327,7 @@ hyper_app_calc_rhs(hyper_app *app, const struct gkyl_array *qin, struct gkyl_arr
   
   gkyl_array_clear_range(rhs, 0.0, range);
   for (int dir=0; dir<ndim; ++dir) {
-    double dx = app->app0->grid.dx[dir];
+    double dx = app->grid.dx[dir];
     const double *qavg[6];
 
     long offsets[6];
@@ -514,13 +428,16 @@ hyper_app_update(hyper_app *app, double dt)
 void
 hyper_app_release(struct hyper_app *app)
 {
-  app_0_release(app->app0);
-  
   gkyl_mem_buff_release(app->q_on_left_ev_buff);
   gkyl_mem_buff_release(app->q_with_right_ev_buff);
+
+  gkyl_array_release(app->q0);
+  gkyl_array_release(app->rhs);
+  gkyl_array_release(app->qnew);
   gkyl_array_release(app->ql);
   gkyl_array_release(app->qr);
   gkyl_array_release(app->apdq);
   gkyl_array_release(app->amdq);
+  
   gkyl_free(app);
 }
